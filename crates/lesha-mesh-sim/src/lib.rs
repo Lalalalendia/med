@@ -1,6 +1,7 @@
 pub mod clock;
 pub mod durable;
 pub mod fault;
+pub mod invariant;
 pub mod network;
 pub mod node;
 pub mod processing;
@@ -12,6 +13,7 @@ pub mod trace;
 pub use clock::*;
 pub use durable::*;
 pub use fault::*;
+pub use invariant::*;
 pub use network::*;
 pub use node::*;
 pub use processing::*;

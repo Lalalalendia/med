@@ -10,8 +10,8 @@ use lesha_types::{
 };
 
 use crate::{
-    EventQueue, EventTrace, FaultPlan, PresencePersistFault, ScheduledEvent, SimDurableStore,
-    SimNetwork, SimNode, SimProcessing, TraceRecord, VirtualClock,
+    EventQueue, EventTrace, FaultPlan, InvariantFailure, InvariantMonitor, PresencePersistFault,
+    ScheduledEvent, SimDurableStore, SimNetwork, SimNode, SimProcessing, TraceRecord, VirtualClock,
 };
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -21,6 +21,7 @@ pub enum SimError {
     MissingDurablePresence(NodeId),
     MissingSessionLink { node: NodeId, session_id: SessionId },
     Queue(&'static str),
+    InvariantViolation(InvariantFailure),
     StepLimitExceeded(usize),
 }
 
@@ -35,6 +36,7 @@ pub struct Simulation {
     pub clock: VirtualClock,
     pub durable: SimDurableStore,
     pub faults: FaultPlan,
+    pub invariants: InvariantMonitor,
     pub network: SimNetwork,
     pub processing: SimProcessing,
     pub trace: EventTrace,
@@ -183,16 +185,30 @@ impl Simulation {
 
         let target = scheduled.target;
         let event = scheduled.event;
+        let before_state = self.node(target)?.state.clone();
         let input_digest = core_event_digest(&event);
-        let pre_state_digest = peer_state_digest(&self.node(target)?.state);
+        let pre_state_digest = peer_state_digest(&before_state);
         let output = {
             let node = self.node_mut(target)?;
             node.apply(event.clone())
         };
-        let post_state_digest = peer_state_digest(&self.node(target)?.state);
+        let after_state = self.node(target)?.state.clone();
+        let post_state_digest = peer_state_digest(&after_state);
         let effects_digest = core_effects_digest(&output.effects);
 
         let event_index = self.trace.records.len() as u64;
+        let invariant_failure = self.invariants.observe_transition(
+            event_index,
+            target,
+            &before_state,
+            &event,
+            &output.effects,
+            &after_state,
+            input_digest,
+            pre_state_digest,
+            effects_digest,
+            post_state_digest,
+        );
         self.trace.records.push(TraceRecord {
             event_index,
             sim_time: self.clock.now(),
@@ -204,6 +220,10 @@ impl Simulation {
             effects_digest,
             post_state_digest,
         });
+
+        if let Some(failure) = invariant_failure {
+            return Err(SimError::InvariantViolation(failure));
+        }
 
         for effect in output.effects {
             self.execute_effect(target, effect)?;

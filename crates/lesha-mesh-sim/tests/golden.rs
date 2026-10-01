@@ -138,6 +138,7 @@ fn run_golden() -> Simulation {
     assert!(saw_alive);
     assert_eq!(a_state.control.as_ref().unwrap().epoch, 1);
     assert_eq!(b_state.control.as_ref().unwrap().epoch, 1);
+    assert!(sim.invariants.is_clean());
 
     sim
 }
