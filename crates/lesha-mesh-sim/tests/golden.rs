@@ -248,7 +248,6 @@ fn commit_then_crash_never_reuses_committed_incarnation() {
     assert!(!acknowledged_first_commit);
 }
 
-
 #[test]
 fn refutation_fail_before_commit_never_sends_uncommitted_alive() {
     let (mut sim, _a, b) = setup_connected_after_first_probe();
