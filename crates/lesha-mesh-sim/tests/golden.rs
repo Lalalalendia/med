@@ -2,8 +2,8 @@ use std::collections::BTreeMap;
 
 use lesha_mesh_sim::{verify_exact_replay, MeshMessageKind, PresencePersistFault, Simulation};
 use lesha_peer_core::{
-    ControlViewM0, CoreConfig, CoreEffectKind, CoreEventKind, LifecycleState, MemberRecord,
-    MeshMessage, PeerHealth,
+    CloseReason, ControlViewM0, CoreConfig, CoreEffectKind, CoreEventKind, LifecycleState,
+    MemberRecord, MeshMessage, PeerHealth,
 };
 use lesha_types::{
     ClusterId, MonoDuration, NodeGeneration, NodeId, NodeRef, PresenceIncarnation, SessionId,
@@ -289,7 +289,7 @@ fn refutation_fail_before_commit_never_sends_uncommitted_alive() {
 
 #[test]
 fn refutation_commit_then_crash_skips_to_next_incarnation_without_alive() {
-    let (mut sim, _a, b) = setup_connected_after_first_probe();
+    let (mut sim, a, b) = setup_connected_after_first_probe();
 
     sim.faults
         .push_persist_fault(b.node_id, PresencePersistFault::CommitThenCrash);
@@ -335,4 +335,24 @@ fn refutation_commit_then_crash_skips_to_next_incarnation_without_alive() {
         })
     });
     assert!(!sent_crashed_incarnation_alive);
+
+    assert!(!sim
+        .node(a.node_id)
+        .unwrap()
+        .state
+        .sessions
+        .values()
+        .any(|session| session.peer == b));
+
+    let peer_observed_transport_loss = sim.trace.records.iter().any(|record| {
+        record.target == a.node_id
+            && matches!(
+                &record.event.kind,
+                CoreEventKind::SessionClosed {
+                    reason: CloseReason::TransportLost,
+                    ..
+                }
+            )
+    });
+    assert!(peer_observed_transport_loss);
 }
