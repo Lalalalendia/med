@@ -1,6 +1,7 @@
 pub mod clock;
 pub mod durable;
 pub mod fault;
+pub mod network;
 pub mod node;
 pub mod queue;
 pub mod replay;
@@ -10,6 +11,7 @@ pub mod trace;
 pub use clock::*;
 pub use durable::*;
 pub use fault::*;
+pub use network::*;
 pub use node::*;
 pub use queue::*;
 pub use replay::*;

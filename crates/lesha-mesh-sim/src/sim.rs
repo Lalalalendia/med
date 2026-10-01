@@ -11,7 +11,7 @@ use lesha_types::{
 
 use crate::{
     EventQueue, EventTrace, FaultPlan, PresencePersistFault, ScheduledEvent, SimDurableStore,
-    SimNode, TraceRecord, VirtualClock,
+    SimNetwork, SimNode, TraceRecord, VirtualClock,
 };
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -35,6 +35,7 @@ pub struct Simulation {
     pub clock: VirtualClock,
     pub durable: SimDurableStore,
     pub faults: FaultPlan,
+    pub network: SimNetwork,
     pub trace: EventTrace,
     nodes: BTreeMap<NodeId, SimNode>,
     queue: EventQueue,
@@ -365,10 +366,14 @@ impl Simulation {
                         session_id,
                     },
                 )?;
+                let link = self.network.policy(target, endpoint.peer_node);
+                if !link.reachable {
+                    return Ok(());
+                }
                 let delivery_at = self
                     .clock
                     .now()
-                    .checked_add(MonoDuration(1))
+                    .checked_add(link.latency)
                     .expect("simulated time overflow");
                 self.enqueue_kind(
                     endpoint.peer_node,

@@ -436,3 +436,78 @@ fn corrupt_durable_integrity_is_rejected_before_activation() {
     });
     assert!(saw_corrupt_load);
 }
+
+
+#[test]
+fn directed_partition_is_asymmetric() {
+    let a = node(10);
+    let b = node(11);
+
+    let config = CoreConfig {
+        probe_interval: MonoDuration(10),
+        probe_timeout: MonoDuration(5),
+        suspicion_timeout: MonoDuration(20),
+        ..Default::default()
+    };
+
+    let mut sim = Simulation::default();
+    sim.add_node(a, config.clone()).unwrap();
+    sim.add_node(b, config).unwrap();
+
+    sim.start_node(a.node_id, [0xAA; 32]).unwrap();
+    sim.start_node(b.node_id, [0xBB; 32]).unwrap();
+    sim.run_until_idle(32).unwrap();
+
+    let view = control(a, b);
+    sim.replace_control(a.node_id, view.clone()).unwrap();
+    sim.replace_control(b.node_id, view).unwrap();
+    sim.run_until_idle(8).unwrap();
+
+    sim.connect_authenticated(
+        a.node_id,
+        SessionId([0xA1; 32]),
+        b.node_id,
+        SessionId([0xB1; 32]),
+    )
+    .unwrap();
+    assert_eq!(sim.run_steps(2).unwrap(), 2);
+
+    sim.network.set_reachable(a.node_id, b.node_id, false);
+    assert!(!sim.network.policy(a.node_id, b.node_id).reachable);
+    assert!(sim.network.policy(b.node_id, a.node_id).reachable);
+
+    sim.run_until(24, |sim| {
+        sim.node(a.node_id)
+            .map(|node| node.state.suspicions.contains_key(&b))
+            .unwrap_or(false)
+            && sim
+                .node(b.node_id)
+                .map(|node| node.state.suspicions.contains_key(&a))
+                .unwrap_or(false)
+    })
+    .unwrap();
+
+    let b_to_a_ping_arrived = sim.trace.records.iter().any(|record| {
+        record.target == a.node_id
+            && matches!(
+                &record.event.kind,
+                CoreEventKind::MeshMessageReceived {
+                    message: MeshMessage::Ping { probe_id, .. },
+                    ..
+                } if probe_id.origin == b
+            )
+    });
+    let a_to_b_ping_arrived = sim.trace.records.iter().any(|record| {
+        record.target == b.node_id
+            && matches!(
+                &record.event.kind,
+                CoreEventKind::MeshMessageReceived {
+                    message: MeshMessage::Ping { probe_id, .. },
+                    ..
+                } if probe_id.origin == a
+            )
+    });
+
+    assert!(b_to_a_ping_arrived);
+    assert!(!a_to_b_ping_arrived);
+}
