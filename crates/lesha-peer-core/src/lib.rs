@@ -66,7 +66,10 @@ fn current_timer(state: &PeerManagerStateM0, timer_id: &TimerId) -> bool {
         .unwrap_or(false)
 }
 
-fn current_session_for_peer(state: &PeerManagerStateM0, peer: lesha_types::NodeRef) -> Option<SessionId> {
+fn current_session_for_peer(
+    state: &PeerManagerStateM0,
+    peer: lesha_types::NodeRef,
+) -> Option<SessionId> {
     state
         .sessions
         .iter()
@@ -136,7 +139,10 @@ pub fn step(cfg: &CoreConfig, state: &mut PeerManagerStateM0, event: CoreEvent) 
             }
         }
 
-        CoreEventKind::DurableStateLoaded { effect_id, state: loaded } => {
+        CoreEventKind::DurableStateLoaded {
+            effect_id,
+            state: loaded,
+        } => {
             if state.lifecycle != LifecycleState::LoadingDurableState
                 || state.pending_load_effect != Some(effect_id)
             {
@@ -389,12 +395,7 @@ pub fn step(cfg: &CoreConfig, state: &mut PeerManagerStateM0, event: CoreEvent) 
                     return out;
                 }
             };
-            let _ = arm_timer(
-                state,
-                &mut out,
-                TimerKey::ProbeInterval(peer),
-                deadline,
-            );
+            let _ = arm_timer(state, &mut out, TimerKey::ProbeInterval(peer), deadline);
             push_effect(
                 state,
                 &mut out,
@@ -410,7 +411,10 @@ pub fn step(cfg: &CoreConfig, state: &mut PeerManagerStateM0, event: CoreEvent) 
             }
         }
 
-        CoreEventKind::MeshMessageReceived { session_id, message } => {
+        CoreEventKind::MeshMessageReceived {
+            session_id,
+            message,
+        } => {
             let session = match state.sessions.get(&session_id).cloned() {
                 Some(s) => s,
                 None => {
@@ -763,12 +767,7 @@ pub fn step(cfg: &CoreConfig, state: &mut PeerManagerStateM0, event: CoreEvent) 
                         );
                     }
                     if let Some(next_at) = event.observed_at.checked_add(cfg.probe_interval) {
-                        let _ = arm_timer(
-                            state,
-                            &mut out,
-                            TimerKey::ProbeInterval(peer),
-                            next_at,
-                        );
+                        let _ = arm_timer(state, &mut out, TimerKey::ProbeInterval(peer), next_at);
                     }
                 }
 
@@ -793,16 +792,19 @@ pub fn step(cfg: &CoreConfig, state: &mut PeerManagerStateM0, event: CoreEvent) 
                     };
                     let observation_id = ObservationId {
                         observer: state.self_ref,
-                        observer_incarnation: state.current_presence().unwrap_or(PresenceIncarnation(0)),
+                        observer_incarnation: state
+                            .current_presence()
+                            .unwrap_or(PresenceIncarnation(0)),
                         sequence,
                     };
-                    let suspicion_deadline_at = match event.observed_at.checked_add(cfg.suspicion_timeout) {
-                        Some(v) => v,
-                        None => {
-                            enter_recovery(state, &mut out);
-                            return out;
-                        }
-                    };
+                    let suspicion_deadline_at =
+                        match event.observed_at.checked_add(cfg.suspicion_timeout) {
+                            Some(v) => v,
+                            None => {
+                                enter_recovery(state, &mut out);
+                                return out;
+                            }
+                        };
                     let suspicion_deadline = match arm_timer(
                         state,
                         &mut out,
