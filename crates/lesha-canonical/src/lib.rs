@@ -111,8 +111,8 @@ fn validate_item(bytes: &[u8], cursor: &mut usize, depth: usize) -> Result<(), C
         }
         6 => Err(CanonicalError::UnsupportedTag),
         7 => match ai {
-            20 | 21 | 22 => Ok(()),
-            25 | 26 | 27 => Err(CanonicalError::FloatForbidden),
+            20..=22 => Ok(()),
+            25..=27 => Err(CanonicalError::FloatForbidden),
             31 => Err(CanonicalError::IndefiniteLength),
             _ => Err(CanonicalError::UnsupportedSimpleValue),
         },
