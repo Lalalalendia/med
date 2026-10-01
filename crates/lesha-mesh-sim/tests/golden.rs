@@ -6,7 +6,7 @@ use lesha_peer_core::{
     LifecycleState, MemberRecord, MeshMessage, PeerHealth, PersistenceError,
 };
 use lesha_types::{
-    ClusterId, EndpointSequence, MonoDuration, NodeGeneration, NodeId, NodeRef,
+    ClusterId, EndpointSequence, MonoDuration, MonotonicTime, NodeGeneration, NodeId, NodeRef,
     PresenceIncarnation, SessionId,
 };
 
