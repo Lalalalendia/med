@@ -137,6 +137,46 @@ fn run_golden() -> Simulation {
     sim
 }
 
+fn setup_connected_after_first_probe() -> (Simulation, NodeRef, NodeRef) {
+    let a = node(10);
+    let b = node(11);
+
+    let mut a_config = CoreConfig::default();
+    a_config.probe_interval = MonoDuration(10);
+    a_config.probe_timeout = MonoDuration(5);
+    a_config.suspicion_timeout = MonoDuration(20);
+
+    let mut b_config = a_config.clone();
+    b_config.probe_interval = MonoDuration(1_000);
+
+    let mut sim = Simulation::default();
+    sim.add_node(a, a_config).unwrap();
+    sim.add_node(b, b_config).unwrap();
+
+    sim.start_node(a.node_id, [0xAA; 32]).unwrap();
+    sim.start_node(b.node_id, [0xBB; 32]).unwrap();
+    sim.run_until_idle(32).unwrap();
+
+    let view = control(a, b);
+    sim.replace_control(a.node_id, view.clone()).unwrap();
+    sim.replace_control(b.node_id, view).unwrap();
+    sim.run_until_idle(8).unwrap();
+
+    sim.connect_authenticated(
+        a.node_id,
+        SessionId([0xA1; 32]),
+        b.node_id,
+        SessionId([0xB1; 32]),
+    )
+    .unwrap();
+    assert_eq!(sim.run_steps(2).unwrap(), 2);
+
+    assert_eq!(sim.run_steps(3).unwrap(), 3);
+    assert!(sim.node(a.node_id).unwrap().state.pending_probes.is_empty());
+
+    (sim, a, b)
+}
+
 #[test]
 fn two_node_suspect_refutation_golden_trace() {
     let sim = run_golden();
@@ -206,4 +246,94 @@ fn commit_then_crash_never_reuses_committed_incarnation() {
         )
     });
     assert!(!acknowledged_first_commit);
+}
+
+
+#[test]
+fn refutation_fail_before_commit_never_sends_uncommitted_alive() {
+    let (mut sim, _a, b) = setup_connected_after_first_probe();
+
+    sim.faults
+        .push_persist_fault(b.node_id, PresencePersistFault::FailBeforeCommit);
+    sim.faults
+        .drop_next_message(b.node_id, MeshMessageKind::Ack);
+
+    sim.run_until(24, |sim| {
+        sim.node(b.node_id)
+            .map(|node| node.state.lifecycle == LifecycleState::RecoveryRequired)
+            .unwrap_or(false)
+    })
+    .unwrap();
+
+    assert_eq!(
+        sim.durable.committed_presence(b.node_id),
+        Some(PresenceIncarnation(1))
+    );
+
+    let sent_uncommitted_alive = sim.trace.records.iter().any(|record| {
+        record.effects.iter().any(|effect| {
+            matches!(
+                &effect.kind,
+                CoreEffectKind::SendMeshMessage {
+                    message: MeshMessage::Alive {
+                        subject,
+                        incarnation,
+                        ..
+                    },
+                    ..
+                } if *subject == b && *incarnation == PresenceIncarnation(2)
+            )
+        })
+    });
+    assert!(!sent_uncommitted_alive);
+}
+
+#[test]
+fn refutation_commit_then_crash_skips_to_next_incarnation_without_alive() {
+    let (mut sim, _a, b) = setup_connected_after_first_probe();
+
+    sim.faults
+        .push_persist_fault(b.node_id, PresencePersistFault::CommitThenCrash);
+    sim.faults
+        .drop_next_message(b.node_id, MeshMessageKind::Ack);
+
+    sim.run_until(32, |sim| {
+        sim.durable.committed_presence(b.node_id) == Some(PresenceIncarnation(3))
+            && sim
+                .node(b.node_id)
+                .map(|node| node.state.lifecycle == LifecycleState::NetworkActive)
+                .unwrap_or(false)
+    })
+    .unwrap();
+
+    assert_eq!(
+        sim.node(b.node_id).unwrap().state.current_presence(),
+        Some(PresenceIncarnation(3))
+    );
+
+    let acknowledged_crashed_commit = sim.trace.records.iter().any(|record| {
+        matches!(
+            &record.event.kind,
+            CoreEventKind::PresencePersisted { value, .. }
+                if *value == PresenceIncarnation(2)
+        )
+    });
+    assert!(!acknowledged_crashed_commit);
+
+    let sent_crashed_incarnation_alive = sim.trace.records.iter().any(|record| {
+        record.effects.iter().any(|effect| {
+            matches!(
+                &effect.kind,
+                CoreEffectKind::SendMeshMessage {
+                    message: MeshMessage::Alive {
+                        subject,
+                        incarnation,
+                        ..
+                    },
+                    ..
+                } if *subject == b && *incarnation == PresenceIncarnation(2)
+            )
+        })
+    });
+    assert!(!sent_crashed_incarnation_alive);
 }
