@@ -362,7 +362,6 @@ fn refutation_commit_then_crash_skips_to_next_incarnation_without_alive() {
     assert!(peer_observed_transport_loss);
 }
 
-
 #[test]
 fn same_seed_repeats_100_times_with_identical_trace_root() {
     let expected = run_golden().trace.trace_root();
