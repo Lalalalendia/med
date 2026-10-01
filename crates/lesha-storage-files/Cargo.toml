@@ -1,0 +1,11 @@
+[package]
+name = "lesha-storage-files"
+version = "0.0.1"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+lesha-types = { path = "../lesha-types" }
+lesha-storage-core = { path = "../lesha-storage-core" }
+sha2.workspace = true

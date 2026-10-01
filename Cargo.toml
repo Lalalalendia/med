@@ -3,9 +3,21 @@ members = [
     "crates/lesha-types",
     "crates/lesha-peer-core",
     "crates/lesha-mesh-sim",
+    "crates/lesha-canonical",
+    "crates/lesha-storage-core",
+    "crates/lesha-storage-memory",
+    "crates/lesha-storage-files",
+    "crates/lesha-storage-sqlite",
+    "crates/lesha-storage-sim",
 ]
 resolver = "2"
 
 [workspace.package]
 edition = "2021"
 license = "UNLICENSED"
+rust-version = "1.82"
+
+[workspace.dependencies]
+sha2 = "0.10"
+rusqlite = { version = "0.32", features = ["bundled"] }
+tempfile = "3.13"
