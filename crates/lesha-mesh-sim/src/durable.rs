@@ -18,6 +18,8 @@ impl SimDurableStore {
     }
 
     pub fn committed_presence(&self, node_id: NodeId) -> Option<PresenceIncarnation> {
-        self.states.get(&node_id).map(|state| state.committed_presence)
+        self.states
+            .get(&node_id)
+            .map(|state| state.committed_presence)
     }
 }
