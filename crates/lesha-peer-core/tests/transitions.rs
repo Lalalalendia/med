@@ -47,11 +47,19 @@ fn start_emits_load_only() {
     let out = step(
         &cfg,
         &mut state,
-        event(0, CoreEventKind::StartRequested { selection_seed: [7; 32] }),
+        event(
+            0,
+            CoreEventKind::StartRequested {
+                selection_seed: [7; 32],
+            },
+        ),
     );
     assert_eq!(state.lifecycle, LifecycleState::LoadingDurableState);
     assert_eq!(out.effects.len(), 1);
-    assert!(matches!(&out.effects[0].kind, CoreEffectKind::LoadDurablePeerState));
+    assert!(matches!(
+        &out.effects[0].kind,
+        CoreEffectKind::LoadDurablePeerState
+    ));
 }
 
 #[test]
