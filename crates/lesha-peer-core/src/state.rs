@@ -142,20 +142,12 @@ pub enum ChoiceDomain {
     PresenceNonce,
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct SelectionStateM0 {
     pub seed: [u8; 32],
     pub counters: BTreeMap<ChoiceDomain, u64>,
 }
 
-impl Default for SelectionStateM0 {
-    fn default() -> Self {
-        Self {
-            seed: [0; 32],
-            counters: BTreeMap::new(),
-        }
-    }
-}
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct PeerManagerStateM0 {
