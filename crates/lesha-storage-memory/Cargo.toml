@@ -1,0 +1,12 @@
+[package]
+name = "lesha-storage-memory"
+version = "0.0.1"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+lesha-types = { path = "../lesha-types" }
+lesha-canonical = { path = "../lesha-canonical" }
+lesha-storage-core = { path = "../lesha-storage-core" }
+sha2.workspace = true

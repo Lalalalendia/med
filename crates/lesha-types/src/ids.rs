@@ -21,3 +21,27 @@ pub struct EffectId(pub u64);
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct SendId(pub u64);
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct ObjectId(pub [u8; 16]);
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct VersionId(pub [u8; 16]);
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct OperationId(pub [u8; 16]);
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct ChunkId(pub [u8; 32]);
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct ManifestHash(pub [u8; 32]);
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct ControlFrontierHash(pub [u8; 32]);
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct CommitSeq(pub u64);
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct AuthorityEpoch(pub u64);
