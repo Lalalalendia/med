@@ -148,7 +148,6 @@ pub struct SelectionStateM0 {
     pub counters: BTreeMap<ChoiceDomain, u64>,
 }
 
-
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct PeerManagerStateM0 {
     pub lifecycle: LifecycleState,
