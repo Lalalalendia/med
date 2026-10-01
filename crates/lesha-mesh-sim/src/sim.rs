@@ -1,9 +1,9 @@
 use std::collections::BTreeMap;
 
 use lesha_peer_core::{
-    CloseReason, ControlViewM0, CoreConfig, CoreEffect, CoreEffectKind, CoreEvent, CoreEventKind,
-    DurablePeerStateV0, EventSource, LifecycleState, PeerManagerStateM0, PersistenceError,
-    SessionDirection,
+    core_effects_digest, core_event_digest, peer_state_digest, CloseReason, ControlViewM0,
+    CoreConfig, CoreEffect, CoreEffectKind, CoreEvent, CoreEventKind, DurablePeerStateV0,
+    EventSource, LifecycleState, PeerManagerStateM0, PersistenceError, SessionDirection,
 };
 use lesha_types::{
     EndpointSequence, MonoDuration, MonotonicTime, NodeId, NodeRef, PresenceIncarnation, SessionId,
@@ -166,10 +166,14 @@ impl Simulation {
 
         let target = scheduled.target;
         let event = scheduled.event;
+        let input_digest = core_event_digest(&event);
+        let pre_state_digest = peer_state_digest(&self.node(target)?.state);
         let output = {
             let node = self.node_mut(target)?;
             node.apply(event.clone())
         };
+        let post_state_digest = peer_state_digest(&self.node(target)?.state);
+        let effects_digest = core_effects_digest(&output.effects);
 
         let event_index = self.trace.records.len() as u64;
         self.trace.records.push(TraceRecord {
@@ -178,6 +182,10 @@ impl Simulation {
             target,
             event,
             effects: output.effects.clone(),
+            input_digest,
+            pre_state_digest,
+            effects_digest,
+            post_state_digest,
         });
 
         for effect in output.effects {

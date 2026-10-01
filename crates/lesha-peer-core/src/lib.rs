@@ -1,3 +1,4 @@
+pub mod canonical;
 pub mod config;
 pub mod effect;
 pub mod event;
@@ -10,6 +11,7 @@ use lesha_types::{
     EffectId, EndpointSequence, MonotonicTime, PresenceIncarnation, SendId, SessionId,
 };
 
+pub use canonical::*;
 pub use config::*;
 pub use effect::*;
 pub use event::*;

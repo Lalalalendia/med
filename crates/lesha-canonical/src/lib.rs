@@ -1,3 +1,9 @@
+mod hash;
+mod writer;
+
+pub use hash::*;
+pub use writer::*;
+
 use core::fmt;
 
 #[derive(Clone, PartialEq, Eq)]

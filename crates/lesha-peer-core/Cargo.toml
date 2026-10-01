@@ -6,3 +6,4 @@ license.workspace = true
 
 [dependencies]
 lesha-types = { path = "../lesha-types" }
+lesha-canonical = { path = "../lesha-canonical" }

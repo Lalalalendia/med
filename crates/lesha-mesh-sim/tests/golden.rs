@@ -188,7 +188,7 @@ fn setup_connected_after_first_probe() -> (Simulation, NodeRef, NodeRef) {
 #[test]
 fn two_node_suspect_refutation_golden_trace() {
     let sim = run_golden();
-    assert_ne!(sim.trace.stable_digest64(), 0);
+    assert_ne!(sim.trace.trace_root(), [0; 32]);
 }
 
 #[test]
@@ -196,10 +196,7 @@ fn same_seed_and_fault_plan_replays_exactly() {
     let first = run_golden();
     let second = run_golden();
 
-    assert_eq!(
-        first.trace.stable_digest64(),
-        second.trace.stable_digest64()
-    );
+    assert_eq!(first.trace.trace_root(), second.trace.trace_root());
     verify_exact_replay(&first.trace, &second.trace).unwrap();
 }
 
@@ -363,4 +360,13 @@ fn refutation_commit_then_crash_skips_to_next_incarnation_without_alive() {
             )
     });
     assert!(peer_observed_transport_loss);
+}
+
+
+#[test]
+fn same_seed_repeats_100_times_with_identical_trace_root() {
+    let expected = run_golden().trace.trace_root();
+    for _ in 1..100 {
+        assert_eq!(run_golden().trace.trace_root(), expected);
+    }
 }
