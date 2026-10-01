@@ -1,8 +1,6 @@
 use std::collections::BTreeMap;
 
-use lesha_peer_core::{
-    durable_peer_state_integrity_digest, DurablePeerStateV0, PersistenceError,
-};
+use lesha_peer_core::{durable_peer_state_integrity_digest, DurablePeerStateV0, PersistenceError};
 use lesha_types::{NodeId, PresenceIncarnation};
 
 #[derive(Debug, Default)]
