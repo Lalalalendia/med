@@ -511,7 +511,6 @@ fn directed_partition_is_asymmetric() {
     assert!(!a_to_b_ping_arrived);
 }
 
-
 #[test]
 fn local_processing_stall_is_independent_from_link_reachability() {
     let a = node(10);
