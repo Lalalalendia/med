@@ -510,3 +510,70 @@ fn directed_partition_is_asymmetric() {
     assert!(b_to_a_ping_arrived);
     assert!(!a_to_b_ping_arrived);
 }
+
+
+#[test]
+fn local_processing_stall_is_independent_from_link_reachability() {
+    let a = node(10);
+    let b = node(11);
+
+    let a_config = CoreConfig {
+        probe_interval: MonoDuration(10),
+        probe_timeout: MonoDuration(5),
+        suspicion_timeout: MonoDuration(20),
+        ..Default::default()
+    };
+    let b_config = CoreConfig {
+        probe_interval: MonoDuration(1_000),
+        ..a_config.clone()
+    };
+
+    let mut sim = Simulation::default();
+    sim.add_node(a, a_config).unwrap();
+    sim.add_node(b, b_config).unwrap();
+
+    sim.start_node(a.node_id, [0xAA; 32]).unwrap();
+    sim.start_node(b.node_id, [0xBB; 32]).unwrap();
+    sim.run_until_idle(32).unwrap();
+
+    let view = control(a, b);
+    sim.replace_control(a.node_id, view.clone()).unwrap();
+    sim.replace_control(b.node_id, view).unwrap();
+    sim.run_until_idle(8).unwrap();
+
+    sim.connect_authenticated(
+        a.node_id,
+        SessionId([0xA1; 32]),
+        b.node_id,
+        SessionId([0xB1; 32]),
+    )
+    .unwrap();
+    assert_eq!(sim.run_steps(2).unwrap(), 2);
+
+    assert!(sim.network.policy(a.node_id, b.node_id).reachable);
+    assert!(sim.network.policy(b.node_id, a.node_id).reachable);
+
+    sim.processing.pause_until(b.node_id, MonotonicTime(50));
+
+    sim.run_until(16, |sim| {
+        sim.node(a.node_id)
+            .map(|node| node.state.suspicions.contains_key(&b))
+            .unwrap_or(false)
+    })
+    .unwrap();
+
+    assert!(sim.clock.now() < MonotonicTime(50));
+    assert!(sim.processing.is_paused(b.node_id, sim.clock.now()));
+
+    let b_processed_ping = sim.trace.records.iter().any(|record| {
+        record.target == b.node_id
+            && matches!(
+                &record.event.kind,
+                CoreEventKind::MeshMessageReceived {
+                    message: MeshMessage::Ping { probe_id, .. },
+                    ..
+                } if probe_id.origin == a
+            )
+    });
+    assert!(!b_processed_ping);
+}

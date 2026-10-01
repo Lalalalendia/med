@@ -11,7 +11,7 @@ use lesha_types::{
 
 use crate::{
     EventQueue, EventTrace, FaultPlan, PresencePersistFault, ScheduledEvent, SimDurableStore,
-    SimNetwork, SimNode, TraceRecord, VirtualClock,
+    SimNetwork, SimNode, SimProcessing, TraceRecord, VirtualClock,
 };
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -36,6 +36,7 @@ pub struct Simulation {
     pub durable: SimDurableStore,
     pub faults: FaultPlan,
     pub network: SimNetwork,
+    pub processing: SimProcessing,
     pub trace: EventTrace,
     nodes: BTreeMap<NodeId, SimNode>,
     queue: EventQueue,
@@ -160,9 +161,23 @@ impl Simulation {
     }
 
     pub fn run_next(&mut self) -> Result<bool, SimError> {
-        let Some(scheduled) = self.queue.pop_next() else {
-            return Ok(false);
+        let scheduled = loop {
+            let Some(mut scheduled) = self.queue.pop_next() else {
+                return Ok(false);
+            };
+
+            let ready_at = self.processing.ready_at(scheduled.target, scheduled.at);
+            if ready_at > scheduled.at {
+                scheduled.at = ready_at;
+                scheduled.event.observed_at = ready_at;
+                self.queue.push(scheduled).map_err(SimError::Queue)?;
+                continue;
+            }
+
+            self.processing.clear_if_reached(scheduled.target, scheduled.at);
+            break scheduled;
         };
+
         self.clock.advance_to(scheduled.at);
 
         let target = scheduled.target;
