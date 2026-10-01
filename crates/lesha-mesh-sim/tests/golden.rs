@@ -437,7 +437,6 @@ fn corrupt_durable_integrity_is_rejected_before_activation() {
     assert!(saw_corrupt_load);
 }
 
-
 #[test]
 fn directed_partition_is_asymmetric() {
     let a = node(10);
