@@ -14,6 +14,18 @@ use lesha_types::{
 };
 use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 
+type OperationRow = (Vec<u8>, Vec<u8>, Vec<u8>, i64, Vec<u8>, Vec<u8>);
+type VersionRow = (
+    Vec<u8>,
+    Vec<u8>,
+    Vec<u8>,
+    Vec<u8>,
+    Vec<u8>,
+    i64,
+    Vec<u8>,
+    i64,
+);
+
 pub struct SqliteObjectStore {
     conn: Connection,
     failpoint: Option<StorageFailPoint>,
@@ -383,7 +395,7 @@ fn load_operation(
     conn: &Connection,
     op: OperationId,
 ) -> Result<Option<ObjectCommitReceipt>, ReadError> {
-    let row: Option<(Vec<u8>, Vec<u8>, Vec<u8>, i64, Vec<u8>, Vec<u8>)> = conn
+    let row: Option<OperationRow> = conn
         .query_row(
             "SELECT request_hash, object_id, version_id, commit_seq, manifest_hash,
                     resulting_heads_hash
@@ -441,16 +453,7 @@ fn load_operation(
 }
 
 fn load_version(conn: &Connection, version: VersionId) -> Result<StoredObjectVersion, ReadError> {
-    let row: Option<(
-        Vec<u8>,
-        Vec<u8>,
-        Vec<u8>,
-        Vec<u8>,
-        Vec<u8>,
-        i64,
-        Vec<u8>,
-        i64,
-    )> = conn
+    let row: Option<VersionRow> = conn
         .query_row(
             "SELECT cluster_id, object_id, operation_id, manifest_hash, manifest_bytes,
                     authority_epoch, control_frontier, commit_seq
