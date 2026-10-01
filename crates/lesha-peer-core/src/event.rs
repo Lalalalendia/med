@@ -26,6 +26,7 @@ pub enum PersistenceError {
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum CloseReason {
     LocalShutdown,
+    TransportLost,
     NotCurrentMember,
     Revoked,
     GenerationMismatch,
