@@ -1,13 +1,12 @@
 use std::collections::BTreeMap;
 
 use lesha_peer_core::{
-    CloseReason, CoreConfig, CoreEffect, CoreEffectKind, CoreEvent, CoreEventKind,
-    ControlViewM0, DurablePeerStateV0, EventSource, LifecycleState, PeerManagerStateM0,
-    PersistenceError, SessionDirection,
+    CloseReason, ControlViewM0, CoreConfig, CoreEffect, CoreEffectKind, CoreEvent, CoreEventKind,
+    DurablePeerStateV0, EventSource, LifecycleState, PeerManagerStateM0, PersistenceError,
+    SessionDirection,
 };
 use lesha_types::{
-    EndpointSequence, MonoDuration, MonotonicTime, NodeId, NodeRef, PresenceIncarnation,
-    SessionId,
+    EndpointSequence, MonoDuration, MonotonicTime, NodeId, NodeRef, PresenceIncarnation, SessionId,
 };
 
 use crate::{
@@ -20,10 +19,7 @@ pub enum SimError {
     UnknownNode(NodeId),
     DuplicateNode(NodeId),
     MissingDurablePresence(NodeId),
-    MissingSessionLink {
-        node: NodeId,
-        session_id: SessionId,
-    },
+    MissingSessionLink { node: NodeId, session_id: SessionId },
     Queue(&'static str),
     StepLimitExceeded(usize),
 }
@@ -47,11 +43,7 @@ pub struct Simulation {
 }
 
 impl Simulation {
-    pub fn add_node(
-        &mut self,
-        self_ref: NodeRef,
-        config: CoreConfig,
-    ) -> Result<(), SimError> {
+    pub fn add_node(&mut self, self_ref: NodeRef, config: CoreConfig) -> Result<(), SimError> {
         if self.nodes.contains_key(&self_ref.node_id) {
             return Err(SimError::DuplicateNode(self_ref.node_id));
         }
@@ -67,7 +59,9 @@ impl Simulation {
     }
 
     pub fn node(&self, node_id: NodeId) -> Result<&SimNode, SimError> {
-        self.nodes.get(&node_id).ok_or(SimError::UnknownNode(node_id))
+        self.nodes
+            .get(&node_id)
+            .ok_or(SimError::UnknownNode(node_id))
     }
 
     pub fn node_mut(&mut self, node_id: NodeId) -> Result<&mut SimNode, SimError> {
@@ -305,7 +299,12 @@ impl Simulation {
                             return Ok(());
                         }
                         PresencePersistFault::CommitThenCrash => {
-                            self.commit_presence(target, expected_previous, next, effect.effect_id)?;
+                            self.commit_presence(
+                                target,
+                                expected_previous,
+                                next,
+                                effect.effect_id,
+                            )?;
                             self.crash_and_restart(target)?;
                             return Ok(());
                         }
@@ -427,7 +426,11 @@ impl Simulation {
     fn crash_and_restart(&mut self, target: NodeId) -> Result<(), SimError> {
         let (self_ref, config, seed) = {
             let node = self.node(target)?;
-            (node.state.self_ref, node.config.clone(), node.state.selection.seed)
+            (
+                node.state.self_ref,
+                node.config.clone(),
+                node.state.selection.seed,
+            )
         };
         self.nodes.insert(
             target,
