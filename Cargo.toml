@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "crates/lesha-types",
+    "crates/lesha-peer-core",
+    "crates/lesha-mesh-sim",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "UNLICENSED"

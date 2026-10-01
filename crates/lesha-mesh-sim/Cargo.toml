@@ -1,0 +1,9 @@
+[package]
+name = "lesha-mesh-sim"
+version = "0.0.1"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+lesha-types = { path = "../lesha-types" }
+lesha-peer-core = { path = "../lesha-peer-core" }
