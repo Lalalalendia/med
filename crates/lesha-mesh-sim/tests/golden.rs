@@ -41,13 +41,17 @@ fn run_golden() -> Simulation {
     let a = node(10);
     let b = node(11);
 
-    let mut a_config = CoreConfig::default();
-    a_config.probe_interval = MonoDuration(10);
-    a_config.probe_timeout = MonoDuration(5);
-    a_config.suspicion_timeout = MonoDuration(20);
+    let a_config = CoreConfig {
+        probe_interval: MonoDuration(10),
+        probe_timeout: MonoDuration(5),
+        suspicion_timeout: MonoDuration(20),
+        ..Default::default()
+    };
 
-    let mut b_config = a_config.clone();
-    b_config.probe_interval = MonoDuration(1_000);
+    let b_config = CoreConfig {
+        probe_interval: MonoDuration(1_000),
+        ..a_config.clone()
+    };
 
     let mut sim = Simulation::default();
     sim.add_node(a, a_config).unwrap();
@@ -141,13 +145,17 @@ fn setup_connected_after_first_probe() -> (Simulation, NodeRef, NodeRef) {
     let a = node(10);
     let b = node(11);
 
-    let mut a_config = CoreConfig::default();
-    a_config.probe_interval = MonoDuration(10);
-    a_config.probe_timeout = MonoDuration(5);
-    a_config.suspicion_timeout = MonoDuration(20);
+    let a_config = CoreConfig {
+        probe_interval: MonoDuration(10),
+        probe_timeout: MonoDuration(5),
+        suspicion_timeout: MonoDuration(20),
+        ..Default::default()
+    };
 
-    let mut b_config = a_config.clone();
-    b_config.probe_interval = MonoDuration(1_000);
+    let b_config = CoreConfig {
+        probe_interval: MonoDuration(1_000),
+        ..a_config.clone()
+    };
 
     let mut sim = Simulation::default();
     sim.add_node(a, a_config).unwrap();
