@@ -398,7 +398,6 @@ fn same_seed_repeats_100_times_with_identical_trace_root() {
     }
 }
 
-
 #[test]
 fn corrupt_durable_integrity_is_rejected_before_activation() {
     let b = node(11);
