@@ -36,7 +36,10 @@ pub struct FaultPlan {
 
 impl FaultPlan {
     pub fn push_persist_fault(&mut self, node: NodeId, fault: PresencePersistFault) {
-        self.persist_faults.entry(node).or_default().push_back(fault);
+        self.persist_faults
+            .entry(node)
+            .or_default()
+            .push_back(fault);
     }
 
     pub fn take_persist_fault(&mut self, node: NodeId) -> Option<PresencePersistFault> {
