@@ -414,7 +414,11 @@ fn write_diagnostic(w: &mut CanonicalWriter, diagnostic: &CoreDiagnostic) {
     }
 }
 
-fn write_durable_state(w: &mut CanonicalWriter, state: &DurablePeerStateV0, include_integrity: bool) {
+fn write_durable_state(
+    w: &mut CanonicalWriter,
+    state: &DurablePeerStateV0,
+    include_integrity: bool,
+) {
     w.array(if include_integrity { 5 } else { 4 });
     w.unsigned(u64::from(state.format_version));
     write_node_ref(w, state.self_ref);
