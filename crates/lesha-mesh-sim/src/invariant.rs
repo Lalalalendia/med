@@ -24,25 +24,29 @@ pub struct InvariantFailure {
     pub post_state_digest: [u8; 32],
 }
 
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+pub struct TransitionEvidence {
+    pub event_index: u64,
+    pub target: NodeId,
+    pub input_digest: [u8; 32],
+    pub pre_state_digest: [u8; 32],
+    pub effects_digest: [u8; 32],
+    pub post_state_digest: [u8; 32],
+}
+
 #[derive(Debug, Default)]
 pub struct InvariantMonitor {
     first_failure: Option<InvariantFailure>,
 }
 
 impl InvariantMonitor {
-    #[allow(clippy::too_many_arguments)]
     pub fn observe_transition(
         &mut self,
-        event_index: u64,
-        target: NodeId,
+        evidence: TransitionEvidence,
         before: &PeerManagerStateM0,
         event: &CoreEvent,
         effects: &[CoreEffect],
         after: &PeerManagerStateM0,
-        input_digest: [u8; 32],
-        pre_state_digest: [u8; 32],
-        effects_digest: [u8; 32],
-        post_state_digest: [u8; 32],
     ) -> Option<InvariantFailure> {
         if let Some(existing) = &self.first_failure {
             return Some(existing.clone());
@@ -62,13 +66,13 @@ impl InvariantMonitor {
         };
 
         let failure = InvariantFailure {
-            event_index,
-            target,
+            event_index: evidence.event_index,
+            target: evidence.target,
             invariant,
-            input_digest,
-            pre_state_digest,
-            effects_digest,
-            post_state_digest,
+            input_digest: evidence.input_digest,
+            pre_state_digest: evidence.pre_state_digest,
+            effects_digest: evidence.effects_digest,
+            post_state_digest: evidence.post_state_digest,
         };
         self.first_failure = Some(failure.clone());
         Some(failure)
@@ -87,12 +91,8 @@ impl InvariantMonitor {
 mod tests {
     use std::collections::BTreeMap;
 
-    use lesha_peer_core::{
-        ControlViewM0, CoreEventKind, EventSource, PeerManagerStateM0,
-    };
-    use lesha_types::{
-        ClusterId, MonotonicTime, NodeGeneration, NodeId, NodeRef,
-    };
+    use lesha_peer_core::{ControlViewM0, CoreEventKind, EventSource, PeerManagerStateM0};
+    use lesha_types::{ClusterId, MonotonicTime, NodeGeneration, NodeId, NodeRef};
 
     use super::*;
 
@@ -123,16 +123,18 @@ mod tests {
         let mut monitor = InvariantMonitor::default();
         let first = monitor
             .observe_transition(
-                7,
-                node().node_id,
+                TransitionEvidence {
+                    event_index: 7,
+                    target: node().node_id,
+                    input_digest: [1; 32],
+                    pre_state_digest: [2; 32],
+                    effects_digest: [3; 32],
+                    post_state_digest: [4; 32],
+                },
                 &before,
                 &event,
                 &[],
                 &after,
-                [1; 32],
-                [2; 32],
-                [3; 32],
-                [4; 32],
             )
             .unwrap();
 
@@ -144,16 +146,18 @@ mod tests {
 
         let repeated = monitor
             .observe_transition(
-                8,
-                node().node_id,
+                TransitionEvidence {
+                    event_index: 8,
+                    target: node().node_id,
+                    input_digest: [9; 32],
+                    pre_state_digest: [9; 32],
+                    effects_digest: [9; 32],
+                    post_state_digest: [9; 32],
+                },
                 &before,
                 &event,
                 &[],
                 &after,
-                [9; 32],
-                [9; 32],
-                [9; 32],
-                [9; 32],
             )
             .unwrap();
         assert_eq!(repeated, first);

@@ -11,7 +11,8 @@ use lesha_types::{
 
 use crate::{
     EventQueue, EventTrace, FaultPlan, InvariantFailure, InvariantMonitor, PresencePersistFault,
-    ScheduledEvent, SimDurableStore, SimNetwork, SimNode, SimProcessing, TraceRecord, VirtualClock,
+    ScheduledEvent, SimDurableStore, SimNetwork, SimNode, SimProcessing, TraceRecord,
+    TransitionEvidence, VirtualClock,
 };
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -198,16 +199,18 @@ impl Simulation {
 
         let event_index = self.trace.records.len() as u64;
         let invariant_failure = self.invariants.observe_transition(
-            event_index,
-            target,
+            TransitionEvidence {
+                event_index,
+                target,
+                input_digest,
+                pre_state_digest,
+                effects_digest,
+                post_state_digest,
+            },
             &before_state,
             &event,
             &output.effects,
             &after_state,
-            input_digest,
-            pre_state_digest,
-            effects_digest,
-            post_state_digest,
         );
         self.trace.records.push(TraceRecord {
             event_index,
