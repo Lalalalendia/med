@@ -1,8 +1,6 @@
 use std::collections::BTreeMap;
 
-use lesha_mesh_sim::{
-    verify_exact_replay, MeshMessageKind, PresencePersistFault, Simulation,
-};
+use lesha_mesh_sim::{verify_exact_replay, MeshMessageKind, PresencePersistFault, Simulation};
 use lesha_peer_core::{
     ControlViewM0, CoreConfig, CoreEffectKind, CoreEventKind, LifecycleState, MemberRecord,
     MeshMessage, PeerHealth,
@@ -73,12 +71,7 @@ fn run_golden() -> Simulation {
 
     // First probe succeeds.
     assert_eq!(sim.run_steps(3).unwrap(), 3);
-    assert!(sim
-        .node(a.node_id)
-        .unwrap()
-        .state
-        .pending_probes
-        .is_empty());
+    assert!(sim.node(a.node_id).unwrap().state.pending_probes.is_empty());
 
     // Drop exactly the next ACK from B. The next direct probe must become
     // SUSPECT, B must durably bump its incarnation, then ALIVE must refute it.
@@ -155,7 +148,10 @@ fn same_seed_and_fault_plan_replays_exactly() {
     let first = run_golden();
     let second = run_golden();
 
-    assert_eq!(first.trace.stable_digest64(), second.trace.stable_digest64());
+    assert_eq!(
+        first.trace.stable_digest64(),
+        second.trace.stable_digest64()
+    );
     verify_exact_replay(&first.trace, &second.trace).unwrap();
 }
 
