@@ -1,6 +1,11 @@
 # Validation status
 
-- Rust source baseline: prepared.
-- `cargo test`: not executed in this environment because `cargo` and `rustc` are not installed.
-- The source therefore remains an implementation draft, not a verified build.
-- First required validation in a Rust-capable environment: `cargo test --workspace`.
+Canonical repository: `Lalalalendia/med`.
+
+GitHub Actions validation for the M0 baseline:
+- `cargo check --workspace`: passed
+- `cargo test --workspace`: passed
+- `cargo fmt --all -- --check`: advisory during M0
+- `cargo clippy --workspace --all-targets -- -D warnings`: advisory during M0
+
+M0 is now compile/test validated on GitHub-hosted Rust. Deterministic replay, crash-boundary tests, canonical state hashing, and the full simulator remain open before EXP-MESH-SIM-01 can be marked PASS.
