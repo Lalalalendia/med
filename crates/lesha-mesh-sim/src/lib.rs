@@ -1,11 +1,17 @@
 pub mod clock;
 pub mod durable;
+pub mod fault;
 pub mod node;
 pub mod queue;
+pub mod replay;
+pub mod sim;
 pub mod trace;
 
 pub use clock::*;
 pub use durable::*;
+pub use fault::*;
 pub use node::*;
 pub use queue::*;
+pub use replay::*;
+pub use sim::*;
 pub use trace::*;

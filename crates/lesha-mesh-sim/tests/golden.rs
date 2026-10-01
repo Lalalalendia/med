@@ -1,0 +1,213 @@
+use std::collections::BTreeMap;
+
+use lesha_mesh_sim::{
+    verify_exact_replay, MeshMessageKind, PresencePersistFault, Simulation,
+};
+use lesha_peer_core::{
+    ControlViewM0, CoreConfig, CoreEffectKind, CoreEventKind, LifecycleState, MemberRecord,
+    MeshMessage, PeerHealth,
+};
+use lesha_types::{
+    ClusterId, MonoDuration, NodeGeneration, NodeId, NodeRef, PresenceIncarnation, SessionId,
+};
+
+fn node(byte: u8) -> NodeRef {
+    NodeRef {
+        cluster_id: ClusterId([1; 16]),
+        node_id: NodeId([byte; 32]),
+        generation: NodeGeneration(1),
+    }
+}
+
+fn control(a: NodeRef, b: NodeRef) -> ControlViewM0 {
+    let mut members = BTreeMap::new();
+    for peer in [a, b] {
+        members.insert(
+            peer.node_id,
+            MemberRecord {
+                node_id: peer.node_id,
+                current_generation: peer.generation,
+                admitted: true,
+                revoked: false,
+            },
+        );
+    }
+    ControlViewM0 {
+        cluster_id: a.cluster_id,
+        epoch: 1,
+        members,
+    }
+}
+
+fn run_golden() -> Simulation {
+    let a = node(10);
+    let b = node(11);
+
+    let mut a_config = CoreConfig::default();
+    a_config.probe_interval = MonoDuration(10);
+    a_config.probe_timeout = MonoDuration(5);
+    a_config.suspicion_timeout = MonoDuration(20);
+
+    let mut b_config = a_config.clone();
+    b_config.probe_interval = MonoDuration(1_000);
+
+    let mut sim = Simulation::default();
+    sim.add_node(a, a_config).unwrap();
+    sim.add_node(b, b_config).unwrap();
+
+    sim.start_node(a.node_id, [0xAA; 32]).unwrap();
+    sim.start_node(b.node_id, [0xBB; 32]).unwrap();
+    sim.run_until_idle(32).unwrap();
+    assert!(sim.all_network_active());
+
+    let view = control(a, b);
+    sim.replace_control(a.node_id, view.clone()).unwrap();
+    sim.replace_control(b.node_id, view).unwrap();
+    sim.run_until_idle(8).unwrap();
+
+    let a_session = SessionId([0xA1; 32]);
+    let b_session = SessionId([0xB1; 32]);
+    sim.connect_authenticated(a.node_id, a_session, b.node_id, b_session)
+        .unwrap();
+    assert_eq!(sim.run_steps(2).unwrap(), 2);
+
+    // First probe succeeds.
+    assert_eq!(sim.run_steps(3).unwrap(), 3);
+    assert!(sim
+        .node(a.node_id)
+        .unwrap()
+        .state
+        .pending_probes
+        .is_empty());
+
+    // Drop exactly the next ACK from B. The next direct probe must become
+    // SUSPECT, B must durably bump its incarnation, then ALIVE must refute it.
+    sim.faults
+        .drop_next_message(b.node_id, MeshMessageKind::Ack);
+
+    sim.run_until(20, |sim| {
+        sim.durable.committed_presence(b.node_id) == Some(PresenceIncarnation(2))
+            && sim
+                .node(a.node_id)
+                .ok()
+                .and_then(|node| node.state.peer_presence.get(&b).copied())
+                == Some(PresenceIncarnation(2))
+            && !sim
+                .node(a.node_id)
+                .map(|node| node.state.suspicions.contains_key(&b))
+                .unwrap_or(true)
+    })
+    .unwrap();
+
+    let a_state = &sim.node(a.node_id).unwrap().state;
+    let b_state = &sim.node(b.node_id).unwrap().state;
+
+    assert_eq!(b_state.current_presence(), Some(PresenceIncarnation(2)));
+    assert_eq!(a_state.peer_presence.get(&b), Some(&PresenceIncarnation(2)));
+    assert!(a_state
+        .sessions
+        .values()
+        .any(|session| session.peer == b && session.health == PeerHealth::Healthy));
+
+    let saw_suspect = sim.trace.records.iter().any(|record| {
+        record.effects.iter().any(|effect| {
+            matches!(
+                &effect.kind,
+                CoreEffectKind::SendMeshMessage {
+                    message: MeshMessage::Suspect { subject, .. },
+                    ..
+                } if *subject == b
+            )
+        })
+    });
+    let saw_alive = sim.trace.records.iter().any(|record| {
+        record.effects.iter().any(|effect| {
+            matches!(
+                &effect.kind,
+                CoreEffectKind::SendMeshMessage {
+                    message: MeshMessage::Alive {
+                        subject,
+                        incarnation,
+                        ..
+                    },
+                    ..
+                } if *subject == b && *incarnation == PresenceIncarnation(2)
+            )
+        })
+    });
+
+    assert!(saw_suspect);
+    assert!(saw_alive);
+    assert_eq!(a_state.control.as_ref().unwrap().epoch, 1);
+    assert_eq!(b_state.control.as_ref().unwrap().epoch, 1);
+
+    sim
+}
+
+#[test]
+fn two_node_suspect_refutation_golden_trace() {
+    let sim = run_golden();
+    assert_ne!(sim.trace.stable_digest64(), 0);
+}
+
+#[test]
+fn same_seed_and_fault_plan_replays_exactly() {
+    let first = run_golden();
+    let second = run_golden();
+
+    assert_eq!(first.trace.stable_digest64(), second.trace.stable_digest64());
+    verify_exact_replay(&first.trace, &second.trace).unwrap();
+}
+
+#[test]
+fn fail_before_presence_commit_never_advances_durable_state() {
+    let b = node(11);
+    let mut sim = Simulation::default();
+    sim.add_node(b, CoreConfig::default()).unwrap();
+    sim.faults
+        .push_persist_fault(b.node_id, PresencePersistFault::FailBeforeCommit);
+
+    sim.start_node(b.node_id, [0xBB; 32]).unwrap();
+    sim.run_until_idle(16).unwrap();
+
+    assert_eq!(sim.durable.committed_presence(b.node_id), None);
+    assert_eq!(
+        sim.node(b.node_id).unwrap().state.lifecycle,
+        LifecycleState::RecoveryRequired
+    );
+}
+
+#[test]
+fn commit_then_crash_never_reuses_committed_incarnation() {
+    let b = node(11);
+    let mut sim = Simulation::default();
+    sim.add_node(b, CoreConfig::default()).unwrap();
+    sim.faults
+        .push_persist_fault(b.node_id, PresencePersistFault::CommitThenCrash);
+
+    sim.start_node(b.node_id, [0xBB; 32]).unwrap();
+    sim.run_until(16, |sim| {
+        sim.node(b.node_id)
+            .map(|node| node.state.lifecycle == LifecycleState::NetworkActive)
+            .unwrap_or(false)
+    })
+    .unwrap();
+
+    assert_eq!(
+        sim.durable.committed_presence(b.node_id),
+        Some(PresenceIncarnation(2))
+    );
+    assert_eq!(
+        sim.node(b.node_id).unwrap().state.current_presence(),
+        Some(PresenceIncarnation(2))
+    );
+
+    let acknowledged_first_commit = sim.trace.records.iter().any(|record| {
+        matches!(
+            &record.event.kind,
+            CoreEventKind::PresencePersisted { value, .. }
+                if *value == PresenceIncarnation(1)
+        )
+    });
+    assert!(!acknowledged_first_commit);
+}
