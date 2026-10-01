@@ -37,6 +37,7 @@ fn put_chunk(store: &mut MemoryChunkStore, bytes: &[u8]) -> ChunkDescriptor {
     descriptor
 }
 
+#[allow(clippy::too_many_arguments)]
 fn commit_cmd(
     object: ObjectId,
     version: VersionId,
