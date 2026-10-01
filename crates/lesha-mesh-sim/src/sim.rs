@@ -274,16 +274,22 @@ impl Simulation {
     fn execute_effect(&mut self, target: NodeId, effect: CoreEffect) -> Result<(), SimError> {
         match effect.kind {
             CoreEffectKind::LoadDurablePeerState => {
-                let state = self.durable.load(target);
+                let kind = match self.durable.load_verified(target) {
+                    Ok(state) => CoreEventKind::DurableStateLoaded {
+                        effect_id: effect.effect_id,
+                        state,
+                    },
+                    Err(error) => CoreEventKind::DurableStateLoadFailed {
+                        effect_id: effect.effect_id,
+                        error,
+                    },
+                };
                 self.enqueue_kind(
                     target,
                     self.clock.now(),
                     0,
                     EventSource::Persistence,
-                    CoreEventKind::DurableStateLoaded {
-                        effect_id: effect.effect_id,
-                        state,
-                    },
+                    kind,
                 )?;
             }
 

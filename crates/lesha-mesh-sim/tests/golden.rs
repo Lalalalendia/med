@@ -2,11 +2,12 @@ use std::collections::BTreeMap;
 
 use lesha_mesh_sim::{verify_exact_replay, MeshMessageKind, PresencePersistFault, Simulation};
 use lesha_peer_core::{
-    CloseReason, ControlViewM0, CoreConfig, CoreEffectKind, CoreEventKind, LifecycleState,
-    MemberRecord, MeshMessage, PeerHealth,
+    CloseReason, ControlViewM0, CoreConfig, CoreEffectKind, CoreEventKind, DurablePeerStateV0,
+    LifecycleState, MemberRecord, MeshMessage, PeerHealth, PersistenceError,
 };
 use lesha_types::{
-    ClusterId, MonoDuration, NodeGeneration, NodeId, NodeRef, PresenceIncarnation, SessionId,
+    ClusterId, EndpointSequence, MonoDuration, NodeGeneration, NodeId, NodeRef,
+    PresenceIncarnation, SessionId,
 };
 
 fn node(byte: u8) -> NodeRef {
@@ -360,6 +361,33 @@ fn refutation_commit_then_crash_skips_to_next_incarnation_without_alive() {
             )
     });
     assert!(peer_observed_transport_loss);
+
+    sim.replace_control(b.node_id, control(a, b)).unwrap();
+    assert_eq!(sim.run_steps(1).unwrap(), 1);
+
+    sim.connect_authenticated(
+        a.node_id,
+        SessionId([0xA2; 32]),
+        b.node_id,
+        SessionId([0xB2; 32]),
+    )
+    .unwrap();
+    assert_eq!(sim.run_steps(2).unwrap(), 2);
+
+    assert!(sim
+        .node(a.node_id)
+        .unwrap()
+        .state
+        .sessions
+        .values()
+        .any(|session| session.peer == b));
+    assert!(sim
+        .node(b.node_id)
+        .unwrap()
+        .state
+        .sessions
+        .values()
+        .any(|session| session.peer == a));
 }
 
 #[test]
@@ -368,4 +396,44 @@ fn same_seed_repeats_100_times_with_identical_trace_root() {
     for _ in 1..100 {
         assert_eq!(run_golden().trace.trace_root(), expected);
     }
+}
+
+
+#[test]
+fn corrupt_durable_integrity_is_rejected_before_activation() {
+    let b = node(11);
+    let mut sim = Simulation::default();
+    sim.add_node(b, CoreConfig::default()).unwrap();
+
+    sim.durable.store(DurablePeerStateV0 {
+        format_version: 0,
+        self_ref: b,
+        committed_presence: PresenceIncarnation(7),
+        committed_endpoint_sequence: EndpointSequence(3),
+        integrity_tag: [0; 32],
+    });
+    assert!(sim.durable.corrupt_integrity_for_test(b.node_id));
+
+    sim.start_node(b.node_id, [0xBB; 32]).unwrap();
+    sim.run_until_idle(8).unwrap();
+
+    assert_eq!(
+        sim.node(b.node_id).unwrap().state.lifecycle,
+        LifecycleState::RecoveryRequired
+    );
+    assert_eq!(
+        sim.durable.committed_presence(b.node_id),
+        Some(PresenceIncarnation(7))
+    );
+
+    let saw_corrupt_load = sim.trace.records.iter().any(|record| {
+        matches!(
+            &record.event.kind,
+            CoreEventKind::DurableStateLoadFailed {
+                error: PersistenceError::Corrupt,
+                ..
+            }
+        )
+    });
+    assert!(saw_corrupt_load);
 }
