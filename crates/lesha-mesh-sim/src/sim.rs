@@ -432,6 +432,31 @@ impl Simulation {
                 node.state.selection.seed,
             )
         };
+
+        let local_links: Vec<(SessionId, SessionEndpoint)> = self
+            .links
+            .iter()
+            .filter_map(|((node, session_id), endpoint)| {
+                (*node == target).then_some((*session_id, *endpoint))
+            })
+            .collect();
+
+        for (session_id, endpoint) in local_links {
+            self.links.remove(&(target, session_id));
+            self.links
+                .remove(&(endpoint.peer_node, endpoint.peer_session));
+            self.enqueue_kind(
+                endpoint.peer_node,
+                self.clock.now(),
+                5,
+                EventSource::Transport,
+                CoreEventKind::SessionClosed {
+                    session_id: endpoint.peer_session,
+                    reason: CloseReason::TransportLost,
+                },
+            )?;
+        }
+
         self.nodes.insert(
             target,
             SimNode {
