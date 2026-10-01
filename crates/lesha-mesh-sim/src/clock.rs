@@ -7,7 +7,9 @@ pub struct VirtualClock {
 
 impl VirtualClock {
     pub fn new() -> Self {
-        Self { now: MonotonicTime(0) }
+        Self {
+            now: MonotonicTime(0),
+        }
     }
 
     pub fn now(&self) -> MonotonicTime {
