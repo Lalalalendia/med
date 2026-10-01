@@ -284,13 +284,7 @@ impl Simulation {
                         error,
                     },
                 };
-                self.enqueue_kind(
-                    target,
-                    self.clock.now(),
-                    0,
-                    EventSource::Persistence,
-                    kind,
-                )?;
+                self.enqueue_kind(target, self.clock.now(), 0, EventSource::Persistence, kind)?;
             }
 
             CoreEffectKind::PersistPresence {
