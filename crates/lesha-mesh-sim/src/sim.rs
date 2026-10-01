@@ -174,7 +174,8 @@ impl Simulation {
                 continue;
             }
 
-            self.processing.clear_if_reached(scheduled.target, scheduled.at);
+            self.processing
+                .clear_if_reached(scheduled.target, scheduled.at);
             break scheduled;
         };
 
