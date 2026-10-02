@@ -217,12 +217,8 @@ fn short_absence_incremental_converges_exactly_and_duplicate_is_idempotent() {
         .negotiate(&sender_summary(), &receiver_position(Some(1)))
         .unwrap();
 
-    let mut validator = DeltaChainValidator::new(
-        Some(ProducerSequence(1)),
-        Some(DeltaHash(hash32(1))),
-        8,
-    )
-    .unwrap();
+    let mut validator =
+        DeltaChainValidator::new(Some(ProducerSequence(1)), Some(DeltaHash(hash32(1))), 8).unwrap();
 
     apply_delta(
         &mut validator,
@@ -274,17 +270,18 @@ fn stale_peer_uses_checkpoint_then_tail_and_converges() {
     session
         .negotiate(&sender_summary(), &receiver_position(None))
         .unwrap();
-    assert!(matches!(session.state(), SyncState::InitialCheckpoint { .. }));
+    assert!(matches!(
+        session.state(),
+        SyncState::InitialCheckpoint { .. }
+    ));
 
     import_fixture(&mut receiver_chunks, &mut receiver_objects, &fixtures[0]);
-    session.checkpoint_applied(CheckpointId(hash32(21))).unwrap();
+    session
+        .checkpoint_applied(CheckpointId(hash32(21)))
+        .unwrap();
 
-    let mut validator = DeltaChainValidator::new(
-        Some(ProducerSequence(1)),
-        Some(DeltaHash(hash32(1))),
-        8,
-    )
-    .unwrap();
+    let mut validator =
+        DeltaChainValidator::new(Some(ProducerSequence(1)), Some(DeltaHash(hash32(1))), 8).unwrap();
 
     for fixture in &fixtures[1..] {
         apply_delta(
@@ -320,12 +317,8 @@ fn shuffled_or_missing_delta_never_advances_canonical_state() {
     let before_session = session.state();
     let before_heads = receiver_objects.heads(ObjectId(id16(9))).unwrap();
 
-    let mut validator = DeltaChainValidator::new(
-        Some(ProducerSequence(1)),
-        Some(DeltaHash(hash32(1))),
-        8,
-    )
-    .unwrap();
+    let mut validator =
+        DeltaChainValidator::new(Some(ProducerSequence(1)), Some(DeltaHash(hash32(1))), 8).unwrap();
 
     assert_eq!(
         validator.accept(fixtures[2].header),
