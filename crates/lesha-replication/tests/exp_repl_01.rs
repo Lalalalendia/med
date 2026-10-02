@@ -142,11 +142,7 @@ fn candidate(tag: u8, host: u8) -> RepairCandidate {
     }
 }
 
-fn set_health(
-    evidence: &mut [ReplicaEvidence],
-    node_id: NodeId,
-    health: ReceiptHealth,
-) {
+fn set_health(evidence: &mut [ReplicaEvidence], node_id: NodeId, health: ReceiptHealth) {
     evidence
         .iter_mut()
         .find(|item| item.node.node_id == node_id)
@@ -180,7 +176,10 @@ fn exp_repl_01_three_node_loss_corruption_and_repair() {
             commit(12, object, Some(v1), BTreeSet::from([v1]), d2.clone()),
         )
         .unwrap();
-    assert_eq!(semantic_objects.heads(object).unwrap(), BTreeSet::from([v2]));
+    assert_eq!(
+        semantic_objects.heads(object).unwrap(),
+        BTreeSet::from([v2])
+    );
     let semantic_before_repair = semantic_objects.snapshot();
 
     let target = ProtectedSubject {
@@ -218,7 +217,10 @@ fn exp_repl_01_three_node_loss_corruption_and_repair() {
 
     set_health(&mut replicas, node(1).node_id, ReceiptHealth::Missing);
     let after_a_loss = evaluate_protection(&target, policy, &replicas).unwrap();
-    assert_eq!(after_a_loss.state, ProtectionState::DegradedPolicyUnsatisfied);
+    assert_eq!(
+        after_a_loss.state,
+        ProtectionState::DegradedPolicyUnsatisfied
+    );
     assert_eq!(after_a_loss.verified_replicas, 2);
 
     let plan_d = plan_repairs(&target, policy, &replicas, &[candidate(4, 4)], 1).unwrap();
@@ -227,20 +229,20 @@ fn exp_repl_01_three_node_loss_corruption_and_repair() {
 
     let healthy_bytes = store_c.read_verified(d2.chunk_id).unwrap();
     store_d.put_durable(&healthy_bytes, &d2).unwrap();
-    assert_eq!(store_d.chunk_health(d2.chunk_id).unwrap(), ChunkHealth::Healthy);
+    assert_eq!(
+        store_d.chunk_health(d2.chunk_id).unwrap(),
+        ChunkHealth::Healthy
+    );
 
     let before_receipt = evaluate_protection(&target, policy, &replicas).unwrap();
     assert_eq!(before_receipt.verified_replicas, 2);
-    assert_eq!(before_receipt.state, ProtectionState::DegradedPolicyUnsatisfied);
+    assert_eq!(
+        before_receipt.state,
+        ProtectionState::DegradedPolicyUnsatisfied
+    );
 
     store_d.put_durable(&healthy_bytes, &d2).unwrap();
-    replicas.push(evidence(
-        4,
-        4,
-        target,
-        ReceiptHealth::CurrentVerified,
-        1,
-    ));
+    replicas.push(evidence(4, 4, target, ReceiptHealth::CurrentVerified, 1));
     let after_d_receipt = evaluate_protection(&target, policy, &replicas).unwrap();
     assert_eq!(after_d_receipt.state, ProtectionState::Replicated);
     assert_eq!(after_d_receipt.verified_replicas, 3);
