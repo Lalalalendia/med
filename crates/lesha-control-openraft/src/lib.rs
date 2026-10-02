@@ -6,7 +6,7 @@ use std::sync::{Arc, RwLock};
 
 use lesha_control_core::{
     CommittedControlReceipt, ConsensusError, ConsensusFuture, ConsensusLearnerRequest,
-    ConsensusMembershipRequest, ControlConsensusPort, MembershipChangeReceipt,
+    ConsensusMembershipRequest, ControlConsensusPort, MembershipChangeReceipt, SemanticControlView,
     ValidatedControlCommand, VerifiedControlView,
 };
 
@@ -91,7 +91,7 @@ impl OpenRaftNodeRegistry {
 }
 
 pub trait ControlViewSource: Send + Sync {
-    fn current_view<'a>(&'a self) -> ConsensusFuture<'a, VerifiedControlView>;
+    fn current_view<'a>(&'a self) -> ConsensusFuture<'a, SemanticControlView>;
 }
 
 #[derive(Clone)]
@@ -137,7 +137,24 @@ where
             .ensure_linearizable()
             .await
             .map_err(|error| self.map_raft_error(error))?;
-        self.view_source.current_view().await
+
+        let semantic = self.view_source.current_view().await?;
+        let metrics_rx = self.raft.metrics();
+        let metrics = metrics_rx.borrow().clone();
+        let membership = metrics.membership_config.membership();
+
+        let mut active_voters = BTreeSet::new();
+        for provider_id in membership.voter_ids() {
+            let node_id = self
+                .lesha_node_id(provider_id)
+                .ok_or(ConsensusError::MembershipRejected)?;
+            active_voters.insert(node_id);
+        }
+
+        Ok(VerifiedControlView {
+            semantic,
+            active_voters,
+        })
     }
 
     fn authorize(
@@ -146,9 +163,9 @@ where
         expected_recovery_epoch: lesha_types::RecoveryEpoch,
         authorization_state_root: [u8; 32],
     ) -> Result<(), ConsensusError> {
-        if view.control_epoch != expected_control_epoch
-            || view.recovery_epoch != expected_recovery_epoch
-            || view.state_root != authorization_state_root
+        if view.semantic.control_epoch != expected_control_epoch
+            || view.semantic.recovery_epoch != expected_recovery_epoch
+            || view.semantic.state_root != authorization_state_root
         {
             return Err(ConsensusError::StaleAuthorization);
         }
@@ -231,7 +248,7 @@ where
                 request.authorization_state_root,
             )?;
 
-            if view.revoked_nodes.contains(&request.node.node_id) {
+            if view.semantic.revoked_nodes.contains(&request.node.node_id) {
                 return Err(ConsensusError::MembershipRejected);
             }
 
@@ -250,11 +267,12 @@ where
                 };
             }
 
+            let after = self.current_authoritative_view().await?;
             Ok(MembershipChangeReceipt {
-                voters: view.voters,
-                control_epoch: view.control_epoch,
-                recovery_epoch: view.recovery_epoch,
-                authorization_state_root: view.state_root,
+                voters: after.active_voters,
+                control_epoch: after.semantic.control_epoch,
+                recovery_epoch: after.semantic.recovery_epoch,
+                authorization_state_root: after.semantic.state_root,
             })
         })
     }
@@ -276,7 +294,7 @@ where
                 || request
                     .voters
                     .iter()
-                    .any(|node_id| view.revoked_nodes.contains(node_id))
+                    .any(|node_id| view.semantic.revoked_nodes.contains(node_id))
             {
                 return Err(ConsensusError::MembershipRejected);
             }
@@ -292,11 +310,12 @@ where
                 };
             }
 
+            let after = self.current_authoritative_view().await?;
             Ok(MembershipChangeReceipt {
-                voters: request.voters,
-                control_epoch: view.control_epoch,
-                recovery_epoch: view.recovery_epoch,
-                authorization_state_root: view.state_root,
+                voters: after.active_voters,
+                control_epoch: after.semantic.control_epoch,
+                recovery_epoch: after.semantic.recovery_epoch,
+                authorization_state_root: after.semantic.state_root,
             })
         })
     }
@@ -355,14 +374,17 @@ mod tests {
     #[test]
     fn authorization_requires_exact_epoch_and_state_root() {
         let view = VerifiedControlView {
-            cluster_id: lesha_types::ClusterId([1; 16]),
-            applied_index: lesha_types::ControlAppliedIndex(3),
-            control_epoch: lesha_types::ControlEpoch(4),
-            recovery_epoch: lesha_types::RecoveryEpoch(2),
-            state_root: [9; 32],
-            voters: BTreeSet::new(),
-            learners: BTreeSet::new(),
-            revoked_nodes: BTreeSet::new(),
+            semantic: SemanticControlView {
+                cluster_id: lesha_types::ClusterId([1; 16]),
+                applied_index: lesha_types::ControlAppliedIndex(3),
+                control_epoch: lesha_types::ControlEpoch(4),
+                recovery_epoch: lesha_types::RecoveryEpoch(2),
+                state_root: [9; 32],
+                authorized_voters: BTreeSet::new(),
+                learners: BTreeSet::new(),
+                revoked_nodes: BTreeSet::new(),
+            },
+            active_voters: BTreeSet::new(),
         };
 
         assert_eq!(
@@ -388,7 +410,7 @@ mod tests {
     struct NeverView;
 
     impl ControlViewSource for NeverView {
-        fn current_view<'a>(&'a self) -> ConsensusFuture<'a, VerifiedControlView> {
+        fn current_view<'a>(&'a self) -> ConsensusFuture<'a, SemanticControlView> {
             Box::pin(async { Err(ConsensusError::Fatal) })
         }
     }
