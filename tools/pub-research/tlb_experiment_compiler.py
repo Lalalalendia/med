@@ -130,7 +130,18 @@ def _type_token(v: Any) -> str:
     if isinstance(v, str):
         return v.upper()
     if isinstance(v, dict):
-        # Common dump shapes: {"vt":"VT_I4"}, {"kind":"VT_USERDEFINED","name":"PbFoo"}
+        # Actual PUB-RUN-527 dump shape uses vtName + optional userDefinedType.
+        vt_name = v.get("vtName")
+        if vt_name:
+            token = str(vt_name).upper()
+            if token == "VT_USERDEFINED":
+                ud = v.get("userDefinedType")
+                if isinstance(ud, dict):
+                    name = str(ud.get("name") or "").upper()
+                    kind = str(ud.get("kind") or "").upper()
+                    return ":".join(x for x in (token, name, kind) if x)
+            return token
+        # Other inventory/test shapes.
         for k in ("vt", "vartype", "var_type", "type", "kind", "name", "display"):
             if k in v and v[k]:
                 return _type_token(v[k])
@@ -179,8 +190,12 @@ def _classify_value_type(token: str) -> tuple[str, list[str]]:
     t = token.upper()
     if any(x in t for x in ("PTR", "ARRAY", "SAFEARRAY", "BYREF", "DISPATCH", "UNKNOWN", "VARIANT", "BSTR")):
         return "blocked", [f"non-scalar-or-reference:{token or '<unknown>'}"]
-    if "USERDEFINED" in t or "ENUM" in t or t.startswith("PB"):
+    if "TKIND_ALIAS" in t:
+        return "blocked", [f"userdefined-alias-requires-manual-review:{token}"]
+    if "TKIND_ENUM" in t or "ENUM" in t or t.startswith("PB"):
         return "candidate", [f"enum-or-userdefined:{token}"]
+    if "USERDEFINED" in t:
+        return "blocked", [f"unresolved-userdefined-kind:{token}"]
     if t in SAFE_SCALARS:
         return "candidate", []
     return "blocked", [f"unsupported-value-type:{token or '<unknown>'}"]
@@ -190,7 +205,7 @@ def _changed_value_strategy(value_type: str) -> dict[str, Any]:
     t = value_type.upper()
     if "BOOL" in t:
         return {"kind": "toggle_bool"}
-    if "USERDEFINED" in t or "ENUM" in t or t.startswith("PB"):
+    if "TKIND_ENUM" in t or "ENUM" in t or t.startswith("PB"):
         return {"kind": "alternate_enum_value", "rule": "choose one valid value != current"}
     if any(x in t for x in ("I1", "I2", "I4", "I8", "INT", "UI1", "UI2", "UI4", "UI8", "UINT", "R4", "R8")):
         return {"kind": "bounded_numeric_delta", "delta": 1, "rule": "respect documented/runtime-valid range"}
