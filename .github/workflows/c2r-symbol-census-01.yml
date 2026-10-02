@@ -1,9 +1,6 @@
 name: C2R Publisher Symbol Census 01
 
 on:
-  push:
-    branches:
-      - research/c2r-symbol-census-01
   pull_request:
     branches:
       - main
@@ -13,13 +10,90 @@ permissions:
   contents: read
 
 jobs:
-  preflight:
+  acquire:
     runs-on: windows-latest
+    timeout-minutes: 60
     steps:
-      - name: Environment preflight
+      - name: Acquire Office Deployment Tool
         shell: pwsh
         run: |
-          $PSVersionTable
-          python --version
-          git --version
-          [Environment]::OSVersion.VersionString
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force -Path out\odt | Out-Null
+          $url = "https://download.microsoft.com/download/6c1eeb25-cf8b-41d9-8d0d-cc1dbc032140/officedeploymenttool_20326-20112.exe"
+          curl.exe -L --fail --retry 3 -o out\odt\odt.exe $url
+          $sha = (Get-FileHash out\odt\odt.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          $dest = (Resolve-Path out\odt).Path
+          $p = Start-Process -FilePath (Resolve-Path out\odt\odt.exe) -ArgumentList "/quiet","/extract:$dest" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "ODT extract failed: $($p.ExitCode)" }
+          if (-not (Test-Path out\odt\setup.exe)) { throw "setup.exe missing" }
+          [ordered]@{
+            odt_url = $url
+            odt_sha256 = $sha
+            setup_version = (Get-Item out\odt\setup.exe).VersionInfo.FileVersion
+          } | ConvertTo-Json | Set-Content -Encoding UTF8 out\odt-receipt.json
+
+      - name: Download exact Publisher-bearing Office 2208 payload
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $source = "$pwd\out\office"
+          New-Item -ItemType Directory -Force -Path $source | Out-Null
+          @"
+          <Configuration>
+            <Add SourcePath="$source" OfficeClientEdition="32" Channel="Current" Version="16.0.15601.20088">
+              <Product ID="O365ProPlusRetail">
+                <Language ID="en-us" />
+                <ExcludeApp ID="Access" />
+                <ExcludeApp ID="Excel" />
+                <ExcludeApp ID="Groove" />
+                <ExcludeApp ID="Lync" />
+                <ExcludeApp ID="OneDrive" />
+                <ExcludeApp ID="OneNote" />
+                <ExcludeApp ID="Outlook" />
+                <ExcludeApp ID="PowerPoint" />
+                <ExcludeApp ID="Teams" />
+                <ExcludeApp ID="Word" />
+              </Product>
+            </Add>
+            <Display Level="None" AcceptEULA="TRUE" />
+          </Configuration>
+          "@ | Set-Content -Encoding UTF8 out\publisher2208.xml
+          $started = Get-Date
+          $p = Start-Process -FilePath "$pwd\out\odt\setup.exe" -ArgumentList "/download","$pwd\out\publisher2208.xml" -Wait -PassThru
+          $files = @(Get-ChildItem out\office -Recurse -File -ErrorAction SilentlyContinue)
+          [ordered]@{
+            requested_version = "16.0.15601.20088"
+            architecture = "x86"
+            channel = "Current"
+            product = "O365ProPlusRetail-minus-non-Publisher-apps"
+            exit_code = $p.ExitCode
+            elapsed_seconds = [int]((Get-Date)-$started).TotalSeconds
+            file_count = $files.Count
+            bytes = [int64](($files | Measure-Object Length -Sum).Sum)
+            names = @($files | ForEach-Object { $_.Name })
+          } | ConvertTo-Json -Depth 4 | Set-Content -Encoding UTF8 out\download-receipt.json
+          if ($p.ExitCode -ne 0 -or $files.Count -eq 0) { throw "ODT download failed" }
+
+      - name: Publish acquisition receipt
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path out\odt-receipt.json) {
+            "## ODT" | Add-Content $env:GITHUB_STEP_SUMMARY
+            Get-Content out\odt-receipt.json | Add-Content $env:GITHUB_STEP_SUMMARY
+          }
+          if (Test-Path out\download-receipt.json) {
+            "## Exact 2208 download" | Add-Content $env:GITHUB_STEP_SUMMARY
+            Get-Content out\download-receipt.json | Add-Content $env:GITHUB_STEP_SUMMARY
+          }
+
+      - name: Upload metadata only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c2r-publisher-acquisition-${{ github.run_id }}
+          path: |
+            out/odt-receipt.json
+            out/download-receipt.json
+          if-no-files-found: warn
+          retention-days: 14
