@@ -13,14 +13,31 @@ impl From<&str> for FactKey {
 pub struct Observation {
     pub value: String,
     pub source: String,
+    pub provenance_domain: String,
     pub authority_weight: u32,
 }
 
 impl Observation {
     pub fn new(value: impl Into<String>, source: impl Into<String>, authority_weight: u32) -> Self {
+        let source = source.into();
+        Self {
+            value: value.into(),
+            provenance_domain: source.clone(),
+            source,
+            authority_weight,
+        }
+    }
+
+    pub fn with_domain(
+        value: impl Into<String>,
+        source: impl Into<String>,
+        provenance_domain: impl Into<String>,
+        authority_weight: u32,
+    ) -> Self {
         Self {
             value: value.into(),
             source: source.into(),
+            provenance_domain: provenance_domain.into(),
             authority_weight,
         }
     }
@@ -142,6 +159,7 @@ pub struct RepairCandidate {
     pub value: String,
     pub support_weight: u32,
     pub supporting_sources: Vec<String>,
+    pub supporting_domains: Vec<String>,
     pub edits: Vec<RepairEdit>,
     pub auto_applicable: bool,
 }
@@ -158,23 +176,39 @@ pub fn rank_relation_repairs(
         return Vec::new();
     };
 
-    // Do not count the same projection/source multiple times for one candidate value.
-    let mut support_by_value: BTreeMap<String, BTreeMap<String, u32>> = BTreeMap::new();
+    // Correlated observations may use different source labels while still belonging to
+    // one persistence/projection family. Count at most one authority contribution per
+    // provenance domain for each candidate value.
+    let mut support_by_value: BTreeMap<
+        String,
+        BTreeMap<String, (u32, BTreeSet<String>)>,
+    > = BTreeMap::new();
     for fact in &witness {
+        let domain = fact.observation.provenance_domain.clone();
+        let source = fact.observation.source.clone();
+        let weight = fact.observation.authority_weight;
+
         support_by_value
             .entry(fact.observation.value.clone())
             .or_default()
-            .entry(fact.observation.source.clone())
-            .and_modify(|weight| {
-                *weight = (*weight).max(fact.observation.authority_weight);
+            .entry(domain)
+            .and_modify(|(domain_weight, sources)| {
+                *domain_weight = (*domain_weight).max(weight);
+                sources.insert(source.clone());
             })
-            .or_insert(fact.observation.authority_weight);
+            .or_insert_with(|| (weight, BTreeSet::from([source])));
     }
 
     let mut candidates = Vec::new();
-    for (value, sources) in support_by_value {
-        let support_weight = sources.values().copied().sum();
-        let supporting_sources = sources.keys().cloned().collect::<Vec<_>>();
+    for (value, domains) in support_by_value {
+        let support_weight = domains.values().map(|(weight, _)| *weight).sum();
+        let supporting_domains = domains.keys().cloned().collect::<Vec<_>>();
+        let supporting_sources = domains
+            .values()
+            .flat_map(|(_, sources)| sources.iter().cloned())
+            .collect::<BTreeSet<_>>()
+            .into_iter()
+            .collect::<Vec<_>>();
         let edits = witness
             .iter()
             .filter(|fact| fact.observation.value != value)
@@ -189,6 +223,7 @@ pub fn rank_relation_repairs(
             value,
             support_weight,
             supporting_sources,
+            supporting_domains,
             edits,
             auto_applicable: false,
         });
@@ -298,6 +333,10 @@ mod tests {
         Observation::new(value, source, weight)
     }
 
+    fn obs_domain(value: &str, source: &str, domain: &str, weight: u32) -> Observation {
+        Observation::with_domain(value, source, domain, weight)
+    }
+
     #[test]
     fn healthy_table_identity_is_satisfied() {
         let constraint = &pub_seed_constraints()[0];
@@ -394,6 +433,72 @@ mod tests {
         assert!(candidates
             .iter()
             .all(|candidate| !candidate.auto_applicable));
+    }
+
+    #[test]
+    fn correlated_quill_sources_do_not_fake_independent_support() {
+        let constraint = ConstraintSpec::all_equal(
+            "CORRELATED",
+            "test",
+            ConstraintState::Confirmed,
+            "test",
+            ["contents", "quill_story", "quill_tcd"],
+            Repairability::RelationOnly,
+        );
+        let mut store = FactStore::default();
+        store.insert("contents", obs_domain("A", "Contents", "Contents", 100));
+        store.insert(
+            "quill_story",
+            obs_domain("B", "Quill/SYID", "Quill", 100),
+        );
+        store.insert(
+            "quill_tcd",
+            obs_domain("B", "Quill/TCD", "Quill", 100),
+        );
+
+        let candidates = rank_relation_repairs(&store, &constraint);
+        assert_eq!(candidates.len(), 2);
+        assert_eq!(candidates[0].support_weight, 100);
+        assert_eq!(candidates[1].support_weight, 100);
+        assert!(candidates.iter().all(|candidate| !candidate.auto_applicable));
+
+        let b = candidates
+            .iter()
+            .find(|candidate| candidate.value == "B")
+            .expect("B candidate");
+        assert_eq!(b.supporting_domains, vec!["Quill"]);
+        assert_eq!(b.supporting_sources, vec!["Quill/SYID", "Quill/TCD"]);
+    }
+
+    #[test]
+    fn contents_plus_quill_still_outweighs_one_conflicting_quill_fact() {
+        let constraint = ConstraintSpec::all_equal(
+            "CR06-DOMAINS",
+            "test",
+            ConstraintState::Confirmed,
+            "test",
+            ["contents", "quill_story", "quill_tcd"],
+            Repairability::RelationOnly,
+        );
+        let mut store = FactStore::default();
+        store.insert("contents", obs_domain("6", "Contents", "Contents", 100));
+        store.insert(
+            "quill_story",
+            obs_domain("6", "Quill/SYID", "Quill", 100),
+        );
+        store.insert(
+            "quill_tcd",
+            obs_domain("9009", "Quill/TCD", "Quill", 100),
+        );
+
+        let candidates = rank_relation_repairs(&store, &constraint);
+        assert_eq!(candidates[0].value, "6");
+        assert_eq!(candidates[0].support_weight, 200);
+        assert_eq!(candidates[0].supporting_domains, vec!["Contents", "Quill"]);
+        assert!(candidates[0].auto_applicable);
+        assert_eq!(candidates[1].value, "9009");
+        assert_eq!(candidates[1].support_weight, 100);
+        assert_eq!(candidates[1].supporting_domains, vec!["Quill"]);
     }
 
     #[test]
