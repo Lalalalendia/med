@@ -94,10 +94,7 @@ fn import_port_stages_chunk_then_commits_through_object_port() {
     };
 
     assert_eq!(first.commit.version_id, version);
-    assert_eq!(
-        objects.heads(object).unwrap(),
-        BTreeSet::from([version])
-    );
+    assert_eq!(objects.heads(object).unwrap(), BTreeSet::from([version]));
 }
 
 #[test]
