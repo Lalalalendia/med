@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - research/c2r-symbol-census-01
-    paths:
-      - ".github/workflows/c2r-symbol-census-01.yml"
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
