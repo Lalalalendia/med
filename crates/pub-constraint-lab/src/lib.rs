@@ -179,10 +179,8 @@ pub fn rank_relation_repairs(
     // Correlated observations may use different source labels while still belonging to
     // one persistence/projection family. Count at most one authority contribution per
     // provenance domain for each candidate value.
-    let mut support_by_value: BTreeMap<
-        String,
-        BTreeMap<String, (u32, BTreeSet<String>)>,
-    > = BTreeMap::new();
+    let mut support_by_value: BTreeMap<String, BTreeMap<String, (u32, BTreeSet<String>)>> =
+        BTreeMap::new();
     for fact in &witness {
         let domain = fact.observation.provenance_domain.clone();
         let source = fact.observation.source.clone();
@@ -447,20 +445,16 @@ mod tests {
         );
         let mut store = FactStore::default();
         store.insert("contents", obs_domain("A", "Contents", "Contents", 100));
-        store.insert(
-            "quill_story",
-            obs_domain("B", "Quill/SYID", "Quill", 100),
-        );
-        store.insert(
-            "quill_tcd",
-            obs_domain("B", "Quill/TCD", "Quill", 100),
-        );
+        store.insert("quill_story", obs_domain("B", "Quill/SYID", "Quill", 100));
+        store.insert("quill_tcd", obs_domain("B", "Quill/TCD", "Quill", 100));
 
         let candidates = rank_relation_repairs(&store, &constraint);
         assert_eq!(candidates.len(), 2);
         assert_eq!(candidates[0].support_weight, 100);
         assert_eq!(candidates[1].support_weight, 100);
-        assert!(candidates.iter().all(|candidate| !candidate.auto_applicable));
+        assert!(candidates
+            .iter()
+            .all(|candidate| !candidate.auto_applicable));
 
         let b = candidates
             .iter()
@@ -482,14 +476,8 @@ mod tests {
         );
         let mut store = FactStore::default();
         store.insert("contents", obs_domain("6", "Contents", "Contents", 100));
-        store.insert(
-            "quill_story",
-            obs_domain("6", "Quill/SYID", "Quill", 100),
-        );
-        store.insert(
-            "quill_tcd",
-            obs_domain("9009", "Quill/TCD", "Quill", 100),
-        );
+        store.insert("quill_story", obs_domain("6", "Quill/SYID", "Quill", 100));
+        store.insert("quill_tcd", obs_domain("9009", "Quill/TCD", "Quill", 100));
 
         let candidates = rank_relation_repairs(&store, &constraint);
         assert_eq!(candidates[0].value, "6");
