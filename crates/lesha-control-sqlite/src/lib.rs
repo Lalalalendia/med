@@ -4,8 +4,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
 use lesha_control_core::{
-    CommittedControlReceipt, ControlCheckpoint, ControlError, ControlSnapshot, ControlSnapshotState,
-    ControlState, MemberRecord, MemberRole, SnapshotInstallError, ValidatedControlCommand,
+    CommittedControlReceipt, ControlCheckpoint, ControlError, ControlSnapshot,
+    ControlSnapshotState, ControlState, MemberRecord, MemberRole, SnapshotInstallError,
+    ValidatedControlCommand,
 };
 use lesha_types::{
     ClusterId, ControlAppliedIndex, ControlCommandId, ControlEpoch, NodeId, RecoveryEpoch,
@@ -108,12 +109,10 @@ impl SqliteControlStore {
             return self.replay_applied(applied_index, &cmd);
         }
 
-        let expected = ControlAppliedIndex(
-            self.applied_index
-                .0
-                .checked_add(1)
-                .ok_or_else(|| ControlStoreError::PersistentStateInvalid("applied index overflow".into()))?,
-        );
+        let expected =
+            ControlAppliedIndex(self.applied_index.0.checked_add(1).ok_or_else(|| {
+                ControlStoreError::PersistentStateInvalid("applied index overflow".into())
+            })?);
         if applied_index != expected {
             return Err(ControlStoreError::AppliedIndexGap {
                 expected,
@@ -122,7 +121,9 @@ impl SqliteControlStore {
         }
 
         let mut next = self.state.clone();
-        let receipt = next.apply(cmd.clone()).map_err(ControlStoreError::Control)?;
+        let receipt = next
+            .apply(cmd.clone())
+            .map_err(ControlStoreError::Control)?;
         let snapshot = next.checkpoint(applied_index);
         let failpoint = self.failpoint.take();
 
@@ -286,7 +287,9 @@ fn create_schema(conn: &Connection) -> Result<(), ControlStoreError> {
     .map_err(storage)?;
 
     let current: Option<i64> = conn
-        .query_row("SELECT version FROM control_schema LIMIT 1", [], |row| row.get(0))
+        .query_row("SELECT version FROM control_schema LIMIT 1", [], |row| {
+            row.get(0)
+        })
         .optional()
         .map_err(storage)?;
 
@@ -405,7 +408,8 @@ fn load_snapshot(conn: &Connection) -> Result<Option<ControlSnapshot>, ControlSt
         .optional()
         .map_err(storage)?;
 
-    let Some((cluster_id, applied_index, control_epoch, recovery_epoch, policy_hash, state_root)) = meta
+    let Some((cluster_id, applied_index, control_epoch, recovery_epoch, policy_hash, state_root)) =
+        meta
     else {
         return Ok(None);
     };
@@ -486,10 +490,8 @@ fn load_snapshot(conn: &Connection) -> Result<Option<ControlSnapshot>, ControlSt
                 row.get::<_, Vec<u8>>(0).map_err(storage)?,
                 "command id",
             )?);
-            let request_hash = fixed::<32>(
-                row.get::<_, Vec<u8>>(1).map_err(storage)?,
-                "request hash",
-            )?;
+            let request_hash =
+                fixed::<32>(row.get::<_, Vec<u8>>(1).map_err(storage)?, "request hash")?;
             let receipt = CommittedControlReceipt {
                 command_id,
                 request_hash,
@@ -573,11 +575,7 @@ mod tests {
         NodeId([tag; 32])
     }
 
-    fn command(
-        tag: u8,
-        state: &ControlState,
-        kind: ControlCommandKind,
-    ) -> ValidatedControlCommand {
+    fn command(tag: u8, state: &ControlState, kind: ControlCommandKind) -> ValidatedControlCommand {
         ValidatedControlCommand {
             command_id: ControlCommandId([tag; 16]),
             cluster_id: state.cluster_id,
@@ -723,7 +721,10 @@ mod tests {
 
         let reopened = SqliteControlStore::open(&db, cluster()).unwrap();
         assert_eq!(reopened.applied_index(), ControlAppliedIndex(8));
-        assert_eq!(reopened.state().state_root(), snapshot.checkpoint.state_root);
+        assert_eq!(
+            reopened.state().state_root(),
+            snapshot.checkpoint.state_root
+        );
         assert_eq!(reopened.state().members[&node(7)].role, MemberRole::Learner);
     }
 
