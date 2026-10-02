@@ -9,6 +9,7 @@ members = [
     "crates/lesha-storage-files",
     "crates/lesha-storage-sqlite",
     "crates/lesha-storage-sim",
+    "crates/lesha-sync",
 ]
 resolver = "2"
 
