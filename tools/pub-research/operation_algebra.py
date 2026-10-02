@@ -127,7 +127,8 @@ def generate_pairs(ops: list[Operation]) -> tuple[list[PairSpec], dict[str, int]
             # High-information default: keep either shared-target pairs or pairs explicitly
             # marked as precedence/default/materialization candidates.
             signal_tags = {"precedence", "inheritance", "materialization", "layout", "style"}
-            if not overlap and not (signal_tags & (set(a.tags) | set(b.tags))):
+            shared_signal_tags = signal_tags & set(a.tags) & set(b.tags)
+            if not overlap and not shared_signal_tags:
                 rejected += 1
                 continue
 
