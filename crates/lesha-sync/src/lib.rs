@@ -3,6 +3,10 @@
 mod state;
 pub use state::*;
 
+pub use lesha_storage_core::{
+    ImportError, ImportPort, ImportReceipt, StagedChunkRef, ValidatedImportedVersion,
+};
+
 use std::collections::BTreeMap;
 
 use lesha_types::{CheckpointId, ControlFrontierHash, DeltaHash, NamespaceId, ProducerSequence};
