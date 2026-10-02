@@ -1,5 +1,8 @@
 #![forbid(unsafe_code)]
 
+mod state;
+pub use state::*;
+
 use std::collections::BTreeMap;
 
 use lesha_types::{CheckpointId, ControlFrontierHash, DeltaHash, NamespaceId, ProducerSequence};
