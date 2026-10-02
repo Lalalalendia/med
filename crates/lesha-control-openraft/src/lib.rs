@@ -9,12 +9,18 @@ use lesha_control_core::{
     ConsensusMembershipRequest, ControlConsensusPort, MembershipChangeReceipt,
     ValidatedControlCommand, VerifiedControlView,
 };
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum OpenRaftApplyResponse {
+    Control(CommittedControlReceipt),
+    Noop,
+}
 use lesha_types::NodeId;
 
 openraft::declare_raft_types!(
     pub LesHaOpenRaftConfig:
         D = ValidatedControlCommand,
-        R = CommittedControlReceipt,
+        R = OpenRaftApplyResponse,
         NodeId = u64,
         Node = openraft::EmptyNode,
         Entry = openraft::Entry<LesHaOpenRaftConfig>,
@@ -183,7 +189,10 @@ where
     ) -> ConsensusFuture<'a, CommittedControlReceipt> {
         Box::pin(async move {
             match self.raft.client_write(cmd).await {
-                Ok(response) => Ok(response.data),
+                Ok(response) => match response.data {
+                    OpenRaftApplyResponse::Control(receipt) => Ok(receipt),
+                    OpenRaftApplyResponse::Noop => Err(ConsensusError::Fatal),
+                },
                 Err(error) => {
                     let mapped = self.map_raft_error(error);
                     match mapped {
