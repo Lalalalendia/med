@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import struct
 import sys
 import urllib.error
@@ -169,7 +170,7 @@ def main():
 
     summary = {
         "schema": "c2r-publisher-symbol-census.v1",
-        "requested_office_version": "16.0.15601.20088",
+        "requested_office_version": os.environ.get("PUB_OFFICE_VERSION", "unknown"),
         "office_public_symbol_boundary": "16.0.15601.20037",
         "symbol_store": SYMBOL_ROOT,
         "module_records": len(records),
