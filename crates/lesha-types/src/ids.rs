@@ -58,7 +58,6 @@ pub struct DeltaHash(pub [u8; 32]);
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct ProducerSequence(pub u64);
 
-
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct ControlCommandId(pub [u8; 16]);
 
