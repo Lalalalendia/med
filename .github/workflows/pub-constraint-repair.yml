@@ -1,0 +1,55 @@
+name: PUB constraint repair proof
+
+on:
+  pull_request:
+    paths:
+      - "crates/pub-constraint-lab/**"
+      - ".github/workflows/pub-constraint-repair.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cr06:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Format
+        run: cargo fmt --all -- --check
+
+      - name: Test constraint kernel and CR06 proof
+        run: cargo test -p pub-constraint-lab
+
+      - name: Emit CR06 evidence
+        run: |
+          mkdir -p out/pub-constraint
+          cargo run --quiet -p pub-constraint-lab --bin cr06_constraint_repair > out/pub-constraint/cr06-constraint-repair.json
+          python - <<'PY'
+          import json
+          p = json.load(open("out/pub-constraint/cr06-constraint-repair.json", encoding="utf-8"))
+          assert p["schema"] == "chaptera.pub.cr06-constraint-repair.v1"
+          assert p["experiment_id"] == "CR06-CONSTRAINT-REPAIR-01"
+          cases = {x["name"]: x for x in p["cases"]}
+          assert cases["healthy-control"]["evaluation"] == "Satisfied"
+          single = cases["single-corrupt-tcd-relation"]
+          assert single["evaluation"] == "Violated"
+          assert single["ranked_candidates"][0]["value"] == "1001"
+          assert single["ranked_candidates"][0]["auto_applicable"] is True
+          assert single["post_repair_validation"] == "Satisfied"
+          ambiguous = cases["ambiguous-three-way-conflict"]
+          assert ambiguous["evaluation"] == "Violated"
+          assert ambiguous["post_repair_validation"] is None
+          assert all(not x["auto_applicable"] for x in ambiguous["ranked_candidates"])
+          PY
+
+      - name: Upload evidence receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: pub-cr06-constraint-repair
+          path: out/pub-constraint/cr06-constraint-repair.json
+          if-no-files-found: error
+          retention-days: 30
