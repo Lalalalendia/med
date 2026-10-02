@@ -11,6 +11,7 @@ members = [
     "crates/lesha-storage-sim",
     "crates/lesha-sync",
     "crates/lesha-replication",
+    "crates/lesha-control-core",
 ]
 resolver = "2"
 
