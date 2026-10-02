@@ -2,7 +2,9 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use lesha_types::{ClusterId, ControlCommandId, ControlEpoch, NodeId, RecoveryEpoch};
+use lesha_types::{
+    ClusterId, ControlAppliedIndex, ControlCommandId, ControlEpoch, NodeId, RecoveryEpoch,
+};
 use sha2::{Digest, Sha256};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -47,6 +49,32 @@ pub struct CommittedControlReceipt {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ControlCheckpoint {
+    pub cluster_id: ClusterId,
+    pub applied_index: ControlAppliedIndex,
+    pub control_epoch: ControlEpoch,
+    pub recovery_epoch: RecoveryEpoch,
+    pub state_root: [u8; 32],
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ControlSnapshotState {
+    pub cluster_id: ClusterId,
+    pub control_epoch: ControlEpoch,
+    pub recovery_epoch: RecoveryEpoch,
+    pub members: BTreeMap<NodeId, MemberRecord>,
+    pub revoked_nodes: BTreeSet<NodeId>,
+    pub policy_hash: [u8; 32],
+    pub committed: BTreeMap<ControlCommandId, CommittedControlReceipt>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ControlSnapshot {
+    pub checkpoint: ControlCheckpoint,
+    pub state: ControlSnapshotState,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ControlError {
     ClusterMismatch,
     IdempotencyConflict,
@@ -63,6 +91,24 @@ pub enum ControlError {
     MemberRevoked(NodeId),
     IllegalPromotion(NodeId),
     RecoveryEpochNotMonotonic,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum SnapshotInstallError {
+    ClusterMismatch,
+    CheckpointControlEpochMismatch,
+    CheckpointRecoveryEpochMismatch,
+    StateRootMismatch,
+    ControlEpochRollback {
+        current: ControlEpoch,
+        incoming: ControlEpoch,
+    },
+    RecoveryEpochRollback {
+        current: RecoveryEpoch,
+        incoming: RecoveryEpoch,
+    },
+    SameEpochFork,
+    RevocationInvariantViolation(NodeId),
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -166,40 +212,168 @@ impl ControlState {
         }
 
         self.control_epoch = ControlEpoch(self.control_epoch.0 + 1);
-        let receipt = CommittedControlReceipt {
+
+        let mut receipt = CommittedControlReceipt {
             command_id: cmd.command_id,
             request_hash: cmd.request_hash,
             control_epoch: self.control_epoch,
             recovery_epoch: self.recovery_epoch,
-            state_root: self.state_root(),
+            state_root: [0; 32],
         };
+        self.committed.insert(cmd.command_id, receipt.clone());
+        receipt.state_root = self.state_root();
         self.committed.insert(cmd.command_id, receipt.clone());
         Ok(receipt)
     }
 
-    pub fn state_root(&self) -> [u8; 32] {
-        let mut h = Sha256::new();
-        h.update(b"LesHa/ControlState/C0\0");
-        h.update(self.cluster_id.0);
-        h.update(self.control_epoch.0.to_be_bytes());
-        h.update(self.recovery_epoch.0.to_be_bytes());
-        h.update(self.policy_hash);
-        for (node_id, member) in &self.members {
-            h.update(node_id.0);
-            h.update([match member.role {
-                MemberRole::Learner => 0,
-                MemberRole::Voter => 1,
-            }]);
-            h.update([member.revoked as u8]);
+    pub fn checkpoint(&self, applied_index: ControlAppliedIndex) -> ControlSnapshot {
+        ControlSnapshot {
+            checkpoint: ControlCheckpoint {
+                cluster_id: self.cluster_id,
+                applied_index,
+                control_epoch: self.control_epoch,
+                recovery_epoch: self.recovery_epoch,
+                state_root: self.state_root(),
+            },
+            state: ControlSnapshotState {
+                cluster_id: self.cluster_id,
+                control_epoch: self.control_epoch,
+                recovery_epoch: self.recovery_epoch,
+                members: self.members.clone(),
+                revoked_nodes: self.revoked_nodes.clone(),
+                policy_hash: self.policy_hash,
+                committed: self.committed.clone(),
+            },
         }
-        for node_id in &self.revoked_nodes {
-            h.update(node_id.0);
-        }
-        let digest = h.finalize();
-        let mut out = [0; 32];
-        out.copy_from_slice(&digest);
-        out
     }
+
+    pub fn install_snapshot(
+        &mut self,
+        snapshot: ControlSnapshot,
+    ) -> Result<ControlCheckpoint, SnapshotInstallError> {
+        validate_snapshot_invariants(&snapshot)?;
+
+        if snapshot.checkpoint.cluster_id != self.cluster_id {
+            return Err(SnapshotInstallError::ClusterMismatch);
+        }
+        if snapshot.checkpoint.control_epoch.0 < self.control_epoch.0 {
+            return Err(SnapshotInstallError::ControlEpochRollback {
+                current: self.control_epoch,
+                incoming: snapshot.checkpoint.control_epoch,
+            });
+        }
+        if snapshot.checkpoint.recovery_epoch.0 < self.recovery_epoch.0 {
+            return Err(SnapshotInstallError::RecoveryEpochRollback {
+                current: self.recovery_epoch,
+                incoming: snapshot.checkpoint.recovery_epoch,
+            });
+        }
+
+        if snapshot.checkpoint.control_epoch == self.control_epoch
+            && snapshot.checkpoint.recovery_epoch == self.recovery_epoch
+            && snapshot.checkpoint.state_root != self.state_root()
+        {
+            return Err(SnapshotInstallError::SameEpochFork);
+        }
+
+        self.cluster_id = snapshot.state.cluster_id;
+        self.control_epoch = snapshot.state.control_epoch;
+        self.recovery_epoch = snapshot.state.recovery_epoch;
+        self.members = snapshot.state.members;
+        self.revoked_nodes = snapshot.state.revoked_nodes;
+        self.policy_hash = snapshot.state.policy_hash;
+        self.committed = snapshot.state.committed;
+
+        Ok(snapshot.checkpoint)
+    }
+
+    pub fn state_root(&self) -> [u8; 32] {
+        state_root_for_parts(
+            self.cluster_id,
+            self.control_epoch,
+            self.recovery_epoch,
+            &self.members,
+            &self.revoked_nodes,
+            self.policy_hash,
+            &self.committed,
+        )
+    }
+}
+
+fn validate_snapshot_invariants(snapshot: &ControlSnapshot) -> Result<(), SnapshotInstallError> {
+    if snapshot.checkpoint.cluster_id != snapshot.state.cluster_id {
+        return Err(SnapshotInstallError::ClusterMismatch);
+    }
+    if snapshot.checkpoint.control_epoch != snapshot.state.control_epoch {
+        return Err(SnapshotInstallError::CheckpointControlEpochMismatch);
+    }
+    if snapshot.checkpoint.recovery_epoch != snapshot.state.recovery_epoch {
+        return Err(SnapshotInstallError::CheckpointRecoveryEpochMismatch);
+    }
+
+    for (node_id, member) in &snapshot.state.members {
+        if member.node_id != *node_id {
+            return Err(SnapshotInstallError::RevocationInvariantViolation(*node_id));
+        }
+        if member.revoked != snapshot.state.revoked_nodes.contains(node_id) {
+            return Err(SnapshotInstallError::RevocationInvariantViolation(*node_id));
+        }
+    }
+
+    let root = state_root_for_parts(
+        snapshot.state.cluster_id,
+        snapshot.state.control_epoch,
+        snapshot.state.recovery_epoch,
+        &snapshot.state.members,
+        &snapshot.state.revoked_nodes,
+        snapshot.state.policy_hash,
+        &snapshot.state.committed,
+    );
+    if root != snapshot.checkpoint.state_root {
+        return Err(SnapshotInstallError::StateRootMismatch);
+    }
+
+    Ok(())
+}
+
+fn state_root_for_parts(
+    cluster_id: ClusterId,
+    control_epoch: ControlEpoch,
+    recovery_epoch: RecoveryEpoch,
+    members: &BTreeMap<NodeId, MemberRecord>,
+    revoked_nodes: &BTreeSet<NodeId>,
+    policy_hash: [u8; 32],
+    committed: &BTreeMap<ControlCommandId, CommittedControlReceipt>,
+) -> [u8; 32] {
+    let mut h = Sha256::new();
+    h.update(b"LesHa/ControlState/C0\0");
+    h.update(cluster_id.0);
+    h.update(control_epoch.0.to_be_bytes());
+    h.update(recovery_epoch.0.to_be_bytes());
+    h.update(policy_hash);
+
+    for (node_id, member) in members {
+        h.update(node_id.0);
+        h.update([match member.role {
+            MemberRole::Learner => 0,
+            MemberRole::Voter => 1,
+        }]);
+        h.update([member.revoked as u8]);
+    }
+    for node_id in revoked_nodes {
+        h.update(node_id.0);
+    }
+    for (command_id, receipt) in committed {
+        h.update(command_id.0);
+        h.update(receipt.request_hash);
+        h.update(receipt.control_epoch.0.to_be_bytes());
+        h.update(receipt.recovery_epoch.0.to_be_bytes());
+    }
+
+    let digest = h.finalize();
+    let mut out = [0; 32];
+    out.copy_from_slice(&digest);
+    out
 }
 
 #[cfg(test)]
@@ -208,6 +382,10 @@ mod tests {
 
     fn cluster() -> ClusterId {
         ClusterId([1; 16])
+    }
+
+    fn other_cluster() -> ClusterId {
+        ClusterId([2; 16])
     }
 
     fn node(tag: u8) -> NodeId {
@@ -383,5 +561,138 @@ mod tests {
 
         assert_eq!(left, right);
         assert_eq!(left.state_root(), right.state_root());
+    }
+
+    #[test]
+    fn checkpoint_install_preserves_idempotency_and_learner_role() {
+        let mut source = ControlState::new(cluster());
+        let add = command(
+            1,
+            &source,
+            ControlCommandKind::AddLearner { node_id: node(7) },
+        );
+        let prior = source.apply(add.clone()).unwrap();
+        let snapshot = source.checkpoint(ControlAppliedIndex(11));
+
+        let mut learner = ControlState::new(cluster());
+        let checkpoint = learner.install_snapshot(snapshot).unwrap();
+
+        assert_eq!(checkpoint.applied_index, ControlAppliedIndex(11));
+        assert_eq!(learner.members[&node(7)].role, MemberRole::Learner);
+        assert_eq!(learner.apply(add).unwrap(), prior);
+        assert_eq!(learner.control_epoch, ControlEpoch(1));
+    }
+
+    #[test]
+    fn stale_checkpoint_cannot_roll_back_control_epoch() {
+        let mut source = ControlState::new(cluster());
+        source
+            .apply(command(
+                1,
+                &source,
+                ControlCommandKind::SetPolicyHash {
+                    policy_hash: [1; 32],
+                },
+            ))
+            .unwrap();
+        let stale = source.checkpoint(ControlAppliedIndex(1));
+
+        source
+            .apply(command(
+                2,
+                &source,
+                ControlCommandKind::SetPolicyHash {
+                    policy_hash: [2; 32],
+                },
+            ))
+            .unwrap();
+
+        assert_eq!(
+            source.install_snapshot(stale),
+            Err(SnapshotInstallError::ControlEpochRollback {
+                current: ControlEpoch(2),
+                incoming: ControlEpoch(1)
+            })
+        );
+    }
+
+    #[test]
+    fn bad_checkpoint_state_root_is_rejected() {
+        let source = ControlState::new(cluster());
+        let mut snapshot = source.checkpoint(ControlAppliedIndex(0));
+        snapshot.checkpoint.state_root[0] ^= 0xff;
+
+        let mut target = ControlState::new(cluster());
+        assert_eq!(
+            target.install_snapshot(snapshot),
+            Err(SnapshotInstallError::StateRootMismatch)
+        );
+    }
+
+    #[test]
+    fn same_epoch_different_state_is_a_fork() {
+        let mut left = ControlState::new(cluster());
+        let mut right = ControlState::new(cluster());
+
+        left.apply(command(
+            1,
+            &left,
+            ControlCommandKind::SetPolicyHash {
+                policy_hash: [1; 32],
+            },
+        ))
+        .unwrap();
+        right
+            .apply(command(
+                2,
+                &right,
+                ControlCommandKind::SetPolicyHash {
+                    policy_hash: [2; 32],
+                },
+            ))
+            .unwrap();
+
+        let incoming = right.checkpoint(ControlAppliedIndex(1));
+        assert_eq!(
+            left.install_snapshot(incoming),
+            Err(SnapshotInstallError::SameEpochFork)
+        );
+    }
+
+    #[test]
+    fn checkpoint_from_another_cluster_is_rejected() {
+        let source = ControlState::new(other_cluster());
+        let snapshot = source.checkpoint(ControlAppliedIndex(0));
+
+        let mut target = ControlState::new(cluster());
+        assert_eq!(
+            target.install_snapshot(snapshot),
+            Err(SnapshotInstallError::ClusterMismatch)
+        );
+    }
+
+    #[test]
+    fn snapshot_recovery_epoch_cannot_go_backwards() {
+        let old = ControlState::new(cluster());
+        let snapshot = old.checkpoint(ControlAppliedIndex(0));
+
+        let mut target = ControlState::new(cluster());
+        target
+            .apply(command(
+                1,
+                &target,
+                ControlCommandKind::AdvanceRecoveryEpoch {
+                    next: RecoveryEpoch(2),
+                },
+            ))
+            .unwrap();
+
+        assert_eq!(
+            target.install_snapshot(snapshot),
+            Err(SnapshotInstallError::ControlEpochRollback {
+                current: ControlEpoch(1),
+                incoming: ControlEpoch(0)
+            })
+        );
     }
 }
