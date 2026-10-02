@@ -253,6 +253,226 @@ pub fn evaluate_protection(
     })
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum RepairCandidateState {
+    Available,
+    TemporarilyUnavailable,
+    CapacityBlocked,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct RepairCandidate {
+    pub node: NodeRef,
+    pub eligibility: DurabilityEligibility,
+    pub topology: ReplicaTopology,
+    pub is_anchor: bool,
+    pub state: RepairCandidateState,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum RepairPlanState {
+    Complete,
+    Partial,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct PlannedRepairTarget {
+    pub node: NodeRef,
+    pub deficit_units_closed: usize,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RepairPlan {
+    pub state: RepairPlanState,
+    pub initial: ProtectionStatus,
+    pub targets: Vec<PlannedRepairTarget>,
+    pub projected: ProtectionStatus,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum RepairPlanError {
+    Protection(ProtectionEvaluationError),
+    DuplicateCandidate(NodeId),
+}
+
+pub fn plan_repairs(
+    target: &ProtectedSubject,
+    policy: ReplicaPlacementPolicy,
+    evidence: &[ReplicaEvidence],
+    candidates: &[RepairCandidate],
+    max_targets: usize,
+) -> Result<RepairPlan, RepairPlanError> {
+    let initial =
+        evaluate_protection(target, policy, evidence).map_err(RepairPlanError::Protection)?;
+
+    let mut seen_candidates = BTreeSet::new();
+    for candidate in candidates {
+        if !seen_candidates.insert(candidate.node.node_id) {
+            return Err(RepairPlanError::DuplicateCandidate(candidate.node.node_id));
+        }
+    }
+
+    let mut working_evidence = evidence.to_vec();
+    let mut projected = initial.clone();
+    let mut selected = BTreeSet::new();
+    let mut targets = Vec::new();
+
+    while !projected.deficits.is_empty() && targets.len() < max_targets {
+        let current_gap = deficit_units(&projected);
+        let mut best: Option<(
+            usize,
+            usize,
+            bool,
+            NodeId,
+            RepairCandidate,
+            ProtectionStatus,
+        )> = None;
+
+        for candidate in candidates {
+            if selected.contains(&candidate.node.node_id)
+                || candidate.node.cluster_id != target.cluster_id
+                || candidate.state != RepairCandidateState::Available
+                || candidate.eligibility != DurabilityEligibility::CountsForDurability
+                || projected.credited_nodes.contains(&candidate.node.node_id)
+            {
+                continue;
+            }
+
+            let candidate_evidence = projected_evidence_for_candidate(target, *candidate);
+            let candidate_set = replace_or_append_evidence(&working_evidence, candidate_evidence);
+            let candidate_status = evaluate_protection(target, policy, &candidate_set)
+                .map_err(RepairPlanError::Protection)?;
+            let new_gap = deficit_units(&candidate_status);
+            let gain = current_gap.saturating_sub(new_gap);
+            if gain == 0 {
+                continue;
+            }
+
+            let known_domains = known_domain_count(candidate.topology);
+            let rank = (
+                gain,
+                known_domains,
+                candidate.is_anchor,
+                candidate.node.node_id,
+                *candidate,
+                candidate_status,
+            );
+
+            let replace = match &best {
+                None => true,
+                Some(existing) => {
+                    rank.0 > existing.0
+                        || (rank.0 == existing.0 && rank.1 > existing.1)
+                        || (rank.0 == existing.0 && rank.1 == existing.1 && rank.2 && !existing.2)
+                        || (rank.0 == existing.0
+                            && rank.1 == existing.1
+                            && rank.2 == existing.2
+                            && rank.3 < existing.3)
+                }
+            };
+
+            if replace {
+                best = Some(rank);
+            }
+        }
+
+        let Some((gain, _, _, node_id, candidate, candidate_status)) = best else {
+            break;
+        };
+
+        selected.insert(node_id);
+        working_evidence = replace_or_append_evidence(
+            &working_evidence,
+            projected_evidence_for_candidate(target, candidate),
+        );
+        projected = candidate_status;
+        targets.push(PlannedRepairTarget {
+            node: candidate.node,
+            deficit_units_closed: gain,
+        });
+    }
+
+    Ok(RepairPlan {
+        state: if projected.deficits.is_empty() {
+            RepairPlanState::Complete
+        } else {
+            RepairPlanState::Partial
+        },
+        initial,
+        targets,
+        projected,
+    })
+}
+
+fn deficit_units(status: &ProtectionStatus) -> usize {
+    status
+        .deficits
+        .iter()
+        .map(|deficit| match *deficit {
+            PolicyDeficit::FullReplicas { required, observed }
+            | PolicyDeficit::DistinctHosts { required, observed }
+            | PolicyDeficit::DistinctStorageDevices { required, observed }
+            | PolicyDeficit::DistinctSites { required, observed }
+            | PolicyDeficit::DistinctPowerDomains { required, observed }
+            | PolicyDeficit::AnchorReplicas { required, observed } => {
+                required.saturating_sub(observed)
+            }
+        })
+        .sum()
+}
+
+fn known_domain_count(topology: ReplicaTopology) -> usize {
+    [
+        topology.host,
+        topology.storage_device,
+        topology.site,
+        topology.power,
+    ]
+    .into_iter()
+    .flatten()
+    .count()
+}
+
+fn projected_evidence_for_candidate(
+    target: &ProtectedSubject,
+    candidate: RepairCandidate,
+) -> ReplicaEvidence {
+    let mut receipt_id = [0u8; 16];
+    receipt_id.copy_from_slice(&candidate.node.node_id.0[..16]);
+
+    ReplicaEvidence {
+        node: candidate.node,
+        receipts: vec![VerifiedReplicaReceipt::new_prevalidated(
+            ReceiptId(receipt_id),
+            target.cluster_id,
+            candidate.node,
+            target.subject,
+            target.subject_hash,
+            0,
+        )],
+        receipt_health: ReceiptHealth::CurrentVerified,
+        eligibility: DurabilityEligibility::CountsForDurability,
+        topology: candidate.topology,
+        is_anchor: candidate.is_anchor,
+    }
+}
+
+fn replace_or_append_evidence(
+    evidence: &[ReplicaEvidence],
+    replacement: ReplicaEvidence,
+) -> Vec<ReplicaEvidence> {
+    let mut out = evidence.to_vec();
+    if let Some(existing) = out
+        .iter_mut()
+        .find(|item| item.node.node_id == replacement.node.node_id)
+    {
+        *existing = replacement;
+    } else {
+        out.push(replacement);
+    }
+    out
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -539,5 +759,252 @@ mod tests {
                 [1; 32]
             )))
         );
+    }
+    fn candidate(
+        tag: u8,
+        host: Option<u8>,
+        anchor: bool,
+        state: RepairCandidateState,
+    ) -> RepairCandidate {
+        RepairCandidate {
+            node: node(tag),
+            eligibility: DurabilityEligibility::CountsForDurability,
+            topology: ReplicaTopology {
+                host: host.map(domain),
+                storage_device: Some(domain(tag.wrapping_add(20))),
+                site: None,
+                power: None,
+            },
+            is_anchor: anchor,
+            state,
+        }
+    }
+
+    #[test]
+    fn repair_planner_prefers_target_that_closes_more_policy_deficits() {
+        let current = [
+            evidence(
+                1,
+                Some(1),
+                true,
+                ReceiptHealth::CurrentVerified,
+                DurabilityEligibility::CountsForDurability,
+            ),
+            evidence(
+                2,
+                Some(2),
+                false,
+                ReceiptHealth::CurrentVerified,
+                DurabilityEligibility::CountsForDurability,
+            ),
+        ];
+        let plan = plan_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 3,
+                min_distinct_hosts: 3,
+                ..Default::default()
+            },
+            &current,
+            &[
+                candidate(3, Some(2), false, RepairCandidateState::Available),
+                candidate(4, Some(4), false, RepairCandidateState::Available),
+            ],
+            1,
+        )
+        .unwrap();
+
+        assert_eq!(plan.state, RepairPlanState::Complete);
+        assert_eq!(plan.targets.len(), 1);
+        assert_eq!(plan.targets[0].node.node_id, NodeId([4; 32]));
+        assert_eq!(plan.targets[0].deficit_units_closed, 2);
+    }
+
+    #[test]
+    fn repair_planner_uses_anchor_when_anchor_is_the_only_deficit() {
+        let current = [
+            evidence(
+                1,
+                Some(1),
+                false,
+                ReceiptHealth::CurrentVerified,
+                DurabilityEligibility::CountsForDurability,
+            ),
+            evidence(
+                2,
+                Some(2),
+                false,
+                ReceiptHealth::CurrentVerified,
+                DurabilityEligibility::CountsForDurability,
+            ),
+        ];
+        let plan = plan_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 2,
+                min_anchor_replicas: 1,
+                ..Default::default()
+            },
+            &current,
+            &[
+                candidate(3, Some(3), false, RepairCandidateState::Available),
+                candidate(4, Some(4), true, RepairCandidateState::Available),
+            ],
+            1,
+        )
+        .unwrap();
+
+        assert_eq!(plan.state, RepairPlanState::Complete);
+        assert_eq!(plan.targets[0].node.node_id, NodeId([4; 32]));
+    }
+
+    #[test]
+    fn repair_planner_does_not_invent_diversity_from_unknown_domain() {
+        let current = [evidence(
+            1,
+            Some(1),
+            true,
+            ReceiptHealth::CurrentVerified,
+            DurabilityEligibility::CountsForDurability,
+        )];
+        let mut known_site = candidate(3, Some(3), false, RepairCandidateState::Available);
+        known_site.topology.site = Some(domain(3));
+
+        let plan = plan_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 2,
+                min_distinct_sites: 1,
+                ..Default::default()
+            },
+            &current,
+            &[
+                candidate(2, None, false, RepairCandidateState::Available),
+                known_site,
+            ],
+            1,
+        )
+        .unwrap();
+
+        assert_eq!(plan.targets[0].node.node_id, NodeId([3; 32]));
+        assert_eq!(plan.projected.distinct_sites, 1);
+    }
+
+    #[test]
+    fn repair_planner_returns_partial_when_available_targets_cannot_close_deficit() {
+        let current = [
+            evidence(
+                1,
+                Some(9),
+                false,
+                ReceiptHealth::CurrentVerified,
+                DurabilityEligibility::CountsForDurability,
+            ),
+            evidence(
+                2,
+                Some(9),
+                false,
+                ReceiptHealth::CurrentVerified,
+                DurabilityEligibility::CountsForDurability,
+            ),
+        ];
+        let plan = plan_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 2,
+                min_distinct_hosts: 2,
+                ..Default::default()
+            },
+            &current,
+            &[
+                candidate(3, Some(9), false, RepairCandidateState::Available),
+                candidate(4, None, false, RepairCandidateState::Available),
+            ],
+            2,
+        )
+        .unwrap();
+
+        assert_eq!(plan.state, RepairPlanState::Partial);
+        assert!(plan.targets.is_empty());
+        assert_eq!(
+            plan.projected.deficits,
+            vec![PolicyDeficit::DistinctHosts {
+                required: 2,
+                observed: 1
+            }]
+        );
+    }
+
+    #[test]
+    fn repair_planner_is_deterministic_and_filters_unavailable_targets() {
+        let current = [evidence(
+            1,
+            Some(1),
+            true,
+            ReceiptHealth::CurrentVerified,
+            DurabilityEligibility::CountsForDurability,
+        )];
+        let candidates = [
+            candidate(
+                2,
+                Some(2),
+                false,
+                RepairCandidateState::TemporarilyUnavailable,
+            ),
+            candidate(4, Some(4), false, RepairCandidateState::Available),
+            candidate(3, Some(3), false, RepairCandidateState::Available),
+        ];
+        let policy = ReplicaPlacementPolicy {
+            full_replica_count: 2,
+            ..Default::default()
+        };
+
+        let first = plan_repairs(&target(), policy, &current, &candidates, 1).unwrap();
+        let second = plan_repairs(&target(), policy, &current, &candidates, 1).unwrap();
+
+        assert_eq!(first, second);
+        assert_eq!(first.targets[0].node.node_id, NodeId([3; 32]));
+    }
+
+    #[test]
+    fn repair_planner_can_repair_stale_existing_node_without_double_evidence() {
+        let stale = evidence(
+            2,
+            Some(2),
+            false,
+            ReceiptHealth::Stale,
+            DurabilityEligibility::CountsForDurability,
+        );
+        let current = [
+            evidence(
+                1,
+                Some(1),
+                true,
+                ReceiptHealth::CurrentVerified,
+                DurabilityEligibility::CountsForDurability,
+            ),
+            stale,
+        ];
+
+        let plan = plan_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 2,
+                ..Default::default()
+            },
+            &current,
+            &[candidate(
+                2,
+                Some(2),
+                false,
+                RepairCandidateState::Available,
+            )],
+            1,
+        )
+        .unwrap();
+
+        assert_eq!(plan.state, RepairPlanState::Complete);
+        assert_eq!(plan.targets[0].node.node_id, NodeId([2; 32]));
+        assert_eq!(plan.projected.verified_replicas, 2);
     }
 }
