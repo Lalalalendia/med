@@ -149,10 +149,7 @@ impl SyncSession {
         Ok(())
     }
 
-    pub fn delta_applied(
-        &mut self,
-        sequence: ProducerSequence,
-    ) -> Result<(), SyncTransitionError> {
+    pub fn delta_applied(&mut self, sequence: ProducerSequence) -> Result<(), SyncTransitionError> {
         let SyncState::IncrementalFollowing { next, target } = self.state else {
             return Err(SyncTransitionError::InvalidTransition);
         };
@@ -213,9 +210,7 @@ impl SyncSession {
                 tail_from_inclusive,
                 target: to_inclusive,
             },
-            SyncPlan::NeedsCheckpoint { sender_head } => {
-                SyncState::NeedsCheckpoint { sender_head }
-            }
+            SyncPlan::NeedsCheckpoint { sender_head } => SyncState::NeedsCheckpoint { sender_head },
         };
     }
 }
@@ -293,9 +288,7 @@ mod tests {
     fn incremental_path_requires_verification_before_caught_up() {
         let mut session = SyncSession::new(ns(1));
         session.authenticated().unwrap();
-        session
-            .negotiate(&summary(), &receiver(Some(7)))
-            .unwrap();
+        session.negotiate(&summary(), &receiver(Some(7))).unwrap();
         assert_eq!(
             session.state(),
             SyncState::IncrementalFollowing {
@@ -327,9 +320,7 @@ mod tests {
     fn checkpoint_path_transitions_to_tail_then_verification() {
         let mut session = SyncSession::new(ns(1));
         session.authenticated().unwrap();
-        session
-            .negotiate(&summary(), &receiver(Some(2)))
-            .unwrap();
+        session.negotiate(&summary(), &receiver(Some(2))).unwrap();
 
         assert!(matches!(
             session.state(),
