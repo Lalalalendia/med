@@ -1,0 +1,83 @@
+{
+  "schema": "chaptera.pub.tlb-native-batch.v1",
+  "batch_id": "TLB-BATCH-01-SHAPE-EFFECTS",
+  "source": {
+    "inventory_schema": "mspub-tlb-inventory/v1",
+    "inventory_sha256": "a13d86edc1622b7f3cba6524cba7a4553e120864889e59038712061a05003b5c",
+    "publisher_library": "Microsoft Publisher 16.0 Object Library",
+    "library_version": "2.3",
+    "type_count": 237,
+    "function_count": 3015,
+    "variable_count": 1129
+  },
+  "admission": {
+    "generated_property_put_count": 467,
+    "admitted_candidate_count": 262,
+    "excluded_hidden_or_restricted": 36,
+    "excluded_destructive_or_lifecycle_name": 31,
+    "excluded_unsafe_or_unsupported_type": 138,
+    "rationale": "First bounded native batch after Notion de-dup. Uses one shape-effects fixture family and avoids already-owned paragraph/font/table/gradient/line authority fronts."
+  },
+  "candidates": [
+    {
+      "type_name": "GlowFormat",
+      "member_name": "Radius",
+      "dispid": 1,
+      "value_type": "VT_R4"
+    },
+    {
+      "type_name": "GlowFormat",
+      "member_name": "Transparency",
+      "dispid": 3,
+      "value_type": "VT_R4"
+    },
+    {
+      "type_name": "GlowFormat",
+      "member_name": "Visible",
+      "dispid": 4,
+      "value_type": "VT_USERDEFINED:MSOTRISTATE:TKIND_ENUM"
+    },
+    {
+      "type_name": "ReflectionFormat",
+      "member_name": "Type",
+      "dispid": 1,
+      "value_type": "VT_USERDEFINED:MSOREFLECTIONTYPE:TKIND_ENUM"
+    },
+    {
+      "type_name": "ReflectionFormat",
+      "member_name": "Transparency",
+      "dispid": 2,
+      "value_type": "VT_R4"
+    },
+    {
+      "type_name": "ReflectionFormat",
+      "member_name": "Size",
+      "dispid": 3,
+      "value_type": "VT_R4"
+    },
+    {
+      "type_name": "ReflectionFormat",
+      "member_name": "Offset",
+      "dispid": 4,
+      "value_type": "VT_R4"
+    },
+    {
+      "type_name": "ReflectionFormat",
+      "member_name": "Blur",
+      "dispid": 5,
+      "value_type": "VT_R4"
+    },
+    {
+      "type_name": "ReflectionFormat",
+      "member_name": "Visible",
+      "dispid": 6,
+      "value_type": "VT_USERDEFINED:MSOTRISTATE:TKIND_ENUM"
+    }
+  ],
+  "required_arms": [
+    "control",
+    "same_value",
+    "changed_value"
+  ],
+  "execution_boundary": "Generate-only metadata. Native Publisher execution must use one deterministic shape-effects fixture, Save -> Close -> fresh Reopen, and capture semantic + persisted + render receipts before any PUB law promotion."
+}
