@@ -81,6 +81,60 @@ class TlbCompilerTests(unittest.TestCase):
         self.assertEqual(1, stats["excluded_name_risk"])
         self.assertEqual(1, stats["excluded_type_risk"])
 
+    def test_real_inventory_schema_scalar_and_enum(self):
+        inventory = {
+            "types": [{
+                "name": "_Document",
+                "functions": [
+                    {
+                        "name": "EnvelopeVisible",
+                        "dispid": 9,
+                        "invocationKind": "INVOKE_PROPERTYPUT",
+                        "parameters": [{"type": {"vtName": "VT_BOOL"}}],
+                        "flags": {"names": []},
+                    },
+                    {
+                        "name": "DocumentDirection",
+                        "dispid": 28,
+                        "invocationKind": "INVOKE_PROPERTYPUT",
+                        "parameters": [{
+                            "type": {
+                                "vtName": "VT_USERDEFINED",
+                                "userDefinedType": {
+                                    "name": "PbDirectionType",
+                                    "kind": "TKIND_ENUM",
+                                },
+                            }
+                        }],
+                        "flags": {"names": []},
+                    },
+                    {
+                        "name": "AliasColor",
+                        "dispid": 29,
+                        "invocationKind": "INVOKE_PROPERTYPUT",
+                        "parameters": [{
+                            "type": {
+                                "vtName": "VT_USERDEFINED",
+                                "userDefinedType": {
+                                    "name": "MsoRGBType",
+                                    "kind": "TKIND_ALIAS",
+                                },
+                            }
+                        }],
+                        "flags": {"names": []},
+                    },
+                ],
+            }]
+        }
+        candidates, stats = tlb.compile_candidates(inventory)
+        self.assertEqual(["DocumentDirection", "EnvelopeVisible"],
+                         sorted(c.member_name for c in candidates))
+        enum = next(c for c in candidates if c.member_name == "DocumentDirection")
+        self.assertIn("TKIND_ENUM", enum.value_type)
+        scalar = next(c for c in candidates if c.member_name == "EnvelopeVisible")
+        self.assertEqual("VT_BOOL", scalar.value_type)
+        self.assertEqual(1, stats["excluded_type_risk"])
+
     def test_hidden_can_be_emitted_only_when_explicit(self):
         inventory = {
             "name": "TextFrame",
