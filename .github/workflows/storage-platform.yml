@@ -1,0 +1,27 @@
+name: storage-platform
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Cargo.toml"
+      - "crates/lesha-storage-*/**"
+      - ".github/workflows/storage-platform.yml"
+  pull_request:
+    paths:
+      - "Cargo.toml"
+      - "crates/lesha-storage-*/**"
+      - ".github/workflows/storage-platform.yml"
+
+jobs:
+  storage-platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Storage workspace tests
+        run: cargo test --workspace
