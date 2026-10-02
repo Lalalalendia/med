@@ -1,0 +1,63 @@
+{
+  "schema": "chaptera.pub.operation-catalog.example.v1",
+  "operations": [
+    {
+      "id": "ApplyTableStyle",
+      "fixture": "table-style-base",
+      "domain": "style",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.fill",
+        "cell.font",
+        "cell.border"
+      ],
+      "tags": [
+        "style",
+        "precedence"
+      ],
+      "conflicts_with": [],
+      "prerequisites": []
+    },
+    {
+      "id": "DirectCellFillOverride",
+      "fixture": "table-style-base",
+      "domain": "direct-format",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.fill"
+      ],
+      "tags": [
+        "precedence",
+        "materialization"
+      ],
+      "conflicts_with": [],
+      "prerequisites": []
+    },
+    {
+      "id": "DirectCellFontOverride",
+      "fixture": "table-style-base",
+      "domain": "direct-format",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.font"
+      ],
+      "tags": [
+        "precedence"
+      ],
+      "conflicts_with": [],
+      "prerequisites": []
+    },
+    {
+      "id": "MoveUnrelatedShape",
+      "fixture": "table-style-base",
+      "domain": "geometry",
+      "risk": "bounded",
+      "semantic_targets": [
+        "shape.bounds"
+      ],
+      "tags": [],
+      "conflicts_with": [],
+      "prerequisites": []
+    }
+  ]
+}
