@@ -320,8 +320,7 @@ mod tests {
         store.insert("table/contents/text_id", obs("1001", "Contents", 100));
         store.insert("story/quill/syid", obs("1001", "Quill", 100));
 
-        let ConstraintResult::NotEvaluable { missing } =
-            evaluate_all_equal(&store, constraint)
+        let ConstraintResult::NotEvaluable { missing } = evaluate_all_equal(&store, constraint)
         else {
             panic!("expected NotEvaluable");
         };
@@ -337,9 +336,7 @@ mod tests {
         store.insert("story/quill/syid", obs("1001", "Quill", 100));
         store.insert("tcd/quill/story_id", obs("9009", "Quill/TCD", 100));
 
-        let ConstraintResult::Violated { witness } =
-            evaluate_all_equal(&store, constraint)
-        else {
+        let ConstraintResult::Violated { witness } = evaluate_all_equal(&store, constraint) else {
             panic!("expected violation");
         };
         assert_eq!(witness.len(), 3);
@@ -425,10 +422,7 @@ mod tests {
         let constraint = &pub_seed_constraints()[3];
         let mut store = FactStore::default();
         store.insert("shape/semantic/width_emu", obs("100", "Contents", 100));
-        store.insert(
-            "escher/client_anchor/width_emu",
-            obs("101", "Escher", 100),
-        );
+        store.insert("escher/client_anchor/width_emu", obs("101", "Escher", 100));
 
         assert!(matches!(
             evaluate_all_equal(&store, constraint),
