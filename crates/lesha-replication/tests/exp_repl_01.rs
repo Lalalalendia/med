@@ -343,5 +343,8 @@ fn exp_repl_01_three_node_loss_corruption_and_repair() {
     assert_eq!(stale_return.verified_replicas, 3);
 
     assert_eq!(semantic_objects.snapshot(), semantic_before_repair);
-    assert_eq!(semantic_objects.heads(object).unwrap(), BTreeSet::from([v2]));
+    assert_eq!(
+        semantic_objects.heads(object).unwrap(),
+        BTreeSet::from([v2])
+    );
 }
