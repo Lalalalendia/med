@@ -64,14 +64,18 @@ pub struct ConstraintSpec {
 }
 
 impl ConstraintSpec {
-    pub fn all_equal(
+    pub fn all_equal<I, K>(
         id: impl Into<String>,
         authority_ref: impl Into<String>,
         state: ConstraintState,
         scope: impl Into<String>,
-        keys: impl IntoIterator<Item = impl Into<FactKey>>,
+        keys: I,
         repairability: Repairability,
-    ) -> Self {
+    ) -> Self
+    where
+        I: IntoIterator<Item = K>,
+        K: Into<FactKey>,
+    {
         Self {
             id: id.into(),
             authority_ref: authority_ref.into(),
