@@ -112,8 +112,7 @@ fn import_branch(
     )
 }
 
-fn divergent_fixture(
-) -> (
+fn divergent_fixture() -> (
     ObjectId,
     VersionFixture,
     VersionFixture,
@@ -274,5 +273,7 @@ fn tombstone_is_an_explicit_concurrent_version_not_peer_absence() {
         objects_without_delete.heads(object).unwrap(),
         BTreeSet::from([update.version_id])
     );
-    assert!(objects_without_delete.version(tombstone.version_id).is_err());
+    assert!(objects_without_delete
+        .version(tombstone.version_id)
+        .is_err());
 }
