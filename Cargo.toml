@@ -12,6 +12,7 @@ members = [
     "crates/lesha-sync",
     "crates/lesha-replication",
     "crates/lesha-control-core",
+    "crates/lesha-control-sqlite",
 ]
 resolver = "2"
 
