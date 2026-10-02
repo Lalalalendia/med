@@ -13,23 +13,36 @@ struct FactRow {
     authority_weight: u32,
 }
 
+const FIXTURE_REPOSITORY: &str = "apache/poi";
+const FIXTURE_COMMIT: &str = "732120980140d5ed64b482c470e0b625cdb1ab15";
+const FIXTURE_PATH: &str = "test-data/publisher/Sample.pub";
+const FIXTURE_GIT_BLOB_SHA: &str = "b870168319048c9e8631c2338eb937e6f8f62b5b";
+const FIXTURE_SHA256: &str =
+    "6fefdef46b87c767150878dc384549cb2d2ec2ac54de25f8ddb3a5628301107e";
+const FIXTURE_SIZE: u64 = 72_192;
+const TABLE_SEQ: u32 = 299;
+const CELLS_SEQ: u32 = 301;
+const RAW_TCD_DESCRIPTOR_ORDINAL: u32 = 3;
+const RESOLVED_STORY_SYID: &str = "6";
+const TCD_BOUNDARIES_UTF16: [u32; 6] = [15, 25, 39, 54, 66, 80];
+
 const HEALTHY_ROWS: [FactRow; 3] = [
     FactRow {
         key: "table/contents/text_id",
-        value: "1001",
+        value: RESOLVED_STORY_SYID,
         source: "Contents",
         authority_weight: 100,
     },
     FactRow {
         key: "story/quill/syid",
-        value: "1001",
+        value: RESOLVED_STORY_SYID,
         source: "Quill",
         authority_weight: 100,
     },
     FactRow {
         key: "tcd/quill/story_id",
-        value: "1001",
-        source: "Quill/TCD",
+        value: RESOLVED_STORY_SYID,
+        source: "Quill/TCD-resolved",
         authority_weight: 100,
     },
 ];
@@ -65,7 +78,7 @@ fn store_from(rows: &[FactRow]) -> FactStore {
     store
 }
 
-fn source_sha256(rows: &[FactRow]) -> String {
+fn fact_graph_sha256(rows: &[FactRow]) -> String {
     let mut canonical = rows
         .iter()
         .map(|row| {
@@ -203,7 +216,7 @@ fn single_corruption_case(spec: &ConstraintSpec) -> String {
 
     let candidates = rank_relation_repairs(&store, spec);
     let top = candidates.first().expect("repair candidate");
-    assert_eq!(top.value, "1001");
+    assert_eq!(top.value, RESOLVED_STORY_SYID);
     assert_eq!(top.support_weight, 200);
     assert!(top.auto_applicable);
     assert_eq!(top.edits.len(), 1);
@@ -214,7 +227,7 @@ fn single_corruption_case(spec: &ConstraintSpec) -> String {
     assert!(matches!(repaired, ConstraintResult::Satisfied));
 
     format!(
-        "{{\"name\":\"single-corrupt-tcd-relation\",\"corruption_delta\":[{{\"key\":\"tcd/quill/story_id\",\"from\":\"1001\",\"to\":\"9009\"}}],\"surviving_facts\":{},\"constraint_id\":{},\"evaluation\":{},\"ranked_candidates\":{},\"post_repair_validation\":{}}}",
+        "{{\"name\":\"single-corrupt-tcd-relation\",\"corruption_delta\":[{{\"key\":\"tcd/quill/story_id\",\"from\":\"6\",\"to\":\"9009\"}}],\"surviving_facts\":{},\"constraint_id\":{},\"evaluation\":{},\"ranked_candidates\":{},\"post_repair_validation\":{}}}",
         facts_json(&surviving),
         json_string(&spec.id),
         json_string(state_name(&result)),
@@ -247,7 +260,7 @@ fn ambiguous_case(spec: &ConstraintSpec) -> String {
         .all(|candidate| !candidate.auto_applicable));
 
     format!(
-        "{{\"name\":\"ambiguous-three-way-conflict\",\"corruption_delta\":[{{\"key\":\"story/quill/syid\",\"from\":\"1001\",\"to\":\"2002\"}},{{\"key\":\"tcd/quill/story_id\",\"from\":\"1001\",\"to\":\"3003\"}}],\"surviving_facts\":{},\"constraint_id\":{},\"evaluation\":{},\"ranked_candidates\":{},\"post_repair_validation\":null}}",
+        "{{\"name\":\"ambiguous-three-way-conflict\",\"corruption_delta\":[{{\"key\":\"story/quill/syid\",\"from\":\"6\",\"to\":\"2002\"}},{{\"key\":\"tcd/quill/story_id\",\"from\":\"6\",\"to\":\"3003\"}}],\"surviving_facts\":{},\"constraint_id\":{},\"evaluation\":{},\"ranked_candidates\":{},\"post_repair_validation\":null}}",
         facts_json(&surviving),
         json_string(&spec.id),
         json_string(state_name(&result)),
@@ -262,10 +275,25 @@ fn build_receipt() -> String {
         single_corruption_case(&spec),
         ambiguous_case(&spec),
     ];
+    let boundaries = TCD_BOUNDARIES_UTF16
+        .iter()
+        .map(u32::to_string)
+        .collect::<Vec<_>>()
+        .join(",");
 
     format!(
-        "{{\"schema\":\"chaptera.pub.cr06-constraint-repair.v1\",\"experiment_id\":\"CR06-CONSTRAINT-REPAIR-01\",\"source_hash_kind\":\"canonical_fact_graph_sha256\",\"source_sha256\":{},\"authority_boundary\":\"Relation-only graph repair proof. No PUB bytes are synthesized or written; native Publisher materialization is a separate later gate.\",\"constraint_id\":{},\"cases\":[{}]}}",
-        json_string(&source_sha256(&HEALTHY_ROWS)),
+        "{{\"schema\":\"chaptera.pub.cr06-constraint-repair.v1\",\"experiment_id\":\"CR06-CONSTRAINT-REPAIR-01\",\"source\":{{\"kind\":\"captured-public-fixture-metadata\",\"repository\":{},\"commit\":{},\"path\":{},\"git_blob_sha\":{},\"sha256\":{},\"size\":{},\"table_seq\":{},\"cells_seq\":{},\"table_text_id\":6,\"raw_tcd_descriptor_ordinal\":{},\"resolved_tcd_story_syid\":6,\"tcd_boundaries_utf16\":[{}]}},\"healthy_fact_graph_sha256\":{},\"resolution_note\":\"tcd/quill/story_id is the resolved Story SYID obtained as SYID[raw TCD descriptor ordinal]; the raw ordinal 3 is not compared directly with TABLE textId 6.\",\"authority_boundary\":\"Relation-only graph repair over captured mature TABLE metadata. No PUB bytes are synthesized or written; recovery of original source bytes and native Publisher materialization are separate later gates.\",\"constraint_id\":{},\"cases\":[{}]}}",
+        json_string(FIXTURE_REPOSITORY),
+        json_string(FIXTURE_COMMIT),
+        json_string(FIXTURE_PATH),
+        json_string(FIXTURE_GIT_BLOB_SHA),
+        json_string(FIXTURE_SHA256),
+        FIXTURE_SIZE,
+        TABLE_SEQ,
+        CELLS_SEQ,
+        RAW_TCD_DESCRIPTOR_ORDINAL,
+        boundaries,
+        json_string(&fact_graph_sha256(&HEALTHY_ROWS)),
         json_string(&spec.id),
         cases.join(",")
     )
@@ -277,13 +305,16 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::build_receipt;
+    use super::{build_receipt, FIXTURE_SHA256};
 
     #[test]
     fn cr06_receipt_contains_unique_repair_and_ambiguity_guard() {
         let receipt = build_receipt();
         assert!(receipt.contains("\"name\":\"healthy-control\""));
         assert!(receipt.contains("\"name\":\"single-corrupt-tcd-relation\""));
+        assert!(receipt.contains(FIXTURE_SHA256));
+        assert!(receipt.contains("\"raw_tcd_descriptor_ordinal\":3"));
+        assert!(receipt.contains("\"resolved_tcd_story_syid\":6"));
         assert!(receipt.contains("\"support_weight\":200"));
         assert!(receipt.contains("\"auto_applicable\":true"));
         assert!(receipt.contains("\"post_repair_validation\":\"Satisfied\""));
