@@ -2,9 +2,7 @@
 
 use std::collections::BTreeMap;
 
-use lesha_types::{
-    CheckpointId, ControlFrontierHash, DeltaHash, NamespaceId, ProducerSequence,
-};
+use lesha_types::{CheckpointId, ControlFrontierHash, DeltaHash, NamespaceId, ProducerSequence};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ControlContext {
@@ -191,12 +189,8 @@ pub struct DeltaEnvelopeHeader {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum DeltaAccept {
-    Applied {
-        new_head: ProducerSequence,
-    },
-    Duplicate {
-        sequence: ProducerSequence,
-    },
+    Applied { new_head: ProducerSequence },
+    Duplicate { sequence: ProducerSequence },
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
