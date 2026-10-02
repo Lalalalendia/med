@@ -136,6 +136,12 @@ fn metadata_failpoints_reopen_to_exact_old_or_new_state() {
             let retry = reopened.commit(&chunks, cmd2).unwrap();
             assert_eq!(retry, prior);
             assert!(reopened.version(v2).is_ok());
+
+            let ledger_count: i64 = reopened
+                .connection()
+                .query_row("SELECT COUNT(*) FROM commit_ledger", [], |row| row.get(0))
+                .unwrap();
+            assert_eq!(ledger_count, 2);
         } else {
             assert_eq!(reopened.heads(object).unwrap(), set(&[v1]));
             assert_eq!(reopened.operation(op2).unwrap(), None);
