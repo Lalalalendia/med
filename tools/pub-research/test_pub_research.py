@@ -83,6 +83,22 @@ class TlbCompilerTests(unittest.TestCase):
 
     def test_hidden_can_be_emitted_only_when_explicit(self):
         inventory = {
+            "name": "TextFrame",
+            "functions": [{
+                "name": "HiddenScalar",
+                "dispid": 101,
+                "invkind": "INVOKE_PROPERTYPUT",
+                "params": [{"type": "VT_I4"}],
+                "flags": ["FUNCFLAG_FHIDDEN"],
+            }],
+        }
+        candidates, _ = tlb.compile_candidates(inventory, include_hidden=True)
+        self.assertEqual(1, len(candidates))
+        self.assertTrue(candidates[0].hidden)
+        self.assertIn("metadata-hidden-or-restricted", candidates[0].risk_reasons)
+
+    def test_include_hidden_does_not_override_name_safety_filter(self):
+        inventory = {
             "name": "Options",
             "functions": [{
                 "name": "PrintLineByLine",
@@ -92,10 +108,9 @@ class TlbCompilerTests(unittest.TestCase):
                 "flags": ["FUNCFLAG_FHIDDEN"],
             }],
         }
-        candidates, _ = tlb.compile_candidates(inventory, include_hidden=True)
-        self.assertEqual(1, len(candidates))
-        self.assertTrue(candidates[0].hidden)
-        self.assertIn("metadata-hidden-or-restricted", candidates[0].risk_reasons)
+        candidates, stats = tlb.compile_candidates(inventory, include_hidden=True)
+        self.assertEqual([], candidates)
+        self.assertEqual(1, stats["excluded_name_risk"])
 
 
 class OperationAlgebraTests(unittest.TestCase):
