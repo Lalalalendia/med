@@ -253,7 +253,6 @@ pub fn evaluate_protection(
     })
 }
 
-
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct HealthEvidenceSequence(pub u64);
 
@@ -326,7 +325,8 @@ impl ReplicaHealthTracker {
     }
 
     pub fn last_sequence(&self) -> Option<HealthEvidenceSequence> {
-        self.last_observation.map(|observation| observation.sequence)
+        self.last_observation
+            .map(|observation| observation.sequence)
     }
 
     pub fn apply(
@@ -366,9 +366,9 @@ impl ReplicaHealthTracker {
             ReplicaHealthObservationKind::ReverificationRequired => match self.health {
                 ReceiptHealth::Corrupt => ReceiptHealth::Corrupt,
                 ReceiptHealth::Missing => ReceiptHealth::Missing,
-                ReceiptHealth::CurrentVerified
-                | ReceiptHealth::Stale
-                | ReceiptHealth::Unknown => ReceiptHealth::Stale,
+                ReceiptHealth::CurrentVerified | ReceiptHealth::Stale | ReceiptHealth::Unknown => {
+                    ReceiptHealth::Stale
+                }
             },
             ReplicaHealthObservationKind::DigestMismatch => ReceiptHealth::Corrupt,
             ReplicaHealthObservationKind::Missing => ReceiptHealth::Missing,
@@ -1208,12 +1208,7 @@ mod tests {
     fn health_observations_are_idempotent_and_monotonic() {
         let n = node(1);
         let mut tracker = ReplicaHealthTracker::new(n, 7);
-        let healthy = health_observation(
-            n,
-            7,
-            10,
-            ReplicaHealthObservationKind::VerifiedHealthy,
-        );
+        let healthy = health_observation(n, 7, 10, ReplicaHealthObservationKind::VerifiedHealthy);
 
         assert_eq!(
             tracker.apply(healthy),
@@ -1335,5 +1330,4 @@ mod tests {
             .unwrap();
         assert_eq!(tracker.health(), ReceiptHealth::CurrentVerified);
     }
-
 }
