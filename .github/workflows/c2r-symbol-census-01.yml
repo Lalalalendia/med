@@ -13,6 +13,8 @@ jobs:
   census:
     runs-on: windows-latest
     timeout-minutes: 60
+    env:
+      PUB_OFFICE_VERSION: "16.0.15601.20037"
     steps:
       - uses: actions/checkout@v5
 
@@ -41,7 +43,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path $source | Out-Null
           @"
           <Configuration>
-            <Add SourcePath="$source" OfficeClientEdition="32" Channel="Current" Version="16.0.15601.20088">
+            <Add SourcePath="$source" OfficeClientEdition="32" Channel="Current" Version="$env:PUB_OFFICE_VERSION">
               <Product ID="O365ProPlusRetail">
                 <Language ID="en-us" />
                 <ExcludeApp ID="Access" />
@@ -71,7 +73,7 @@ jobs:
           $p = Start-Process -FilePath "$pwd\out\odt\setup.exe" -ArgumentList "/download","$pwd\out\publisher2208.xml" -Wait -PassThru
           $files = @(Get-ChildItem out\office -Recurse -File -ErrorAction SilentlyContinue)
           [ordered]@{
-            requested_version = "16.0.15601.20088"
+            requested_version = "$env:PUB_OFFICE_VERSION"
             architecture = "x86"
             channel = "Current"
             product = "O365ProPlusRetail-minus-non-Publisher-apps"
