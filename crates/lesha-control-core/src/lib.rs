@@ -1,9 +1,11 @@
 #![forbid(unsafe_code)]
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::future::Future;
+use std::pin::Pin;
 
 use lesha_types::{
-    ClusterId, ControlAppliedIndex, ControlCommandId, ControlEpoch, NodeId, RecoveryEpoch,
+    ClusterId, ControlAppliedIndex, ControlCommandId, ControlEpoch, NodeId, NodeRef, RecoveryEpoch,
 };
 use sha2::{Digest, Sha256};
 
@@ -72,6 +74,74 @@ pub struct ControlSnapshotState {
 pub struct ControlSnapshot {
     pub checkpoint: ControlCheckpoint,
     pub state: ControlSnapshotState,
+}
+
+pub type ConsensusFuture<'a, T> =
+    Pin<Box<dyn Future<Output = Result<T, ConsensusError>> + Send + 'a>>;
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct VerifiedControlView {
+    pub cluster_id: ClusterId,
+    pub applied_index: ControlAppliedIndex,
+    pub control_epoch: ControlEpoch,
+    pub recovery_epoch: RecoveryEpoch,
+    pub state_root: [u8; 32],
+    pub voters: BTreeSet<NodeId>,
+    pub learners: BTreeSet<NodeId>,
+    pub revoked_nodes: BTreeSet<NodeId>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConsensusLearnerRequest {
+    pub node: NodeRef,
+    pub expected_control_epoch: ControlEpoch,
+    pub expected_recovery_epoch: RecoveryEpoch,
+    pub authorization_state_root: [u8; 32],
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConsensusMembershipRequest {
+    pub voters: BTreeSet<NodeId>,
+    pub expected_control_epoch: ControlEpoch,
+    pub expected_recovery_epoch: RecoveryEpoch,
+    pub authorization_state_root: [u8; 32],
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct MembershipChangeReceipt {
+    pub voters: BTreeSet<NodeId>,
+    pub control_epoch: ControlEpoch,
+    pub recovery_epoch: RecoveryEpoch,
+    pub authorization_state_root: [u8; 32],
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum ConsensusError {
+    NotLeader { leader_hint: Option<NodeId> },
+    QuorumUnavailable,
+    StaleAuthorization,
+    MembershipRejected,
+    ProviderUnavailable,
+    Fatal,
+}
+
+pub trait ControlConsensusPort: Send + Sync {
+    fn propose<'a>(
+        &'a self,
+        cmd: ValidatedControlCommand,
+    ) -> ConsensusFuture<'a, CommittedControlReceipt>;
+
+    fn linearizable_view<'a>(&'a self) -> ConsensusFuture<'a, VerifiedControlView>;
+
+    fn add_learner<'a>(
+        &'a self,
+        request: ConsensusLearnerRequest,
+    ) -> ConsensusFuture<'a, MembershipChangeReceipt>;
+
+    fn change_membership<'a>(
+        &'a self,
+        request: ConsensusMembershipRequest,
+    ) -> ConsensusFuture<'a, MembershipChangeReceipt>;
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -224,6 +294,36 @@ impl ControlState {
         receipt.state_root = self.state_root();
         self.committed.insert(cmd.command_id, receipt.clone());
         Ok(receipt)
+    }
+
+    pub fn verified_view(&self, applied_index: ControlAppliedIndex) -> VerifiedControlView {
+        let mut voters = BTreeSet::new();
+        let mut learners = BTreeSet::new();
+
+        for (node_id, member) in &self.members {
+            if member.revoked {
+                continue;
+            }
+            match member.role {
+                MemberRole::Learner => {
+                    learners.insert(*node_id);
+                }
+                MemberRole::Voter => {
+                    voters.insert(*node_id);
+                }
+            }
+        }
+
+        VerifiedControlView {
+            cluster_id: self.cluster_id,
+            applied_index,
+            control_epoch: self.control_epoch,
+            recovery_epoch: self.recovery_epoch,
+            state_root: self.state_root(),
+            voters,
+            learners,
+            revoked_nodes: self.revoked_nodes.clone(),
+        }
     }
 
     pub fn checkpoint(&self, applied_index: ControlAppliedIndex) -> ControlSnapshot {
@@ -561,6 +661,45 @@ mod tests {
 
         assert_eq!(left, right);
         assert_eq!(left.state_root(), right.state_root());
+    }
+
+    #[test]
+    fn verified_view_separates_voters_learners_and_revocations() {
+        let mut state = ControlState::new(cluster());
+        state
+            .apply(command(
+                1,
+                &state,
+                ControlCommandKind::AddLearner { node_id: node(7) },
+            ))
+            .unwrap();
+        state
+            .apply(command(
+                2,
+                &state,
+                ControlCommandKind::AddLearner { node_id: node(8) },
+            ))
+            .unwrap();
+        state
+            .apply(command(
+                3,
+                &state,
+                ControlCommandKind::PromoteVoter { node_id: node(8) },
+            ))
+            .unwrap();
+        state
+            .apply(command(
+                4,
+                &state,
+                ControlCommandKind::RevokeNode { node_id: node(7) },
+            ))
+            .unwrap();
+
+        let view = state.verified_view(ControlAppliedIndex(4));
+        assert!(view.learners.is_empty());
+        assert_eq!(view.voters, BTreeSet::from([node(8)]));
+        assert_eq!(view.revoked_nodes, BTreeSet::from([node(7)]));
+        assert_eq!(view.state_root, state.state_root());
     }
 
     #[test]
