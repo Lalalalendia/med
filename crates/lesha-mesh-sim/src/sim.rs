@@ -22,7 +22,7 @@ pub enum SimError {
     MissingDurablePresence(NodeId),
     MissingSessionLink { node: NodeId, session_id: SessionId },
     Queue(&'static str),
-    InvariantViolation(InvariantFailure),
+    InvariantViolation(Box<InvariantFailure>),
     StepLimitExceeded(usize),
 }
 
@@ -225,7 +225,7 @@ impl Simulation {
         });
 
         if let Some(failure) = invariant_failure {
-            return Err(SimError::InvariantViolation(failure));
+            return Err(SimError::InvariantViolation(Box::new(failure)));
         }
 
         for effect in output.effects {
