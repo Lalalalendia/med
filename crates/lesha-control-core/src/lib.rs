@@ -2,9 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use lesha_types::{
-    ClusterId, ControlCommandId, ControlEpoch, NodeId, RecoveryEpoch,
-};
+use lesha_types::{ClusterId, ControlCommandId, ControlEpoch, NodeId, RecoveryEpoch};
 use sha2::{Digest, Sha256};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -52,8 +50,14 @@ pub struct CommittedControlReceipt {
 pub enum ControlError {
     ClusterMismatch,
     IdempotencyConflict,
-    ControlEpochChanged { expected: ControlEpoch, actual: ControlEpoch },
-    RecoveryEpochChanged { expected: RecoveryEpoch, actual: RecoveryEpoch },
+    ControlEpochChanged {
+        expected: ControlEpoch,
+        actual: ControlEpoch,
+    },
+    RecoveryEpochChanged {
+        expected: RecoveryEpoch,
+        actual: RecoveryEpoch,
+    },
     MemberAlreadyExists(NodeId),
     MemberMissing(NodeId),
     MemberRevoked(NodeId),
@@ -210,11 +214,7 @@ mod tests {
         NodeId([tag; 32])
     }
 
-    fn command(
-        tag: u8,
-        state: &ControlState,
-        kind: ControlCommandKind,
-    ) -> ValidatedControlCommand {
+    fn command(tag: u8, state: &ControlState, kind: ControlCommandKind) -> ValidatedControlCommand {
         ValidatedControlCommand {
             command_id: ControlCommandId([tag; 16]),
             cluster_id: state.cluster_id,
@@ -229,12 +229,20 @@ mod tests {
     fn learner_must_be_explicitly_promoted() {
         let mut state = ControlState::new(cluster());
         state
-            .apply(command(1, &state, ControlCommandKind::AddLearner { node_id: node(7) }))
+            .apply(command(
+                1,
+                &state,
+                ControlCommandKind::AddLearner { node_id: node(7) },
+            ))
             .unwrap();
         assert_eq!(state.members[&node(7)].role, MemberRole::Learner);
 
         state
-            .apply(command(2, &state, ControlCommandKind::PromoteVoter { node_id: node(7) }))
+            .apply(command(
+                2,
+                &state,
+                ControlCommandKind::PromoteVoter { node_id: node(7) },
+            ))
             .unwrap();
         assert_eq!(state.members[&node(7)].role, MemberRole::Voter);
     }
@@ -243,20 +251,36 @@ mod tests {
     fn revoked_node_cannot_be_readded_or_promoted() {
         let mut state = ControlState::new(cluster());
         state
-            .apply(command(1, &state, ControlCommandKind::AddLearner { node_id: node(7) }))
+            .apply(command(
+                1,
+                &state,
+                ControlCommandKind::AddLearner { node_id: node(7) },
+            ))
             .unwrap();
         state
-            .apply(command(2, &state, ControlCommandKind::RevokeNode { node_id: node(7) }))
+            .apply(command(
+                2,
+                &state,
+                ControlCommandKind::RevokeNode { node_id: node(7) },
+            ))
             .unwrap();
 
         assert_eq!(
-            state.apply(command(3, &state, ControlCommandKind::PromoteVoter { node_id: node(7) })),
+            state.apply(command(
+                3,
+                &state,
+                ControlCommandKind::PromoteVoter { node_id: node(7) }
+            )),
             Err(ControlError::MemberRevoked(node(7)))
         );
 
         state.members.remove(&node(7));
         assert_eq!(
-            state.apply(command(4, &state, ControlCommandKind::AddLearner { node_id: node(7) })),
+            state.apply(command(
+                4,
+                &state,
+                ControlCommandKind::AddLearner { node_id: node(7) }
+            )),
             Err(ControlError::MemberRevoked(node(7)))
         );
     }
@@ -264,7 +288,13 @@ mod tests {
     #[test]
     fn command_id_is_idempotent_but_request_hash_is_bound() {
         let mut state = ControlState::new(cluster());
-        let cmd = command(1, &state, ControlCommandKind::SetPolicyHash { policy_hash: [9; 32] });
+        let cmd = command(
+            1,
+            &state,
+            ControlCommandKind::SetPolicyHash {
+                policy_hash: [9; 32],
+            },
+        );
         let first = state.apply(cmd.clone()).unwrap();
         let second = state.apply(cmd.clone()).unwrap();
         assert_eq!(first, second);
@@ -281,9 +311,21 @@ mod tests {
     #[test]
     fn stale_epoch_preconditions_fail_closed() {
         let mut state = ControlState::new(cluster());
-        let stale = command(1, &state, ControlCommandKind::SetPolicyHash { policy_hash: [2; 32] });
+        let stale = command(
+            1,
+            &state,
+            ControlCommandKind::SetPolicyHash {
+                policy_hash: [2; 32],
+            },
+        );
         state
-            .apply(command(2, &state, ControlCommandKind::SetPolicyHash { policy_hash: [3; 32] }))
+            .apply(command(
+                2,
+                &state,
+                ControlCommandKind::SetPolicyHash {
+                    policy_hash: [3; 32],
+                },
+            ))
             .unwrap();
 
         assert_eq!(
@@ -329,7 +371,9 @@ mod tests {
             let kind = match tag {
                 1 => ControlCommandKind::AddLearner { node_id: node(7) },
                 2 => ControlCommandKind::PromoteVoter { node_id: node(7) },
-                _ => ControlCommandKind::SetPolicyHash { policy_hash: [6; 32] },
+                _ => ControlCommandKind::SetPolicyHash {
+                    policy_hash: [6; 32],
+                },
             };
             let left_cmd = command(tag, &left, kind.clone());
             let right_cmd = command(tag, &right, kind);
