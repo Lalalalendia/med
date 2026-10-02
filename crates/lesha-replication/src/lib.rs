@@ -601,7 +601,6 @@ fn replace_or_append_evidence(
     out
 }
 
-
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub struct RepairBudget {
     pub max_targets: usize,
@@ -1815,5 +1814,4 @@ mod tests {
         assert_eq!(plan.used_jobs, 0);
         assert_eq!(plan.used_bytes, 0);
     }
-
 }
