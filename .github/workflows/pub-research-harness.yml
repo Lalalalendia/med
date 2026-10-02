@@ -3,6 +3,7 @@ name: PUB research harness
 on:
   push:
     branches:
+      - main
       - research/pub-experiment-compiler
     paths:
       - "tools/pub-research/**"
