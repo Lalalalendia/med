@@ -1,0 +1,45 @@
+{
+  "schema": "example",
+  "types": [
+    {
+      "name": "TextFrame",
+      "functions": [
+        {
+          "name": "AutoFitText",
+          "dispid": 6,
+          "invkind": "INVOKE_PROPERTYPUT",
+          "params": [
+            {
+              "type": "PbTextAutoFitType"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "name": "MarginLeft",
+          "dispid": 20,
+          "invkind": "INVOKE_PROPERTYPUT",
+          "params": [
+            {
+              "type": "VT_R8"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "name": "HiddenScalar",
+          "dispid": 99,
+          "invkind": "INVOKE_PROPERTYPUT",
+          "params": [
+            {
+              "type": "VT_I4"
+            }
+          ],
+          "flags": [
+            "FUNCFLAG_FHIDDEN"
+          ]
+        }
+      ]
+    }
+  ]
+}
