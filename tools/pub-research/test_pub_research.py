@@ -114,6 +114,22 @@ class TlbCompilerTests(unittest.TestCase):
 
 
 class OperationAlgebraTests(unittest.TestCase):
+    @staticmethod
+    def complete_row(ab, ba):
+        guard = {
+            "status": "ok",
+            "semantic_fingerprint": {"guard": "stable"},
+            "persistence_fingerprint": {"guard": "stable"},
+            "render_fingerprint": "guard-stable",
+        }
+        return {
+            "AB": ab,
+            "BA": ba,
+            "A_only": dict(guard),
+            "B_only": dict(guard),
+            "control": dict(guard),
+        }
+
     def test_generates_only_high_information_pairs(self):
         ops = opal.load_operations({
             "operations": [
@@ -149,43 +165,82 @@ class OperationAlgebraTests(unittest.TestCase):
         self.assertEqual(3, stats["pairs_considered"])
 
     def test_classifies_semantic_commute_persistence_diverge(self):
-        row = {
-            "pair_id": "OPALG-X",
-            "AB": {
+        row = self.complete_row(
+            {
                 "status": "ok",
                 "semantic_fingerprint": {"fill": "red", "font": "Arial"},
                 "persistence_fingerprint": {"Contents": "aaa", "Escher": "bbb"},
                 "render_fingerprint": "r1",
             },
-            "BA": {
+            {
                 "status": "ok",
                 "semantic_fingerprint": {"font": "Arial", "fill": "red"},
                 "persistence_fingerprint": {"Contents": "ccc", "Escher": "bbb"},
                 "render_fingerprint": "r1",
             },
-        }
+        )
+        row["pair_id"] = "OPALG-X"
         verdict = opal.classify_pair(row)
         self.assertEqual("semantic_commute_persistence_diverges", verdict["classification"])
         self.assertTrue(verdict["semantic_equal"])
         self.assertFalse(verdict["persistence_equal"])
 
     def test_classifies_hidden_precedence(self):
-        row = {
-            "AB": {
+        row = self.complete_row(
+            {
                 "status": "ok",
                 "semantic_fingerprint": {"fill": "red"},
                 "persistence_fingerprint": {"Contents": "aaa"},
                 "render_fingerprint": "red",
             },
-            "BA": {
+            {
                 "status": "ok",
                 "semantic_fingerprint": {"fill": "blue"},
                 "persistence_fingerprint": {"Contents": "bbb"},
                 "render_fingerprint": "blue",
             },
-        }
+        )
         verdict = opal.classify_pair(row)
         self.assertEqual("non_commutative_semantic_or_hidden_precedence", verdict["classification"])
+
+    def test_missing_fingerprint_is_inconclusive(self):
+        row = self.complete_row(
+            {
+                "status": "ok",
+                "semantic_fingerprint": {"fill": "red"},
+                "persistence_fingerprint": {"Contents": "aaa"},
+                "render_fingerprint": None,
+            },
+            {
+                "status": "ok",
+                "semantic_fingerprint": {"fill": "red"},
+                "persistence_fingerprint": {"Contents": "aaa"},
+                "render_fingerprint": None,
+            },
+        )
+        verdict = opal.classify_pair(row)
+        self.assertEqual("inconclusive", verdict["classification"])
+        self.assertEqual(["AB.render_fingerprint"], verdict["missing"])
+
+    def test_missing_control_arm_is_inconclusive(self):
+        row = self.complete_row(
+            {
+                "status": "ok",
+                "semantic_fingerprint": {"fill": "red"},
+                "persistence_fingerprint": {"Contents": "aaa"},
+                "render_fingerprint": "r1",
+            },
+            {
+                "status": "ok",
+                "semantic_fingerprint": {"fill": "red"},
+                "persistence_fingerprint": {"Contents": "aaa"},
+                "render_fingerprint": "r1",
+            },
+        )
+        del row["control"]
+        verdict = opal.classify_pair(row)
+        self.assertEqual("inconclusive", verdict["classification"])
+        self.assertEqual("control missing or failed", verdict["reason"])
 
 
 if __name__ == "__main__":
