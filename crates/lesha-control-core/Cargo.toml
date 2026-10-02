@@ -1,0 +1,10 @@
+[package]
+name = "lesha-control-core"
+version = "0.0.1"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+lesha-types = { path = "../lesha-types" }
+sha2.workspace = true
