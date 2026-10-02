@@ -98,4 +98,4 @@ python -m unittest discover -s tools/pub-research -p "test_*.py" -v
 ```
 
 No Publisher binaries, PDBs, or proprietary artifacts belong in this repository.
-Only derived metadata, experiment specs, and receipts should be committed.
+Only derived metadata, experiment specs, and receipts should be committed. The harness is intentionally standard-library-only, so its generator layer can be validated without Publisher.

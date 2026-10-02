@@ -1,0 +1,164 @@
+{
+  "schema": "chaptera.pub.operation-catalog.v1",
+  "provenance": {
+    "note": "Seeded only from already-established Publisher2019 research surfaces; catalog membership is not itself a format claim.",
+    "publisher_family": "16.0 / build12527 research baseline"
+  },
+  "operations": [
+    {
+      "id": "ApplyTableStyle_CheckbookRegister",
+      "fixture": "T840_table_base",
+      "domain": "table-style",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.fill",
+        "cell.font.bold",
+        "cell.font.family",
+        "cell.font.size",
+        "cell.border"
+      ],
+      "tags": [
+        "style",
+        "precedence",
+        "materialization"
+      ],
+      "conflicts_with": [],
+      "prerequisites": [
+        "fresh Publisher fixture",
+        "Save/Close/Reopen capture"
+      ]
+    },
+    {
+      "id": "DirectCellFillOverride_R2C2",
+      "fixture": "T840_table_base",
+      "domain": "direct-format",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.fill"
+      ],
+      "tags": [
+        "precedence",
+        "materialization"
+      ],
+      "conflicts_with": [],
+      "prerequisites": [
+        "target cell exists"
+      ]
+    },
+    {
+      "id": "DirectCellBoldOverride_R2C2",
+      "fixture": "T840_table_base",
+      "domain": "direct-format",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.font.bold"
+      ],
+      "tags": [
+        "precedence"
+      ],
+      "conflicts_with": [],
+      "prerequisites": [
+        "target cell exists"
+      ]
+    },
+    {
+      "id": "DirectCellFontFamilyOverride_R2C2",
+      "fixture": "T840_table_base",
+      "domain": "direct-format",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.font.family"
+      ],
+      "tags": [
+        "precedence"
+      ],
+      "conflicts_with": [],
+      "prerequisites": [
+        "target cell exists",
+        "font available"
+      ]
+    },
+    {
+      "id": "DirectCellFontSizeOverride_R2C2",
+      "fixture": "T840_table_base",
+      "domain": "direct-format",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.font.size"
+      ],
+      "tags": [
+        "precedence"
+      ],
+      "conflicts_with": [],
+      "prerequisites": [
+        "target cell exists"
+      ]
+    },
+    {
+      "id": "SetTopBorderColor_R2C2",
+      "fixture": "TABLE_BORDER_R2C2",
+      "domain": "table-border",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.border.top.color"
+      ],
+      "tags": [
+        "materialization"
+      ],
+      "conflicts_with": [],
+      "prerequisites": [
+        "R2C2 exists",
+        "native border carrier capture"
+      ]
+    },
+    {
+      "id": "SetTopBorderWeight_R2C2",
+      "fixture": "TABLE_BORDER_R2C2",
+      "domain": "table-border",
+      "risk": "bounded",
+      "semantic_targets": [
+        "cell.border.top.weight"
+      ],
+      "tags": [
+        "materialization"
+      ],
+      "conflicts_with": [],
+      "prerequisites": [
+        "R2C2 exists",
+        "native border carrier capture"
+      ]
+    },
+    {
+      "id": "SetPageMaster",
+      "fixture": "MASTER_PRECEDENCE_BASE",
+      "domain": "page-master",
+      "risk": "review-required",
+      "semantic_targets": [
+        "page.master"
+      ],
+      "tags": [
+        "precedence"
+      ],
+      "conflicts_with": [],
+      "prerequisites": [
+        "native fixture"
+      ]
+    },
+    {
+      "id": "SetIgnoreMaster",
+      "fixture": "MASTER_PRECEDENCE_BASE",
+      "domain": "page-master",
+      "risk": "review-required",
+      "semantic_targets": [
+        "page.master.suppression"
+      ],
+      "tags": [
+        "precedence"
+      ],
+      "conflicts_with": [],
+      "prerequisites": [
+        "IGNORE-MASTER-AUTH-01 unresolved; do not auto-run"
+      ]
+    }
+  ]
+}
