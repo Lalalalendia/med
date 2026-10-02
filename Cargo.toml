@@ -13,6 +13,7 @@ members = [
     "crates/lesha-replication",
     "crates/lesha-control-core",
     "crates/lesha-control-sqlite",
+    "crates/lesha-control-openraft",
 ]
 resolver = "2"
 
@@ -24,4 +25,5 @@ rust-version = "1.82"
 [workspace.dependencies]
 sha2 = "0.10"
 rusqlite = { version = "0.32", features = ["bundled"] }
+openraft = { version = "=0.9.25", features = ["storage-v2"] }
 tempfile = "3.13"
