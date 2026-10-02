@@ -202,7 +202,7 @@ pub fn rank_relation_repairs(
     });
 
     if let Some((first, rest)) = candidates.split_first_mut() {
-        let second_weight = rest.first().map(|candidate| candidate.support_weight).unwrap_or(0);
+        let second_weight = rest\n            .first()\n            .map(|candidate| candidate.support_weight)\n            .unwrap_or(0);
         if first.support_weight > second_weight {
             first.auto_applicable = true;
         }
@@ -254,7 +254,7 @@ pub fn pub_seed_constraints() -> Vec<ConstraintSpec> {
             "bounded geometry join: shape height -> Escher ClientAnchor height",
             ConstraintState::Bounded,
             "applicability-proven shape class only",
-            ["shape/semantic/height_emu", "escher/client_anchor/height_emu"],
+            [\n                "shape/semantic/height_emu",\n                "escher/client_anchor/height_emu",\n            ],
             Repairability::None,
         ),
         ConstraintSpec::all_equal(
@@ -365,7 +365,7 @@ mod tests {
 
         let candidates = rank_relation_repairs(&store, &constraint);
         assert_eq!(candidates.len(), 2);
-        assert!(candidates.iter().all(|candidate| !candidate.auto_applicable));
+        assert!(candidates\n            .iter()\n            .all(|candidate| !candidate.auto_applicable));
     }
 
     #[test]
@@ -386,7 +386,7 @@ mod tests {
         let candidates = rank_relation_repairs(&store, &constraint);
         assert_eq!(candidates[0].support_weight, 100);
         assert_eq!(candidates[1].support_weight, 100);
-        assert!(candidates.iter().all(|candidate| !candidate.auto_applicable));
+        assert!(candidates\n            .iter()\n            .all(|candidate| !candidate.auto_applicable));
     }
 
     #[test]
