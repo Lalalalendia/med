@@ -1,0 +1,24 @@
+name: C2R Publisher Symbol Census 01
+
+on:
+  push:
+    branches:
+      - research/c2r-symbol-census-01
+    paths:
+      - ".github/workflows/c2r-symbol-census-01.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: windows-latest
+    steps:
+      - name: Environment preflight
+        shell: pwsh
+        run: |
+          $PSVersionTable
+          python --version
+          git --version
+          [Environment]::OSVersion.VersionString
