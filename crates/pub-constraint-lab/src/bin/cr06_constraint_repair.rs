@@ -1,6 +1,6 @@
 use pub_constraint_lab::{
-    evaluate_all_equal, pub_seed_constraints, rank_relation_repairs, ConstraintResult, ConstraintSpec,
-    FactKey, FactStore, Observation, RepairCandidate,
+    evaluate_all_equal, pub_seed_constraints, rank_relation_repairs, ConstraintResult,
+    ConstraintSpec, FactKey, FactStore, Observation, RepairCandidate,
 };
 use sha2::{Digest, Sha256};
 use std::fmt::Write;
@@ -242,7 +242,9 @@ fn ambiguous_case(spec: &ConstraintSpec) -> String {
 
     let candidates = rank_relation_repairs(&store, spec);
     assert_eq!(candidates.len(), 3);
-    assert!(candidates.iter().all(|candidate| !candidate.auto_applicable));
+    assert!(candidates
+        .iter()
+        .all(|candidate| !candidate.auto_applicable));
 
     format!(
         "{{\"name\":\"ambiguous-three-way-conflict\",\"corruption_delta\":[{{\"key\":\"story/quill/syid\",\"from\":\"1001\",\"to\":\"2002\"}},{{\"key\":\"tcd/quill/story_id\",\"from\":\"1001\",\"to\":\"3003\"}}],\"surviving_facts\":{},\"constraint_id\":{},\"evaluation\":{},\"ranked_candidates\":{},\"post_repair_validation\":null}}",
