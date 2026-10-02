@@ -80,15 +80,21 @@ pub type ConsensusFuture<'a, T> =
     Pin<Box<dyn Future<Output = Result<T, ConsensusError>> + Send + 'a>>;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct VerifiedControlView {
+pub struct SemanticControlView {
     pub cluster_id: ClusterId,
     pub applied_index: ControlAppliedIndex,
     pub control_epoch: ControlEpoch,
     pub recovery_epoch: RecoveryEpoch,
     pub state_root: [u8; 32],
-    pub voters: BTreeSet<NodeId>,
+    pub authorized_voters: BTreeSet<NodeId>,
     pub learners: BTreeSet<NodeId>,
     pub revoked_nodes: BTreeSet<NodeId>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct VerifiedControlView {
+    pub semantic: SemanticControlView,
+    pub active_voters: BTreeSet<NodeId>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -296,8 +302,8 @@ impl ControlState {
         Ok(receipt)
     }
 
-    pub fn verified_view(&self, applied_index: ControlAppliedIndex) -> VerifiedControlView {
-        let mut voters = BTreeSet::new();
+    pub fn semantic_view(&self, applied_index: ControlAppliedIndex) -> SemanticControlView {
+        let mut authorized_voters = BTreeSet::new();
         let mut learners = BTreeSet::new();
 
         for (node_id, member) in &self.members {
@@ -309,18 +315,18 @@ impl ControlState {
                     learners.insert(*node_id);
                 }
                 MemberRole::Voter => {
-                    voters.insert(*node_id);
+                    authorized_voters.insert(*node_id);
                 }
             }
         }
 
-        VerifiedControlView {
+        SemanticControlView {
             cluster_id: self.cluster_id,
             applied_index,
             control_epoch: self.control_epoch,
             recovery_epoch: self.recovery_epoch,
             state_root: self.state_root(),
-            voters,
+            authorized_voters,
             learners,
             revoked_nodes: self.revoked_nodes.clone(),
         }
@@ -664,7 +670,7 @@ mod tests {
     }
 
     #[test]
-    fn verified_view_separates_voters_learners_and_revocations() {
+    fn semantic_view_separates_authorized_voters_learners_and_revocations() {
         let mut state = ControlState::new(cluster());
         state
             .apply(command(
@@ -695,9 +701,9 @@ mod tests {
             ))
             .unwrap();
 
-        let view = state.verified_view(ControlAppliedIndex(4));
+        let view = state.semantic_view(ControlAppliedIndex(4));
         assert!(view.learners.is_empty());
-        assert_eq!(view.voters, BTreeSet::from([node(8)]));
+        assert_eq!(view.authorized_voters, BTreeSet::from([node(8)]));
         assert_eq!(view.revoked_nodes, BTreeSet::from([node(7)]));
         assert_eq!(view.state_root, state.state_root());
     }
