@@ -1,6 +1,6 @@
 # PUB research harness
 
-This directory contains two research compilers for Microsoft Publisher experiments.
+This directory contains two deterministic research compilers for Microsoft Publisher experiments.
 It is intentionally isolated from the LesHa product crates.
 
 ## 1. TLB experiment compiler
