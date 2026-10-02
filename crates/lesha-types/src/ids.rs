@@ -66,3 +66,6 @@ pub struct ControlEpoch(pub u64);
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct RecoveryEpoch(pub u64);
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct ControlAppliedIndex(pub u64);
