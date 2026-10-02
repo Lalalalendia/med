@@ -253,7 +253,6 @@ pub fn evaluate_protection(
     })
 }
 
-
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum RepairCandidateState {
     Available,
@@ -320,7 +319,14 @@ pub fn plan_repairs(
 
     while !projected.deficits.is_empty() && targets.len() < max_targets {
         let current_gap = deficit_units(&projected);
-        let mut best: Option<(usize, usize, bool, NodeId, RepairCandidate, ProtectionStatus)> = None;
+        let mut best: Option<(
+            usize,
+            usize,
+            bool,
+            NodeId,
+            RepairCandidate,
+            ProtectionStatus,
+        )> = None;
 
         for candidate in candidates {
             if selected.contains(&candidate.node.node_id)
@@ -357,10 +363,7 @@ pub fn plan_repairs(
                 Some(existing) => {
                     rank.0 > existing.0
                         || (rank.0 == existing.0 && rank.1 > existing.1)
-                        || (rank.0 == existing.0
-                            && rank.1 == existing.1
-                            && rank.2
-                            && !existing.2)
+                        || (rank.0 == existing.0 && rank.1 == existing.1 && rank.2 && !existing.2)
                         || (rank.0 == existing.0
                             && rank.1 == existing.1
                             && rank.2 == existing.2
@@ -1004,5 +1007,4 @@ mod tests {
         assert_eq!(plan.targets[0].node.node_id, NodeId([2; 32]));
         assert_eq!(plan.projected.verified_replicas, 2);
     }
-
 }
