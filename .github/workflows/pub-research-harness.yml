@@ -1,0 +1,60 @@
+name: PUB research harness
+
+on:
+  push:
+    branches:
+      - research/pub-experiment-compiler
+    paths:
+      - "tools/pub-research/**"
+      - ".github/workflows/pub-research-harness.yml"
+  pull_request:
+    paths:
+      - "tools/pub-research/**"
+      - ".github/workflows/pub-research-harness.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Unit tests
+        run: python -m unittest discover -s tools/pub-research -p "test_*.py" -v
+
+      - name: Compile example TLB matrix
+        run: |
+          mkdir -p out/pub-research
+          python tools/pub-research/tlb_experiment_compiler.py             tools/pub-research/examples/tlb_inventory.json             --out out/pub-research/tlb-experiments.json
+          python - <<'PY'
+          import json
+          p=json.load(open("out/pub-research/tlb-experiments.json",encoding="utf-8"))
+          assert p["schema"] == "chaptera.pub.tlb-experiment-matrix.v1"
+          assert p["stats"]["candidates"] == 2
+          PY
+
+      - name: Generate example operation algebra
+        run: |
+          python tools/pub-research/operation_algebra.py generate             tools/pub-research/examples/operations.json             --out out/pub-research/operation-pairs.json
+          python - <<'PY'
+          import json
+          p=json.load(open("out/pub-research/operation-pairs.json",encoding="utf-8"))
+          assert p["schema"] == "chaptera.pub.operation-algebra.v1"
+          assert p["stats"]["pairs_emitted"] >= 3
+          PY
+
+      - name: Upload derived specs
+        uses: actions/upload-artifact@v4
+        with:
+          name: pub-research-derived-specs
+          path: out/pub-research/**
+          if-no-files-found: error
+          retention-days: 14
