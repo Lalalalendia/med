@@ -33,11 +33,23 @@ jobs:
           p = json.load(open("out/pub-constraint/cr06-constraint-repair.json", encoding="utf-8"))
           assert p["schema"] == "chaptera.pub.cr06-constraint-repair.v1"
           assert p["experiment_id"] == "CR06-CONSTRAINT-REPAIR-01"
+          source = p["source"]
+          assert source["repository"] == "apache/poi"
+          assert source["commit"] == "732120980140d5ed64b482c470e0b625cdb1ab15"
+          assert source["path"] == "test-data/publisher/Sample.pub"
+          assert source["sha256"] == "6fefdef46b87c767150878dc384549cb2d2ec2ac54de25f8ddb3a5628301107e"
+          assert source["size"] == 72192
+          assert source["table_seq"] == 299
+          assert source["cells_seq"] == 301
+          assert source["table_text_id"] == 6
+          assert source["raw_tcd_descriptor_ordinal"] == 3
+          assert source["resolved_tcd_story_syid"] == 6
+          assert source["tcd_boundaries_utf16"] == [15, 25, 39, 54, 66, 80]
           cases = {x["name"]: x for x in p["cases"]}
           assert cases["healthy-control"]["evaluation"] == "Satisfied"
           single = cases["single-corrupt-tcd-relation"]
           assert single["evaluation"] == "Violated"
-          assert single["ranked_candidates"][0]["value"] == "1001"
+          assert single["ranked_candidates"][0]["value"] == "6"
           assert single["ranked_candidates"][0]["auto_applicable"] is True
           assert single["post_repair_validation"] == "Satisfied"
           ambiguous = cases["ambiguous-three-way-conflict"]
