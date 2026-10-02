@@ -199,42 +199,42 @@ pub fn evaluate_protection(
     let distinct_power_domains = power_domains.len();
 
     let mut deficits = Vec::new();
-    push_deficit(
-        &mut deficits,
-        policy.full_replica_count,
-        verified_replicas,
-        PolicyDeficit::FullReplicas,
-    );
-    push_deficit(
-        &mut deficits,
-        policy.min_distinct_hosts,
-        distinct_hosts,
-        PolicyDeficit::DistinctHosts,
-    );
-    push_deficit(
-        &mut deficits,
-        policy.min_distinct_storage_devices,
-        distinct_storage_devices,
-        PolicyDeficit::DistinctStorageDevices,
-    );
-    push_deficit(
-        &mut deficits,
-        policy.min_distinct_sites,
-        distinct_sites,
-        PolicyDeficit::DistinctSites,
-    );
-    push_deficit(
-        &mut deficits,
-        policy.min_distinct_power_domains,
-        distinct_power_domains,
-        PolicyDeficit::DistinctPowerDomains,
-    );
-    push_deficit(
-        &mut deficits,
-        policy.min_anchor_replicas,
-        anchor_replicas,
-        PolicyDeficit::AnchorReplicas,
-    );
+    if verified_replicas < policy.full_replica_count {
+        deficits.push(PolicyDeficit::FullReplicas {
+            required: policy.full_replica_count,
+            observed: verified_replicas,
+        });
+    }
+    if distinct_hosts < policy.min_distinct_hosts {
+        deficits.push(PolicyDeficit::DistinctHosts {
+            required: policy.min_distinct_hosts,
+            observed: distinct_hosts,
+        });
+    }
+    if distinct_storage_devices < policy.min_distinct_storage_devices {
+        deficits.push(PolicyDeficit::DistinctStorageDevices {
+            required: policy.min_distinct_storage_devices,
+            observed: distinct_storage_devices,
+        });
+    }
+    if distinct_sites < policy.min_distinct_sites {
+        deficits.push(PolicyDeficit::DistinctSites {
+            required: policy.min_distinct_sites,
+            observed: distinct_sites,
+        });
+    }
+    if distinct_power_domains < policy.min_distinct_power_domains {
+        deficits.push(PolicyDeficit::DistinctPowerDomains {
+            required: policy.min_distinct_power_domains,
+            observed: distinct_power_domains,
+        });
+    }
+    if anchor_replicas < policy.min_anchor_replicas {
+        deficits.push(PolicyDeficit::AnchorReplicas {
+            required: policy.min_anchor_replicas,
+            observed: anchor_replicas,
+        });
+    }
 
     Ok(ProtectionStatus {
         state: if deficits.is_empty() {
@@ -251,17 +251,6 @@ pub fn evaluate_protection(
         anchor_replicas,
         deficits,
     })
-}
-
-fn push_deficit(
-    deficits: &mut Vec<PolicyDeficit>,
-    required: usize,
-    observed: usize,
-    make: fn { required: usize, observed: usize } -> PolicyDeficit,
-) {
-    if observed < required {
-        deficits.push(make { required, observed });
-    }
 }
 
 #[cfg(test)]
