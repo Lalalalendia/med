@@ -8,3 +8,8 @@ license.workspace = true
 [dependencies]
 lesha-types = { path = "../lesha-types" }
 lesha-storage-core = { path = "../lesha-storage-core" }
+
+[dev-dependencies]
+lesha-canonical = { path = "../lesha-canonical" }
+lesha-storage-memory = { path = "../lesha-storage-memory" }
+sha2.workspace = true
