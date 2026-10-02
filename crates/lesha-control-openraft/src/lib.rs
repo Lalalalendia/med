@@ -84,7 +84,6 @@ impl OpenRaftNodeRegistry {
     }
 }
 
-
 pub trait ControlViewSource: Send + Sync {
     fn current_view<'a>(&'a self) -> ConsensusFuture<'a, VerifiedControlView>;
 }
@@ -188,9 +187,9 @@ where
                 Err(error) => {
                     let mapped = self.map_raft_error(error);
                     match mapped {
-                        ConsensusError::ProviderUnavailable => {
-                            Err(self.enrich_provider_error(ConsensusError::QuorumUnavailable).await)
-                        }
+                        ConsensusError::ProviderUnavailable => Err(self
+                            .enrich_provider_error(ConsensusError::QuorumUnavailable)
+                            .await),
                         other => Err(other),
                     }
                 }
@@ -202,9 +201,9 @@ where
         Box::pin(async move {
             match self.current_authoritative_view().await {
                 Ok(view) => Ok(view),
-                Err(ConsensusError::ProviderUnavailable) => {
-                    Err(self.enrich_provider_error(ConsensusError::QuorumUnavailable).await)
-                }
+                Err(ConsensusError::ProviderUnavailable) => Err(self
+                    .enrich_provider_error(ConsensusError::QuorumUnavailable)
+                    .await),
                 Err(other) => Err(other),
             }
         })
@@ -235,11 +234,9 @@ where
             {
                 let mapped = self.map_raft_error(error);
                 return match mapped {
-                    ConsensusError::ProviderUnavailable => {
-                        Err(self
-                            .enrich_provider_error(ConsensusError::MembershipRejected)
-                            .await)
-                    }
+                    ConsensusError::ProviderUnavailable => Err(self
+                        .enrich_provider_error(ConsensusError::MembershipRejected)
+                        .await),
                     other => Err(other),
                 };
             }
@@ -279,11 +276,9 @@ where
             if let Err(error) = self.raft.change_membership(provider_voters, true).await {
                 let mapped = self.map_raft_error(error);
                 return match mapped {
-                    ConsensusError::ProviderUnavailable => {
-                        Err(self
-                            .enrich_provider_error(ConsensusError::MembershipRejected)
-                            .await)
-                    }
+                    ConsensusError::ProviderUnavailable => Err(self
+                        .enrich_provider_error(ConsensusError::MembershipRejected)
+                        .await),
                     other => Err(other),
                 };
             }
