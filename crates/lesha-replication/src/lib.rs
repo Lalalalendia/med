@@ -601,6 +601,226 @@ fn replace_or_append_evidence(
     out
 }
 
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub struct RepairBudget {
+    pub max_targets: usize,
+    pub max_jobs: usize,
+    pub max_bytes: u64,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct RepairWorkCandidate {
+    pub candidate: RepairCandidate,
+    pub expected_bytes: u64,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct ScheduledRepairWork {
+    pub node: NodeRef,
+    pub expected_bytes: u64,
+    pub deficit_units_closed: usize,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DeferredRepairReason {
+    TargetBudgetExhausted,
+    JobBudgetExhausted,
+    ByteBudgetExceeded,
+    NotCurrentlySchedulable,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct DeferredRepairWork {
+    pub node: NodeRef,
+    pub expected_bytes: u64,
+    pub reason: DeferredRepairReason,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct BoundedRepairPlan {
+    pub state: RepairPlanState,
+    pub initial: ProtectionStatus,
+    pub scheduled: Vec<ScheduledRepairWork>,
+    pub deferred: Vec<DeferredRepairWork>,
+    pub projected: ProtectionStatus,
+    pub used_jobs: usize,
+    pub used_bytes: u64,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum BoundedRepairPlanError {
+    Protection(ProtectionEvaluationError),
+    DuplicateCandidate(NodeId),
+}
+
+pub fn plan_bounded_repairs(
+    target: &ProtectedSubject,
+    policy: ReplicaPlacementPolicy,
+    evidence: &[ReplicaEvidence],
+    candidates: &[RepairWorkCandidate],
+    budget: RepairBudget,
+) -> Result<BoundedRepairPlan, BoundedRepairPlanError> {
+    let initial = evaluate_protection(target, policy, evidence)
+        .map_err(BoundedRepairPlanError::Protection)?;
+
+    let mut seen_candidates = BTreeSet::new();
+    for work in candidates {
+        if !seen_candidates.insert(work.candidate.node.node_id) {
+            return Err(BoundedRepairPlanError::DuplicateCandidate(
+                work.candidate.node.node_id,
+            ));
+        }
+    }
+
+    let mut working_evidence = evidence.to_vec();
+    let mut projected = initial.clone();
+    let mut selected = BTreeSet::new();
+    let mut scheduled = Vec::new();
+    let mut used_jobs = 0usize;
+    let mut used_bytes = 0u64;
+
+    while !projected.deficits.is_empty()
+        && scheduled.len() < budget.max_targets
+        && used_jobs < budget.max_jobs
+    {
+        let remaining_bytes = budget.max_bytes.saturating_sub(used_bytes);
+        let current_gap = deficit_units(&projected);
+        let mut best: Option<(
+            usize,
+            usize,
+            bool,
+            NodeId,
+            RepairWorkCandidate,
+            ProtectionStatus,
+        )> = None;
+
+        for work in candidates {
+            let candidate = work.candidate;
+            if selected.contains(&candidate.node.node_id)
+                || candidate.node.cluster_id != target.cluster_id
+                || candidate.state != RepairCandidateState::Available
+                || candidate.eligibility != DurabilityEligibility::CountsForDurability
+                || projected.credited_nodes.contains(&candidate.node.node_id)
+                || work.expected_bytes > remaining_bytes
+            {
+                continue;
+            }
+
+            let candidate_evidence = projected_evidence_for_candidate(target, candidate);
+            let candidate_set = replace_or_append_evidence(&working_evidence, candidate_evidence);
+            let candidate_status = evaluate_protection(target, policy, &candidate_set)
+                .map_err(BoundedRepairPlanError::Protection)?;
+            let gain = current_gap.saturating_sub(deficit_units(&candidate_status));
+            if gain == 0 {
+                continue;
+            }
+
+            let rank = (
+                gain,
+                known_domain_count(candidate.topology),
+                candidate.is_anchor,
+                candidate.node.node_id,
+                *work,
+                candidate_status,
+            );
+            let replace = match &best {
+                None => true,
+                Some(existing) => {
+                    rank.0 > existing.0
+                        || (rank.0 == existing.0 && rank.1 > existing.1)
+                        || (rank.0 == existing.0 && rank.1 == existing.1 && rank.2 && !existing.2)
+                        || (rank.0 == existing.0
+                            && rank.1 == existing.1
+                            && rank.2 == existing.2
+                            && rank.3 < existing.3)
+                }
+            };
+            if replace {
+                best = Some(rank);
+            }
+        }
+
+        let Some((gain, _, _, node_id, work, candidate_status)) = best else {
+            break;
+        };
+
+        selected.insert(node_id);
+        used_jobs += 1;
+        used_bytes += work.expected_bytes;
+        working_evidence = replace_or_append_evidence(
+            &working_evidence,
+            projected_evidence_for_candidate(target, work.candidate),
+        );
+        projected = candidate_status;
+        scheduled.push(ScheduledRepairWork {
+            node: work.candidate.node,
+            expected_bytes: work.expected_bytes,
+            deficit_units_closed: gain,
+        });
+    }
+
+    let remaining_bytes = budget.max_bytes.saturating_sub(used_bytes);
+    let current_gap = deficit_units(&projected);
+    let mut deferred = Vec::new();
+
+    if !projected.deficits.is_empty() {
+        for work in candidates {
+            let candidate = work.candidate;
+            if selected.contains(&candidate.node.node_id)
+                || projected.credited_nodes.contains(&candidate.node.node_id)
+                || candidate.node.cluster_id != target.cluster_id
+            {
+                continue;
+            }
+
+            let candidate_evidence = projected_evidence_for_candidate(target, candidate);
+            let candidate_set = replace_or_append_evidence(&working_evidence, candidate_evidence);
+            let candidate_status = evaluate_protection(target, policy, &candidate_set)
+                .map_err(BoundedRepairPlanError::Protection)?;
+            let gain = current_gap.saturating_sub(deficit_units(&candidate_status));
+            if gain == 0 {
+                continue;
+            }
+
+            let reason = if candidate.state != RepairCandidateState::Available
+                || candidate.eligibility != DurabilityEligibility::CountsForDurability
+            {
+                DeferredRepairReason::NotCurrentlySchedulable
+            } else if scheduled.len() >= budget.max_targets {
+                DeferredRepairReason::TargetBudgetExhausted
+            } else if used_jobs >= budget.max_jobs {
+                DeferredRepairReason::JobBudgetExhausted
+            } else if work.expected_bytes > remaining_bytes {
+                DeferredRepairReason::ByteBudgetExceeded
+            } else {
+                continue;
+            };
+
+            deferred.push(DeferredRepairWork {
+                node: candidate.node,
+                expected_bytes: work.expected_bytes,
+                reason,
+            });
+        }
+    }
+    deferred.sort_by_key(|work| work.node.node_id);
+
+    Ok(BoundedRepairPlan {
+        state: if projected.deficits.is_empty() {
+            RepairPlanState::Complete
+        } else {
+            RepairPlanState::Partial
+        },
+        initial,
+        scheduled,
+        deferred,
+        projected,
+        used_jobs,
+        used_bytes,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1330,4 +1550,270 @@ mod tests {
             .unwrap();
         assert_eq!(tracker.health(), ReceiptHealth::CurrentVerified);
     }
+    fn work_candidate(
+        tag: u8,
+        host: Option<u8>,
+        anchor: bool,
+        state: RepairCandidateState,
+        expected_bytes: u64,
+    ) -> RepairWorkCandidate {
+        RepairWorkCandidate {
+            candidate: candidate(tag, host, anchor, state),
+            expected_bytes,
+        }
+    }
+
+    #[test]
+    fn bounded_repair_skips_oversized_target_and_schedules_fitting_work() {
+        let current = [evidence(
+            1,
+            Some(1),
+            true,
+            ReceiptHealth::CurrentVerified,
+            DurabilityEligibility::CountsForDurability,
+        )];
+        let plan = plan_bounded_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 3,
+                min_distinct_hosts: 3,
+                ..Default::default()
+            },
+            &current,
+            &[
+                work_candidate(2, Some(2), false, RepairCandidateState::Available, 100),
+                work_candidate(3, Some(3), false, RepairCandidateState::Available, 10),
+            ],
+            RepairBudget {
+                max_targets: 2,
+                max_jobs: 2,
+                max_bytes: 10,
+            },
+        )
+        .unwrap();
+
+        assert_eq!(plan.state, RepairPlanState::Partial);
+        assert_eq!(plan.scheduled.len(), 1);
+        assert_eq!(plan.scheduled[0].node.node_id, NodeId([3; 32]));
+        assert_eq!(plan.used_jobs, 1);
+        assert_eq!(plan.used_bytes, 10);
+        assert_eq!(
+            plan.deferred,
+            vec![DeferredRepairWork {
+                node: node(2),
+                expected_bytes: 100,
+                reason: DeferredRepairReason::ByteBudgetExceeded,
+            }]
+        );
+        assert_eq!(plan.projected.verified_replicas, 2);
+    }
+
+    #[test]
+    fn bounded_repair_job_budget_preserves_remaining_deficit() {
+        let current = [evidence(
+            1,
+            Some(1),
+            true,
+            ReceiptHealth::CurrentVerified,
+            DurabilityEligibility::CountsForDurability,
+        )];
+        let plan = plan_bounded_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 3,
+                ..Default::default()
+            },
+            &current,
+            &[
+                work_candidate(2, Some(2), false, RepairCandidateState::Available, 1),
+                work_candidate(3, Some(3), false, RepairCandidateState::Available, 1),
+            ],
+            RepairBudget {
+                max_targets: 2,
+                max_jobs: 1,
+                max_bytes: 100,
+            },
+        )
+        .unwrap();
+
+        assert_eq!(plan.state, RepairPlanState::Partial);
+        assert_eq!(plan.scheduled.len(), 1);
+        assert_eq!(plan.scheduled[0].node.node_id, NodeId([2; 32]));
+        assert_eq!(
+            plan.deferred,
+            vec![DeferredRepairWork {
+                node: node(3),
+                expected_bytes: 1,
+                reason: DeferredRepairReason::JobBudgetExhausted,
+            }]
+        );
+        assert_eq!(
+            plan.projected.deficits,
+            vec![PolicyDeficit::FullReplicas {
+                required: 3,
+                observed: 2,
+            }]
+        );
+    }
+
+    #[test]
+    fn bounded_repair_target_budget_is_distinct_from_job_budget() {
+        let current = [evidence(
+            1,
+            Some(1),
+            true,
+            ReceiptHealth::CurrentVerified,
+            DurabilityEligibility::CountsForDurability,
+        )];
+        let plan = plan_bounded_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 3,
+                ..Default::default()
+            },
+            &current,
+            &[
+                work_candidate(2, Some(2), false, RepairCandidateState::Available, 1),
+                work_candidate(3, Some(3), false, RepairCandidateState::Available, 1),
+            ],
+            RepairBudget {
+                max_targets: 1,
+                max_jobs: 2,
+                max_bytes: 100,
+            },
+        )
+        .unwrap();
+
+        assert_eq!(plan.scheduled.len(), 1);
+        assert_eq!(
+            plan.deferred,
+            vec![DeferredRepairWork {
+                node: node(3),
+                expected_bytes: 1,
+                reason: DeferredRepairReason::TargetBudgetExhausted,
+            }]
+        );
+    }
+
+    #[test]
+    fn bounded_repair_marks_unavailable_useful_target_as_deferred() {
+        let current = [evidence(
+            1,
+            Some(1),
+            true,
+            ReceiptHealth::CurrentVerified,
+            DurabilityEligibility::CountsForDurability,
+        )];
+        let plan = plan_bounded_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 2,
+                ..Default::default()
+            },
+            &current,
+            &[work_candidate(
+                2,
+                Some(2),
+                false,
+                RepairCandidateState::TemporarilyUnavailable,
+                10,
+            )],
+            RepairBudget {
+                max_targets: 1,
+                max_jobs: 1,
+                max_bytes: 100,
+            },
+        )
+        .unwrap();
+
+        assert!(plan.scheduled.is_empty());
+        assert_eq!(
+            plan.deferred,
+            vec![DeferredRepairWork {
+                node: node(2),
+                expected_bytes: 10,
+                reason: DeferredRepairReason::NotCurrentlySchedulable,
+            }]
+        );
+        assert_eq!(plan.state, RepairPlanState::Partial);
+    }
+
+    #[test]
+    fn bounded_repair_is_deterministic_across_candidate_input_order() {
+        let current = [evidence(
+            1,
+            Some(1),
+            true,
+            ReceiptHealth::CurrentVerified,
+            DurabilityEligibility::CountsForDurability,
+        )];
+        let left = [
+            work_candidate(3, Some(3), false, RepairCandidateState::Available, 1),
+            work_candidate(2, Some(2), false, RepairCandidateState::Available, 1),
+        ];
+        let right = [left[1], left[0]];
+        let policy = ReplicaPlacementPolicy {
+            full_replica_count: 3,
+            ..Default::default()
+        };
+        let budget = RepairBudget {
+            max_targets: 1,
+            max_jobs: 1,
+            max_bytes: 10,
+        };
+
+        let first = plan_bounded_repairs(&target(), policy, &current, &left, budget).unwrap();
+        let second = plan_bounded_repairs(&target(), policy, &current, &right, budget).unwrap();
+
+        assert_eq!(first, second);
+        assert_eq!(first.scheduled[0].node.node_id, NodeId([2; 32]));
+    }
+
+    #[test]
+    fn bounded_repair_does_no_work_when_policy_is_already_satisfied() {
+        let current = [
+            evidence(
+                1,
+                Some(1),
+                true,
+                ReceiptHealth::CurrentVerified,
+                DurabilityEligibility::CountsForDurability,
+            ),
+            evidence(
+                2,
+                Some(2),
+                false,
+                ReceiptHealth::CurrentVerified,
+                DurabilityEligibility::CountsForDurability,
+            ),
+        ];
+        let plan = plan_bounded_repairs(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 2,
+                ..Default::default()
+            },
+            &current,
+            &[work_candidate(
+                3,
+                Some(3),
+                false,
+                RepairCandidateState::Available,
+                5,
+            )],
+            RepairBudget {
+                max_targets: 4,
+                max_jobs: 4,
+                max_bytes: 100,
+            },
+        )
+        .unwrap();
+
+        assert_eq!(plan.state, RepairPlanState::Complete);
+        assert!(plan.scheduled.is_empty());
+        assert!(plan.deferred.is_empty());
+        assert_eq!(plan.used_jobs, 0);
+        assert_eq!(plan.used_bytes, 0);
+    }
+
 }
