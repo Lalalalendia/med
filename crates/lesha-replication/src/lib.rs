@@ -253,6 +253,134 @@ pub fn evaluate_protection(
     })
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
+pub struct HealthEvidenceSequence(pub u64);
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ReplicaHealthObservationKind {
+    VerifiedHealthy,
+    ReverificationRequired,
+    DigestMismatch,
+    Missing,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct ReplicaHealthObservation {
+    pub node: NodeRef,
+    pub storage_generation: u64,
+    pub sequence: HealthEvidenceSequence,
+    pub kind: ReplicaHealthObservationKind,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum HealthObservationApply {
+    Applied { health: ReceiptHealth },
+    Duplicate,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum HealthTrackerError {
+    NodeMismatch,
+    StorageGenerationMismatch {
+        expected: u64,
+        received: u64,
+    },
+    SequenceRegression {
+        last: HealthEvidenceSequence,
+        received: HealthEvidenceSequence,
+    },
+    SequenceEquivocation {
+        sequence: HealthEvidenceSequence,
+    },
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct ReplicaHealthTracker {
+    node: NodeRef,
+    storage_generation: u64,
+    last_observation: Option<ReplicaHealthObservation>,
+    health: ReceiptHealth,
+}
+
+impl ReplicaHealthTracker {
+    pub fn new(node: NodeRef, storage_generation: u64) -> Self {
+        Self {
+            node,
+            storage_generation,
+            last_observation: None,
+            health: ReceiptHealth::Unknown,
+        }
+    }
+
+    pub fn node(&self) -> NodeRef {
+        self.node
+    }
+
+    pub fn storage_generation(&self) -> u64 {
+        self.storage_generation
+    }
+
+    pub fn health(&self) -> ReceiptHealth {
+        self.health
+    }
+
+    pub fn last_sequence(&self) -> Option<HealthEvidenceSequence> {
+        self.last_observation
+            .map(|observation| observation.sequence)
+    }
+
+    pub fn apply(
+        &mut self,
+        observation: ReplicaHealthObservation,
+    ) -> Result<HealthObservationApply, HealthTrackerError> {
+        if observation.node != self.node {
+            return Err(HealthTrackerError::NodeMismatch);
+        }
+        if observation.storage_generation != self.storage_generation {
+            return Err(HealthTrackerError::StorageGenerationMismatch {
+                expected: self.storage_generation,
+                received: observation.storage_generation,
+            });
+        }
+
+        if let Some(last) = self.last_observation {
+            if observation.sequence < last.sequence {
+                return Err(HealthTrackerError::SequenceRegression {
+                    last: last.sequence,
+                    received: observation.sequence,
+                });
+            }
+            if observation.sequence == last.sequence {
+                return if observation == last {
+                    Ok(HealthObservationApply::Duplicate)
+                } else {
+                    Err(HealthTrackerError::SequenceEquivocation {
+                        sequence: observation.sequence,
+                    })
+                };
+            }
+        }
+
+        self.health = match observation.kind {
+            ReplicaHealthObservationKind::VerifiedHealthy => ReceiptHealth::CurrentVerified,
+            ReplicaHealthObservationKind::ReverificationRequired => match self.health {
+                ReceiptHealth::Corrupt => ReceiptHealth::Corrupt,
+                ReceiptHealth::Missing => ReceiptHealth::Missing,
+                ReceiptHealth::CurrentVerified | ReceiptHealth::Stale | ReceiptHealth::Unknown => {
+                    ReceiptHealth::Stale
+                }
+            },
+            ReplicaHealthObservationKind::DigestMismatch => ReceiptHealth::Corrupt,
+            ReplicaHealthObservationKind::Missing => ReceiptHealth::Missing,
+        };
+        self.last_observation = Some(observation);
+
+        Ok(HealthObservationApply::Applied {
+            health: self.health,
+        })
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum RepairCandidateState {
     Available,
@@ -1006,5 +1134,200 @@ mod tests {
         assert_eq!(plan.state, RepairPlanState::Complete);
         assert_eq!(plan.targets[0].node.node_id, NodeId([2; 32]));
         assert_eq!(plan.projected.verified_replicas, 2);
+    }
+    fn health_observation(
+        node: NodeRef,
+        storage_generation: u64,
+        sequence: u64,
+        kind: ReplicaHealthObservationKind,
+    ) -> ReplicaHealthObservation {
+        ReplicaHealthObservation {
+            node,
+            storage_generation,
+            sequence: HealthEvidenceSequence(sequence),
+            kind,
+        }
+    }
+
+    #[test]
+    fn reverification_required_removes_durability_credit_without_wall_clock_logic() {
+        let n = node(1);
+        let mut tracker = ReplicaHealthTracker::new(n, 1);
+        tracker
+            .apply(health_observation(
+                n,
+                1,
+                1,
+                ReplicaHealthObservationKind::VerifiedHealthy,
+            ))
+            .unwrap();
+
+        let mut replica = evidence(
+            1,
+            Some(1),
+            true,
+            tracker.health(),
+            DurabilityEligibility::CountsForDurability,
+        );
+        let current = evaluate_protection(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 1,
+                ..Default::default()
+            },
+            &[replica.clone()],
+        )
+        .unwrap();
+        assert_eq!(current.state, ProtectionState::Replicated);
+
+        tracker
+            .apply(health_observation(
+                n,
+                1,
+                2,
+                ReplicaHealthObservationKind::ReverificationRequired,
+            ))
+            .unwrap();
+        replica.receipt_health = tracker.health();
+
+        let stale = evaluate_protection(
+            &target(),
+            ReplicaPlacementPolicy {
+                full_replica_count: 1,
+                ..Default::default()
+            },
+            &[replica],
+        )
+        .unwrap();
+        assert_eq!(tracker.health(), ReceiptHealth::Stale);
+        assert_eq!(stale.verified_replicas, 0);
+        assert_eq!(stale.state, ProtectionState::DegradedPolicyUnsatisfied);
+    }
+
+    #[test]
+    fn health_observations_are_idempotent_and_monotonic() {
+        let n = node(1);
+        let mut tracker = ReplicaHealthTracker::new(n, 7);
+        let healthy = health_observation(n, 7, 10, ReplicaHealthObservationKind::VerifiedHealthy);
+
+        assert_eq!(
+            tracker.apply(healthy),
+            Ok(HealthObservationApply::Applied {
+                health: ReceiptHealth::CurrentVerified
+            })
+        );
+        assert_eq!(
+            tracker.apply(healthy),
+            Ok(HealthObservationApply::Duplicate)
+        );
+        assert_eq!(
+            tracker.apply(health_observation(
+                n,
+                7,
+                10,
+                ReplicaHealthObservationKind::Missing,
+            )),
+            Err(HealthTrackerError::SequenceEquivocation {
+                sequence: HealthEvidenceSequence(10)
+            })
+        );
+        assert_eq!(
+            tracker.apply(health_observation(
+                n,
+                7,
+                9,
+                ReplicaHealthObservationKind::VerifiedHealthy,
+            )),
+            Err(HealthTrackerError::SequenceRegression {
+                last: HealthEvidenceSequence(10),
+                received: HealthEvidenceSequence(9)
+            })
+        );
+        assert_eq!(tracker.health(), ReceiptHealth::CurrentVerified);
+    }
+
+    #[test]
+    fn health_observation_is_bound_to_node_and_storage_generation() {
+        let n = node(1);
+        let mut tracker = ReplicaHealthTracker::new(n, 4);
+
+        assert_eq!(
+            tracker.apply(health_observation(
+                node(2),
+                4,
+                1,
+                ReplicaHealthObservationKind::VerifiedHealthy,
+            )),
+            Err(HealthTrackerError::NodeMismatch)
+        );
+        assert_eq!(
+            tracker.apply(health_observation(
+                n,
+                3,
+                1,
+                ReplicaHealthObservationKind::VerifiedHealthy,
+            )),
+            Err(HealthTrackerError::StorageGenerationMismatch {
+                expected: 4,
+                received: 3
+            })
+        );
+        assert_eq!(tracker.health(), ReceiptHealth::Unknown);
+    }
+
+    #[test]
+    fn corruption_or_missing_state_persists_until_explicit_healthy_reverification() {
+        let n = node(1);
+        let mut tracker = ReplicaHealthTracker::new(n, 1);
+
+        tracker
+            .apply(health_observation(
+                n,
+                1,
+                1,
+                ReplicaHealthObservationKind::DigestMismatch,
+            ))
+            .unwrap();
+        assert_eq!(tracker.health(), ReceiptHealth::Corrupt);
+
+        tracker
+            .apply(health_observation(
+                n,
+                1,
+                2,
+                ReplicaHealthObservationKind::ReverificationRequired,
+            ))
+            .unwrap();
+        assert_eq!(tracker.health(), ReceiptHealth::Corrupt);
+
+        tracker
+            .apply(health_observation(
+                n,
+                1,
+                3,
+                ReplicaHealthObservationKind::VerifiedHealthy,
+            ))
+            .unwrap();
+        assert_eq!(tracker.health(), ReceiptHealth::CurrentVerified);
+
+        tracker
+            .apply(health_observation(
+                n,
+                1,
+                4,
+                ReplicaHealthObservationKind::Missing,
+            ))
+            .unwrap();
+        assert_eq!(tracker.health(), ReceiptHealth::Missing);
+
+        tracker
+            .apply(health_observation(
+                n,
+                1,
+                5,
+                ReplicaHealthObservationKind::VerifiedHealthy,
+            ))
+            .unwrap();
+        assert_eq!(tracker.health(), ReceiptHealth::CurrentVerified);
     }
 }
