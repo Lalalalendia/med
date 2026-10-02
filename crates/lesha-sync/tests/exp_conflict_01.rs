@@ -160,9 +160,20 @@ fn exp_conflict_01_concurrent_branches_converge_without_lww() {
     assert_eq!(objects_a.heads(object).unwrap(), expected_heads);
     assert_eq!(objects_b.heads(object).unwrap(), expected_heads);
 
-    let all_versions = [v1.version_id, v2a.version_id, v3a.version_id, v2b.version_id];
-    assert_eq!(graph(&objects_a, &all_versions), graph(&objects_b, &all_versions));
-    assert_eq!(objects_a.rebuild_heads().unwrap(), objects_b.rebuild_heads().unwrap());
+    let all_versions = [
+        v1.version_id,
+        v2a.version_id,
+        v3a.version_id,
+        v2b.version_id,
+    ];
+    assert_eq!(
+        graph(&objects_a, &all_versions),
+        graph(&objects_b, &all_versions)
+    );
+    assert_eq!(
+        objects_a.rebuild_heads().unwrap(),
+        objects_b.rebuild_heads().unwrap()
+    );
 
     // Two fresh receivers observe different valid transport orders. Both end
     // with the same causal graph/head-set even though their local ledger order differs.
@@ -180,7 +191,10 @@ fn exp_conflict_01_concurrent_branches_converge_without_lww() {
 
     assert_eq!(objects_c.heads(object).unwrap(), expected_heads);
     assert_eq!(objects_d.heads(object).unwrap(), expected_heads);
-    assert_eq!(graph(&objects_c, &all_versions), graph(&objects_d, &all_versions));
+    assert_eq!(
+        graph(&objects_c, &all_versions),
+        graph(&objects_d, &all_versions)
+    );
 }
 
 #[test]
@@ -197,7 +211,9 @@ fn causal_child_cannot_arrive_before_missing_parent_and_advance_heads() {
 
     assert_eq!(
         import_branch(&mut chunks, &mut objects, &v3a),
-        Err(ImportError::Commit(CommitError::ParentMissing(v2a.version_id)))
+        Err(ImportError::Commit(CommitError::ParentMissing(
+            v2a.version_id
+        )))
     );
     assert_eq!(objects.heads(object).unwrap(), before);
     assert!(objects.version(v3a.version_id).is_err());
