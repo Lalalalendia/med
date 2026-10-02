@@ -201,19 +201,41 @@ def _eq(a: Any, b: Any) -> bool:
 
 
 def classify_pair(row: dict[str, Any]) -> dict[str, Any]:
-    ab = row.get("AB") or {}
-    ba = row.get("BA") or {}
+    required_arms = ("AB", "BA", "A_only", "B_only", "control")
+    required_fingerprints = (
+        "semantic_fingerprint",
+        "persistence_fingerprint",
+        "render_fingerprint",
+    )
+    arms: dict[str, dict[str, Any]] = {}
 
-    for arm_name, arm in (("AB", ab), ("BA", ba)):
-        if not arm or arm.get("status", "ok") != "ok":
+    for arm_name in required_arms:
+        arm = row.get(arm_name)
+        if not isinstance(arm, dict) or arm.get("status") != "ok":
             return {
                 "classification": "inconclusive",
                 "reason": f"{arm_name} missing or failed",
             }
 
-    sem_equal = _eq(ab.get("semantic_fingerprint"), ba.get("semantic_fingerprint"))
-    persist_equal = _eq(ab.get("persistence_fingerprint"), ba.get("persistence_fingerprint"))
-    render_equal = _eq(ab.get("render_fingerprint"), ba.get("render_fingerprint"))
+        missing = [
+            key
+            for key in required_fingerprints
+            if key not in arm or arm[key] is None
+        ]
+        if missing:
+            return {
+                "classification": "inconclusive",
+                "reason": f"{arm_name} missing required fingerprints",
+                "missing": [f"{arm_name}.{key}" for key in missing],
+            }
+        arms[arm_name] = arm
+
+    ab = arms["AB"]
+    ba = arms["BA"]
+
+    sem_equal = _eq(ab["semantic_fingerprint"], ba["semantic_fingerprint"])
+    persist_equal = _eq(ab["persistence_fingerprint"], ba["persistence_fingerprint"])
+    render_equal = _eq(ab["render_fingerprint"], ba["render_fingerprint"])
 
     if sem_equal and persist_equal and render_equal:
         c = "commute_exact_after_reopen"
