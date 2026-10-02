@@ -1,9 +1,14 @@
 #![forbid(unsafe_code)]
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::io::Cursor;
+use std::sync::{Arc, RwLock};
 
-use lesha_control_core::{CommittedControlReceipt, ValidatedControlCommand};
+use lesha_control_core::{
+    CommittedControlReceipt, ConsensusError, ConsensusFuture, ConsensusLearnerRequest,
+    ConsensusMembershipRequest, ControlConsensusPort, MembershipChangeReceipt,
+    ValidatedControlCommand, VerifiedControlView,
+};
 use lesha_types::NodeId;
 
 openraft::declare_raft_types!(
@@ -79,6 +84,220 @@ impl OpenRaftNodeRegistry {
     }
 }
 
+
+pub trait ControlViewSource: Send + Sync {
+    fn current_view<'a>(&'a self) -> ConsensusFuture<'a, VerifiedControlView>;
+}
+
+#[derive(Clone)]
+pub struct OpenRaftConsensusAdapter<V> {
+    raft: openraft::Raft<LesHaOpenRaftConfig>,
+    registry: Arc<RwLock<OpenRaftNodeRegistry>>,
+    view_source: Arc<V>,
+}
+
+impl<V> OpenRaftConsensusAdapter<V>
+where
+    V: ControlViewSource + 'static,
+{
+    pub fn new(
+        raft: openraft::Raft<LesHaOpenRaftConfig>,
+        registry: Arc<RwLock<OpenRaftNodeRegistry>>,
+        view_source: Arc<V>,
+    ) -> Self {
+        Self {
+            raft,
+            registry,
+            view_source,
+        }
+    }
+
+    fn provider_id(&self, node_id: NodeId) -> Result<u64, ConsensusError> {
+        self.registry
+            .read()
+            .map_err(|_| ConsensusError::Fatal)?
+            .provider_id(node_id)
+            .ok_or(ConsensusError::MembershipRejected)
+    }
+
+    fn lesha_node_id(&self, provider_id: u64) -> Option<NodeId> {
+        self.registry
+            .read()
+            .ok()
+            .and_then(|registry| registry.lesha_node_id(provider_id))
+    }
+
+    async fn current_authoritative_view(&self) -> Result<VerifiedControlView, ConsensusError> {
+        self.raft
+            .ensure_linearizable()
+            .await
+            .map_err(|error| self.map_raft_error(error))?;
+        self.view_source.current_view().await
+    }
+
+    fn authorize(
+        view: &VerifiedControlView,
+        expected_control_epoch: lesha_types::ControlEpoch,
+        expected_recovery_epoch: lesha_types::RecoveryEpoch,
+        authorization_state_root: [u8; 32],
+    ) -> Result<(), ConsensusError> {
+        if view.control_epoch != expected_control_epoch
+            || view.recovery_epoch != expected_recovery_epoch
+            || view.state_root != authorization_state_root
+        {
+            return Err(ConsensusError::StaleAuthorization);
+        }
+        Ok(())
+    }
+
+    fn provider_voters(&self, voters: &BTreeSet<NodeId>) -> Result<BTreeSet<u64>, ConsensusError> {
+        voters
+            .iter()
+            .map(|node_id| self.provider_id(*node_id))
+            .collect()
+    }
+
+    fn map_raft_error<E>(&self, error: openraft::error::RaftError<u64, E>) -> ConsensusError {
+        match error {
+            openraft::error::RaftError::Fatal(_) => ConsensusError::Fatal,
+            openraft::error::RaftError::APIError(_) => ConsensusError::ProviderUnavailable,
+        }
+    }
+
+    async fn enrich_provider_error(&self, fallback: ConsensusError) -> ConsensusError {
+        match self.raft.current_leader().await {
+            Some(provider_id) => ConsensusError::NotLeader {
+                leader_hint: self.lesha_node_id(provider_id),
+            },
+            None => fallback,
+        }
+    }
+}
+
+impl<V> ControlConsensusPort for OpenRaftConsensusAdapter<V>
+where
+    V: ControlViewSource + 'static,
+{
+    fn propose<'a>(
+        &'a self,
+        cmd: ValidatedControlCommand,
+    ) -> ConsensusFuture<'a, CommittedControlReceipt> {
+        Box::pin(async move {
+            match self.raft.client_write(cmd).await {
+                Ok(response) => Ok(response.data),
+                Err(error) => {
+                    let mapped = self.map_raft_error(error);
+                    match mapped {
+                        ConsensusError::ProviderUnavailable => {
+                            Err(self.enrich_provider_error(ConsensusError::QuorumUnavailable).await)
+                        }
+                        other => Err(other),
+                    }
+                }
+            }
+        })
+    }
+
+    fn linearizable_view<'a>(&'a self) -> ConsensusFuture<'a, VerifiedControlView> {
+        Box::pin(async move {
+            match self.current_authoritative_view().await {
+                Ok(view) => Ok(view),
+                Err(ConsensusError::ProviderUnavailable) => {
+                    Err(self.enrich_provider_error(ConsensusError::QuorumUnavailable).await)
+                }
+                Err(other) => Err(other),
+            }
+        })
+    }
+
+    fn add_learner<'a>(
+        &'a self,
+        request: ConsensusLearnerRequest,
+    ) -> ConsensusFuture<'a, MembershipChangeReceipt> {
+        Box::pin(async move {
+            let view = self.current_authoritative_view().await?;
+            Self::authorize(
+                &view,
+                request.expected_control_epoch,
+                request.expected_recovery_epoch,
+                request.authorization_state_root,
+            )?;
+
+            if view.revoked_nodes.contains(&request.node.node_id) {
+                return Err(ConsensusError::MembershipRejected);
+            }
+
+            let provider_id = self.provider_id(request.node.node_id)?;
+            if let Err(error) = self
+                .raft
+                .add_learner(provider_id, openraft::EmptyNode::new(), true)
+                .await
+            {
+                let mapped = self.map_raft_error(error);
+                return match mapped {
+                    ConsensusError::ProviderUnavailable => {
+                        Err(self
+                            .enrich_provider_error(ConsensusError::MembershipRejected)
+                            .await)
+                    }
+                    other => Err(other),
+                };
+            }
+
+            Ok(MembershipChangeReceipt {
+                voters: view.voters,
+                control_epoch: view.control_epoch,
+                recovery_epoch: view.recovery_epoch,
+                authorization_state_root: view.state_root,
+            })
+        })
+    }
+
+    fn change_membership<'a>(
+        &'a self,
+        request: ConsensusMembershipRequest,
+    ) -> ConsensusFuture<'a, MembershipChangeReceipt> {
+        Box::pin(async move {
+            let view = self.current_authoritative_view().await?;
+            Self::authorize(
+                &view,
+                request.expected_control_epoch,
+                request.expected_recovery_epoch,
+                request.authorization_state_root,
+            )?;
+
+            if request.voters.is_empty()
+                || request
+                    .voters
+                    .iter()
+                    .any(|node_id| view.revoked_nodes.contains(node_id))
+            {
+                return Err(ConsensusError::MembershipRejected);
+            }
+
+            let provider_voters = self.provider_voters(&request.voters)?;
+            if let Err(error) = self.raft.change_membership(provider_voters, true).await {
+                let mapped = self.map_raft_error(error);
+                return match mapped {
+                    ConsensusError::ProviderUnavailable => {
+                        Err(self
+                            .enrich_provider_error(ConsensusError::MembershipRejected)
+                            .await)
+                    }
+                    other => Err(other),
+                };
+            }
+
+            Ok(MembershipChangeReceipt {
+                voters: request.voters,
+                control_epoch: view.control_epoch,
+                recovery_epoch: view.recovery_epoch,
+                authorization_state_root: view.state_root,
+            })
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -127,6 +346,47 @@ mod tests {
                 existing_node_id: node(1)
             })
         );
+    }
+
+    #[test]
+    fn authorization_requires_exact_epoch_and_state_root() {
+        let view = VerifiedControlView {
+            cluster_id: lesha_types::ClusterId([1; 16]),
+            applied_index: lesha_types::ControlAppliedIndex(3),
+            control_epoch: lesha_types::ControlEpoch(4),
+            recovery_epoch: lesha_types::RecoveryEpoch(2),
+            state_root: [9; 32],
+            voters: BTreeSet::new(),
+            learners: BTreeSet::new(),
+            revoked_nodes: BTreeSet::new(),
+        };
+
+        assert_eq!(
+            OpenRaftConsensusAdapter::<NeverView>::authorize(
+                &view,
+                lesha_types::ControlEpoch(4),
+                lesha_types::RecoveryEpoch(2),
+                [9; 32],
+            ),
+            Ok(())
+        );
+        assert_eq!(
+            OpenRaftConsensusAdapter::<NeverView>::authorize(
+                &view,
+                lesha_types::ControlEpoch(3),
+                lesha_types::RecoveryEpoch(2),
+                [9; 32],
+            ),
+            Err(ConsensusError::StaleAuthorization)
+        );
+    }
+
+    struct NeverView;
+
+    impl ControlViewSource for NeverView {
+        fn current_view<'a>(&'a self) -> ConsensusFuture<'a, VerifiedControlView> {
+            Box::pin(async { Err(ConsensusError::Fatal) })
+        }
     }
 
     #[test]
