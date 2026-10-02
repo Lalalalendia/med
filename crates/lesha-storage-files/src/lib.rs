@@ -111,15 +111,9 @@ impl ChunkStorePort for FileChunkStore {
         file.sync_all().map_err(|_| ChunkStoreError::Io)?;
         drop(file);
         self.hit(StorageFailPoint::ChunkAfterFlushBeforePublish)?;
-        fs::rename(&temp_path, &final_path).map_err(|_| ChunkStoreError::Io)?;
+        publish_temp(&temp_path, &final_path)?;
         self.hit(StorageFailPoint::ChunkAfterPublish)?;
-
-        #[cfg(unix)]
-        {
-            File::open(self.chunks_dir())
-                .and_then(|dir| dir.sync_all())
-                .map_err(|_| ChunkStoreError::Io)?;
-        }
+        finish_publish_durability(&self.chunks_dir())?;
 
         match self.chunk_health(expected.chunk_id)? {
             ChunkHealth::Healthy => Ok(DurableChunkReceipt {
@@ -166,6 +160,48 @@ impl ChunkStorePort for FileChunkStore {
         out.sort();
         Ok(out)
     }
+}
+
+#[cfg(windows)]
+fn publish_temp(temp_path: &Path, final_path: &Path) -> Result<(), ChunkStoreError> {
+    use std::os::windows::ffi::OsStrExt;
+
+    use windows_sys::Win32::Storage::FileSystem::{MoveFileExW, MOVEFILE_WRITE_THROUGH};
+
+    let from: Vec<u16> = temp_path
+        .as_os_str()
+        .encode_wide()
+        .chain(std::iter::once(0))
+        .collect();
+    let to: Vec<u16> = final_path
+        .as_os_str()
+        .encode_wide()
+        .chain(std::iter::once(0))
+        .collect();
+
+    let moved = unsafe { MoveFileExW(from.as_ptr(), to.as_ptr(), MOVEFILE_WRITE_THROUGH) };
+    if moved == 0 {
+        Err(ChunkStoreError::Io)
+    } else {
+        Ok(())
+    }
+}
+
+#[cfg(not(windows))]
+fn publish_temp(temp_path: &Path, final_path: &Path) -> Result<(), ChunkStoreError> {
+    fs::rename(temp_path, final_path).map_err(|_| ChunkStoreError::Io)
+}
+
+#[cfg(unix)]
+fn finish_publish_durability(chunks_dir: &Path) -> Result<(), ChunkStoreError> {
+    File::open(chunks_dir)
+        .and_then(|dir| dir.sync_all())
+        .map_err(|_| ChunkStoreError::Io)
+}
+
+#[cfg(not(unix))]
+fn finish_publish_durability(_chunks_dir: &Path) -> Result<(), ChunkStoreError> {
+    Ok(())
 }
 
 fn sha256(bytes: &[u8]) -> [u8; 32] {
