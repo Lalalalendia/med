@@ -17,8 +17,7 @@ const FIXTURE_REPOSITORY: &str = "apache/poi";
 const FIXTURE_COMMIT: &str = "732120980140d5ed64b482c470e0b625cdb1ab15";
 const FIXTURE_PATH: &str = "test-data/publisher/Sample.pub";
 const FIXTURE_GIT_BLOB_SHA: &str = "b870168319048c9e8631c2338eb937e6f8f62b5b";
-const FIXTURE_SHA256: &str =
-    "6fefdef46b87c767150878dc384549cb2d2ec2ac54de25f8ddb3a5628301107e";
+const FIXTURE_SHA256: &str = "6fefdef46b87c767150878dc384549cb2d2ec2ac54de25f8ddb3a5628301107e";
 const FIXTURE_SIZE: u64 = 72_192;
 const TABLE_SEQ: u32 = 299;
 const CELLS_SEQ: u32 = 301;
