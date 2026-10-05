@@ -1,0 +1,65 @@
+name: PUB vacancy radar HH
+
+on:
+  pull_request:
+    paths:
+      - "tools/pub-market/**"
+      - ".github/workflows/pub-vacancy-radar-hh.yml"
+  workflow_dispatch:
+    inputs:
+      lookback_hours:
+        description: "Hours to scan backwards by HH vacancy publication date"
+        required: false
+        default: "720"
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: HH adapter and normalized runner tests
+        run: |
+          python tools/pub-market/test_hh_adapter.py
+          python tools/pub-market/test_vacancy_radar.py
+
+  live:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HH_APP_ACCESS_TOKEN: ${{ secrets.HH_APP_ACCESS_TOKEN }}
+      HH_USER_AGENT: ${{ secrets.HH_USER_AGENT }}
+      LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '720' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Scan HeadHunter Publisher vacancies
+        run: |
+          python tools/pub-market/hh_vacancy_scan.py \
+            --lookback-hours "$LOOKBACK_HOURS" \
+            --output-dir out/pub-market-hh
+
+      - name: Add report to job summary
+        run: cat out/pub-market-hh/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload HH vacancy radar artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pub-vacancy-radar-hh-${{ github.run_id }}
+          path: out/pub-market-hh/**
+          if-no-files-found: error
+          retention-days: 30
