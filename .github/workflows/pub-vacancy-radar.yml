@@ -1,0 +1,70 @@
+name: PUB vacancy radar
+
+on:
+  push:
+    branches:
+      - main
+      - feature/pub-vacancy-radar
+    paths:
+      - "tools/pub-market/**"
+      - ".github/workflows/pub-vacancy-radar.yml"
+  pull_request:
+    paths:
+      - "tools/pub-market/**"
+      - ".github/workflows/pub-vacancy-radar.yml"
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+    inputs:
+      lookback_hours:
+        description: "Hours to scan backwards via Trudvsem modifiedFrom"
+        required: false
+        default: "72"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Unit tests
+        run: python -m unittest discover -s tools/pub-market -p "test_*.py" -v
+
+  scan:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '72' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Scan recent Publisher vacancies
+        run: |
+          python tools/pub-market/vacancy_radar.py \
+            --lookback-hours "$LOOKBACK_HOURS" \
+            --output-dir out/pub-market
+
+      - name: Add report to job summary
+        run: cat out/pub-market/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload vacancy radar artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pub-vacancy-radar-${{ github.run_id }}
+          path: out/pub-market/**
+          if-no-files-found: error
+          retention-days: 30
