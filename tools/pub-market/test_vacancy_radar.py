@@ -42,7 +42,7 @@ class ClassifierTests(unittest.TestCase):
         self.assertEqual("A", klass)
         self.assertEqual("publisher_plus_operational_duty", reason)
         self.assertIn("каталог", hits)
-        self.assertTrue(any("hard-skills" in p for p in paths))
+        self.assertTrue(any(p.startswith("skills[") for p in paths))
 
     def test_a_direct_publisher_document_editing(self):
         payload = vac(
@@ -90,6 +90,63 @@ class ClassifierTests(unittest.TestCase):
         payload["requirement"] = "Опыт Microsoft Publisher 2019"
         klass, *_ = vr.classify_vacancy(payload)
         self.assertEqual("A", klass)
+
+
+class SourceContractTests(unittest.TestCase):
+    def test_classifier_is_source_neutral(self):
+        raw = vac(
+            "trud-1",
+            "Верстальщик",
+            "Верстка каталогов и брошюр.",
+            ["Microsoft Publisher"],
+            "Example LLC",
+        )
+        raw["region"] = {"name": "Москва"}
+        raw["creation-date"] = "2026-10-01"
+
+        trud = vr.normalize_trudvsem_source(raw)
+        mirror = vr.NormalizedVacancy(
+            source="hh",
+            source_id="hh-42",
+            url="https://example.test/hh-42",
+            employer=trud.employer,
+            employer_inn="",
+            employer_code="",
+            job_name=trud.job_name,
+            region=trud.region,
+            creation_date=trud.creation_date,
+            modified_date="",
+            evidence=trud.evidence,
+            skills=trud.skills,
+        )
+
+        self.assertEqual(vr.classify_record(trud), vr.classify_record(mirror))
+        self.assertNotEqual(vr._record_key(trud), vr._record_key(mirror))
+        self.assertEqual(vr._mirror_key(trud), vr._mirror_key(mirror))
+
+    def test_mirror_key_is_not_guessed_without_date(self):
+        record = vr.NormalizedVacancy(
+            source="hh",
+            source_id="hh-1",
+            url="https://example.test/hh-1",
+            employer="Example LLC",
+            employer_inn="",
+            employer_code="",
+            job_name="Верстальщик",
+            region="Москва",
+            creation_date="",
+            modified_date="",
+            evidence=(("duty", "Верстка каталогов в Microsoft Publisher"),),
+            skills=(),
+        )
+        self.assertEqual("", vr._mirror_key(record))
+
+    def test_publisher_in_source_metadata_is_not_classification_evidence(self):
+        payload = vac("metadata-only", "Офис-менеджер", "Прием звонков.")
+        payload["company"]["description"] = "Работаем в Microsoft Publisher."
+        klass, reason, *_ = vr.classify_vacancy(payload)
+        self.assertEqual("N", klass)
+        self.assertEqual("publisher_not_present", reason)
 
 
 class FetchTests(unittest.TestCase):

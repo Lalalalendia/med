@@ -49,6 +49,20 @@ Additional text queries can be supplied with repeated `--query` arguments. Defau
 
 No output is written to Notion or CRM automatically in V1. Review precision first, then add promotion automation only after false-positive behavior is measured.
 
+## Source contract
+
+Source adapters must normalize their payloads into `NormalizedVacancy` before classification. The classifier consumes only:
+
+- explicit vacancy evidence fields such as title/duty/requirement/description;
+- an explicit skills collection;
+- normalized employer/role/region/date provenance.
+
+Source-specific metadata is not classification evidence.
+
+Each source keeps its own stable `source:id` key. A separate `mirror_key` is emitted only when employer, role, region, and creation date are all known. It is a cross-source mirror candidate, not permission to silently delete one of the records.
+
+This allows future sources such as HeadHunter to reuse the same classifier and gold corpus without teaching the classifier each provider's JSON schema.
+
 ## Tests
 
 ```bash

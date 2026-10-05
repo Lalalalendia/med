@@ -42,7 +42,8 @@ class RealVacancyGoldTests(unittest.TestCase):
 
         for case in cases:
             with self.subTest(case=case["id"]):
-                klass, reason, hits, paths, context = vr.classify_vacancy(to_vacancy(case))
+                record = vr.normalize_trudvsem_source(to_vacancy(case))
+                klass, reason, hits, paths, context = vr.classify_record(record)
                 self.assertEqual(
                     case["expected_classification"],
                     klass,

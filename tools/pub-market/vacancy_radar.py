@@ -69,9 +69,26 @@ TEXT_PRIORITY_KEYS = (
 
 
 @dataclass(frozen=True)
+class NormalizedVacancy:
+    source: str
+    source_id: str
+    url: str
+    employer: str
+    employer_inn: str
+    employer_code: str
+    job_name: str
+    region: str
+    creation_date: str
+    modified_date: str
+    evidence: tuple[tuple[str, str], ...]
+    skills: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class ClassifiedVacancy:
     source: str
     key: str
+    mirror_key: str
     vacancy_id: str
     url: str
     employer: str
@@ -161,57 +178,23 @@ def _publisher_local_edit_hits(flat: Iterable[tuple[str, str]]) -> tuple[str, ..
     return tuple(hits)
 
 
-def classify_vacancy(vacancy: dict[str, Any]) -> tuple[str, str, tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
-    flat = flatten_strings(vacancy)
-    pub_paths, pub_context = _publisher_context(flat)
-    if not pub_paths:
-        return "N", "publisher_not_present", (), (), ()
-
-    op_hits = _operational_hits(flat)
-    local_edit_hits = _publisher_local_edit_hits(flat)
-    if op_hits or local_edit_hits:
-        evidence_hits = tuple(dict.fromkeys((*op_hits, *local_edit_hits)))
-        return "A", "publisher_plus_operational_duty", evidence_hits, pub_paths, pub_context
-
-    job_name = _first(vacancy, "job-name", "job_name", "name").casefold()
-    title_is_noise = any(term in job_name for term in NOISE_TITLE_TERMS)
-    publisher_only_in_skills = all(
-        any(skill_term in path.casefold() for skill_term in SKILL_PATH_TERMS)
-        for path in pub_paths
-    )
-
-    if title_is_noise and publisher_only_in_skills:
-        return "C", "unrelated_role_and_skill_tag_only", (), pub_paths, pub_context
-    if title_is_noise:
-        return "C", "unrelated_role_without_publishing_duty", (), pub_paths, pub_context
-    if publisher_only_in_skills:
-        return "B", "publisher_skill_only", (), pub_paths, pub_context
-    return "B", "publisher_mentioned_without_operational_context", (), pub_paths, pub_context
-
-
-def _stable_key(vacancy: dict[str, Any]) -> str:
-    vacancy_id = _first(vacancy, "id", "vacancy-id", "vacancy_id")
-    if vacancy_id:
-        return f"trudvsem:{vacancy_id}"
-    company = vacancy.get("company") if isinstance(vacancy.get("company"), dict) else {}
-    parts = [
-        _first(company, "name"),
-        _first(vacancy, "job-name", "job_name", "name"),
-        _first(vacancy, "vac_url", "url"),
-        _first(vacancy, "creation-date", "creation_date"),
-    ]
-    digest = hashlib.sha256("\x1f".join(parts).encode("utf-8")).hexdigest()[:20]
-    return f"trudvsem:sha256:{digest}"
-
-
-def normalize_vacancy(vacancy: dict[str, Any], queries: Iterable[str]) -> ClassifiedVacancy:
-    classification, reason, op_hits, pub_paths, pub_context = classify_vacancy(vacancy)
+def normalize_trudvsem_source(vacancy: dict[str, Any]) -> NormalizedVacancy:
     company = vacancy.get("company") if isinstance(vacancy.get("company"), dict) else {}
     region = vacancy.get("region") if isinstance(vacancy.get("region"), dict) else {}
-    return ClassifiedVacancy(
+
+    evidence: list[tuple[str, str]] = []
+    for key in TEXT_PRIORITY_KEYS:
+        if key in vacancy:
+            evidence.extend(flatten_strings(vacancy[key], key))
+
+    skills: list[str] = []
+    for path, text in flatten_strings(vacancy):
+        if any(skill_term in path.casefold() for skill_term in SKILL_PATH_TERMS):
+            skills.append(text)
+
+    return NormalizedVacancy(
         source="trudvsem",
-        key=_stable_key(vacancy),
-        vacancy_id=_first(vacancy, "id", "vacancy-id", "vacancy_id"),
+        source_id=_first(vacancy, "id", "vacancy-id", "vacancy_id"),
         url=_first(vacancy, "vac_url", "url"),
         employer=_first(company, "name", "company_name"),
         employer_inn=_first(company, "inn"),
@@ -227,6 +210,93 @@ def normalize_vacancy(vacancy: dict[str, Any], queries: Iterable[str]) -> Classi
             vacancy,
             "modified-date", "modification-date", "update-date", "date-modification",
         ),
+        evidence=tuple(evidence),
+        skills=tuple(dict.fromkeys(skills)),
+    )
+
+
+def _record_flat(record: NormalizedVacancy) -> list[tuple[str, str]]:
+    return [
+        *record.evidence,
+        *((f"skills[{i}]", skill) for i, skill in enumerate(record.skills)),
+    ]
+
+
+def classify_record(record: NormalizedVacancy) -> tuple[str, str, tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
+    flat = _record_flat(record)
+    pub_paths, pub_context = _publisher_context(flat)
+    if not pub_paths:
+        return "N", "publisher_not_present", (), (), ()
+
+    op_hits = _operational_hits(flat)
+    local_edit_hits = _publisher_local_edit_hits(flat)
+    if op_hits or local_edit_hits:
+        evidence_hits = tuple(dict.fromkeys((*op_hits, *local_edit_hits)))
+        return "A", "publisher_plus_operational_duty", evidence_hits, pub_paths, pub_context
+
+    title_is_noise = any(term in record.job_name.casefold() for term in NOISE_TITLE_TERMS)
+    publisher_only_in_skills = all(path.casefold().startswith("skills[") for path in pub_paths)
+
+    if title_is_noise and publisher_only_in_skills:
+        return "C", "unrelated_role_and_skill_tag_only", (), pub_paths, pub_context
+    if title_is_noise:
+        return "C", "unrelated_role_without_publishing_duty", (), pub_paths, pub_context
+    if publisher_only_in_skills:
+        return "B", "publisher_skill_only", (), pub_paths, pub_context
+    return "B", "publisher_mentioned_without_operational_context", (), pub_paths, pub_context
+
+
+def classify_vacancy(vacancy: dict[str, Any]) -> tuple[str, str, tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
+    return classify_record(normalize_trudvsem_source(vacancy))
+
+
+def _record_key(record: NormalizedVacancy) -> str:
+    if record.source_id:
+        return f"{record.source}:{record.source_id}"
+    parts = [
+        record.source,
+        record.employer,
+        record.job_name,
+        record.url,
+        record.creation_date,
+    ]
+    digest = hashlib.sha256("\x1f".join(parts).encode("utf-8")).hexdigest()[:20]
+    return f"{record.source}:sha256:{digest}"
+
+
+def _mirror_key(record: NormalizedVacancy) -> str:
+    if not all((record.employer, record.job_name, record.region, record.creation_date)):
+        return ""
+    parts = [
+        record.employer.casefold(),
+        record.job_name.casefold(),
+        record.region.casefold(),
+        record.creation_date[:10],
+    ]
+    digest = hashlib.sha256("\x1f".join(parts).encode("utf-8")).hexdigest()[:20]
+    return f"mirror:sha256:{digest}"
+
+
+def _stable_key(vacancy: dict[str, Any]) -> str:
+    return _record_key(normalize_trudvsem_source(vacancy))
+
+
+def normalize_vacancy(vacancy: dict[str, Any], queries: Iterable[str]) -> ClassifiedVacancy:
+    record = normalize_trudvsem_source(vacancy)
+    classification, reason, op_hits, pub_paths, pub_context = classify_record(record)
+    return ClassifiedVacancy(
+        source=record.source,
+        key=_record_key(record),
+        mirror_key=_mirror_key(record),
+        vacancy_id=record.source_id,
+        url=record.url,
+        employer=record.employer,
+        employer_inn=record.employer_inn,
+        employer_code=record.employer_code,
+        job_name=record.job_name,
+        region=record.region,
+        creation_date=record.creation_date,
+        modified_date=record.modified_date,
         classification=classification,
         classification_reason=reason,
         operational_hits=op_hits,
@@ -353,7 +423,7 @@ def write_outputs(rows: list[ClassifiedVacancy], out_dir: Path, modified_from: s
     csv_path = out_dir / "qualified.csv"
     with csv_path.open("w", encoding="utf-8", newline="") as fh:
         fields = [
-            "key", "employer", "employer_inn", "job_name", "region", "creation_date",
+            "key", "mirror_key", "employer", "employer_inn", "job_name", "region", "creation_date",
             "modified_date", "url", "classification_reason", "operational_hits",
             "publisher_context", "query_matches",
         ]
