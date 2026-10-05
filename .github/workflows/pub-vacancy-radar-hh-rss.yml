@@ -1,0 +1,55 @@
+name: PUB vacancy radar HH RSS candidates
+
+on:
+  push:
+    branches:
+      - main
+      - feature/pub-market-hh-rss-candidates
+    paths:
+      - "tools/pub-market/hh_rss_candidates.py"
+      - "tools/pub-market/test_hh_rss_candidates.py"
+      - ".github/workflows/pub-vacancy-radar-hh-rss.yml"
+  pull_request:
+    paths:
+      - "tools/pub-market/hh_rss_candidates.py"
+      - "tools/pub-market/test_hh_rss_candidates.py"
+      - ".github/workflows/pub-vacancy-radar-hh-rss.yml"
+  schedule:
+    - cron: "37 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python tools/pub-market/test_hh_rss_candidates.py
+
+  scan:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python tools/pub-market/hh_rss_candidates.py \
+            --area 113 \
+            --output-dir out/pub-market-hh-rss
+      - run: cat out/pub-market-hh-rss/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pub-vacancy-radar-hh-rss-${{ github.run_id }}
+          path: out/pub-market-hh-rss/**
+          if-no-files-found: error
+          retention-days: 30
