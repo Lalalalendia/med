@@ -199,6 +199,70 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(("MS Publisher", "Microsoft Publisher"), rows[0].query_matches)
 
 
+class NormalizedRunnerTests(unittest.TestCase):
+    def test_normalized_scan_deduplicates_and_tracks_queries(self):
+        record = vr.NormalizedVacancy(
+            source="hh",
+            source_id="42",
+            url="https://hh.ru/vacancy/42",
+            employer="Example LLC",
+            employer_inn="",
+            employer_code="e42",
+            job_name="Верстальщик",
+            region="Москва",
+            creation_date="2026-10-01T10:00:00+0300",
+            modified_date="",
+            evidence=(("description", "Верстка каталогов в Microsoft Publisher."),),
+            skills=("Microsoft Publisher",),
+        )
+
+        def fetcher(query, since):
+            self.assertEqual("2026-10-01T00:00:00+0000", since)
+            return [record]
+
+        rows = vr.run_normalized_scan(
+            ["Microsoft Publisher", "MS Publisher"],
+            "2026-10-01T00:00:00+0000",
+            fetcher=fetcher,
+        )
+        self.assertEqual(1, len(rows))
+        self.assertEqual("hh:42", rows[0].key)
+        self.assertEqual(("MS Publisher", "Microsoft Publisher"), rows[0].query_matches)
+        self.assertEqual("A", rows[0].classification)
+
+    def test_hh_scan_reuses_normalized_runner(self):
+        seen = []
+
+        def fetcher(query, since):
+            seen.append((query, since))
+            return [
+                vr.NormalizedVacancy(
+                    source="hh",
+                    source_id="7",
+                    url="https://hh.ru/vacancy/7",
+                    employer="Example LLC",
+                    employer_inn="",
+                    employer_code="e7",
+                    job_name="Офис-менеджер",
+                    region="Москва",
+                    creation_date="2026-10-01T10:00:00+0300",
+                    modified_date="",
+                    evidence=(("description", "Ведение документооборота."),),
+                    skills=("MS Publisher",),
+                )
+            ]
+
+        rows = vr.run_hh_scan(
+            ["MS Publisher"],
+            "2026-10-01T00:00:00+0000",
+            access_token="unused-fixture-token",
+            user_agent="Fixture/1.0 (test@example.invalid)",
+            fetcher=fetcher,
+        )
+        self.assertEqual([("MS Publisher", "2026-10-01T00:00:00+0000")], seen)
+        self.assertEqual("B", rows[0].classification)
+
+
 class OutputTests(unittest.TestCase):
     def test_outputs_are_split(self):
         payloads = [

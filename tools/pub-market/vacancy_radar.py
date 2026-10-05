@@ -452,8 +452,10 @@ def _stable_key(vacancy: dict[str, Any]) -> str:
     return _record_key(normalize_trudvsem_source(vacancy))
 
 
-def normalize_vacancy(vacancy: dict[str, Any], queries: Iterable[str]) -> ClassifiedVacancy:
-    record = normalize_trudvsem_source(vacancy)
+def classify_normalized_vacancy(
+    record: NormalizedVacancy,
+    queries: Iterable[str],
+) -> ClassifiedVacancy:
     classification, reason, op_hits, pub_paths, pub_context = classify_record(record)
     return ClassifiedVacancy(
         source=record.source,
@@ -475,6 +477,10 @@ def normalize_vacancy(vacancy: dict[str, Any], queries: Iterable[str]) -> Classi
         publisher_context=pub_context,
         query_matches=tuple(sorted(set(queries))),
     )
+
+
+def normalize_vacancy(vacancy: dict[str, Any], queries: Iterable[str]) -> ClassifiedVacancy:
+    return classify_normalized_vacancy(normalize_trudvsem_source(vacancy), queries)
 
 
 def request_json(url: str, params: dict[str, Any], *, timeout: int = 60, attempts: int = 3) -> dict[str, Any]:
@@ -546,23 +552,58 @@ def fetch_trudvsem(
     return out
 
 
+def run_normalized_scan(
+    queries: Iterable[str],
+    since: str | None,
+    *,
+    fetcher: Callable[[str, str | None], list[NormalizedVacancy]],
+) -> list[ClassifiedVacancy]:
+    by_key: dict[str, NormalizedVacancy] = {}
+    matched_queries: dict[str, set[str]] = {}
+    for query in queries:
+        for record in fetcher(query, since):
+            key = _record_key(record)
+            by_key.setdefault(key, record)
+            matched_queries.setdefault(key, set()).add(query)
+
+    rows = [
+        classify_normalized_vacancy(record, matched_queries[key])
+        for key, record in by_key.items()
+    ]
+    rows.sort(key=lambda row: (row.classification, row.employer.casefold(), row.job_name.casefold(), row.key))
+    return rows
+
+
 def run_scan(
     queries: Iterable[str],
     modified_from: str | None,
     *,
     fetcher: Callable[[str, str | None], list[dict[str, Any]]] = fetch_trudvsem,
 ) -> list[ClassifiedVacancy]:
-    by_key: dict[str, dict[str, Any]] = {}
-    matched_queries: dict[str, set[str]] = {}
-    for query in queries:
-        for vacancy in fetcher(query, modified_from):
-            key = _stable_key(vacancy)
-            by_key.setdefault(key, vacancy)
-            matched_queries.setdefault(key, set()).add(query)
+    def normalized_fetcher(query: str, since: str | None) -> list[NormalizedVacancy]:
+        return [normalize_trudvsem_source(v) for v in fetcher(query, since)]
 
-    rows = [normalize_vacancy(v, matched_queries[key]) for key, v in by_key.items()]
-    rows.sort(key=lambda row: (row.classification, row.employer.casefold(), row.job_name.casefold(), row.key))
-    return rows
+    return run_normalized_scan(queries, modified_from, fetcher=normalized_fetcher)
+
+
+def run_hh_scan(
+    queries: Iterable[str],
+    date_from: str | None,
+    *,
+    access_token: str,
+    user_agent: str,
+    fetcher: Callable[[str, str | None], list[NormalizedVacancy]] | None = None,
+) -> list[ClassifiedVacancy]:
+    if fetcher is None:
+        def fetcher(query: str, since: str | None) -> list[NormalizedVacancy]:
+            return fetch_hh(
+                query,
+                since,
+                access_token=access_token,
+                user_agent=user_agent,
+            )
+
+    return run_normalized_scan(queries, date_from, fetcher=fetcher)
 
 
 def _row_dict(row: ClassifiedVacancy) -> dict[str, Any]:
@@ -572,7 +613,13 @@ def _row_dict(row: ClassifiedVacancy) -> dict[str, Any]:
     return data
 
 
-def write_outputs(rows: list[ClassifiedVacancy], out_dir: Path, modified_from: str | None) -> None:
+def write_outputs(
+    rows: list[ClassifiedVacancy],
+    out_dir: Path,
+    scan_since: str | None,
+    *,
+    window_label: str = "modifiedFrom",
+) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     buckets = {
         "all": rows,
@@ -580,8 +627,8 @@ def write_outputs(rows: list[ClassifiedVacancy], out_dir: Path, modified_from: s
         "review": [r for r in rows if r.classification == "B"],
         "rejected": [r for r in rows if r.classification == "C"],
     }
-    # With an incremental modifiedFrom scan, "new-qualified" means A-class rows
-    # returned in this explicit scan window.  It does not claim historical novelty.
+    # "new-qualified" means A-class rows returned in this explicit source window.
+    # It does not claim all-time novelty.
     buckets["new-qualified"] = list(buckets["qualified"])
 
     for name, items in buckets.items():
@@ -613,7 +660,7 @@ def write_outputs(rows: list[ClassifiedVacancy], out_dir: Path, modified_from: s
     lines = [
         "# Publisher vacancy radar",
         "",
-        f"- Scan window: modifiedFrom `{modified_from or 'not set'}`",
+        f"- Scan window: {window_label} `{scan_since or 'not set'}`",
         f"- Total Publisher-matching vacancies: **{counts['all']}**",
         f"- A — operational: **{counts['qualified']}**",
         f"- B — manual review: **{counts['review']}**",
@@ -639,6 +686,11 @@ def write_outputs(rows: list[ClassifiedVacancy], out_dir: Path, modified_from: s
 def iso_from_lookback(hours: int) -> str:
     dt = datetime.now(timezone.utc) - timedelta(hours=hours)
     return dt.replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def hh_date_from_lookback(hours: int) -> str:
+    dt = datetime.now(timezone.utc) - timedelta(hours=hours)
+    return dt.replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%S+0000")
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
