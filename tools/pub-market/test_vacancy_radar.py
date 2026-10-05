@@ -44,6 +44,30 @@ class ClassifierTests(unittest.TestCase):
         self.assertIn("каталог", hits)
         self.assertTrue(any("hard-skills" in p for p in paths))
 
+    def test_a_direct_publisher_document_editing(self):
+        payload = vac(
+            "a-direct-edit",
+            "Администратор офиса",
+            "Редактирование документов в программе Microsoft Publisher: замена информации и изображений.",
+        )
+        klass, reason, hits, paths, _ = vr.classify_vacancy(payload)
+        self.assertEqual("A", klass)
+        self.assertEqual("publisher_plus_operational_duty", reason)
+        self.assertIn("редактир", hits)
+        self.assertIn("duty", paths)
+
+    def test_company_description_cannot_promote_skill_only_publisher(self):
+        payload = vac(
+            "b-company-noise",
+            "Офис-менеджер",
+            "Прием звонков и ведение календаря.",
+            ["MS Publisher"],
+        )
+        payload["company"]["description"] = "Студия дизайна, полиграфии и печати каталогов."
+        klass, reason, *_ = vr.classify_vacancy(payload)
+        self.assertEqual("B", klass)
+        self.assertEqual("publisher_skill_only", reason)
+
     def test_b_skill_only(self):
         payload = vac("b1", "Офис-менеджер", "Ведение документооборота и прием звонков.", ["MS Publisher"])
         klass, reason, *_ = vr.classify_vacancy(payload)
