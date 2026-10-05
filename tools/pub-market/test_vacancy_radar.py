@@ -97,6 +97,16 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(2, len(calls))
         self.assertEqual("2026-10-01T00:00:00Z", calls[0]["modifiedFrom"])
 
+    def test_normalization_does_not_invent_modified_date(self):
+        payload = vac("dated", "Верстальщик", "Верстка каталогов", ["Publisher"])
+        row = vr.normalize_vacancy(payload, ["Publisher"])
+        self.assertEqual("2026-10-01", row.creation_date)
+        self.assertEqual("", row.modified_date)
+
+        payload["modified-date"] = "2026-10-02T12:34:56Z"
+        row = vr.normalize_vacancy(payload, ["Publisher"])
+        self.assertEqual("2026-10-02T12:34:56Z", row.modified_date)
+
     def test_scan_deduplicates_across_queries_and_tracks_matches(self):
         one = vac("same", "Верстальщик", "Верстка каталогов", ["Microsoft Publisher"])
 
