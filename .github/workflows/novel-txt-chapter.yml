@@ -1,0 +1,88 @@
+name: Novel TXT - extract one chapter
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "tools/novel-ingest/**"
+      - ".github/workflows/novel-txt-chapter.yml"
+  pull_request:
+    paths:
+      - "tools/novel-ingest/**"
+      - ".github/workflows/novel-txt-chapter.yml"
+  workflow_dispatch:
+    inputs:
+      chapter:
+        description: "Actual chapter ordinal in the TXT (1..N, extras included)"
+        required: true
+        default: "1"
+      source_url:
+        description: "Direct URL to the TXT"
+        required: false
+        default: ""
+      source_path:
+        description: "Repo path to TXT when source_url is blank"
+        required: false
+        default: "input/book.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Unit tests
+        run: python -m unittest tools/novel-ingest/test_extract_chapter.py -v
+
+  extract:
+    if: github.event_name == 'workflow_dispatch'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Resolve source TXT
+        env:
+          SOURCE_URL: ${{ inputs.source_url }}
+          SOURCE_PATH: ${{ inputs.source_path }}
+        run: |
+          mkdir -p work
+          if [ -n "$SOURCE_URL" ]; then
+            curl --fail --location --retry 3 --user-agent "Mozilla/5.0"               "$SOURCE_URL" -o work/book.txt
+          else
+            cp "$SOURCE_PATH" work/book.txt
+          fi
+
+      - name: Extract requested chapter
+        env:
+          CHAPTER: ${{ inputs.chapter }}
+        run: |
+          mkdir -p out
+          python tools/novel-ingest/extract_chapter.py             work/book.txt             --ordinal "$CHAPTER"             --out-dir out/novel | tee out/metadata.json
+
+      - name: Summary
+        run: |
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat out/metadata.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload chapter artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: novel-chapter-${{ inputs.chapter }}
+          path: out/novel/**
+          if-no-files-found: error
+          retention-days: 7
