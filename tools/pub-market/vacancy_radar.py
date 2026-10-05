@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import html
 import json
 import re
 import sys
@@ -221,7 +222,7 @@ def _strip_html(value: Any) -> str:
     if not text:
         return ""
     text = re.sub(r"<[^>]+>", " ", text)
-    return " ".join(text.replace("&nbsp;", " ").split())
+    return " ".join(html.unescape(text).replace("\u00a0", " ").split())
 
 
 def normalize_hh_source(vacancy: dict[str, Any]) -> NormalizedVacancy:
