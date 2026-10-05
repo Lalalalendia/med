@@ -13,6 +13,12 @@ SPEC.loader.exec_module(vr)
 
 
 class HeadHunterAdapterTests(unittest.TestCase):
+    def test_strip_html_decodes_entities(self):
+        self.assertEqual(
+            "Publisher & prepress",
+            vr._strip_html("<p>Publisher&nbsp;&amp;&nbsp;prepress</p>"),
+        )
+
     def test_normalize_hh_source_direct_publisher_work_is_a(self):
         payload = {
             "id": "hh-a1",
