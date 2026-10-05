@@ -1,0 +1,98 @@
+[
+  {
+    "id": "school-800-lab-ibc-2026",
+    "source_url": "https://trudvsem.ru/vacancy/card/1205200025073/58f64770-0e25-11f1-a990-837b73ca4e2b",
+    "observed_at": "2026-10-05",
+    "company": "АНОО ШКОЛА 800",
+    "title": "Лаборант ИБЦ",
+    "duty": "Предпечатная подготовка: верстка, корректировка макетов, работа с текстом и изображениями.",
+    "requirement": "Навыки предпечатной подготовки в Adobe InDesign, Photoshop, Microsoft Publisher, CorelDraw или аналогах.",
+    "skills": [],
+    "expected_classification": "A",
+    "evidence_note": "Publisher is tied to explicit prepress and layout work."
+  },
+  {
+    "id": "diar-content-marketer-2026",
+    "source_url": "https://svoevagro.ru/vacancies/2137482753",
+    "observed_at": "2026-10-05",
+    "company": "DiAR-Engineering",
+    "title": "Контент-маркетолог",
+    "duty": "Оформлять каталоги, брошюры и презентации: дизайн и верстка.",
+    "requirement": "Adobe InDesign, Illustrator, Publisher или CorelDRAW для полиграфии.",
+    "skills": [],
+    "expected_classification": "A",
+    "evidence_note": "Publisher is part of an explicit catalogue/brochure/polygraphy workflow."
+  },
+  {
+    "id": "magnit-pharmacist-2026",
+    "source_url": "https://dreamjob.ru/employers/26161/vakansii/121751819",
+    "observed_at": "2026-10-05",
+    "company": "МАГНИТ",
+    "title": "Фармацевт-провизор",
+    "duty": "Работа с лекарственными препаратами и аптечным ассортиментом.",
+    "requirement": "",
+    "skills": ["MS Publisher", "Фармакология", "Контроль сроков годности"],
+    "expected_classification": "C",
+    "evidence_note": "Publisher appears only as an unrelated imported skill tag."
+  },
+  {
+    "id": "hospital-pediatrician-2025",
+    "source_url": "https://volgograd.hh.ru/vacancy/126171267",
+    "observed_at": "2026-10-05",
+    "company": "ГУЗ ДБ № 1",
+    "title": "Врач-педиатр",
+    "duty": "Медицинская работа по педиатрическому профилю.",
+    "requirement": "",
+    "skills": ["MS Publisher", "Общая психология", "Умение работать в команде"],
+    "expected_classification": "C",
+    "evidence_note": "Publisher is a skill-only tag on an unrelated medical role."
+  },
+  {
+    "id": "lyceum-history-teacher-2026",
+    "source_url": "https://get-works.ru/job-detail.php?vac=136743691",
+    "observed_at": "2026-10-05",
+    "company": "МБОУ Лицей 44 г. Чебоксары",
+    "title": "Учитель истории и обществознания",
+    "duty": "Проведение уроков, внеурочной деятельности и разработка дидактических материалов.",
+    "requirement": "",
+    "skills": ["MS Publisher", "Планирование", "Организация учебного процесса"],
+    "expected_classification": "B",
+    "evidence_note": "Publisher is skill-only; duties do not establish a publishing workflow."
+  },
+  {
+    "id": "pto-engineer-2026",
+    "source_url": "https://get-works.ru/job-detail.php?vac=135541649",
+    "observed_at": "2026-10-05",
+    "company": "Unknown employer",
+    "title": "Инженер ПТО",
+    "duty": "Подготовка проектно-сметной и исполнительной документации.",
+    "requirement": "Профильное образование или опыт в телекоммуникациях.",
+    "skills": ["MS Publisher", "Пользователь ПК", "Деловая коммуникация"],
+    "expected_classification": "B",
+    "evidence_note": "Publisher is present only in generic skills."
+  },
+  {
+    "id": "radist-network-accounting-engineer-2026",
+    "source_url": "https://dreamjob.ru/employers/169309/vakansii/137158594",
+    "observed_at": "2026-10-05",
+    "company": "РАДИСТ",
+    "title": "Инженер отдела учета сети",
+    "duty": "Учет и паспортизация сетей связи.",
+    "requirement": "Знание AutoCAD и Visio.",
+    "skills": ["MS Publisher", "MS Visio", "AutoCAD"],
+    "expected_classification": "B",
+    "evidence_note": "Publisher is an unexplained skill tag, not operational evidence."
+  },
+  {
+    "id": "transport-combine-buffet-worker-2026",
+    "source_url": "https://dreamjob.ru/employers/147044/vakansii/133356705",
+    "observed_at": "2026-10-05",
+    "company": "ФГБУ Транспортный комбинат Россия",
+    "title": "Буфетчик",
+    "duty": "Работа буфетчика и ведение документации.",
+    "requirement": "",
+    "skills": ["MS Publisher", "Ведение документации", "Работа в команде"],
+    "expected_classification": "B",
+    "evidence_note": "Conservative manual-review case: skill-only and not covered by the explicit noise-title list."
+  }
+]
