@@ -280,8 +280,10 @@ class NormalizedRunnerTests(unittest.TestCase):
 
 class OutputTests(unittest.TestCase):
     def test_outputs_are_split(self):
+        a = vac("a", "Верстальщик", "Верстка каталогов")
+        a["requirement"] = "Опыт Microsoft Publisher"
         payloads = [
-            vac("a", "Верстальщик", "Верстка каталогов", ["Publisher"]),
+            a,
             vac("b", "Офис-менеджер", "Документы", ["Publisher"]),
             vac("c", "Фармацевт", "Лекарства", ["Publisher"]),
         ]
