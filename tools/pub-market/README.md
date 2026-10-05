@@ -75,7 +75,21 @@ It uses the official API shape:
 - `page` / `per_page` with `per_page <= 100` and a maximum 20 pages (2,000 search results);
 - explicit `Authorization: Bearer ...` and `HH-User-Agent`.
 
-The adapter never falls back to HTML scraping. Live enablement should happen only after an HH application/token and a suitable contact-bearing user-agent are configured as GitHub Actions secrets/variables.
+The adapter never falls back to HTML scraping.
+
+### One-time HeadHunter setup
+
+The repository does not store HeadHunter credentials. Before the first live HH validation:
+
+1. Register the application in the HeadHunter developer console.
+2. Generate an **application access token** for that application.
+3. Add repository secret `HH_APP_ACCESS_TOKEN` with that token.
+4. Add repository secret `HH_USER_AGENT` with a contact-bearing value such as `ChapteraPublisherRadar/1.0 (contact@example.com)`.
+5. Run the **PUB vacancy radar HH** workflow manually with `workflow_dispatch`. The default validation window is 720 hours (30 days).
+
+The HH workflow is manual-only by design. It first runs fixture/contract tests and only then starts the live job. A daily schedule must not be enabled until one credentialed live run proves search → full-vacancy hydration → normalization → classification → artifacts end to end.
+
+Application-token values and contact details must remain outside the repository and logs.
 
 ## Tests
 
