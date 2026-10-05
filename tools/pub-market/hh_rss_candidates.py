@@ -86,7 +86,11 @@ def parse_hh_rss(data: bytes, query: str) -> list[HHRssCandidate]:
         vacancy_id = url.rstrip("/").rsplit("/", 1)[-1] if url else _first(node, ("guid", "id"))
         body = _clean_html(_first(node, ("description", "summary", "content")))
         employer = _extract_label(body, "Вакансия компании", ("Создана", "Регион", "Зарплата"))
-        region = _extract_label(body, "Регион", ("Предполагаемый", "Зарплата", "Создана"))
+        region = _extract_label(
+            body,
+            "Регион",
+            ("Предполагаемый уровень дохода", "Зарплата", "Создана"),
+        )
         rows.append(
             HHRssCandidate(
                 source="hh-rss",
