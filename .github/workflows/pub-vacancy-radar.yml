@@ -39,12 +39,12 @@ jobs:
         run: python -m unittest discover -s tools/pub-market -p "test_*.py" -v
 
   scan:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/feature/pub-vacancy-radar')
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '2160' }}
+      LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '72' }}
     steps:
       - uses: actions/checkout@v4
 
