@@ -42,7 +42,7 @@ class ClassifierTests(unittest.TestCase):
         self.assertEqual("A", klass)
         self.assertEqual("publisher_plus_operational_duty", reason)
         self.assertIn("каталог", hits)
-        self.assertTrue(any("hard-skills" in p for p in paths))
+        self.assertTrue(any(p.startswith("skills[") for p in paths))
 
     def test_a_direct_publisher_document_editing(self):
         payload = vac(
