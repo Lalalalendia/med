@@ -399,14 +399,19 @@ def classify_record(record: NormalizedVacancy) -> tuple[str, str, tuple[str, ...
     if not pub_paths:
         return "N", "publisher_not_present", (), (), ()
 
+    publisher_only_in_skills = all(path.casefold().startswith("skills[") for path in pub_paths)
     op_hits = _operational_hits(flat)
     local_edit_hits = _publisher_local_edit_hits(flat)
-    if op_hits or local_edit_hits:
+
+    # Generic production words in duties must not promote an unrelated
+    # Publisher skill tag. General operational context is admissible only when
+    # Publisher is also present in vacancy-authored evidence. Same-field direct
+    # Publisher editing remains independently sufficient.
+    if local_edit_hits or (op_hits and not publisher_only_in_skills):
         evidence_hits = tuple(dict.fromkeys((*op_hits, *local_edit_hits)))
         return "A", "publisher_plus_operational_duty", evidence_hits, pub_paths, pub_context
 
     title_is_noise = any(term in record.job_name.casefold() for term in NOISE_TITLE_TERMS)
-    publisher_only_in_skills = all(path.casefold().startswith("skills[") for path in pub_paths)
 
     if title_is_noise and publisher_only_in_skills:
         return "C", "unrelated_role_and_skill_tag_only", (), pub_paths, pub_context
