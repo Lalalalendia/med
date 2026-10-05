@@ -185,10 +185,13 @@ def normalize_vacancy(vacancy: dict[str, Any], queries: Iterable[str]) -> Classi
         job_name=_first(vacancy, "job-name", "job_name", "name"),
         region=_first(region, "name"),
         creation_date=_first(vacancy, "creation-date", "creation_date"),
+        # Do not substitute creation-date here. Trudvsem documents modifiedFrom
+        # as a server-side change filter, but vacancy payloads do not always expose
+        # the corresponding modification timestamp. An empty value is more honest
+        # than inventing a modification date from the creation date.
         modified_date=_first(
             vacancy,
             "modified-date", "modification-date", "update-date", "date-modification",
-            "creation-date", "creation_date",
         ),
         classification=classification,
         classification_reason=reason,
