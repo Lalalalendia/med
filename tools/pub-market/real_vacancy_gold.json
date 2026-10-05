@@ -31,7 +31,11 @@
     "title": "Фармацевт-провизор",
     "duty": "Работа с лекарственными препаратами и аптечным ассортиментом.",
     "requirement": "",
-    "skills": ["MS Publisher", "Фармакология", "Контроль сроков годности"],
+    "skills": [
+      "MS Publisher",
+      "Фармакология",
+      "Контроль сроков годности"
+    ],
     "expected_classification": "C",
     "evidence_note": "Publisher appears only as an unrelated imported skill tag."
   },
@@ -43,7 +47,11 @@
     "title": "Врач-педиатр",
     "duty": "Медицинская работа по педиатрическому профилю.",
     "requirement": "",
-    "skills": ["MS Publisher", "Общая психология", "Умение работать в команде"],
+    "skills": [
+      "MS Publisher",
+      "Общая психология",
+      "Умение работать в команде"
+    ],
     "expected_classification": "C",
     "evidence_note": "Publisher is a skill-only tag on an unrelated medical role."
   },
@@ -55,7 +63,11 @@
     "title": "Учитель истории и обществознания",
     "duty": "Проведение уроков, внеурочной деятельности и разработка дидактических материалов.",
     "requirement": "",
-    "skills": ["MS Publisher", "Планирование", "Организация учебного процесса"],
+    "skills": [
+      "MS Publisher",
+      "Планирование",
+      "Организация учебного процесса"
+    ],
     "expected_classification": "B",
     "evidence_note": "Publisher is skill-only; duties do not establish a publishing workflow."
   },
@@ -67,7 +79,11 @@
     "title": "Инженер ПТО",
     "duty": "Подготовка проектно-сметной и исполнительной документации.",
     "requirement": "Профильное образование или опыт в телекоммуникациях.",
-    "skills": ["MS Publisher", "Пользователь ПК", "Деловая коммуникация"],
+    "skills": [
+      "MS Publisher",
+      "Пользователь ПК",
+      "Деловая коммуникация"
+    ],
     "expected_classification": "B",
     "evidence_note": "Publisher is present only in generic skills."
   },
@@ -79,7 +95,11 @@
     "title": "Инженер отдела учета сети",
     "duty": "Учет и паспортизация сетей связи.",
     "requirement": "Знание AutoCAD и Visio.",
-    "skills": ["MS Publisher", "MS Visio", "AutoCAD"],
+    "skills": [
+      "MS Publisher",
+      "MS Visio",
+      "AutoCAD"
+    ],
     "expected_classification": "B",
     "evidence_note": "Publisher is an unexplained skill tag, not operational evidence."
   },
@@ -91,8 +111,104 @@
     "title": "Буфетчик",
     "duty": "Работа буфетчика и ведение документации.",
     "requirement": "",
-    "skills": ["MS Publisher", "Ведение документации", "Работа в команде"],
+    "skills": [
+      "MS Publisher",
+      "Ведение документации",
+      "Работа в команде"
+    ],
     "expected_classification": "B",
     "evidence_note": "Conservative manual-review case: skill-only and not covered by the explicit noise-title list."
+  },
+  {
+    "id": "kvartservice-office-admin-2025",
+    "source_url": "https://dreamjob.ru/employers/110920/vakansii/123676283",
+    "observed_at": "2026-10-05",
+    "company": "Квартсервис",
+    "title": "Администратор офиса",
+    "duty": "Редактирование документов по объектам недвижимости в программе Microsoft Publisher: замена информации по объекту и замена изображений по запросу.",
+    "requirement": "",
+    "skills": [],
+    "expected_classification": "A",
+    "evidence_note": "Publisher is named directly in a recurring document-editing duty, not merely in skills."
+  },
+  {
+    "id": "t-plus-debt-specialist-2026",
+    "source_url": "https://dreamjob.ru/employers/93541/vakansii/133442246",
+    "observed_at": "2026-10-05",
+    "company": "Т Плюс",
+    "title": "Специалист по работе с дебиторской задолженностью",
+    "duty": "Работа с дебиторской задолженностью, базами данных и отчетностью.",
+    "requirement": "",
+    "skills": [
+      "MS Publisher",
+      "MS Access",
+      "Ведение отчетности"
+    ],
+    "expected_classification": "B",
+    "evidence_note": "Publisher appears only as an unexplained skill tag on a debt-collection role."
+  },
+  {
+    "id": "lyceum64-geography-teacher-2026",
+    "source_url": "https://dreamjob.ru/employers/186400/vakansii/135297195",
+    "observed_at": "2026-10-05",
+    "company": "МАОУ ЛИЦЕЙ № 64",
+    "title": "Учитель географии",
+    "duty": "Организация учебно-воспитательного процесса в соответствии с ФГОС ООО.",
+    "requirement": "Высшее образование и владение компьютерными технологиями.",
+    "skills": [
+      "Организация учебного процесса",
+      "MS Publisher"
+    ],
+    "expected_classification": "B",
+    "evidence_note": "Publisher is skill-only; no publishing or document-production duty is established."
+  },
+  {
+    "id": "bailiff-spb-2026",
+    "source_url": "https://dreamjob.ru/employers/135109/vakansii/136457638",
+    "observed_at": "2026-10-05",
+    "company": "Калининский районный отдел судебных приставов УФССП России по Санкт-Петербургу",
+    "title": "Судебный пристав-исполнитель",
+    "duty": "Принудительное исполнение судебных актов и взыскание задолженности.",
+    "requirement": "",
+    "skills": [
+      "MS Publisher",
+      "знание законодательства РФ",
+      "работа с физическими лицами"
+    ],
+    "expected_classification": "C",
+    "evidence_note": "Publisher is an unrelated imported skill tag on an explicitly blacklisted bailiff role."
+  },
+  {
+    "id": "kostroma-therapist-2026",
+    "source_url": "https://dreamjob.ru/employers/184914/vakansii/130345939",
+    "observed_at": "2026-10-05",
+    "company": "ОГБУЗ Костромская ЦРБ",
+    "title": "Врач-терапевт участковый Кузнецовской врачебной амбулатории",
+    "duty": "Ведение амбулаторного приема и оказание специализированной медицинской помощи.",
+    "requirement": "Высшее профессиональное медицинское образование.",
+    "skills": [
+      "Пользователь ПК",
+      "Должностные инструкции",
+      "MS Publisher"
+    ],
+    "expected_classification": "C",
+    "evidence_note": "Publisher is a skill-only tag on an unrelated medical role."
+  },
+  {
+    "id": "samara-day-hospital-nurse-2026",
+    "source_url": "https://dreamjob.ru/employers/150101/vakansii/136963185",
+    "observed_at": "2026-10-05",
+    "company": "Клиника доктора Кравченко",
+    "title": "Медицинская сестра/медицинский брат дневного стационара",
+    "duty": "Выполнение лечебных назначений, инъекций, стерилизации и ведение медицинской учетно-отчетной документации.",
+    "requirement": "Среднее профессиональное образование по специальности Сестринское дело.",
+    "skills": [
+      "Документальное сопровождение",
+      "Медицинское оборудование",
+      "Ведение документации",
+      "MS Publisher"
+    ],
+    "expected_classification": "C",
+    "evidence_note": "Publisher is a skill-only tag on an unrelated medical role; documentation work is not publishing."
   }
 ]
