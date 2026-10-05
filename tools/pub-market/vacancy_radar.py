@@ -382,6 +382,13 @@ def main(argv: list[str] | None = None) -> int:
     write_outputs(rows, Path(args.output_dir), modified_from)
     counts = {klass: sum(r.classification == klass for r in rows) for klass in ("A", "B", "C")}
     print(f"publisher vacancy radar: total={len(rows)} A={counts['A']} B={counts['B']} C={counts['C']}")
+    for row in rows:
+        if row.classification == "A":
+            print(
+                "qualified vacancy: "
+                f"employer={row.employer!r} role={row.job_name!r} "
+                f"region={row.region!r} url={row.url!r} key={row.key}"
+            )
     return 0
 
 
