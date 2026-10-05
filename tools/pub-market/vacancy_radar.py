@@ -46,6 +46,12 @@ OPERATIONAL_TERMS = (
     "label", "print-ready", "printing", "imposition", "дизайн",
 )
 
+# Generic editing verbs are too broad to qualify a vacancy on their own.
+# They count only when Publisher is named in the same top-level evidence field.
+PUBLISHER_LOCAL_EDIT_TERMS = (
+    "редактир", "замен", "корректир", "edit", "replace",
+)
+
 # Negative controls seen in vacancy mirrors where Publisher is often merely an
 # imported hard-skill tag.  A real publishing duty always wins over this list.
 NOISE_TITLE_TERMS = (
@@ -124,9 +130,35 @@ def _publisher_context(flat: Iterable[tuple[str, str]]) -> tuple[tuple[str, ...]
     return tuple(sorted(set(paths))), tuple(dict.fromkeys(contexts))
 
 
+def _top_level_key(path: str) -> str:
+    return path.split(".", 1)[0].split("[", 1)[0].casefold()
+
+
+def _priority_evidence(flat: Iterable[tuple[str, str]]) -> list[tuple[str, str]]:
+    return [
+        (path, text)
+        for path, text in flat
+        if _top_level_key(path) in TEXT_PRIORITY_KEYS
+    ]
+
+
 def _operational_hits(flat: Iterable[tuple[str, str]]) -> tuple[str, ...]:
-    blob = "\n".join(text.casefold() for _, text in flat)
+    # Only vacancy-authored evidence fields may provide operational context.
+    # Nested metadata such as company.description must not promote a skill tag.
+    blob = "\n".join(text.casefold() for _, text in _priority_evidence(flat))
     return tuple(term for term in OPERATIONAL_TERMS if term in blob)
+
+
+def _publisher_local_edit_hits(flat: Iterable[tuple[str, str]]) -> tuple[str, ...]:
+    hits: list[str] = []
+    for _, text in _priority_evidence(flat):
+        if not PUBLISHER_RE.search(text):
+            continue
+        folded = text.casefold()
+        for term in PUBLISHER_LOCAL_EDIT_TERMS:
+            if term in folded and term not in hits:
+                hits.append(term)
+    return tuple(hits)
 
 
 def classify_vacancy(vacancy: dict[str, Any]) -> tuple[str, str, tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
@@ -136,8 +168,10 @@ def classify_vacancy(vacancy: dict[str, Any]) -> tuple[str, str, tuple[str, ...]
         return "N", "publisher_not_present", (), (), ()
 
     op_hits = _operational_hits(flat)
-    if op_hits:
-        return "A", "publisher_plus_operational_duty", op_hits, pub_paths, pub_context
+    local_edit_hits = _publisher_local_edit_hits(flat)
+    if op_hits or local_edit_hits:
+        evidence_hits = tuple(dict.fromkeys((*op_hits, *local_edit_hits)))
+        return "A", "publisher_plus_operational_duty", evidence_hits, pub_paths, pub_context
 
     job_name = _first(vacancy, "job-name", "job_name", "name").casefold()
     title_is_noise = any(term in job_name for term in NOISE_TITLE_TERMS)
