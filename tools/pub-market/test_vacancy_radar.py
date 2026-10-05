@@ -35,14 +35,29 @@ class ClassifierTests(unittest.TestCase):
             "a1",
             "Контент-маркетолог",
             "Оформление каталогов, брошюр и презентаций; дизайн и верстка для полиграфии.",
-            ["Microsoft Publisher", "Adobe InDesign"],
+            ["Adobe InDesign"],
             "DiAR-Engineering",
         )
+        payload["requirement"] = "Adobe InDesign, Illustrator, Microsoft Publisher или CorelDRAW для полиграфии."
         klass, reason, hits, paths, _ = vr.classify_vacancy(payload)
         self.assertEqual("A", klass)
         self.assertEqual("publisher_plus_operational_duty", reason)
         self.assertIn("каталог", hits)
-        self.assertTrue(any(p.startswith("skills[") for p in paths))
+        self.assertIn("requirement", paths)
+
+    def test_skill_only_publisher_plus_print_duty_stays_b(self):
+        payload = vac(
+            "b-print-skill-only",
+            "Методист",
+            "Формирование методической базы: печатные и электронные материалы.",
+            ["MS Publisher", "Ведение документации"],
+            "Морская Техническая Академия",
+        )
+        klass, reason, hits, paths, _ = vr.classify_vacancy(payload)
+        self.assertEqual("B", klass)
+        self.assertEqual("publisher_skill_only", reason)
+        self.assertEqual((), hits)
+        self.assertTrue(all(p.startswith("skills[") for p in paths))
 
     def test_a_direct_publisher_document_editing(self):
         payload = vac(
