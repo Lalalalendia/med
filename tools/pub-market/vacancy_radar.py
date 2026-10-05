@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import html
 import json
 import re
 import sys
@@ -25,6 +26,7 @@ from pathlib import Path
 from typing import Any, Callable, Iterable
 
 API_URL = "https://opendata.trudvsem.ru/api/v1/vacancies"
+HH_API_BASE = "https://api.hh.ru"
 DEFAULT_QUERIES = (
     "Microsoft Publisher",
     "MS Publisher",
@@ -213,6 +215,175 @@ def normalize_trudvsem_source(vacancy: dict[str, Any]) -> NormalizedVacancy:
         evidence=tuple(evidence),
         skills=tuple(dict.fromkeys(skills)),
     )
+
+
+def _strip_html(value: Any) -> str:
+    text = _norm(value)
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", " ", text)
+    return " ".join(html.unescape(text).replace("\u00a0", " ").split())
+
+
+def normalize_hh_source(vacancy: dict[str, Any]) -> NormalizedVacancy:
+    employer = vacancy.get("employer") if isinstance(vacancy.get("employer"), dict) else {}
+    area = vacancy.get("area") if isinstance(vacancy.get("area"), dict) else {}
+    snippet = vacancy.get("snippet") if isinstance(vacancy.get("snippet"), dict) else {}
+
+    evidence: list[tuple[str, str]] = []
+    job_name = _first(vacancy, "name")
+    if job_name:
+        evidence.append(("job-name", job_name))
+
+    description = _strip_html(vacancy.get("description"))
+    if description:
+        evidence.append(("description", description))
+
+    snippet_requirement = _strip_html(snippet.get("requirement"))
+    if snippet_requirement:
+        evidence.append(("requirement", snippet_requirement))
+    snippet_responsibility = _strip_html(snippet.get("responsibility"))
+    if snippet_responsibility:
+        evidence.append(("duty", snippet_responsibility))
+
+    skills: list[str] = []
+    raw_skills = vacancy.get("key_skills")
+    if isinstance(raw_skills, list):
+        for item in raw_skills:
+            if isinstance(item, dict):
+                name = _first(item, "name")
+                if name:
+                    skills.append(name)
+            elif isinstance(item, str):
+                name = _norm(item)
+                if name:
+                    skills.append(name)
+
+    return NormalizedVacancy(
+        source="hh",
+        source_id=_first(vacancy, "id"),
+        url=_first(vacancy, "alternate_url", "url"),
+        employer=_first(employer, "name"),
+        employer_inn="",
+        employer_code=_first(employer, "id"),
+        job_name=job_name,
+        region=_first(area, "name"),
+        creation_date=_first(vacancy, "initial_created_at", "created_at", "published_at"),
+        modified_date=_first(vacancy, "updated_at"),
+        evidence=tuple(evidence),
+        skills=tuple(dict.fromkeys(skills)),
+    )
+
+
+def request_hh_json(
+    path: str,
+    params: dict[str, Any],
+    *,
+    access_token: str,
+    user_agent: str,
+    timeout: int = 60,
+    attempts: int = 3,
+) -> dict[str, Any]:
+    if not access_token:
+        raise ValueError("HH access token is required")
+    if not user_agent:
+        raise ValueError("HH-User-Agent is required")
+
+    query = urllib.parse.urlencode(params)
+    url = f"{HH_API_BASE}{path}"
+    if query:
+        url = f"{url}?{query}"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "HH-User-Agent": user_agent,
+            "Accept": "application/json",
+        },
+    )
+    last_error: Exception | None = None
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                payload = json.load(response)
+            if not isinstance(payload, dict):
+                raise ValueError("unexpected HeadHunter payload")
+            return payload
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, ValueError) as exc:
+            last_error = exc
+            if attempt + 1 == attempts:
+                break
+            time.sleep(2 ** attempt)
+    assert last_error is not None
+    raise last_error
+
+
+def fetch_hh(
+    query: str,
+    date_from: str | None,
+    *,
+    access_token: str,
+    user_agent: str,
+    per_page: int = 100,
+    max_pages: int = 20,
+    requester: Callable[[str, dict[str, Any]], dict[str, Any]] | None = None,
+) -> list[NormalizedVacancy]:
+    """Fetch HeadHunter search hits and hydrate each hit from the full vacancy endpoint."""
+    if not (1 <= per_page <= 100):
+        raise ValueError("HH per_page must be between 1 and 100")
+    if not (1 <= max_pages <= 20):
+        raise ValueError("HH max_pages must be between 1 and 20")
+
+    if requester is None:
+        def requester(path: str, params: dict[str, Any]) -> dict[str, Any]:
+            return request_hh_json(
+                path,
+                params,
+                access_token=access_token,
+                user_agent=user_agent,
+            )
+
+    ids: list[str] = []
+    seen: set[str] = set()
+    for page in range(max_pages):
+        params: dict[str, Any] = {
+            "text": query,
+            "page": page,
+            "per_page": per_page,
+        }
+        if date_from:
+            params["date_from"] = date_from
+
+        payload = requester("/vacancies", params)
+        items = payload.get("items", [])
+        if not isinstance(items, list):
+            raise ValueError("unexpected HeadHunter payload: items is not a list")
+
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            vacancy_id = _first(item, "id")
+            if vacancy_id and vacancy_id not in seen:
+                seen.add(vacancy_id)
+                ids.append(vacancy_id)
+
+        pages_raw = payload.get("pages")
+        try:
+            pages = int(pages_raw)
+        except (TypeError, ValueError):
+            pages = None
+        if not items:
+            break
+        if pages is not None and page + 1 >= pages:
+            break
+        if len(items) < per_page:
+            break
+
+    records: list[NormalizedVacancy] = []
+    for vacancy_id in ids:
+        detail = requester(f"/vacancies/{urllib.parse.quote(vacancy_id, safe='')}", {})
+        records.append(normalize_hh_source(detail))
+    return records
 
 
 def _record_flat(record: NormalizedVacancy) -> list[tuple[str, str]]:

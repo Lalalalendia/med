@@ -63,6 +63,20 @@ Each source keeps its own stable `source:id` key. A separate `mirror_key` is emi
 
 This allows future sources such as HeadHunter to reuse the same classifier and gold corpus without teaching the classifier each provider's JSON schema.
 
+### HeadHunter adapter status
+
+A credential-gated HeadHunter adapter is implemented but intentionally not enabled in the scheduled workflow yet.
+
+It uses the official API shape:
+
+- search: `GET https://api.hh.ru/vacancies`;
+- hydration: `GET https://api.hh.ru/vacancies/{id}`;
+- `date_from` for bounded publication windows;
+- `page` / `per_page` with `per_page <= 100` and a maximum 20 pages (2,000 search results);
+- explicit `Authorization: Bearer ...` and `HH-User-Agent`.
+
+The adapter never falls back to HTML scraping. Live enablement should happen only after an HH application/token and a suitable contact-bearing user-agent are configured as GitHub Actions secrets/variables.
+
 ## Tests
 
 ```bash
