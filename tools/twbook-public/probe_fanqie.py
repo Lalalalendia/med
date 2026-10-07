@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
+from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
@@ -10,10 +12,29 @@ from urllib.parse import urljoin
 BOOK_URL = "https://fanqienovel.com/page/7353917626914982974"
 TARGETS = {232, 233, 234, 235, 356, 357}
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36"
+FONTMAP_PATH = Path(__file__).with_name("fanqie_content_fontmap.json")
+FONTMAP = {int(k, 16): v for k, v in json.loads(FONTMAP_PATH.read_text("utf-8")).items()}
 
 
 def is_pua(ch: str) -> bool:
     return "\ue000" <= ch <= "\uf8ff"
+
+
+def decode_pua(text: str) -> str:
+    return "".join(FONTMAP.get(ord(ch), ch) for ch in text)
+
+
+def extract_initial_state(html: str) -> dict | None:
+    m = re.search(r"window\.__INITIAL_STATE__\s*=\s*(\{.*?\})\s*;</script>", html, re.DOTALL)
+    if not m:
+        m = re.search(r"window\.__INITIAL_STATE__\s*=\s*(\{.*?\})\s*;", html, re.DOTALL)
+    if not m:
+        return None
+    try:
+        return json.loads(m.group(1))
+    except Exception as exc:
+        print("STATE_JSON_ERROR", repr(exc), "len", len(m.group(1)))
+        return None
 
 
 def extract_reader_text(html: str) -> str:
@@ -69,11 +90,20 @@ def main() -> int:
         label, url = found[n]
         rr = s.get(url, timeout=30)
         text = extract_reader_text(rr.text)
+        state = extract_initial_state(rr.text)
+        cd = ((state or {}).get("reader") or {}).get("chapterData") or {}
+        raw_content = cd.get("content") or ""
+        decoded = decode_pua(raw_content)
+        unknown_pua = {ch for ch in decoded if is_pua(ch)}
         print(
             "FETCH", n, rr.status_code, rr.url, len(rr.text),
             "TEXT", len(text),
             "PUA", sum(is_pua(ch) for ch in text),
             "PUA_UNIQUE", len({ch for ch in text if is_pua(ch)}),
+            "STATE_CONTENT", len(raw_content),
+            "STATE_DECODED", len(decoded),
+            "STATE_UNKNOWN_PUA", len(unknown_pua),
+            "STATE_TITLE", cd.get("title"),
         )
 
     # Determine whether Fanqie's PUA obfuscation changes per public rendering.
