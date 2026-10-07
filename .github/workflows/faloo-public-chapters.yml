@@ -8,13 +8,13 @@ on:
         required: true
         default: "1046066"
       start:
-        description: "First chapter number"
+        description: "First Faloo page ordinal"
         required: true
         default: "1"
       end:
-        description: "Last chapter number"
+        description: "Last Faloo page ordinal"
         required: true
-        default: "77"
+        default: "79"
       delay_seconds:
         description: "Delay between public requests"
         required: true
