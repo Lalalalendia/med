@@ -313,7 +313,7 @@ def fetch_rendering(
     )
 
 
-def fetch_chapter(
+def fetch_twbook_chapter(
     session: requests.Session,
     url: str,
     ordinal: int,
@@ -494,6 +494,157 @@ def fetch_chapter(
     result.note = f"parts={len(parts)}"
     return result
 
+
+
+ILWXS_BOOK_ID = "307344"
+ILWXS_ROOT = f"https://m.ilwxs.com/shu/{ILWXS_BOOK_ID}/"
+
+
+def ilwxs_catalog_page_url(ordinal: int) -> str:
+    page = (ordinal - 1) // 50 + 1
+    return ILWXS_ROOT if page == 1 else f"https://m.ilwxs.com/shu/{ILWXS_BOOK_ID}_{page}/"
+
+
+def resolve_ilwxs_chapter_url(
+    session: requests.Session,
+    ordinal: int,
+    timeout: float,
+) -> tuple[str, str] | None:
+    """Resolve one chapter from the public ilwxs paginated catalog."""
+    page_url = ilwxs_catalog_page_url(ordinal)
+    response, html = fetch_html(session, page_url, timeout)
+    if response.status_code >= 400:
+        return None
+    soup = soup_from_html(html)
+    pattern = re.compile(rf"第\s*{ordinal}\s*章(?:\s|$)")
+    for a in soup.select("a[href]"):
+        title = normalize_text(a.get_text(" ", strip=True))
+        if not pattern.search(title):
+            continue
+        url = urljoin(response.url, (a.get("href") or "").strip())
+        if re.fullmatch(
+            rf"https?://m\.ilwxs\.com/shu/{ILWXS_BOOK_ID}/\d+\.html",
+            url,
+        ):
+            return url, title
+    return None
+
+
+def extract_ilwxs_content(soup: BeautifulSoup) -> str:
+    """Extract the clean chapter body from a public ilwxs chapter page."""
+    node = soup.select_one("div.content") or soup.select_one("div#content")
+    if node is None:
+        candidates = []
+        for candidate in soup.select("[class*=content], article, main"):
+            text = clean_content_node(candidate)
+            if len(text) >= MIN_BODY_CHARS:
+                candidates.append((len(text), text))
+        if not candidates:
+            raise ValueError("ilwxs chapter content node not found")
+        return max(candidates)[1]
+    return clean_content_node(node)
+
+
+def fetch_ilwxs_chapter(
+    session: requests.Session,
+    ordinal: int,
+    timeout: float,
+) -> tuple[str, str, str] | None:
+    resolved = resolve_ilwxs_chapter_url(session, ordinal, timeout)
+    if resolved is None:
+        return None
+    url, title = resolved
+    response, html = fetch_html(session, url, timeout)
+    if response.status_code >= 400:
+        return None
+    text = extract_ilwxs_content(soup_from_html(html))
+    if len(text) < MIN_BODY_CHARS or cjk_count(text) < MIN_BODY_CJK:
+        return None
+    if any(is_hangul(ch) for ch in text):
+        return None
+    return title, text, response.url
+
+
+def write_fallback_chapter(
+    result: ChapterResult,
+    out_dir: Path,
+    *,
+    title: str,
+    text: str,
+    source_url: str,
+    primary_url: str,
+    primary_note: str | None,
+) -> ChapterResult:
+    p = out_dir / "chapters" / f"{result.ordinal:03d}.txt"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    header = [
+        f"Chapter: {result.ordinal}",
+        f"Source: {source_url}",
+        f"Primary: {primary_url}",
+        f"CN-Title: {title}",
+    ]
+    p.write_text("\n".join(header + ["", text, ""]), encoding="utf-8")
+    result.url = source_url
+    result.http_status = 200
+    result.title = title
+    result.chars = len(text)
+    result.cjk_chars = cjk_count(text)
+    result.substitutions = 0
+    result.unknown_total = 0
+    result.unknown_unique = 0
+    result.file = str(p.relative_to(out_dir))
+    result.status = "ok"
+    reason = primary_note or "TWBook primary unavailable"
+    result.note = f"fallback=ilwxs; primary={reason}"
+    return result
+
+
+def fetch_chapter(
+    session: requests.Session,
+    url: str,
+    ordinal: int,
+    out_dir: Path,
+    mapping: dict[str, str],
+    timeout: float,
+    save_html: bool,
+    learn_attempts: int,
+    max_parts: int = 8,
+) -> ChapterResult:
+    """Fetch TWBook first, then fail over to a clean public mirror if necessary."""
+    primary = fetch_twbook_chapter(
+        session,
+        url,
+        ordinal,
+        out_dir,
+        mapping,
+        timeout,
+        save_html,
+        learn_attempts,
+        max_parts,
+    )
+    if primary.status == "ok":
+        return primary
+
+    primary_note = primary.note
+    try:
+        fallback = fetch_ilwxs_chapter(session, ordinal, timeout)
+    except requests.RequestException:
+        fallback = None
+    except Exception:
+        fallback = None
+    if fallback is None:
+        return primary
+
+    title, text, source_url = fallback
+    return write_fallback_chapter(
+        primary,
+        out_dir,
+        title=title,
+        text=text,
+        source_url=source_url,
+        primary_url=url,
+        primary_note=primary_note,
+    )
 
 def write_reports(
     results: list[ChapterResult],
