@@ -123,19 +123,64 @@ def main():
             if args.book_id in href and ("p.faloo.com" in href or "faloo.com" in href):
                 links.add((href,label))
 
-    # Fetch a conservative set of same-book review/pagination links.
-    for idx,(href,label) in enumerate(sorted(links)[:30],1):
+    # Fetch every distinct same-book review thread. User/profile/navigation links are ignored.
+    thread_re = re.compile(
+        rf"^https://p\\.faloo\\.com/3_{re.escape(args.book_id)}_(\\d+)_0_(\\d+)\\.html$"
+    )
+    thread_urls = []
+    seen_threads = set()
+    for href,label in sorted(links):
+        m = thread_re.match(href)
+        if not m:
+            continue
+        thread_id = m.group(1)
+        if thread_id in seen_threads:
+            continue
+        seen_threads.add(thread_id)
+        thread_urls.append((thread_id, href, label))
+
+    thread_records = []
+    thread_dir = out / "threads"
+    thread_dir.mkdir(parents=True, exist_ok=True)
+
+    for idx,(thread_id,href,label) in enumerate(thread_urls,1):
+        record = {
+            "thread_id": thread_id,
+            "url": href,
+            "label": label,
+            "status": None,
+            "final_url": None,
+            "title": None,
+            "text": "",
+        }
         try:
             r=sess.get(href,timeout=args.timeout,allow_redirects=True)
+            record["status"] = r.status_code
+            record["final_url"] = r.url
             r.encoding=r.apparent_encoding or r.encoding or "utf-8"
-            if r.status_code != 200:
-                continue
-            soup=BeautifulSoup(r.text,"html.parser")
-            for txt in likely_review_nodes(soup):
-                collected.append({"source":href,"label":label,"text":txt})
-        except Exception:
-            pass
-        time.sleep(0.7)
+            if r.status_code == 200:
+                soup=BeautifulSoup(r.text,"html.parser")
+                title=clean(soup.title.get_text(" ",strip=True)) if soup.title else None
+                txt=visible_text(soup)
+                record["title"] = title
+                record["text"] = txt
+                (thread_dir/f"{thread_id}.txt").write_text(txt,encoding="utf-8")
+                for block in likely_review_nodes(soup):
+                    collected.append({
+                        "source":href,
+                        "label":label,
+                        "thread_id":thread_id,
+                        "text":block,
+                    })
+        except Exception as e:
+            record["error"] = str(e)
+        thread_records.append(record)
+        time.sleep(0.5)
+
+    (out/"threads.json").write_text(
+        json.dumps(thread_records,ensure_ascii=False,indent=2),
+        encoding="utf-8",
+    )
 
     # dedupe
     unique=[]
@@ -160,7 +205,12 @@ def main():
     ]
     for p in probes:
         summary.append(f"- {p.status} blocked={p.blocked} chars={p.chars} {p.url} -> {p.final_url or ''} {p.title or ''}")
-    summary += ["",f"Likely review blocks extracted: {len(unique)}",f"Same-book links discovered: {len(links)}"]
+    summary += [
+        "",
+        f"Likely review blocks extracted: {len(unique)}",
+        f"Same-book links discovered: {len(links)}",
+        f"Distinct review threads fetched: {len(thread_urls)}",
+    ]
     (out/"summary.md").write_text("\n".join(summary)+"\n",encoding="utf-8")
     print("\n".join(summary))
 
