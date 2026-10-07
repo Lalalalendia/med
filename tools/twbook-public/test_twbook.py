@@ -74,3 +74,40 @@ def test_html_entity_is_decoded_after_dom_extraction():
     assert decoded == "這是測試的正文。"
     assert substitutions == 1
     assert not unknown
+
+
+def test_render_consensus_ignores_global_hangul_identity():
+    merged, resolved, unknown = tw.merge_renderings(["甲꾊乙", "甲支乙"])
+    assert merged == "甲支乙"
+    assert resolved == 1
+    assert not unknown
+
+    # The same Hangul codepoint may represent a different character in another
+    # response pair. Consensus is positional, not dictionary-based.
+    merged, resolved, unknown = tw.merge_renderings(["甲꾊乙", "甲根乙"])
+    assert merged == "甲根乙"
+    assert resolved == 1
+    assert not unknown
+
+
+def test_render_consensus_fails_closed_if_every_render_is_masked():
+    merged, resolved, unknown = tw.merge_renderings(["甲꾊乙", "甲껦乙"])
+    assert merged[0] == "甲"
+    assert merged[-1] == "乙"
+    assert resolved == 0
+    assert sum(unknown.values()) == 1
+
+
+def test_catalog_sorts_by_url_when_titles_are_blank():
+    html = """<div class="chaplist">
+      <a href="/0912500831/3.html">第3章 C</a>
+      <a href="/0912500831/1.html">第1章 A</a>
+      <a href="/0912500831/2.html">第2章</a>
+    </div>"""
+    got = tw.extract_catalog(html, "https://www.twbook.cc/0912500831/dir")
+    assert [x[0].rsplit("/", 1)[-1] for x in got] == ["1.html", "2.html", "3.html"]
+
+
+def test_short_placeholder_is_not_plausible_body():
+    assert not tw.body_is_plausible("本章內容暫時無法顯示，請稍後再試。")
+    assert tw.body_is_plausible("正文" * 200)
