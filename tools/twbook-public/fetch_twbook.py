@@ -156,9 +156,29 @@ def next_part_url(soup: BeautifulSoup, current_url: str) -> str | None:
     return None
 
 
-def fetch_html(session: requests.Session, url: str, timeout: float) -> tuple[requests.Response, str]:
-    response = session.get(url, timeout=timeout, allow_redirects=True)
-    response.encoding = response.apparent_encoding or response.encoding or "utf-8"
+def fetch_html(
+    session: requests.Session,
+    url: str,
+    timeout: float,
+    *,
+    max_attempts: int = 5,
+) -> tuple[requests.Response, str]:
+    """Fetch a public page, backing off on transient 429/5xx responses."""
+    response: requests.Response | None = None
+    for attempt in range(1, max_attempts + 1):
+        response = session.get(url, timeout=timeout, allow_redirects=True)
+        response.encoding = response.apparent_encoding or response.encoding or "utf-8"
+        if response.status_code != 429 and response.status_code < 500:
+            return response, response.text
+        if attempt == max_attempts:
+            return response, response.text
+        retry_after = response.headers.get("Retry-After", "").strip()
+        try:
+            wait = float(retry_after)
+        except ValueError:
+            wait = min(30.0, 2.0 ** attempt)
+        time.sleep(max(2.0, wait))
+    assert response is not None
     return response, response.text
 
 
@@ -207,13 +227,19 @@ def fetch_chapter(
                 result.note = f"HTTP {response.status_code} at {current}"
                 return result
 
-            decoded_html, subs, _ = decode_text(html, mapping)
-            total_subs += subs
-            decoded_pages.append(decoded_html)
-            soup = soup_from_html(decoded_html)
-            if title is None:
-                title = extract_title(soup)
-            parts.append(extract_content(soup))
+            # BeautifulSoup resolves HTML character entities. TWBook commonly
+            # serves the substituted Hangul as entities, so decoding must happen
+            # after DOM/text extraction rather than on the raw HTML string.
+            soup = soup_from_html(html)
+            raw_title = extract_title(soup)
+            if title is None and raw_title is not None:
+                title, title_subs, _ = decode_text(raw_title, mapping)
+                total_subs += title_subs
+            raw_part = extract_content(soup)
+            decoded_part, part_subs, _ = decode_text(raw_part, mapping)
+            total_subs += part_subs
+            parts.append(decoded_part)
+            decoded_pages.append(str(soup))
             nxt = next_part_url(soup, current)
             if not nxt:
                 break
