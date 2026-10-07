@@ -50,7 +50,7 @@ jobs:
       - name: Fetch and close deobfuscation
         env:
           START: ${{ github.event_name == 'workflow_dispatch' && inputs.start || '1' }}
-          END: ${{ github.event_name == 'workflow_dispatch' && inputs.end || '20' }}
+          END: ${{ github.event_name == 'workflow_dispatch' && inputs.end || '382' }}
           DELAY: ${{ github.event_name == 'workflow_dispatch' && inputs.delay_seconds || '0.8' }}
           SAVE_HTML: ${{ github.event_name == 'workflow_dispatch' && inputs.save_html || 'false' }}
         run: |
