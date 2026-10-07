@@ -1,8 +1,16 @@
-name: FanMTL bridge 66-77 - manual
+name: MTL bridge 66-77 - manual
 
 on:
   workflow_dispatch:
     inputs:
+      source:
+        description: "MTL mirror"
+        required: true
+        type: choice
+        options:
+          - wuxiaspot
+          - fanmtl
+        default: wuxiaspot
       story_start:
         description: "First story chapter"
         required: true
@@ -20,7 +28,7 @@ permissions:
   contents: read
 
 jobs:
-  fetch-fanmtl-bridge:
+  fetch-mtl-bridge:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -34,8 +42,9 @@ jobs:
       - name: Install parser dependencies
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
 
-      - name: Fetch FanMTL bridge
+      - name: Fetch MTL bridge
         env:
+          SOURCE: ${{ inputs.source }}
           STORY_START: ${{ inputs.story_start }}
           STORY_END: ${{ inputs.story_end }}
           DELAY: ${{ inputs.delay_seconds }}
@@ -43,24 +52,25 @@ jobs:
           set -euo pipefail
 
           python tools/fanmtl-bridge/fetch_fanmtl_bridge.py \
+            --source "$SOURCE" \
             --story-start "$STORY_START" \
             --story-end "$STORY_END" \
             --offset 1 \
             --delay "$DELAY" \
-            --out-dir out/fanmtl
+            --out-dir out/mtl-bridge
 
       - name: Job summary
         if: always()
         run: |
-          if [ -f out/fanmtl/summary.md ]; then
-            cat out/fanmtl/summary.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -f out/mtl-bridge/summary.md ]; then
+            cat out/mtl-bridge/summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Upload result
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: fanmtl-bridge-${{ inputs.story_start }}-${{ inputs.story_end }}
-          path: out/fanmtl/**
+          name: mtl-bridge-${{ inputs.source }}-${{ inputs.story_start }}-${{ inputs.story_end }}
+          path: out/mtl-bridge/**
           if-no-files-found: warn
           retention-days: 7
