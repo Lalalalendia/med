@@ -374,8 +374,6 @@ def fetch_chapter(
                 if renderings:
                     merged, resolved, unresolved = merge_renderings(renderings)
                     if not unresolved:
-                        parts.append(merged)
-                        total_resolved += resolved
                         break
 
                     # We have a real chapter, but still-masked positions remain.
