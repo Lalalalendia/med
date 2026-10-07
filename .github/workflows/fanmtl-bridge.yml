@@ -1,0 +1,66 @@
+name: FanMTL bridge 66-77 - manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      story_start:
+        description: "First story chapter"
+        required: true
+        default: "66"
+      story_end:
+        description: "Last story chapter"
+        required: true
+        default: "77"
+      delay_seconds:
+        description: "Delay between public requests"
+        required: true
+        default: "1.5"
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-fanmtl-bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install parser dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+
+      - name: Fetch FanMTL bridge
+        env:
+          STORY_START: ${{ inputs.story_start }}
+          STORY_END: ${{ inputs.story_end }}
+          DELAY: ${{ inputs.delay_seconds }}
+        run: |
+          set -euo pipefail
+
+          python tools/fanmtl-bridge/fetch_fanmtl_bridge.py \
+            --story-start "$STORY_START" \
+            --story-end "$STORY_END" \
+            --offset 1 \
+            --delay "$DELAY" \
+            --out-dir out/fanmtl
+
+      - name: Job summary
+        if: always()
+        run: |
+          if [ -f out/fanmtl/summary.md ]; then
+            cat out/fanmtl/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fanmtl-bridge-${{ inputs.story_start }}-${{ inputs.story_end }}
+          path: out/fanmtl/**
+          if-no-files-found: warn
+          retention-days: 7
