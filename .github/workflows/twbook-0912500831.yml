@@ -1,0 +1,82 @@
+name: TWBook 0912500831 deobfuscation closure
+
+on:
+  push:
+    branches:
+      - twbook-public-deobfuscator
+    paths:
+      - "tools/twbook-public/**"
+      - ".github/workflows/twbook-0912500831.yml"
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "First catalog chapter ordinal"
+        required: true
+        default: "1"
+      end:
+        description: "Last catalog chapter ordinal"
+        required: true
+        default: "382"
+      delay_seconds:
+        description: "Delay between public requests"
+        required: true
+        default: "0.8"
+      save_html:
+        description: "Keep decoded returned HTML for debugging"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pytest
+
+      - name: Unit tests
+        run: pytest -q tools/twbook-public/test_twbook.py
+
+      - name: Fetch and close deobfuscation
+        env:
+          START: ${{ github.event_name == 'workflow_dispatch' && inputs.start || '1' }}
+          END: ${{ github.event_name == 'workflow_dispatch' && inputs.end || '382' }}
+          DELAY: ${{ github.event_name == 'workflow_dispatch' && inputs.delay_seconds || '0.8' }}
+          SAVE_HTML: ${{ github.event_name == 'workflow_dispatch' && inputs.save_html || 'false' }}
+        run: |
+          set -euo pipefail
+          extra=()
+          if [ "$SAVE_HTML" = "true" ]; then extra+=(--save-html); fi
+          python tools/twbook-public/fetch_twbook.py \
+            --book-id 0912500831 \
+            --start "$START" \
+            --end "$END" \
+            --delay "$DELAY" \
+            --out-dir out/twbook-0912500831 \
+            "${extra[@]}"
+
+      - name: Job summary
+        if: always()
+        run: |
+          if [ -f out/twbook-0912500831/summary.md ]; then
+            cat out/twbook-0912500831/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload diagnostics and clean corpus
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: twbook-0912500831-${{ github.run_id }}
+          path: out/twbook-0912500831/**
+          if-no-files-found: warn
+          retention-days: 7
