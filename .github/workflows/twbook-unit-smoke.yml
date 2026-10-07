@@ -1,0 +1,23 @@
+name: TWBook unit smoke
+
+on:
+  push:
+    branches:
+      - twbook-public-deobfuscator
+    paths:
+      - ".github/workflows/twbook-unit-smoke.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pytest
+      - run: pytest -q tools/twbook-public/test_twbook.py
