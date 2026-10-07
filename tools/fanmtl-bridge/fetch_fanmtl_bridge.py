@@ -56,10 +56,10 @@ CONTENT_SELECTORS = (
 )
 
 TITLE_SELECTORS = (
-    "h1",
-    "h2",
     ".chapter-title",
     ".chapter_title",
+    "h2",
+    "h1",
     ".title",
 )
 
