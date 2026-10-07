@@ -61,3 +61,16 @@ def test_next_part_url():
     assert tw.next_part_url(
         soup, "https://www.twbook.cc/0220699805/8096_1.html"
     ) == "https://www.twbook.cc/0220699805/8096_1_2.html"
+
+
+def test_html_entity_is_decoded_after_dom_extraction():
+    mapping = tw.load_mapping(HERE / "mapping.json")
+    soup = tw.soup_from_html(
+        '<div class="chapter-content"><div class="content"><p>這是測試&#45445;正文。</p></div></div>'
+    )
+    raw = tw.extract_content(soup)
+    assert "놅" in raw
+    decoded, substitutions, unknown = tw.decode_text(raw, mapping)
+    assert decoded == "這是測試的正文。"
+    assert substitutions == 1
+    assert not unknown
