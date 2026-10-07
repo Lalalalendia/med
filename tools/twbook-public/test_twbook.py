@@ -111,3 +111,36 @@ def test_catalog_sorts_by_url_when_titles_are_blank():
 def test_short_placeholder_is_not_plausible_body():
     assert not tw.body_is_plausible("本章內容暫時無法顯示，請稍後再試。")
     assert tw.body_is_plausible("正文" * 200)
+
+
+
+def test_ilwxs_catalog_page_url():
+    assert tw.ilwxs_catalog_page_url(1) == "https://m.ilwxs.com/shu/307344/"
+    assert tw.ilwxs_catalog_page_url(51) == "https://m.ilwxs.com/shu/307344_2/"
+    assert tw.ilwxs_catalog_page_url(382) == "https://m.ilwxs.com/shu/307344_8/"
+
+
+def test_extract_ilwxs_content():
+    html = """<div class="content"><p>第一段正文。</p><script>bad()</script><p>第二段正文。</p></div>"""
+    text = tw.extract_ilwxs_content(tw.soup_from_html(html))
+    assert "第一段正文" in text
+    assert "第二段正文" in text
+    assert "bad()" not in text
+
+
+def test_resolve_ilwxs_chapter_url(monkeypatch):
+    class FakeResponse:
+        status_code = 200
+        url = "https://m.ilwxs.com/shu/307344_5/"
+
+    html = """<a href="/shu/307344/177494083.html">第232章 可怜的弗莱迪</a>"""
+
+    def fake_fetch_html(session, url, timeout, **kwargs):
+        return FakeResponse(), html
+
+    monkeypatch.setattr(tw, "fetch_html", fake_fetch_html)
+    got = tw.resolve_ilwxs_chapter_url(object(), 232, 20)
+    assert got == (
+        "https://m.ilwxs.com/shu/307344/177494083.html",
+        "第232章 可怜的弗莱迪",
+    )
