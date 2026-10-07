@@ -15,13 +15,18 @@ print("INDEX",r.status_code,r.url,len(r.text))
 r.raise_for_status()
 soup=BeautifulSoup(r.text,"html.parser")
 found={}
-for a in soup.select("a[href]"):
-    label=" ".join(a.stripped_strings)
-    m=re.search(r"第\s*(\d+)\s*章",label)
-    if not m: continue
-    n=int(m.group(1))
-    if n in TARGETS:
-        found[n]=(label,urljoin(r.url,a.get("href")))
+for page in range(1, 9):
+    page_url = BOOK if page == 1 else f"https://m.ilwxs.com/shu/307344_{page}/"
+    pr = s.get(page_url, timeout=30)
+    print("PAGE", page, pr.status_code, pr.url, len(pr.text))
+    ps = BeautifulSoup(pr.text, "html.parser")
+    for a in ps.select("a[href]"):
+        label=" ".join(a.stripped_strings)
+        m=re.search(r"第\s*(\d+)\s*章",label)
+        if not m: continue
+        n=int(m.group(1))
+        if n in TARGETS:
+            found[n]=(label,urljoin(pr.url,a.get("href")))
 for n in sorted(TARGETS):
     print("TARGET",n,found.get(n))
 for n,(label,url) in sorted(found.items()):
