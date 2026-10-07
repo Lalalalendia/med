@@ -1,0 +1,44 @@
+name: TWBook fallback target verification
+
+on:
+  push:
+    branches:
+      - twbook-public-deobfuscator
+    paths:
+      - ".github/workflows/twbook-fallback-target.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-fallbacks:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - start: 232
+            end: 235
+            name: freddy
+          - start: 356
+            end: 357
+            name: chains
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pytest
+      - run: pytest -q tools/twbook-public/test_twbook.py
+      - name: Verify fallback range
+        run: |
+          python tools/twbook-public/fetch_twbook.py \
+            --book-id 0912500831 \
+            --start ${{ matrix.start }} \
+            --end ${{ matrix.end }} \
+            --delay 0.8 \
+            --out-dir out/${{ matrix.name }}
+      - name: Show summary
+        if: always()
+        run: cat out/${{ matrix.name }}/summary.md || true
