@@ -36,3 +36,10 @@ for n,(label,url) in sorted(found.items()):
                 candidates.append((len(text),sel,text[:160].replace("\n"," ")))
     candidates.sort(reverse=True)
     print("CANDIDATES",n,candidates[:8])
+
+print("PAGINATION")
+for a in soup.select("a[href]"):
+    label=" ".join(a.stripped_strings)
+    href=urljoin(r.url,a.get("href"))
+    if any(k in label for k in ("下一","上一","全部","目录","章")) or any(k in href for k in ("index","page","list","mulu")):
+        print("LINK",repr(label),href)
