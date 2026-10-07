@@ -498,6 +498,9 @@ def fetch_twbook_chapter(
 
 ILWXS_BOOK_ID = "307344"
 ILWXS_ROOT = f"https://m.ilwxs.com/shu/{ILWXS_BOOK_ID}/"
+# Verified across repeated public requests: these TWBook chapter pages only
+# return short placeholder bodies, while the fallback mirror has full text.
+KNOWN_TWBOOK_PLACEHOLDERS = {232, 233, 234, 235, 356, 357}
 
 
 def ilwxs_catalog_page_url(ordinal: int) -> str:
@@ -611,6 +614,30 @@ def fetch_chapter(
     max_parts: int = 8,
 ) -> ChapterResult:
     """Fetch TWBook first, then fail over to a clean public mirror if necessary."""
+    if ordinal in KNOWN_TWBOOK_PLACEHOLDERS:
+        try:
+            fallback = fetch_ilwxs_chapter(session, ordinal, timeout)
+        except Exception:
+            fallback = None
+        if fallback is not None:
+            title, text, source_url = fallback
+            primary = ChapterResult(
+                ordinal=ordinal,
+                url=url,
+                status="needs_check",
+                http_status=200,
+                note="known TWBook placeholder",
+            )
+            return write_fallback_chapter(
+                primary,
+                out_dir,
+                title=title,
+                text=text,
+                source_url=source_url,
+                primary_url=url,
+                primary_note=primary.note,
+            )
+
     primary = fetch_twbook_chapter(
         session,
         url,
