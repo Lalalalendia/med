@@ -27,6 +27,10 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: twbook-0912500831-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -50,7 +54,7 @@ jobs:
       - name: Fetch and close deobfuscation
         env:
           START: ${{ github.event_name == 'workflow_dispatch' && inputs.start || '1' }}
-          END: ${{ github.event_name == 'workflow_dispatch' && inputs.end || '382' }}
+          END: ${{ github.event_name == 'workflow_dispatch' && inputs.end || (contains(github.event.head_commit.message, '[full]') && '382' || '20') }}
           DELAY: ${{ github.event_name == 'workflow_dispatch' && inputs.delay_seconds || '0.8' }}
           SAVE_HTML: ${{ github.event_name == 'workflow_dispatch' && inputs.save_html || 'false' }}
         run: |
