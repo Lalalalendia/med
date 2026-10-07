@@ -125,7 +125,7 @@ def main():
 
     # Fetch every distinct same-book review thread. User/profile/navigation links are ignored.
     thread_re = re.compile(
-        rf"^https://p\\.faloo\\.com/3_{re.escape(args.book_id)}_(\\d+)_0_(\\d+)\\.html$"
+        rf"^https://p\.faloo\.com/3_{re.escape(args.book_id)}_(\d+)_0_(\d+)\.html$"
     )
     thread_urls = []
     seen_threads = set()
