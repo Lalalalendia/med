@@ -6,7 +6,7 @@ import json
 import re
 import sys
 import time
-from collections import Counter, defaultdict
+from collections import Counter
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -21,6 +21,8 @@ DEFAULT_USER_AGENT = (
     "(KHTML, like Gecko) Chrome/129.0 Safari/537.36"
 )
 TIP_MARKERS = ("溫馨提示", "温馨提示", "VIP會員", "VIP会员")
+MIN_BODY_CHARS = 300
+MIN_BODY_CJK = 120
 
 
 @dataclass
@@ -50,6 +52,11 @@ def is_cjk(ch: str) -> bool:
 
 
 def load_mapping(path: Path) -> dict[str, str]:
+    """Load the old bootstrap map for compatibility/diagnostics only.
+
+    TWBook's substitutions are randomized across requests, so this map is not
+    used to decode chapter bodies anymore.
+    """
     raw = json.loads(path.read_text(encoding="utf-8"))
     for src, dst in raw.items():
         if len(src) != 1 or len(dst) != 1:
@@ -58,6 +65,7 @@ def load_mapping(path: Path) -> dict[str, str]:
 
 
 def decode_text(text: str, mapping: dict[str, str]) -> tuple[str, int, Counter[str]]:
+    """Legacy helper retained for tests/debugging, not used for chapter bodies."""
     substitutions = sum(text.count(ch) for ch in mapping)
     decoded = text.translate(str.maketrans(mapping))
     unknown = Counter(ch for ch in decoded if is_hangul(ch))
@@ -66,6 +74,10 @@ def decode_text(text: str, mapping: dict[str, str]) -> tuple[str, int, Counter[s
 
 def cjk_count(text: str) -> int:
     return len(re.findall(r"[\u3400-\u4dbf\u4e00-\u9fff]", text))
+
+
+def hangul_count(text: str) -> int:
+    return sum(1 for ch in text if is_hangul(ch))
 
 
 def normalize_text(text: str) -> str:
@@ -113,9 +125,16 @@ def extract_catalog(html: str, base_url: str) -> list[tuple[str, str]]:
             continue
         seen.add(url)
         out.append((url, normalize_text(a.get_text(" ", strip=True))))
+
     def chapter_number(item: tuple[str, str]) -> int:
-        match = re.search(r"第\s*(\d+)\s*章", item[1])
-        return int(match.group(1)) if match else 10**9
+        # URL numbering is more reliable than title text because titles can be
+        # obfuscated or blank.
+        stem = Path(urlparse(item[0]).path).stem
+        match = re.match(r"(\d+)", stem)
+        if match:
+            return int(match.group(1))
+        title_match = re.search(r"第\s*(\d+)\s*章", item[1])
+        return int(title_match.group(1)) if title_match else 10**9
 
     out.sort(key=chapter_number)
     return out
@@ -193,46 +212,72 @@ def fetch_html(
     return response, response.text
 
 
-def learn_mapping_from_pair(
-    left: str,
-    right: str,
-    mapping: dict[str, str],
-) -> dict[str, str]:
-    """Infer stable Hangul->CJK substitutions from two randomized renderings.
+def body_is_plausible(text: str) -> bool:
+    # Hangul substitutions are one code point each, so include them in the
+    # language-character threshold before deobfuscation.
+    language_chars = cjk_count(text) + hangul_count(text)
+    return len(text) >= MIN_BODY_CHARS and language_chars >= MIN_BODY_CJK
 
-    TWBook varies which characters it substitutes between requests while keeping
-    the chapter text itself unchanged. If one rendering leaves a position as
-    plaintext CJK while another uses Hangul, that position reveals the mapping.
-    Equal-length normalized bodies are required so we never guess across shifts.
+
+def merge_renderings(renderings: list[str]) -> tuple[str, int, Counter[str]]:
+    """Recover plaintext by comparing multiple randomized TWBook renderings.
+
+    TWBook changes both *which* positions are obfuscated and which Hangul
+    codepoint represents a character. Therefore a global Hangul->CJK dictionary
+    is unsafe. For each position, take the non-Hangul character exposed by any
+    rendering. If all renderings still contain Hangul there, leave it unresolved.
     """
-    if len(left) != len(right):
-        return {}
+    if not renderings:
+        return "", 0, Counter()
 
-    proposals: dict[str, set[str]] = defaultdict(set)
-    for a, b in zip(left, right):
-        a_plain = mapping.get(a) if is_hangul(a) else (a if is_cjk(a) else None)
-        b_plain = mapping.get(b) if is_hangul(b) else (b if is_cjk(b) else None)
+    # Only compare the dominant exact length. A short anti-bot/placeholder body
+    # must never be aligned against a real chapter.
+    groups: dict[int, list[str]] = {}
+    for text in renderings:
+        groups.setdefault(len(text), []).append(text)
+    best_len, variants = max(groups.items(), key=lambda kv: (len(kv[1]), kv[0]))
 
-        if is_hangul(a) and b_plain:
-            proposals[a].add(b_plain)
-        if is_hangul(b) and a_plain:
-            proposals[b].add(a_plain)
+    out: list[str] = []
+    resolved_positions = 0
+    unresolved = Counter()
 
-    learned: dict[str, str] = {}
-    for src, targets in proposals.items():
-        if len(targets) != 1:
-            continue
-        target = next(iter(targets))
-        existing = mapping.get(src)
-        if existing is not None and existing != target:
+    for pos in range(best_len):
+        chars = [text[pos] for text in variants]
+        visible = {ch for ch in chars if not is_hangul(ch)}
+        if len(visible) > 1:
+            sample = "".join(chars)
             raise RuntimeError(
-                f"mapping conflict for {src} U+{ord(src):04X}: "
-                f"known={existing!r}, observed={target!r}"
+                f"rendering content conflict at position {pos}: {sample!r}"
             )
-        if existing is None:
-            mapping[src] = target
-            learned[src] = target
-    return learned
+        if visible:
+            chosen = next(iter(visible))
+            if any(is_hangul(ch) for ch in chars):
+                resolved_positions += 1
+            out.append(chosen)
+            continue
+
+        # Every rendering still masks this position. Keep one sentinel Hangul so
+        # fail-closed validation can request more renderings / report it.
+        chosen = chars[0]
+        out.append(chosen)
+        unresolved[chosen] += 1
+
+    merged = "".join(out)
+    return merged, resolved_positions, unresolved
+
+
+def merge_title_renderings(titles: list[str]) -> str | None:
+    titles = [t for t in titles if t]
+    if not titles:
+        return None
+    for title in titles:
+        if not any(is_hangul(ch) for ch in title):
+            return title
+    try:
+        merged, _, unresolved = merge_renderings(titles)
+    except RuntimeError:
+        return titles[0]
+    return merged if not unresolved else titles[0]
 
 
 def unknown_contexts(text: str, unknown: Counter[str], radius: int = 20) -> dict[str, list[str]]:
@@ -250,6 +295,24 @@ def unknown_contexts(text: str, unknown: Counter[str], radius: int = 20) -> dict
     return result
 
 
+def fetch_rendering(
+    session: requests.Session,
+    url: str,
+    timeout: float,
+) -> tuple[int, str, str | None, str, str | None]:
+    response, html = fetch_html(session, url, timeout)
+    if response.status_code >= 400:
+        return response.status_code, html, None, "", None
+    soup = soup_from_html(html)
+    return (
+        response.status_code,
+        html,
+        extract_title(soup),
+        extract_content(soup),
+        next_part_url(soup, url),
+    )
+
+
 def fetch_chapter(
     session: requests.Session,
     url: str,
@@ -261,62 +324,134 @@ def fetch_chapter(
     learn_attempts: int,
     max_parts: int = 8,
 ) -> ChapterResult:
+    del mapping  # Static maps are intentionally not used for randomized bodies.
+
     result = ChapterResult(ordinal=ordinal, url=url, status="error")
     current = url
     visited: set[str] = set()
     parts: list[str] = []
-    decoded_pages: list[str] = []
-    title: str | None = None
-    total_subs = 0
+    html_pages: list[str] = []
+    all_titles: list[str] = []
+    total_resolved = 0
 
     try:
         for _ in range(max_parts):
             if current in visited:
                 raise RuntimeError(f"split-page loop at {current}")
             visited.add(current)
-            response, html = fetch_html(session, current, timeout)
-            result.http_status = response.status_code
-            if response.status_code >= 400:
-                result.status = "missing" if response.status_code == 404 else "error"
-                result.note = f"HTTP {response.status_code} at {current}"
-                return result
 
-            # BeautifulSoup resolves HTML character entities. TWBook commonly
-            # serves the substituted Hangul as entities, so decoding must happen
-            # after DOM/text extraction rather than on the raw HTML string.
-            soup = soup_from_html(html)
-            raw_title = extract_title(soup)
-            if title is None and raw_title is not None:
-                title, title_subs, _ = decode_text(raw_title, mapping)
-                total_subs += title_subs
-            raw_part = extract_content(soup)
+            renderings: list[str] = []
+            raw_html_samples: list[str] = []
+            next_url: str | None = None
+            http_status: int | None = None
 
-            decoded_part, part_subs, part_unknown = decode_text(raw_part, mapping)
-            if part_unknown and learn_attempts > 0:
-                variants = [raw_part]
-                for _ in range(learn_attempts):
-                    # A second public rendering usually obfuscates a different
-                    # subset, exposing plaintext at the positions we need.
-                    time.sleep(0.5)
-                    probe_response, probe_html = fetch_html(session, current, timeout)
-                    if probe_response.status_code >= 400:
-                        continue
-                    probe_soup = soup_from_html(probe_html)
-                    probe_raw = extract_content(probe_soup)
-                    variants.append(probe_raw)
-                    for previous in variants[:-1]:
-                        learn_mapping_from_pair(previous, probe_raw, mapping)
-                    decoded_part, part_subs, part_unknown = decode_text(raw_part, mapping)
-                    if not part_unknown:
+            # First obtain a plausible body. Some TWBook responses are 200 OK
+            # placeholders only a few dozen characters long.
+            max_fetches = max(2, learn_attempts + 3)
+            for attempt in range(max_fetches):
+                status, html, raw_title, raw_body, candidate_next = fetch_rendering(
+                    session, current, timeout
+                )
+                http_status = status
+                result.http_status = status
+
+                if status >= 400:
+                    result.status = "missing" if status == 404 else "error"
+                    result.note = f"HTTP {status} at {current}"
+                    return result
+
+                raw_html_samples.append(html)
+                if raw_title:
+                    all_titles.append(raw_title)
+                if candidate_next:
+                    next_url = candidate_next
+
+                if body_is_plausible(raw_body):
+                    renderings.append(raw_body)
+                elif attempt + 1 < max_fetches:
+                    time.sleep(min(4.0, 0.75 * (attempt + 1)))
+
+                if renderings:
+                    merged, resolved, unresolved = merge_renderings(renderings)
+                    if not unresolved:
+                        parts.append(merged)
+                        total_resolved += resolved
                         break
 
-            total_subs += part_subs
-            parts.append(decoded_part)
-            decoded_pages.append(str(soup))
-            nxt = next_part_url(soup, current)
-            if not nxt:
+                    # We have a real chapter, but still-masked positions remain.
+                    # Fetch more independent renderings until every position is
+                    # exposed at least once.
+                    if len(renderings) < learn_attempts + 1:
+                        time.sleep(0.5)
+                        continue
+            else:
+                merged = ""
+
+            if not renderings:
+                diag = out_dir / "short" / f"{ordinal:03d}.json"
+                diag.parent.mkdir(parents=True, exist_ok=True)
+                diag.write_text(
+                    json.dumps(
+                        {
+                            "chapter": ordinal,
+                            "url": current,
+                            "http_status": http_status,
+                            "samples": [
+                                {
+                                    "chars": len(extract_content(soup_from_html(h)))
+                                    if "chapter-content" in h
+                                    else None,
+                                    "text": (
+                                        extract_content(soup_from_html(h))[:500]
+                                        if "chapter-content" in h
+                                        else ""
+                                    ),
+                                }
+                                for h in raw_html_samples[-5:]
+                            ],
+                        },
+                        ensure_ascii=False,
+                        indent=2,
+                    ) + "\n",
+                    encoding="utf-8",
+                )
+                result.status = "needs_check"
+                result.note = "no plausible chapter body after retries"
+                return result
+
+            merged, resolved, unresolved = merge_renderings(renderings)
+            total_resolved += resolved
+            if unresolved:
+                diag = out_dir / "unresolved" / f"{ordinal:03d}.json"
+                diag.parent.mkdir(parents=True, exist_ok=True)
+                diag.write_text(
+                    json.dumps(
+                        {
+                            "chapter": ordinal,
+                            "url": current,
+                            "renderings": len(renderings),
+                            "counts": dict(unresolved),
+                            "contexts": unknown_contexts(merged, unresolved),
+                        },
+                        ensure_ascii=False,
+                        indent=2,
+                    ) + "\n",
+                    encoding="utf-8",
+                )
+                result.status = "mapping_incomplete"
+                result.note = "unresolved after render consensus: " + ", ".join(
+                    f"{ch}=U+{ord(ch):04X}x{count}"
+                    for ch, count in unresolved.most_common()
+                )
+                return result
+
+            parts.append(merged)
+            if save_html:
+                html_pages.extend(raw_html_samples)
+
+            if not next_url:
                 break
-            current = nxt
+            current = next_url
         else:
             raise RuntimeError(f"more than {max_parts} split pages")
     except requests.RequestException as exc:
@@ -328,41 +463,24 @@ def fetch_chapter(
 
     text = normalize_text("\n\n".join(parts))
     unresolved = Counter(ch for ch in text if is_hangul(ch))
-    result.title = title
+    result.title = merge_title_renderings(all_titles)
     result.chars = len(text)
     result.cjk_chars = cjk_count(text)
-    result.substitutions = total_subs
+    result.substitutions = total_resolved
     result.unknown_total = sum(unresolved.values())
     result.unknown_unique = len(unresolved)
 
     if save_html:
         p = out_dir / "html" / f"{ordinal:03d}.html"
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text("\n<!-- SPLIT -->\n".join(decoded_pages), encoding="utf-8")
+        p.write_text("\n<!-- RENDER -->\n".join(html_pages), encoding="utf-8")
 
     if unresolved:
-        diag = out_dir / "unresolved" / f"{ordinal:03d}.json"
-        diag.parent.mkdir(parents=True, exist_ok=True)
-        diag.write_text(
-            json.dumps(
-                {
-                    "chapter": ordinal,
-                    "url": url,
-                    "counts": dict(unresolved),
-                    "contexts": unknown_contexts(text, unresolved),
-                },
-                ensure_ascii=False,
-                indent=2,
-            ) + "\n",
-            encoding="utf-8",
-        )
         result.status = "mapping_incomplete"
-        result.note = "unresolved: " + ", ".join(
-            f"{ch}=U+{ord(ch):04X}x{count}" for ch, count in unresolved.most_common()
-        )
+        result.note = "unexpected unresolved Hangul after merge"
         return result
 
-    if result.cjk_chars < 120 or result.chars < 300:
+    if result.cjk_chars < MIN_BODY_CJK or result.chars < MIN_BODY_CHARS:
         result.status = "needs_check"
         result.note = f"too little text chars={result.chars} cjk={result.cjk_chars}"
         return result
@@ -370,8 +488,8 @@ def fetch_chapter(
     p = out_dir / "chapters" / f"{ordinal:03d}.txt"
     p.parent.mkdir(parents=True, exist_ok=True)
     header = [f"Chapter: {ordinal}", f"Source: {url}"]
-    if title:
-        header.append(f"CN-Title: {title}")
+    if result.title:
+        header.append(f"CN-Title: {result.title}")
     p.write_text("\n".join(header + ["", text, ""]), encoding="utf-8")
     result.file = str(p.relative_to(out_dir))
     result.status = "ok"
@@ -379,19 +497,31 @@ def fetch_chapter(
     return result
 
 
-def write_reports(results: list[ChapterResult], catalog: list[tuple[str, str]], out_dir: Path, mapping: dict[str, str]) -> None:
+def write_reports(
+    results: list[ChapterResult],
+    catalog: list[tuple[str, str]],
+    out_dir: Path,
+    mapping: dict[str, str],
+) -> None:
     (out_dir / "manifest.jsonl").write_text(
         "".join(json.dumps(asdict(x), ensure_ascii=False) + "\n" for x in results),
         encoding="utf-8",
     )
     (out_dir / "catalog.tsv").write_text(
-        "".join(f"{i:03d}\t{title}\t{url}\n" for i, (url, title) in enumerate(catalog, 1)),
+        "".join(
+            f"{i:03d}\t{title}\t{url}\n"
+            for i, (url, title) in enumerate(catalog, 1)
+        ),
         encoding="utf-8",
     )
 
     counts = Counter(x.status for x in results)
     unresolved = Counter()
-    for p in sorted((out_dir / "unresolved").glob("*.json")) if (out_dir / "unresolved").exists() else []:
+    for p in (
+        sorted((out_dir / "unresolved").glob("*.json"))
+        if (out_dir / "unresolved").exists()
+        else []
+    ):
         data = json.loads(p.read_text(encoding="utf-8"))
         unresolved.update(data["counts"])
 
@@ -400,7 +530,7 @@ def write_reports(results: list[ChapterResult], catalog: list[tuple[str, str]], 
         "",
         f"- catalog chapters: {len(catalog)}",
         f"- attempted: {len(results)}",
-        f"- mapping entries: {len(mapping)}",
+        f"- legacy mapping entries: {len(mapping)} (not used for chapter decoding)",
         "",
         "## Result counts",
         "",
@@ -449,8 +579,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--learn-attempts",
         type=int,
-        default=3,
-        help="extra renderings used to infer randomized Hangul substitutions",
+        default=4,
+        help="extra public renderings used for per-position consensus",
     )
     p.add_argument("--allow-incomplete", action="store_true")
     return p.parse_args()
@@ -491,8 +621,7 @@ def main() -> int:
         print(f"catalog HTTP {response.status_code}", file=sys.stderr)
         return 3
 
-    decoded_dir, _, _ = decode_text(html, mapping)
-    catalog = extract_catalog(decoded_dir, dir_url)
+    catalog = extract_catalog(html, dir_url)
     if not catalog:
         print("no chapters found in catalog", file=sys.stderr)
         return 4
@@ -516,16 +645,12 @@ def main() -> int:
         results.append(item)
         print(
             f"{idx:03d}: {item.status} http={item.http_status} "
-            f"cjk={item.cjk_chars} subs={item.substitutions} "
+            f"cjk={item.cjk_chars} resolved={item.substitutions} "
             f"unknown={item.unknown_total} note={item.note or ''}"
         )
         if idx != selected[-1][0]:
             time.sleep(args.delay)
 
-    (out_dir / "mapping.runtime.json").write_text(
-        json.dumps(mapping, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
     write_reports(results, catalog, out_dir, mapping)
     build_combined(results, out_dir)
 
