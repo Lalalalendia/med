@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - ".github/workflows/onepiece-fanmtl-055.yml"
+      - ".github/triggers/onepiece-fanmtl-055.txt"
 
 permissions:
   contents: write
