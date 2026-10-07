@@ -1,0 +1,80 @@
+name: Probe 101kks book source
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/triggers/probe-101kks-18470.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe source
+        run: |
+          python - <<'PY'
+          import re, json, requests
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+
+          url="https://101kks.com/book/18470/index.html"
+          s=requests.Session()
+          s.headers.update({"User-Agent":"Mozilla/5.0","Accept-Language":"zh-CN,zh;q=0.9,en;q=0.5"})
+          r=s.get(url,timeout=25,allow_redirects=True)
+          r.encoding=r.apparent_encoding or r.encoding
+          print("STATUS",r.status_code)
+          print("FINAL",r.url)
+          print("CHARS",len(r.text))
+          soup=BeautifulSoup(r.text,"html.parser")
+          print("TITLE",soup.title.get_text(" ",strip=True) if soup.title else "")
+          text=soup.get_text("\n",strip=True)
+          print("HAS_TITLE", "回档求生" in text or "回檔求生" in text)
+          links=[]
+          for a in soup.find_all("a",href=True):
+              href=urljoin(r.url,a["href"])
+              label=" ".join(a.get_text(" ",strip=True).split())
+              if "/book/18470/" in href and label:
+                  links.append((href,label))
+          # dedupe preserving order
+          out=[]
+          seen=set()
+          for x in links:
+              if x[0] in seen: continue
+              seen.add(x[0]); out.append(x)
+          print("BOOK_LINKS",len(out))
+          for href,label in out[-25:]:
+              print("LINK",label,"=>",href)
+
+          # probe first likely chapter link
+          cand=[]
+          for href,label in out:
+              if re.search(r"第\s*\d+\s*章|第[一二三四五六七八九十百]+章",label):
+                  cand.append((href,label))
+          if cand:
+              href,label=cand[0]
+              rr=s.get(href,timeout=25,allow_redirects=True)
+              rr.encoding=rr.apparent_encoding or rr.encoding
+              ss=BeautifulSoup(rr.text,"html.parser")
+              print("CHAPTER_PROBE_STATUS",rr.status_code)
+              print("CHAPTER_PROBE",label,"=>",rr.url)
+              print("CHAPTER_CHARS",len(rr.text))
+              article=""
+              for sel in [".content",".chapter-content","#content","article",".read-content",".content_detail"]:
+                  node=ss.select_one(sel)
+                  if node:
+                      article="\n".join(x.strip() for x in node.stripped_strings if x.strip())
+                      if len(article)>200: break
+              print("ARTICLE_CHARS",len(article))
+              print("ARTICLE_HEAD",article[:300].replace("\n"," "))
+          PY
