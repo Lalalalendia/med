@@ -1,0 +1,53 @@
+name: Faloo 1239043 one-shot acquisition
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/faloo-1239043-oneshot.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-public-chapters:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install parser dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+
+      - name: Fetch Faloo public chapter pages 1-235
+        run: |
+          set -euo pipefail
+          python tools/faloo-public/fetch_public_chapters.py \
+            --book-id "1239043" \
+            --start "1" \
+            --end "235" \
+            --delay "2.0" \
+            --out-dir out/faloo \
+            --save-html
+
+      - name: Job summary
+        if: always()
+        run: |
+          if [ -f out/faloo/summary.md ]; then
+            cat out/faloo/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: faloo-1239043-1-235
+          path: out/faloo/**
+          if-no-files-found: warn
+          retention-days: 7
