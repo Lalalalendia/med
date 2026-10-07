@@ -44,6 +44,18 @@ Outputs:
 
 Use `--save-html` for debugging. Use `--allow-incomplete` only for diagnostics; by default any incomplete chapter makes the run fail.
 
+
+## Fallback source
+
+TWBook remains the primary source. If a TWBook chapter exhausts retries, returns only
+a short placeholder, or cannot be closed by render consensus, the fetcher resolves
+the same chapter from the public ilwxs catalog for this title and records that source
+explicitly in the chapter header and manifest note.
+
+This is required for chapters 232-235 and 356-357, whose TWBook pages repeatedly
+return short placeholders while the ilwxs mirror exposes full chapter bodies.
+The fallback also makes transient TWBook HTTP 429 failures non-fatal.
+
 ## CI
 
 Normal pushes run a fast 20-chapter closure sample. A commit message containing `[full]` runs all 382 chapters. Manual dispatch can choose any range.
