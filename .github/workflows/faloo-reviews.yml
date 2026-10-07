@@ -7,11 +7,6 @@ on:
         description: "Faloo book ID"
         required: true
         default: "1046066"
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/triggers/faloo-reviews-1046066.txt"
 
 permissions:
   contents: read
@@ -29,7 +24,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
       - name: Fetch public review pages
         env:
-          BOOK_ID: ${{ inputs.book_id || '1046066' }}
+          BOOK_ID: ${{ inputs.book_id }}
         run: |
           python tools/faloo-reviews/fetch_public_reviews.py \
             --book-id "$BOOK_ID" \
@@ -44,7 +39,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: faloo-reviews-${{ inputs.book_id || '1046066' }}
+          name: faloo-reviews-${{ inputs.book_id }}
           path: out/faloo-reviews/**
           if-no-files-found: warn
           retention-days: 7
