@@ -7,7 +7,6 @@ on:
     paths:
       - "tools/twbook-public/fetch_twbook.py"
       - "tools/twbook-public/mapping.json"
-      - "tools/twbook-public/fanqie_content_fontmap.json"
       - "tools/twbook-public/test_twbook.py"
       - "tools/twbook-public/README.md"
       - ".github/workflows/twbook-0912500831.yml"
