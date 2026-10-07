@@ -15,6 +15,11 @@ on:
         description: "Delay between public requests"
         required: true
         default: "1.5"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/triggers/fanmtl-bridge-66-77.txt"
 
 permissions:
   contents: read
@@ -36,9 +41,9 @@ jobs:
 
       - name: Fetch FanMTL bridge
         env:
-          STORY_START: ${{ inputs.story_start }}
-          STORY_END: ${{ inputs.story_end }}
-          DELAY: ${{ inputs.delay_seconds }}
+          STORY_START: ${{ inputs.story_start || '66' }}
+          STORY_END: ${{ inputs.story_end || '77' }}
+          DELAY: ${{ inputs.delay_seconds || '1.5' }}
         run: |
           set -euo pipefail
 
@@ -60,7 +65,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: fanmtl-bridge-${{ inputs.story_start }}-${{ inputs.story_end }}
+          name: fanmtl-bridge-${{ inputs.story_start || '66' }}-${{ inputs.story_end || '77' }}
           path: out/fanmtl/**
           if-no-files-found: warn
           retention-days: 7
