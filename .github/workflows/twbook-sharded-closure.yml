@@ -1,0 +1,146 @@
+name: TWBook 0912500831 sharded closure
+
+on:
+  push:
+    branches:
+      - twbook-public-deobfuscator
+    paths:
+      - ".github/workflows/twbook-sharded-closure.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: twbook-sharded-0912500831-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - shard: a
+            start: 1
+            end: 96
+          - shard: b
+            start: 97
+            end: 191
+          - shard: c
+            start: 192
+            end: 286
+          - shard: d
+            start: 287
+            end: 382
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pytest
+
+      - name: Unit tests
+        run: pytest -q tools/twbook-public/test_twbook.py
+
+      - name: Fetch shard
+        run: |
+          python tools/twbook-public/fetch_twbook.py \
+            --book-id 0912500831 \
+            --start ${{ matrix.start }} \
+            --end ${{ matrix.end }} \
+            --delay 0.8 \
+            --out-dir out/shard-${{ matrix.shard }}
+
+      - name: Upload shard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: twbook-shard-${{ matrix.shard }}-${{ github.run_id }}
+          path: out/shard-${{ matrix.shard }}/**
+          if-no-files-found: warn
+          retention-days: 7
+
+  verify:
+    needs: fetch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: twbook-shard-*-${{ github.run_id }}
+          path: merged
+
+      - name: Verify 382/382 and build combined corpus
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path("merged")
+          manifests = sorted(root.glob("**/manifest.jsonl"))
+          if len(manifests) != 4:
+              raise SystemExit(f"expected 4 manifests, found {len(manifests)}")
+
+          rows = []
+          chapter_files = {}
+          for manifest in manifests:
+              for line in manifest.read_text(encoding="utf-8").splitlines():
+                  if line.strip():
+                      row = json.loads(line)
+                      rows.append(row)
+              for p in manifest.parent.glob("chapters/*.txt"):
+                  chapter_files[int(p.stem)] = p
+
+          by_ordinal = {row["ordinal"]: row for row in rows}
+          expected = set(range(1, 383))
+          missing = sorted(expected - set(by_ordinal))
+          extra = sorted(set(by_ordinal) - expected)
+          bad = sorted(
+              (n, by_ordinal[n]["status"], by_ordinal[n].get("note"))
+              for n in expected & set(by_ordinal)
+              if by_ordinal[n]["status"] != "ok"
+          )
+          missing_files = sorted(expected - set(chapter_files))
+
+          if missing or extra or bad or missing_files:
+              print("missing manifest ordinals:", missing)
+              print("extra ordinals:", extra)
+              print("bad statuses:", bad)
+              print("missing chapter files:", missing_files)
+              raise SystemExit(1)
+
+          out = Path("final")
+          out.mkdir()
+          (out / "manifest.jsonl").write_text(
+              "".join(
+                  json.dumps(by_ordinal[n], ensure_ascii=False) + "\n"
+                  for n in range(1, 383)
+              ),
+              encoding="utf-8",
+          )
+          chunks = [
+              chapter_files[n].read_text(encoding="utf-8").rstrip()
+              for n in range(1, 383)
+          ]
+          (out / "combined.txt").write_text(
+              ("\n\n" + "=" * 72 + "\n\n").join(chunks) + "\n",
+              encoding="utf-8",
+          )
+          (out / "summary.md").write_text(
+              "# TWBook closure\n\n- clean chapters: 382/382\n- unresolved Hangul: 0\n",
+              encoding="utf-8",
+          )
+          print("verified: 382/382 clean")
+          PY
+
+      - name: Upload verified corpus
+        uses: actions/upload-artifact@v4
+        with:
+          name: twbook-0912500831-verified-${{ github.run_id }}
+          path: final/**
+          retention-days: 7
