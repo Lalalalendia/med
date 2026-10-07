@@ -6,7 +6,7 @@ import json
 import re
 import sys
 import time
-from collections import Counter
+from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -41,6 +41,12 @@ class ChapterResult:
 
 def is_hangul(ch: str) -> bool:
     return len(ch) == 1 and "\uac00" <= ch <= "\ud7a3"
+
+
+def is_cjk(ch: str) -> bool:
+    return len(ch) == 1 and (
+        "\u3400" <= ch <= "\u4dbf" or "\u4e00" <= ch <= "\u9fff"
+    )
 
 
 def load_mapping(path: Path) -> dict[str, str]:
@@ -107,6 +113,11 @@ def extract_catalog(html: str, base_url: str) -> list[tuple[str, str]]:
             continue
         seen.add(url)
         out.append((url, normalize_text(a.get_text(" ", strip=True))))
+    def chapter_number(item: tuple[str, str]) -> int:
+        match = re.search(r"第\s*(\d+)\s*章", item[1])
+        return int(match.group(1)) if match else 10**9
+
+    out.sort(key=chapter_number)
     return out
 
 
@@ -182,6 +193,48 @@ def fetch_html(
     return response, response.text
 
 
+def learn_mapping_from_pair(
+    left: str,
+    right: str,
+    mapping: dict[str, str],
+) -> dict[str, str]:
+    """Infer stable Hangul->CJK substitutions from two randomized renderings.
+
+    TWBook varies which characters it substitutes between requests while keeping
+    the chapter text itself unchanged. If one rendering leaves a position as
+    plaintext CJK while another uses Hangul, that position reveals the mapping.
+    Equal-length normalized bodies are required so we never guess across shifts.
+    """
+    if len(left) != len(right):
+        return {}
+
+    proposals: dict[str, set[str]] = defaultdict(set)
+    for a, b in zip(left, right):
+        a_plain = mapping.get(a) if is_hangul(a) else (a if is_cjk(a) else None)
+        b_plain = mapping.get(b) if is_hangul(b) else (b if is_cjk(b) else None)
+
+        if is_hangul(a) and b_plain:
+            proposals[a].add(b_plain)
+        if is_hangul(b) and a_plain:
+            proposals[b].add(a_plain)
+
+    learned: dict[str, str] = {}
+    for src, targets in proposals.items():
+        if len(targets) != 1:
+            continue
+        target = next(iter(targets))
+        existing = mapping.get(src)
+        if existing is not None and existing != target:
+            raise RuntimeError(
+                f"mapping conflict for {src} U+{ord(src):04X}: "
+                f"known={existing!r}, observed={target!r}"
+            )
+        if existing is None:
+            mapping[src] = target
+            learned[src] = target
+    return learned
+
+
 def unknown_contexts(text: str, unknown: Counter[str], radius: int = 20) -> dict[str, list[str]]:
     result: dict[str, list[str]] = {}
     for ch in unknown:
@@ -205,6 +258,7 @@ def fetch_chapter(
     mapping: dict[str, str],
     timeout: float,
     save_html: bool,
+    learn_attempts: int,
     max_parts: int = 8,
 ) -> ChapterResult:
     result = ChapterResult(ordinal=ordinal, url=url, status="error")
@@ -236,7 +290,26 @@ def fetch_chapter(
                 title, title_subs, _ = decode_text(raw_title, mapping)
                 total_subs += title_subs
             raw_part = extract_content(soup)
-            decoded_part, part_subs, _ = decode_text(raw_part, mapping)
+
+            decoded_part, part_subs, part_unknown = decode_text(raw_part, mapping)
+            if part_unknown and learn_attempts > 0:
+                variants = [raw_part]
+                for _ in range(learn_attempts):
+                    # A second public rendering usually obfuscates a different
+                    # subset, exposing plaintext at the positions we need.
+                    time.sleep(0.5)
+                    probe_response, probe_html = fetch_html(session, current, timeout)
+                    if probe_response.status_code >= 400:
+                        continue
+                    probe_soup = soup_from_html(probe_html)
+                    probe_raw = extract_content(probe_soup)
+                    variants.append(probe_raw)
+                    for previous in variants[:-1]:
+                        learn_mapping_from_pair(previous, probe_raw, mapping)
+                    decoded_part, part_subs, part_unknown = decode_text(raw_part, mapping)
+                    if not part_unknown:
+                        break
+
             total_subs += part_subs
             parts.append(decoded_part)
             decoded_pages.append(str(soup))
@@ -373,6 +446,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--timeout", type=float, default=20.0)
     p.add_argument("--mapping", type=Path, default=DEFAULT_MAPPING)
     p.add_argument("--save-html", action="store_true")
+    p.add_argument(
+        "--learn-attempts",
+        type=int,
+        default=3,
+        help="extra renderings used to infer randomized Hangul substitutions",
+    )
     p.add_argument("--allow-incomplete", action="store_true")
     return p.parse_args()
 
@@ -384,6 +463,9 @@ def main() -> int:
         return 2
     if args.delay < 0.5:
         print("delay must be >= 0.5 seconds", file=sys.stderr)
+        return 2
+    if args.learn_attempts < 0 or args.learn_attempts > 10:
+        print("learn-attempts must be between 0 and 10", file=sys.stderr)
         return 2
 
     mapping = load_mapping(args.mapping)
@@ -422,7 +504,14 @@ def main() -> int:
     results: list[ChapterResult] = []
     for idx, (url, _) in selected:
         item = fetch_chapter(
-            session, url, idx, out_dir, mapping, args.timeout, args.save_html
+            session,
+            url,
+            idx,
+            out_dir,
+            mapping,
+            args.timeout,
+            args.save_html,
+            args.learn_attempts,
         )
         results.append(item)
         print(
@@ -433,6 +522,10 @@ def main() -> int:
         if idx != selected[-1][0]:
             time.sleep(args.delay)
 
+    (out_dir / "mapping.runtime.json").write_text(
+        json.dumps(mapping, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     write_reports(results, catalog, out_dir, mapping)
     build_combined(results, out_dir)
 
