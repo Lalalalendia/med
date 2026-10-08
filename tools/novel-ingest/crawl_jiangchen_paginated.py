@@ -72,7 +72,7 @@ def normalize_body(parts: list[str]) -> str:
     return "\n".join(lines).strip()
 
 
-def fetch(url: str, retries: int = 4) -> str:
+def fetch(url: str, retries: int = 6) -> str:
     error = None
     for attempt in range(1, retries + 1):
         proc = subprocess.run(
@@ -84,9 +84,14 @@ def fetch(url: str, retries: int = 4) -> str:
                 "--silent",
                 "--show-error",
                 "--connect-timeout",
-                "10",
+                "15",
                 "--max-time",
-                "40",
+                "60",
+                "--retry",
+                "2",
+                "--retry-delay",
+                "1",
+                "--retry-all-errors",
                 "--user-agent",
                 "Mozilla/5.0",
                 url,
@@ -97,7 +102,7 @@ def fetch(url: str, retries: int = 4) -> str:
             return proc.stdout.decode("utf-8", errors="replace")
         error = proc.stderr.decode("utf-8", errors="replace").strip()
         if attempt < retries:
-            time.sleep(attempt)
+            time.sleep(min(attempt * 2, 10))
     raise RuntimeError(f"Failed to fetch {url}: {error}")
 
 
@@ -160,8 +165,25 @@ def main() -> None:
 
     summary = []
     for idx, row in enumerate(selected, 1):
-        result = crawl_entry(row["url"])
-        result.update({"ordinal": row["ordinal"], "heading": row["heading"]})
+        try:
+            result = crawl_entry(row["url"])
+            fetch_error = None
+        except Exception as exc:  # noqa: BLE001
+            result = {
+                "first_url": row["url"],
+                "pages": [],
+                "page_count": 0,
+                "body": "",
+                "missing_resource": False,
+            }
+            fetch_error = str(exc)
+        result.update(
+            {
+                "ordinal": row["ordinal"],
+                "heading": row["heading"],
+                "fetch_error": fetch_error,
+            }
+        )
         (args.out_dir / f"{row['ordinal']:03d}.json").write_text(
             json.dumps(result, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
@@ -172,6 +194,7 @@ def main() -> None:
                 "page_count": result["page_count"],
                 "chars": len(result["body"]),
                 "missing_resource": result["missing_resource"],
+                "fetch_error": fetch_error,
             }
         )
         if idx % 10 == 0 or idx == len(selected):
@@ -182,6 +205,7 @@ def main() -> None:
                         "done": idx,
                         "total": len(selected),
                         "last_ordinal": row["ordinal"],
+                        "errors": sum(bool(x["fetch_error"]) for x in summary),
                     },
                     ensure_ascii=False,
                 )
