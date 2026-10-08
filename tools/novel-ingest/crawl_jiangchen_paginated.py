@@ -7,7 +7,7 @@ import json
 import re
 import time
 import urllib.parse
-import urllib.request
+import subprocess
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -73,22 +73,31 @@ def normalize_body(parts: list[str]) -> str:
 
 
 def fetch(url: str, retries: int = 4) -> str:
-    req = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": "Mozilla/5.0",
-            "Accept-Encoding": "identity",
-        },
-    )
     error = None
     for attempt in range(1, retries + 1):
-        try:
-            with urllib.request.urlopen(req, timeout=30) as response:
-                return response.read().decode("utf-8", errors="replace")
-        except Exception as exc:  # noqa: BLE001
-            error = exc
-            if attempt < retries:
-                time.sleep(attempt)
+        proc = subprocess.run(
+            [
+                "curl",
+                "--compressed",
+                "--fail",
+                "--location",
+                "--silent",
+                "--show-error",
+                "--connect-timeout",
+                "10",
+                "--max-time",
+                "40",
+                "--user-agent",
+                "Mozilla/5.0",
+                url,
+            ],
+            capture_output=True,
+        )
+        if proc.returncode == 0 and len(proc.stdout) > 1000:
+            return proc.stdout.decode("utf-8", errors="replace")
+        error = proc.stderr.decode("utf-8", errors="replace").strip()
+        if attempt < retries:
+            time.sleep(attempt)
     raise RuntimeError(f"Failed to fetch {url}: {error}")
 
 
