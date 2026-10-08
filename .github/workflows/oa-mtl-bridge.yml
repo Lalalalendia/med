@@ -1,6 +1,10 @@
 name: OA EN MTL bridge 221-290 - manual
 
 on:
+  pull_request:
+    paths:
+      - 'tools/fanmtl-bridge/**'
+      - '.github/workflows/oa-mtl-bridge.yml'
   workflow_dispatch:
     inputs:
       source:
@@ -39,6 +43,7 @@ jobs:
       - name: Run fetcher unit tests
         run: python -m unittest discover -s tools/fanmtl-bridge -p 'test_*.py' -v
       - name: Fetch selected EN chapters
+        if: github.event_name == 'workflow_dispatch'
         env:
           SOURCE: ${{ inputs.source }}
           STORY_START: ${{ inputs.story_start }}
