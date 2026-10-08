@@ -1,0 +1,147 @@
+name: Witch full RAW paginated
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/witch-fullraw-497-pagination.yml"
+      - "tools/novel-ingest/crawl_jiangchen_paginated.py"
+
+permissions:
+  contents: read
+
+jobs:
+  manifest:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Jiangchen manifest
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          curl --compressed --fail --location --retry 3 --user-agent "Mozilla/5.0"             "https://www.jiangchenxs.com/du_75248/" -o index.html
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from urllib.parse import urljoin
+          from pathlib import Path
+          import json
+          html=Path("index.html").read_text(encoding="utf-8")
+          main=html.split("《魔女大人，请按剧本黑化！》正文",1)[1]
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.dd=False; self.href=None; self.text=[]; self.rows=[]
+              def handle_starttag(self,tag,attrs):
+                  if tag.lower()=="dd": self.dd=True
+                  elif tag.lower()=="a" and self.dd:
+                      self.href=dict(attrs).get("href"); self.text=[]
+              def handle_data(self,data):
+                  if self.href is not None: self.text.append(data)
+              def handle_endtag(self,tag):
+                  if tag.lower()=="a" and self.href is not None:
+                      self.rows.append((self.href,"".join(self.text).strip()))
+                      self.href=None; self.text=[]
+                  elif tag.lower()=="dd": self.dd=False
+          p=P(); p.feed(main)
+          rows=[]; seen=set()
+          for href,title in p.rows:
+              if not href or href in seen: continue
+              seen.add(href)
+              rows.append({"ordinal":len(rows)+1,"url":urljoin("https://www.jiangchenxs.com/du_75248/",href),"heading":title})
+          assert len(rows)==504, len(rows)
+          Path("out/manifest.json").write_text(json.dumps(rows,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print("manifest",len(rows))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: witch-paged-manifest
+          path: out/manifest.json
+          retention-days: 3
+
+  crawl:
+    needs: manifest
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0,1,2,3,4,5,6,7]
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: witch-paged-manifest
+          path: work
+      - name: Crawl paginated entries
+        run: |
+          python tools/novel-ingest/crawl_jiangchen_paginated.py             --manifest work/manifest.json             --chunk ${{ matrix.chunk }}             --chunks 8             --out-dir out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: witch-paged-${{ matrix.chunk }}
+          path: out/*.json
+          retention-days: 3
+
+  combine:
+    needs: crawl
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: witch-paged-*
+          path: work
+          merge-multiple: true
+      - name: Combine and verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,re,hashlib
+          canon={
+            173:"第173章 情感带师（万字大章）",
+            259:"第259章 难道你也背叛了吗（）",
+            300:"第300章 情报及时的重要性（居然都三百章了）",
+            328:"第328章 黄金树之影（）",
+            351:"第351章 一路向北，离开有你的季节（）",
+          }
+          rows=[]
+          for p in sorted(Path("work").glob("*.json")):
+              d=json.loads(p.read_text(encoding="utf-8"))
+              rows.append(d)
+          rows.sort(key=lambda x:x["ordinal"])
+          assert len(rows)==504, len(rows)
+          blocks=[]; numbered=[]; services=[]; missing=[]
+          page_counts={}
+          for r in rows:
+              h=r["heading"]
+              m=re.match(r"^第\s*(\d+)\s*章",h)
+              if m:
+                  n=int(m.group(1)); h=canon.get(n,h); numbered.append(n)
+              else:
+                  services.append(h)
+              if r["missing_resource"]: missing.append({"ordinal":r["ordinal"],"heading":h})
+              page_counts[r["page_count"]]=page_counts.get(r["page_count"],0)+1
+              blocks.append(h+"\n\n"+r["body"])
+          txt="\n\n".join(blocks)+"\n"
+          Path("witch-jiangchen-paginated-504.txt").write_text(txt,encoding="utf-8")
+          summary={
+            "entries":len(rows),
+            "numbered":len(numbered),
+            "services":len(services),
+            "max_number":max(numbered),
+            "missing_numbers":[n for n in range(1,max(numbered)+1) if n not in set(numbered)],
+            "missing_resource_entries":missing,
+            "page_count_distribution":page_counts,
+            "chars":len(txt),
+            "sha256":hashlib.sha256(txt.encode()).hexdigest(),
+          }
+          Path("summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          assert len(numbered)==497
+          assert max(numbered)==497
+          assert not summary["missing_numbers"]
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: witch-fullraw-paginated
+          path: |
+            witch-jiangchen-paginated-504.txt
+            summary.json
+          retention-days: 7
