@@ -53,6 +53,17 @@ jobs:
             --book oa --source "$SOURCE" \
             --story-start "$STORY_START" --story-end "$STORY_END" \
             --delay 1.5 --strict --out-dir out/oa-mtl
+      - name: Clean-reference re-acquisition and next OA batch
+        if: github.event_name == 'pull_request' && github.head_ref == 'fix/oa-wuxiabox-chrome-and-acquisition'
+        run: |
+          set -euo pipefail
+          for batch in "221 225" "226 235" "236 245"; do
+            set -- $batch
+            python tools/fanmtl-bridge/fetch_fanmtl_bridge.py \
+              --book oa --source wuxiabox \
+              --story-start "$1" --story-end "$2" \
+              --delay 2.0 --strict --out-dir "out/oa-mtl/$1-$2"
+          done
       - name: Summarize findings
         if: always()
         run: |

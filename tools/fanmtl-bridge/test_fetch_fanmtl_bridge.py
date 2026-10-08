@@ -90,6 +90,62 @@ class BridgeTests(unittest.TestCase):
             self.assertEqual(len(result.sha256), 64)
             self.assertTrue((Path(temp) / "chapters/221.txt").exists())
 
+
+    def test_wuxiabox_ui_tail_is_removed_before_digest(self):
+        story = "Kasha and Thor discussed the unexpected transformation. " * 200
+        nav = ["chevron_left", "Prev", "home", "Index", "Next",
+               "chevron_right", "Tap the screen to use advanced tools",
+               "You'll Also Like", "Another unrelated book", "Chapter 40"]
+        html = (
+            "<html><head><title>Chapter 221 | American Comics: My Understanding "
+            "is Incredible, I Create OA Magical Power</title></head>"
+            "<body><h2>Chapter 221</h2><article><p>" + story + "</p>"
+            + "".join("<div>" + n + "</div>" for n in nav)
+            + "</article></body></html>"
+        )
+        response = Mock(status_code=200, url="https://example.com/oa221",
+                        text=html, apparent_encoding="utf-8", encoding="utf-8")
+        session = Mock()
+        session.get.return_value = response
+        with tempfile.TemporaryDirectory() as temp:
+            result = bridge.fetch_one(
+                session, source_name="wuxiabox", slug=bridge.BOOKS["oa"].slug,
+                story_chapter=221, source_position=221, out_dir=Path(temp),
+                timeout=5, max_valid_position=290,
+                expected_series=bridge.BOOKS["oa"].expected_series,
+            )
+            self.assertEqual(result.status, "ok")
+            self.assertGreater(result.removed_ui_words, 0)
+            saved = (Path(temp) / "chapters/221.txt").read_text("utf-8")
+            self.assertIn("unexpected transformation", saved)
+            self.assertNotIn("You'll Also Like", saved)
+            self.assertNotIn("chevron_left", saved)
+            self.assertEqual(result.sha256,
+                             bridge.sha256(bridge.normalize(story).encode()).hexdigest())
+
+    def test_unknown_wuxiabox_ui_tail_is_quarantined(self):
+        story = "Kasha and Thor discussed the unexpected transformation. " * 200
+        html = (
+            "<html><head><title>Chapter 221 | American Comics: My Understanding "
+            "is Incredible, I Create OA Magical Power</title></head>"
+            "<body><h2>Chapter 221</h2><article><p>" + story + "</p>"
+            + "<p>You'll Also Like</p><p>Bad recommendations</p>"
+            + "</article></body></html>"
+        )
+        response = Mock(status_code=200, url="https://example.com/oa221",
+                        text=html, apparent_encoding="utf-8", encoding="utf-8")
+        session = Mock()
+        session.get.return_value = response
+        with tempfile.TemporaryDirectory() as temp:
+            result = bridge.fetch_one(
+                session, source_name="wuxiabox", slug=bridge.BOOKS["oa"].slug,
+                story_chapter=221, source_position=221, out_dir=Path(temp),
+                timeout=5, max_valid_position=290,
+                expected_series=bridge.BOOKS["oa"].expected_series,
+            )
+            self.assertEqual(result.status, "needs_check")
+            self.assertEqual(list(Path(temp).rglob("*.txt")), [])
+
     def test_wrong_book_never_saved(self):
         html = ("<html><head><title>Chapter 221 | Different novel</title></head>"
                 "<body><article><h2>Chapter 221</h2><p>" +

@@ -81,6 +81,7 @@ class Result:
     chars: int = 0
     words: int = 0
     sha256: str | None = None
+    removed_ui_words: int = 0
     file: str | None = None
     note: str | None = None
 
@@ -126,6 +127,36 @@ def has_expected_series(soup: BeautifulSoup, expected: str) -> bool:
         expected in re.sub(r"\s+", " ", name).casefold()
         for name in candidates
     )
+
+
+
+WUXIABOX_NAVIGATION = (
+    "chevron_left", "Prev", "home", "Index", "Next", "chevron_right"
+)
+WUXIABOX_UI_MARKERS = (
+    "You'll Also Like",
+    "Tap the screen to use advanced tools",
+    "Tip: You can use left and right keyboard keys",
+)
+
+
+def strip_wuxiabox_navigation(text: str) -> tuple[str, int]:
+    """Only trim a recognizable navigation+recommendations tail.
+
+    Never truncate at a single generic token such as 'Next'; matching all
+    six adjacent UI entries guards against accidental deletion of story text.
+    If the page format drifts, the caller must quarantine residual UI markers.
+    """
+    lines = text.splitlines()
+    for i in range(1, max(1, len(lines) - len(WUXIABOX_NAVIGATION) + 1)):
+        if tuple(lines[i : i + len(WUXIABOX_NAVIGATION)]) == WUXIABOX_NAVIGATION:
+            tail = "\n".join(lines[i:])
+            return "\n".join(lines[:i]).rstrip(), len(re.findall(r"\b\w+\b", tail))
+    return text, 0
+
+
+def has_wuxiabox_site_chrome(text: str) -> bool:
+    return any(marker in text for marker in WUXIABOX_UI_MARKERS)
 
 
 def normalize(text: str) -> str:
@@ -282,6 +313,15 @@ def fetch_one(
         result.note = f"title does not match story chapter {story_chapter}: {title!r}"
         return result
 
+    if source_name == "wuxiabox" and expected_series:
+        text, result.removed_ui_words = strip_wuxiabox_navigation(text)
+        result.chars = len(text)
+        result.words = len(re.findall(r"\b\w+\b", text))
+        if has_wuxiabox_site_chrome(text):
+            result.status = "needs_check"
+            result.note = "unrecognized Wuxiabox navigation / recommendations in chapter"
+            return result
+
     if len(text) < 800 or result.words < 150 or (expected_series and selector == "body-fallback"):
         result.status = "needs_check"
         result.note = (
@@ -308,7 +348,7 @@ def fetch_one(
     result.sha256 = sha256(text.encode("utf-8")).hexdigest()
     result.file = str(path.relative_to(out_dir))
     result.status = "ok"
-    result.note = f"selector={selector}"
+    result.note = f"selector={selector}; removed_ui_words={result.removed_ui_words}"
     return result
 
 
@@ -361,6 +401,7 @@ def write_outputs(results: list[Result], out_dir: Path, source_name: str, book: 
         if r.status == "ok":
             lines.append(
                 f"- chapter {r.story_chapter}: words={r.words}, "
+                f"removed_ui_words={r.removed_ui_words}, "
                 f"sha256={r.sha256}, url={r.url}"
             )
 

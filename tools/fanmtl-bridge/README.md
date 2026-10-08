@@ -34,3 +34,6 @@ The [OA EN MTL bridge 221-290](../../.github/workflows/oa-mtl-bridge.yml) workfl
 - All 15 are **EN machine-translation bridge evidence**, not Chinese RAW or Russian draft chapters.
 
 Translation work lives in [Notion's OA book](https://app.notion.com/p/3f332a84beec81a8b8c4d524db15e2cb); full-quality / published status requires separate translation and QA. A pre-existing Russian Rulate project (105168) does not constitute permission for an independent publication.
+
+## Wuxiabox extraction hygiene (2026-10-09)
+The Wuxiabox HTML `article` can include a navigation / recommendation tail after the actual prose. For OA pages the fetcher removes this tail only when all six known UI tokens occur in order, recomputes `chars`, `words` and SHA-256 on the cleaned story, and quarantines any residual recommendation markers (`needs_check`). Older 221-235 artifacts include the site chrome and are superseded by cleaned reruns. Regression tests cover exact tail removal and unknown-UI rejection; no change to the witch book parser path.
