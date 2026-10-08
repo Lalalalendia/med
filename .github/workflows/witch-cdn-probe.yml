@@ -1,0 +1,131 @@
+name: Probe witch full TXT CDN on macOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/witch-cdn-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: macos-14
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe TXT and ZIP CDN files
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python3 - <<'PY'
+          from urllib.parse import quote
+          from pathlib import Path
+          import subprocess, json, os, gzip, zipfile, re
+
+          base="https://jiangchenxs-com.tupianxs.com/all/75248/1784869/"
+          names=[
+              "魔女大人，请按剧本黑化！全文@jiangchenxs.com.txt",
+              "魔女大人，请按剧本黑化！全文@jiangchenxs.com.zip",
+          ]
+          headers=[
+              "-H","Referer: https://www.jiangchenxs.com/xiazai_75248.html",
+              "-H","Origin: https://www.jiangchenxs.com",
+              "-H","Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "-H","Accept-Language: zh-CN,zh;q=0.9,en;q=0.5",
+          ]
+          report=[]
+          for idx,name in enumerate(names):
+              url=base+quote(name,safe="@!.")
+              target=Path(f"out/file-{idx}")
+              head=Path(f"out/file-{idx}.headers")
+              cmd=[
+                  "curl","--compressed","--location","--silent","--show-error",
+                  "--connect-timeout","12","--max-time","90","--retry","3","--retry-all-errors",
+                  "--user-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+                  "-D",str(head),*headers,url,"-o",str(target)
+              ]
+              p=subprocess.run(cmd,capture_output=True,text=True)
+              hs=head.read_text("utf-8",errors="replace") if head.exists() else ""
+              statuses=[x for x in hs.splitlines() if x.startswith("HTTP/")]
+              item={
+                  "name":name,"url_host":"jiangchenxs-com.tupianxs.com",
+                  "curl_rc":p.returncode,"stderr":p.stderr[-500:],
+                  "http":statuses[-1] if statuses else None,
+                  "bytes":target.stat().st_size if target.exists() else 0,
+                  "content_type":[x for x in hs.splitlines() if x.lower().startswith("content-type:")][-1:] or [],
+              }
+              report.append(item)
+
+          Path("out/cdn-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n","utf-8")
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+
+          # Try to normalize any large text response.
+          for idx,item in enumerate(report):
+              p=Path(f"out/file-{idx}")
+              if not p.exists() or p.stat().st_size < 100000:
+                  continue
+              raw=p.read_bytes()
+              if raw.startswith(b"PK"):
+                  try:
+                      with zipfile.ZipFile(p) as z:
+                          names=z.namelist()
+                          print("zip_entries",names)
+                          for zn in names:
+                              data=z.read(zn)
+                              if len(data)>100000:
+                                  raw=data; break
+                  except Exception as e:
+                      print("zip_error",repr(e))
+              if raw.startswith(b"\x1f\x8b"):
+                  raw=gzip.decompress(raw)
+              text=None
+              used=None
+              for enc in ("utf-8-sig","utf-8","gb18030","big5"):
+                  try:
+                      text=raw.decode(enc);used=enc;break
+                  except UnicodeDecodeError:
+                      pass
+              if text:
+                  Path("out/full.txt").write_text(text,"utf-8")
+                  print("decoded",used,"chars",len(text))
+                  print("numbered_heading_count",len(re.findall(r"(?m)^\s*第\s*\d+\s*章",text)))
+                  break
+          PY
+
+      - name: Verify parser if full TXT exists
+        run: |
+          set -euo pipefail
+          if [ ! -s out/full.txt ]; then
+            echo "No full TXT recovered"
+            exit 0
+          fi
+          python3 - <<'PY'
+          import importlib.util,pathlib,sys,json
+          source=pathlib.Path("tools/novel-ingest/extract_chapter.py")
+          spec=importlib.util.spec_from_file_location("extract_chapter",source)
+          mod=importlib.util.module_from_spec(spec);sys.modules[spec.name]=mod
+          spec.loader.exec_module(mod)
+          text=pathlib.Path("out/full.txt").read_text("utf-8")
+          entries=mod.parse_book(text)
+          numbered=[e for e in entries if e.entry_type=="chapter"]
+          service=[e for e in entries if e.entry_type=="service"]
+          extra=[e for e in entries if e.entry_type=="extra"]
+          nums=[e.author_number for e in numbered]
+          summary={
+            "entries":len(entries),"numbered":len(numbered),
+            "service":len(service),"extra":len(extra),
+            "max":max(nums) if nums else None,
+            "missing":[n for n in range(1,(max(nums) if nums else 0)+1) if n not in set(nums)]
+          }
+          pathlib.Path("out/parser-summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n","utf-8")
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: witch-cdn-probe
+          path: out/
+          retention-days: 1
