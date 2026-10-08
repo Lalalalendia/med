@@ -1,0 +1,33 @@
+name: Build Gotham Priest RAW 480-567
+
+on:
+  push:
+    paths:
+      - "novels/gotham-priest/source/tail-516-567.txt"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build canonical RAW
+        run: python tools/gotham-priest/build_480_567.py
+      - name: Persist canonical corpus
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add novels/gotham-priest/raw novels/gotham-priest/manifest-480-567.json novels/gotham-priest/combined-480-567.txt novels/gotham-priest/summary.md
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Build Gotham Priest RAW chapters 480-567"
+          git push
