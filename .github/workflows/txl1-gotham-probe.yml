@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - ".github/workflows/txl1-gotham-probe.yml"
+      - "tools/txl1/probe_506686.py"
 
 permissions:
   contents: read
