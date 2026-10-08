@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       chapter:
-        description: "Actual chapter ordinal in the TXT (1..N, extras included)"
+        description: "Actual entry ordinal in the TXT (1..N, extras/service records included)"
         required: true
         default: "1"
       source_url:
