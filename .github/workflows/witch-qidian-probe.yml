@@ -1,4 +1,4 @@
-name: Probe ReadNovel ajax chunks
+name: Probe mobile Qidian chapter payload
 
 on:
   push:
@@ -14,45 +14,52 @@ jobs:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 5
     steps:
-      - name: Fetch mobile chunks
+      - name: Fetch sample mobile chapters
         run: |
           set -euo pipefail
           mkdir -p out
-          base="https://yuxseocdn.yuewen.com/pro/readnovel_m/_prelease/hongxium/modern-js"
-          curl --compressed --fail --location --retry 3 --user-agent "Mozilla/5.0" \
-            "$base/chunks/ajax-C_bDpnWr.js" -o out/ajax.js
-          curl --compressed --fail --location --retry 3 --user-agent "Mozilla/5.0" \
-            "$base/chunks/index-CvP2u2eb.js" -o out/index.js
-          echo "ajax=$(wc -c < out/ajax.js) index=$(wc -c < out/index.js)"
+          for pair in             "1:828479342"             "418:858550306"             "483:871845598"             "497:879991154"; do
+            n="${pair%%:*}"
+            cid="${pair##*:}"
+            url="https://m.qidian.com/chapter/1043611747/$cid/"
+            echo "=== $n $url ==="
+            curl --compressed --location --silent --show-error --retry 3               --connect-timeout 10 --max-time 30               --user-agent "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/140 Mobile Safari/537.36"               -D "out/$n.headers"               "$url" -o "out/$n.html" || true
+            echo "bytes=$(wc -c < out/$n.html 2>/dev/null || echo 0)"
+            head -25 "out/$n.headers" || true
+          done
 
-      - name: Inspect endpoints
+      - name: Inspect payloads
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
-          for path in (Path("out/ajax.js"),Path("out/index.js")):
-              s=path.read_text(encoding="utf-8",errors="replace")
-              print("\nFILE",path.name,"chars",len(s))
-              vals=[]
-              for pat in [
-                  r'https?://[^"\x27]+',
-                  r'["\x27](/[^"\x27]{0,250})["\x27]',
-              ]:
-                  for m in re.finditer(pat,s,re.I):
-                      v=m.group(1) if m.groups() else m.group(0)
-                      if any(k in v.lower() for k in ("api","ajax","chapter","read","content","book","catalog","info")) and v not in vals:
-                          vals.append(v)
-              print("CANDIDATES")
-              for v in vals[:500]:print(v)
-              for needle in ["fetch(","XMLHttpRequest","ajax","request","chapter","content","bookId","chapterId","csrf","token"]:
-                  pos=[m.start() for m in re.finditer(re.escape(needle),s,re.I)]
-                  if pos:
-                      print("\n###",needle,"count",len(pos))
-                      for i in pos[:12]:print(s[max(0,i-450):i+1000])
+          import re, json
+
+          needles=[
+            "chapterContent","chapterInfo","chapterId","bookId","content",
+            "read-content","正文","系统脑袋怎么尖尖的",
+            "__NEXT_DATA__","__NUXT__","g_data","pageOps",
+            "加入书架","订阅","登录","验证码","安全验证"
+          ]
+          for n in (1,418,483,497):
+              p=Path(f"out/{n}.html")
+              if not p.exists(): continue
+              s=p.read_text(encoding="utf-8",errors="replace")
+              print(f"\n=== CH {n} chars={len(s)} ===")
+              print("title", re.findall(r"<title[^>]*>(.*?)</title>",s,re.S|re.I)[:1])
+              for needle in needles:
+                  i=s.find(needle)
+                  if i>=0:
+                      print("NEEDLE",needle,"at",i)
+                      print(s[max(0,i-250):i+900].replace("\n"," ")[:1200])
+              scripts=re.findall(r'<script[^>]+src=["\x27]([^"\x27]+)',s,re.I)
+              print("SCRIPTS",json.dumps(scripts[:50],ensure_ascii=False))
+              urls=sorted(set(re.findall(r'https?://[^"\x27<> ]+',s)))
+              print("URLS")
+              for u in urls[:80]: print(u)
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: witch-readnovel-ajax-chunks
+          name: witch-mobile-qidian-chapters
           path: out/
           retention-days: 1
