@@ -1,4 +1,4 @@
-name: Probe witch novel TXT source
+name: Verify witch novel TXT corpus
 
 on:
   push:
@@ -11,71 +11,155 @@ permissions:
   contents: read
 
 jobs:
-  probe:
+  verify:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 10
     steps:
-      - name: Fetch Jiangchen download page
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Resolve Jiangchen TXT URL
         run: |
           set -euo pipefail
+          mkdir -p work out
           curl --compressed --fail --location --retry 3 \
             --user-agent "Mozilla/5.0" \
             "https://www.jiangchenxs.com/xiazai_75248.html" \
-            -o download.html
-          echo "bytes=$(wc -c < download.html)"
+            -o work/download.html
           python - <<'PY'
           from html.parser import HTMLParser
-          from urllib.parse import urljoin
+          from urllib.parse import urlsplit, urlunsplit, quote
 
-          base = "https://www.jiangchenxs.com/xiazai_75248.html"
-          html = open("download.html", "r", encoding="utf-8", errors="replace").read()
+          html = open("work/download.html", "r", encoding="utf-8").read()
 
           class P(HTMLParser):
               def __init__(self):
                   super().__init__()
-                  self.links = []
-                  self.forms = []
-                  self.scripts = []
-                  self._a = None
-                  self._a_text = []
+                  self.a = None
+                  self.text = []
+                  self.candidates = []
               def handle_starttag(self, tag, attrs):
-                  d = dict(attrs)
-                  tag = tag.lower()
-                  if tag == "a":
-                      self._a = d.get("href", "")
-                      self._a_text = []
-                  elif tag == "form":
-                      self.forms.append((d.get("action", ""), d.get("method", "")))
-                  elif tag == "script" and d.get("src"):
-                      self.scripts.append(d["src"])
+                  if tag.lower() == "a":
+                      self.a = dict(attrs).get("href")
+                      self.text = []
               def handle_data(self, data):
-                  if self._a is not None:
-                      self._a_text.append(data)
+                  if self.a is not None:
+                      self.text.append(data)
               def handle_endtag(self, tag):
-                  if tag.lower() == "a" and self._a is not None:
-                      self.links.append((self._a, "".join(self._a_text).strip()))
-                      self._a = None
-                      self._a_text = []
+                  if tag.lower() == "a" and self.a is not None:
+                      label = "".join(self.text).strip()
+                      if label.endswith("全文下载.txt"):
+                          self.candidates.append((self.a, label))
+                      self.a = None
+                      self.text = []
 
           p = P()
           p.feed(html)
-          print("LINKS:")
-          for href, text in p.links:
-              full = urljoin(base, href)
-              if href:
-                  print(f"{text!r}\t{full}")
-          print("FORMS:")
-          for action, method in p.forms:
-              print(method, urljoin(base, action))
-          print("SCRIPTS:")
-          for src in p.scripts:
-              print(urljoin(base, src))
+          if len(p.candidates) != 1:
+              raise SystemExit(f"Expected exactly one TXT download link, got {p.candidates!r}")
+
+          raw_url, label = p.candidates[0]
+          url = raw_url.replace("https://https://", "https://", 1)
+          parts = urlsplit(url)
+          encoded = urlunsplit((
+              parts.scheme,
+              parts.netloc,
+              quote(parts.path, safe="/:@"),
+              parts.query,
+              parts.fragment,
+          ))
+          print(f"download_label={label}")
+          print(f"download_host={parts.netloc}")
+          open("work/txt_url.txt", "w", encoding="utf-8").write(encoded)
           PY
 
-      - name: Upload probe page
+      - name: Download and normalize full TXT
+        run: |
+          set -euo pipefail
+          TXT_URL="$(cat work/txt_url.txt)"
+          curl --compressed --fail --location --retry 3 \
+            --user-agent "Mozilla/5.0" \
+            "$TXT_URL" \
+            -o work/book.raw
+          echo "download_bytes=$(wc -c < work/book.raw)"
+          file work/book.raw
+          python - <<'PY'
+          from pathlib import Path
+          import gzip
+
+          raw = Path("work/book.raw").read_bytes()
+          if raw.startswith(b"\x1f\x8b"):
+              raw = gzip.decompress(raw)
+
+          tried = []
+          for enc in ("utf-8-sig", "utf-8", "gb18030", "big5"):
+              try:
+                  text = raw.decode(enc)
+                  print(f"encoding={enc}")
+                  break
+              except UnicodeDecodeError as e:
+                  tried.append((enc, str(e)))
+          else:
+              raise SystemExit(f"Could not decode TXT: {tried}")
+
+          Path("work/book.txt").write_text(text, encoding="utf-8")
+          print(f"utf8_chars={len(text)}")
+          PY
+
+      - name: Verify corpus with production parser
+        run: |
+          set -euo pipefail
+          python - <<'PY' | tee out/corpus-summary.json
+          import importlib.util
+          import json
+          import pathlib
+          import sys
+
+          source = pathlib.Path("tools/novel-ingest/extract_chapter.py")
+          spec = importlib.util.spec_from_file_location("extract_chapter", source)
+          mod = importlib.util.module_from_spec(spec)
+          sys.modules[spec.name] = mod
+          assert spec.loader is not None
+          spec.loader.exec_module(mod)
+
+          text = pathlib.Path("work/book.txt").read_text(encoding="utf-8")
+          entries = mod.parse_book(text)
+          numbered = [e for e in entries if e.entry_type == "chapter"]
+          extras = [e for e in entries if e.entry_type == "extra"]
+          service = [e for e in entries if e.entry_type == "service"]
+          nums = [e.author_number for e in numbered]
+          max_no = max(nums) if nums else 0
+          missing = [n for n in range(1, max_no + 1) if n not in set(nums)]
+
+          summary = {
+              "total_entries": len(entries),
+              "numbered_chapters": len(numbered),
+              "extra_entries": len(extras),
+              "service_entries": len(service),
+              "non_numbered_entries": len(extras) + len(service),
+              "max_author_number": max_no,
+              "missing_author_numbers": missing,
+              "first_numbered_heading": numbered[0].heading if numbered else None,
+              "last_numbered_heading": numbered[-1].heading if numbered else None,
+              "extra_headings": [e.heading for e in extras],
+              "service_headings": [e.heading for e in service],
+          }
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+
+          assert len(numbered) == 497, summary
+          assert max_no == 497, summary
+          assert not missing, summary
+          assert len(entries) == 505, summary
+          assert len(extras) + len(service) == 8, summary
+          PY
+
+      - name: Upload verification summary
         uses: actions/upload-artifact@v4
         with:
-          name: witch-txt-download-page
-          path: download.html
+          name: witch-corpus-verification
+          path: out/corpus-summary.json
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 7
