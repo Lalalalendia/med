@@ -18,7 +18,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p out
-          base="https://yuxseocdn.yuewen.com/pro/readnovel_m/_prelease/hongxium"
+          base="https://yuxseocdn.yuewen.com/pro/readnovel_m/_prelease/hongxium/modern-js"
           curl --compressed --fail --location --retry 3 --user-agent "Mozilla/5.0" \
             "$base/chunks/ajax-C_bDpnWr.js" -o out/ajax.js
           curl --compressed --fail --location --retry 3 --user-agent "Mozilla/5.0" \
