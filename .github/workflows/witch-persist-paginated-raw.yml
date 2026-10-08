@@ -29,80 +29,85 @@ jobs:
             --dir work
           test -s work/witch-jiangchen-paginated-504.txt
           test -s work/summary.json
-          cat work/summary.json
 
-      - name: Split and persist canonical numbered chapters
+      - name: Persist verified full chapters 1-416
         run: |
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
-          import json, re, hashlib, shutil
+          import importlib.util
+          import json
+          import hashlib
+          import shutil
+          import sys
+
+          parser_path=Path("tools/novel-ingest/extract_chapter.py")
+          spec=importlib.util.spec_from_file_location("extract_chapter",parser_path)
+          mod=importlib.util.module_from_spec(spec)
+          sys.modules[spec.name]=mod
+          assert spec.loader is not None
+          spec.loader.exec_module(mod)
+
+          src=Path("work/witch-jiangchen-paginated-504.txt")
+          text=src.read_text(encoding="utf-8")
+          entries=mod.parse_book(text)
+          numbered=[e for e in entries if e.entry_type=="chapter"]
+          assert len(numbered)==497
+          assert [e.author_number for e in numbered]==list(range(1,498))
 
           root=Path("sources/witch-75248/paginated")
           chapters=root/"chapters"
           chapters.mkdir(parents=True,exist_ok=True)
 
-          src=Path("work/witch-jiangchen-paginated-504.txt")
-          text=src.read_text(encoding="utf-8")
-          summary=json.loads(Path("work/summary.json").read_text(encoding="utf-8"))
-
-          assert summary["entries"]==504
-          assert summary["numbered"]==497
-          assert summary["max_number"]==497
-          assert summary["missing_numbers"]==[]
-
-          missing={483,484,485,486,487,488,489}
-          canon={
-            173:"情感带师（万字大章）",
-            259:"难道你也背叛了吗（）",
-            300:"情报及时的重要性（居然都三百章了）",
-            328:"黄金树之影（）",
-            351:"一路向北，离开有你的季节（）",
-          }
-
-          heading_re=re.compile(r"(?m)^(第\s*(\d+)\s*章[^\n]*)$")
-          matches=list(heading_re.finditer(text))
-          assert len(matches)==497, len(matches)
-
-          manifest=[]
-          for i,m in enumerate(matches):
-              n=int(m.group(2))
-              end=matches[i+1].start() if i+1<len(matches) else len(text)
-              block=text[m.start():end].strip()+"\n"
-              lines=block.splitlines()
-              if n in canon:
-                  lines[0]=f"第{n}章 {canon[n]}"
-                  block="\n".join(lines).strip()+"\n"
-              body="\n".join(block.splitlines()[1:]).strip()
-              is_missing=(n in missing)
-              if is_missing:
-                  # The mirror exposes only its missing-resource notice for these chapters.
-                  pass
+          complete=[]
+          unresolved=[]
+          for e in numbered:
+              n=e.author_number
+              body=e.body.strip()
+              block=e.text
+              if n<=416:
+                  assert len(body)>=2000,(n,len(body))
+                  target=chapters/f"{n:03d}.txt"
+                  target.write_text(block,encoding="utf-8")
+                  complete.append({
+                      "number":n,
+                      "path":str(target),
+                      "body_chars":len(body),
+                      "sha256":hashlib.sha256(block.encode("utf-8")).hexdigest(),
+                  })
               else:
-                  assert len(body)>=500, (n,len(body))
-              target=chapters/f"{n:03d}.txt"
-              target.write_text(block,encoding="utf-8")
-              manifest.append({
-                  "number":n,
-                  "path":str(target),
-                  "chars":len(block),
-                  "body_chars":len(body),
-                  "missing_resource":is_missing,
-                  "sha256":hashlib.sha256(block.encode("utf-8")).hexdigest(),
-              })
+                  unresolved.append({
+                      "number":n,
+                      "heading":e.heading,
+                      "body_chars":len(body),
+                      "reason":"Jiangchen truncated/preview-only tail; requires alternate source",
+                  })
 
-          assert [x["number"] for x in manifest]==list(range(1,498))
+          assert len(complete)==416
+          assert len(unresolved)==81
+          assert min(x["body_chars"] for x in complete)>=2000
+
+          manifest={
+              "complete_range":"1-416",
+              "complete_count":len(complete),
+              "unresolved_range":"417-497",
+              "unresolved_count":len(unresolved),
+              "complete":complete,
+              "unresolved":unresolved,
+          }
           (root/"manifest.json").write_text(
               json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",
               encoding="utf-8"
           )
           shutil.copy2(src,root/"full-504-paginated.txt")
-          shutil.copy2(Path("work/summary.json"),root/"summary.json")
+          shutil.copy2(Path("work/summary.json"),root/"crawler-summary.json")
           print(json.dumps({
-              "chapters":len(manifest),
-              "complete":sum(not x["missing_resource"] for x in manifest),
-              "missing":[x["number"] for x in manifest if x["missing_resource"]],
-          },ensure_ascii=False))
+              "complete_count":len(complete),
+              "complete_min_body_chars":min(x["body_chars"] for x in complete),
+              "unresolved_count":len(unresolved),
+              "first_unresolved":unresolved[0],
+              "last_unresolved":unresolved[-1],
+          },ensure_ascii=False,indent=2))
           PY
 
       - name: Commit persisted corpus
@@ -112,5 +117,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add sources/witch-75248/paginated
           git diff --cached --quiet && exit 0
-          git commit -m "Persist verified paginated witch RAW corpus"
+          git commit -m "Persist verified full witch RAW 1-416"
           git push
