@@ -1,0 +1,39 @@
+name: Probe witch novel TXT source
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/witch-txt-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch Jiangchen index
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            --user-agent "Mozilla/5.0" \
+            "https://www.jiangchenxs.com/du_75248/" \
+            -o page.html
+          echo "bytes=$(wc -c < page.html)"
+          echo "Candidate download links:"
+          grep -Eo 'href=["'\'''][^"'\''']+["'\''']' page.html \
+            | sed -E 's/^href=["'\''']|["'\''']$//g' \
+            | grep -Ei 'txt|down|download' \
+            | sort -u \
+            | head -100 || true
+
+      - name: Upload probe page
+        uses: actions/upload-artifact@v4
+        with:
+          name: witch-txt-probe
+          path: page.html
+          if-no-files-found: error
+          retention-days: 1
