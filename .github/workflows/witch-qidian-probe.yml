@@ -1,0 +1,75 @@
+name: Probe witch official chapter pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/witch-qidian-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - name: Fetch sample chapters
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          declare -A URLS
+          URLS[1]="https://www.qidian.com/chapter/1043611747/828479342/"
+          URLS[418]="https://www.qidian.com/chapter/1043611747/858550306/"
+          URLS[483]="https://www.qidian.com/chapter/1043611747/871845598/"
+          URLS[497]="https://www.qidian.com/chapter/1043611747/879991154/"
+          for n in 1 418 483 497; do
+            echo "=== CHAPTER $n ==="
+            curl --compressed --location --silent --show-error \
+              --connect-timeout 10 --max-time 30 --retry 2 \
+              --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36" \
+              -D "out/$n.headers" \
+              "${URLS[$n]}" \
+              -o "out/$n.html" || true
+            wc -c "out/$n.html" || true
+            sed -n '1,25p' "out/$n.headers" || true
+          done
+
+      - name: Inspect embedded data
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          needles = [
+              "chapterContent", "chapterInfo", "chapterId", "content",
+              "read-content", "vipStatus", "isVip", "pageOps",
+              "__NEXT_DATA__", "__NUXT__", "g_data", "data-chapter",
+              "起点中文网", "系统脑袋怎么尖尖的", "游戏与沙堡",
+              "本章说", "订阅", "免费"
+          ]
+          for n in (1,418,483,497):
+              p=Path(f"out/{n}.html")
+              if not p.exists():
+                  continue
+              s=p.read_text(encoding="utf-8",errors="replace")
+              print(f"\n=== {n} chars={len(s)} ===")
+              for needle in needles:
+                  idx=s.find(needle)
+                  print(f"{needle}: {idx}")
+                  if idx>=0:
+                      snippet=s[max(0,idx-300):idx+900].replace("\n"," ")
+                      print(snippet[:1200])
+              urls=sorted(set(re.findall(r'https?://[^"\'<> ]+',s)))
+              print("URLS")
+              for u in urls[:80]:
+                  print(u)
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: witch-qidian-probe
+          path: out/
+          if-no-files-found: warn
+          retention-days: 1
