@@ -1,0 +1,96 @@
+name: Diagnose mobile Qidian chapter payload v2
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/witch-mobile-diagnose.yml"
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and summarize
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import json,re,subprocess
+
+          samples={1:"828479342",418:"858550306",483:"871845598",497:"879991154"}
+
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__();self.stack=[];self.skip=0;self.visible=[];self.containers={};self.title=[];self.in_title=False
+              def handle_starttag(self,tag,attrs):
+                  tag=tag.lower();d=dict(attrs);self.stack.append((tag,d))
+                  if tag in ("script","style","noscript"):self.skip+=1
+                  if tag=="title":self.in_title=True
+                  if tag in ("div","article","main","section","p") and (d.get("id") or d.get("class") or tag in ("article","main","p")):
+                      self.containers.setdefault((tag,d.get("id",""),d.get("class","")),[])
+              def handle_data(self,data):
+                  if self.in_title:self.title.append(data)
+                  if self.skip:return
+                  t=data.strip()
+                  if not t:return
+                  self.visible.append(t)
+                  for tag,d in self.stack:
+                      k=(tag,d.get("id",""),d.get("class",""))
+                      if k in self.containers:self.containers[k].append(t)
+              def handle_endtag(self,tag):
+                  tag=tag.lower()
+                  if tag=="title":self.in_title=False
+                  if tag in ("script","style","noscript") and self.skip:self.skip-=1
+                  for i in range(len(self.stack)-1,-1,-1):
+                      if self.stack[i][0]==tag:
+                          self.stack=self.stack[:i];break
+
+          report=[]
+          for n,cid in samples.items():
+              htmlp=Path(f"out/{n}.html");headp=Path(f"out/{n}.headers")
+              p=subprocess.run([
+                  "curl","--compressed","--location","--silent","--show-error",
+                  "--connect-timeout","10","--max-time","30","--retry","3",
+                  "--user-agent","Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/140 Mobile Safari/537.36",
+                  "-D",str(headp),
+                  f"https://m.qidian.com/chapter/1043611747/{cid}/",
+                  "-o",str(htmlp)
+              ],capture_output=True,text=True)
+              html=htmlp.read_text("utf-8",errors="replace") if htmlp.exists() else ""
+              headers=headp.read_text("utf-8",errors="replace") if headp.exists() else ""
+              q=P();q.feed(html)
+              visible="\n".join(q.visible)
+              ranked=[]
+              for key,parts in q.containers.items():
+                  txt="".join(parts).strip();cjk=len(re.findall(r"[\u3400-\u9fff]",txt))
+                  if len(txt)>=80:
+                      ranked.append({"tag":key[0],"id":key[1],"class":key[2],"chars":len(txt),"cjk":cjk})
+              ranked.sort(key=lambda x:(x["cjk"],x["chars"]),reverse=True)
+              statuses=[x for x in headers.splitlines() if x.startswith("HTTP/")]
+              report.append({
+                  "chapter":n,"curl_rc":p.returncode,"http":statuses[-1] if statuses else None,
+                  "html_chars":len(html),"visible_chars":len(visible),
+                  "visible_cjk":len(re.findall(r"[\u3400-\u9fff]",visible)),
+                  "title":"".join(q.title).strip(),
+                  "captcha":any(x in html for x in ("安全验证","验证码","probe.js","captcha")),
+                  "paywall":any(x in visible for x in ("订阅","登录后阅读","付费","VIP")),
+                  "top_containers":ranked[:12],
+              })
+          out=Path("tools/novel-ingest/witch-mobile-qidian-report.json")
+          out.parent.mkdir(parents=True,exist_ok=True)
+          out.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit report
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/novel-ingest/witch-mobile-qidian-report.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Record mobile Qidian chapter diagnostics"
+          git push
