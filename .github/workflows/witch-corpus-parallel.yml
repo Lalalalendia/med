@@ -15,8 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-    runs-on: ubuntu-24.04-arm
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7]
+    runs-on: macos-14
     timeout-minutes: 10
     steps:
       - name: Fetch and parse chunk
@@ -38,7 +38,7 @@ jobs:
           import time
 
           CHUNK = int(os.environ["CHUNK"])
-          CHUNK_SIZE = 24
+          CHUNK_SIZE = 63
           BASE = "https://www.jiangchenxs.com/du_75248/"
 
           def curl(url, target):
@@ -210,7 +210,7 @@ jobs:
 
   combine:
     needs: fetch
-    runs-on: ubuntu-24.04-arm
+    runs-on: macos-14
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
