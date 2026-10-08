@@ -53,13 +53,13 @@ jobs:
             --book oa --source "$SOURCE" \
             --story-start "$STORY_START" --story-end "$STORY_END" \
             --delay 1.5 --strict --out-dir out/oa-mtl
-      - name: Fetch OA 221-225 from confirmed public Wuxiabox source
+      - name: Fetch OA 226-235 from confirmed public Wuxiabox source
         if: github.event_name == 'pull_request' && github.head_ref == 'feature/oa-mtl-bridge-221-290'
         run: |
           python tools/fanmtl-bridge/fetch_fanmtl_bridge.py \
             --book oa --source wuxiabox \
-            --story-start 221 --story-end 225 \
-            --delay 1.5 --strict --out-dir out/oa-mtl
+            --story-start 226 --story-end 235 \
+            --delay 2.0 --strict --out-dir out/oa-mtl
       - name: Summarize findings
         if: always()
         run: |
