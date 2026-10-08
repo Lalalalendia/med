@@ -35,9 +35,13 @@ jobs:
           r=requests.get(u,headers=H,timeout=30)
           print('GOOGLE',r.status_code,len(r.text),r.url)
           s=BeautifulSoup(r.text,'html.parser')
-          for i,a in enumerate(s.select('a')[:300],1):
+          print('G_HEAD',r.text[:1200].replace('\n',' '))
+          for i,h3 in enumerate(s.select('h3')[:100],1):
+              a=h3.find_parent('a')
+              if a:
+                  print('GH3',i,'|',' '.join(h3.stripped_strings),'|',a.get('href',''))
+          for i,a in enumerate(s.select('a')[:400],1):
               h=a.get('href','')
-              if h.startswith('/url?q='): h=h.split('/url?q=',1)[1].split('&',1)[0]
-              if 'tl.rulate.ru/book/' in h:
-                  print('G',i,'|',' '.join(a.stripped_strings),'|',h)
+              if 'rulate' in h.lower() or 'rulate' in ' '.join(a.stripped_strings).lower():
+                  print('GA',i,'|',' '.join(a.stripped_strings),'|',h)
           PY
