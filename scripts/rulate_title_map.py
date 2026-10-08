@@ -644,14 +644,15 @@ def candidates(page_html):
 
 def score_candidate(text, ru, en, query):
     nt = norm(text)
-    nru, nen, nq = norm(ru), norm(en), norm(query)
-    exact = int((nru and nru in nt) or (nen and nen in nt))
     vals = []
-    for key in [nru, nen, nq]:
-        if key:
-            vals.append(SequenceMatcher(None, key, nt[:max(len(key)*2, 1)]).ratio())
-    score = max(vals or [0.0]) + exact
-    return score
+    exact = 0
+    for key in [norm(ru), norm(en), norm(query)]:
+        if not key:
+            continue
+        if key in nt:
+            exact = 1
+        vals.append(SequenceMatcher(None, key, nt[:max(len(key)*2,1)]).ratio())
+    return max(vals or [0.0]) + exact
 
 def lookup(query, ru, en):
     if not query:
@@ -663,9 +664,8 @@ def lookup(query, ru, en):
         return {"query": query, "error": repr(e)}
     if r.status_code != 200:
         return {"query": query, "error": f"HTTP {r.status_code}"}
-    cs = candidates(r.text)
     scored = []
-    for bid, text in cs.items():
+    for bid, text in candidates(r.text).items():
         scored.append((score_candidate(text, ru, en, query), bid, text))
     scored.sort(reverse=True)
     if not scored:
