@@ -59,9 +59,6 @@ jobs:
                   expected = int(m.group(1))
               found = {}
               # Markdown links produced by Reader.
-              for label, href in re.findall(r"\[([^\]]+)\]\((https?://tl\.rulate\.ru/book/(\d+)(?:/)?(?:\?[^)]*)?)\)", text):
-                  pass
-              # Python regex with three groups is easier handled separately:
               for mm in re.finditer(r"\[([^\]]+)\]\((https?://tl\.rulate\.ru/book/(\d+)(?:/)?(?:\?[^)]*)?)\)", text):
                   label, href, sid = mm.groups()
                   bid = int(sid)
