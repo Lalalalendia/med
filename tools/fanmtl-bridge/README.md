@@ -26,11 +26,16 @@ python tools/fanmtl-bridge/fetch_fanmtl_bridge.py \
   --delay 2.0 --strict --out-dir out/oa-mtl
 ```
 
-The [OA EN MTL bridge 221-290](../../.github/workflows/oa-mtl-bridge.yml) workflow supports manual `workflow_dispatch` after this branch reaches `main`. Choose a maximum of ten story chapters per invocation. It uploads TXT files, combined text, manifest and summary as a 30-day artifact.
+The [OA EN MTL bridge 221-290](../../.github/workflows/oa-mtl-bridge.yml) workflow supports manual `workflow_dispatch` on `main`. Choose a maximum of ten story chapters per invocation. It uploads TXT files, combined text, manifest and summary as a 30-day artifact.
 
 ### Hosted source receipts
-- [221–225, 5/5](https://github.com/Lalalalendia/med/actions/runs/37828487140).
-- [226–235, 10/10](https://github.com/Lalalalendia/med/actions/runs/37829027821).
-- All 15 are **EN machine-translation bridge evidence**, not Chinese RAW or Russian draft chapters.
+- [Clean EN 221–245: 25/25](https://github.com/Lalalalendia/med/actions/runs/37831159060), artifact ID 11573048323.
+- [Clean EN 246–290: 45/45](https://github.com/Lalalalendia/med/actions/runs/37831696594), artifact ID 11573882761.
+- Combined audit: **70/70 chapters 221–290, 70 unique SHA-256, 66,926 EN/MTL words, no missing or contaminated Wuxiabox UI**. Source artifacts remain available for 30 days from their run dates.
+- The old 221–235 archives from runs 37828487140 and 37829027821 contained a 148-word navigation/recommendations tail per chapter; they are **obsolete** and must not be the translation base.
+- These are **English machine translations**, not verified Chinese RAW or Russian draft chapters. The EN text still contains author promotions and rough MTL wording; editorial QA is required before any RU draft is marked complete.
 
 Translation work lives in [Notion's OA book](https://app.notion.com/p/3f332a84beec81a8b8c4d524db15e2cb); full-quality / published status requires separate translation and QA. A pre-existing Russian Rulate project (105168) does not constitute permission for an independent publication.
+
+## Wuxiabox extraction hygiene (2026-10-09)
+The Wuxiabox HTML `article` can include a navigation / recommendation tail after the actual prose. For OA pages the fetcher removes this tail only when all six known UI tokens occur in order, recomputes `chars`, `words` and SHA-256 on the cleaned story, and quarantines any residual recommendation markers (`needs_check`). Older 221-235 artifacts include the site chrome and are superseded by cleaned reruns. Regression tests cover exact tail removal and unknown-UI rejection; no change to the witch book parser path.
