@@ -26,7 +26,6 @@ jobs:
           python - <<'PY'
           from html.parser import HTMLParser
           from urllib.parse import urljoin
-          import re
 
           base = "https://www.jiangchenxs.com/xiazai_75248.html"
           html = open("download.html", "r", encoding="utf-8", errors="replace").read()
@@ -71,9 +70,6 @@ jobs:
           print("SCRIPTS:")
           for src in p.scripts:
               print(urljoin(base, src))
-          print("URL_LIKE_STRINGS:")
-          for u in sorted(set(re.findall(r'https?://[^"\\'<> ]+|/[A-Za-z0-9_./?=&%-]+(?:txt|download|xiazai|down)[A-Za-z0-9_./?=&%-]*', html, re.I))):
-              print(u)
           PY
 
       - name: Upload probe page
