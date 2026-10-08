@@ -53,12 +53,30 @@ jobs:
             --book oa --source "$SOURCE" \
             --story-start "$STORY_START" --story-end "$STORY_END" \
             --delay 1.5 --strict --out-dir out/oa-mtl
-      - name: Diagnostic probe of one public OA chapter on PR
+      - name: Locate the OA entry on Wuxiabox
         if: github.event_name == 'pull_request' && github.head_ref == 'feature/oa-mtl-bridge-221-290'
         run: |
-          # Diagnostic only: do not mark book ingestion complete on HTTP errors.
+          python - <<'PY'
+          import requests
+          from bs4 import BeautifulSoup
+          url = "https://www.wuxiabox.com/list/faloo/ongoing-onclick-8.html"
+          try:
+              resp = requests.get(url, timeout=15)
+              print("index_status", resp.status_code, "final_url", resp.url)
+              if resp.status_code == 200:
+                  soup = BeautifulSoup(resp.text, "html.parser")
+                  for a in soup.select("a[href]"):
+                      if "my understanding is incredible" in a.get_text(" ", strip=True).casefold():
+                          print("OA_BOOK_LINK", a.get_text(" ", strip=True)[:180], a.get("href"))
+          except requests.RequestException as exc:
+              print("index_request_error", type(exc).__name__, str(exc)[:250])
+          PY
+      - name: Diagnostic probe of OA chapter 221 on Wuxiabox
+        if: github.event_name == 'pull_request' && github.head_ref == 'feature/oa-mtl-bridge-221-290'
+        run: |
+          # One public GET; nonfatal probe produces a manifest for diagnosis.
           python tools/fanmtl-bridge/fetch_fanmtl_bridge.py \
-            --book oa --source fanmtl \
+            --book oa --source wuxiabox \
             --story-start 221 --story-end 221 \
             --delay 1.5 --out-dir out/oa-mtl
       - name: Summarize findings
