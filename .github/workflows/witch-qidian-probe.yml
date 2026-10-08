@@ -1,4 +1,4 @@
-name: Probe ReadNovel mobile reading API
+name: Probe ReadNovel ajax chunks
 
 on:
   push:
@@ -14,44 +14,45 @@ jobs:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 5
     steps:
-      - name: Fetch mobile bundle
+      - name: Fetch mobile chunks
         run: |
           set -euo pipefail
           mkdir -p out
-          curl --compressed --fail --location --retry 3 \
-            --user-agent "Mozilla/5.0 (Linux; Android 14)" \
-            "https://yuxseocdn.yuewen.com/pro/readnovel_m/_prelease/hongxium/modern-js/bqx/index-c1d8654fc0.js" \
-            -o out/mobile-bqx.js
-          echo "js=$(wc -c < out/mobile-bqx.js)"
+          base="https://yuxseocdn.yuewen.com/pro/readnovel_m/_prelease/hongxium"
+          curl --compressed --fail --location --retry 3 --user-agent "Mozilla/5.0" \
+            "$base/chunks/ajax-C_bDpnWr.js" -o out/ajax.js
+          curl --compressed --fail --location --retry 3 --user-agent "Mozilla/5.0" \
+            "$base/chunks/index-CvP2u2eb.js" -o out/index.js
+          echo "ajax=$(wc -c < out/ajax.js) index=$(wc -c < out/index.js)"
 
-      - name: Inspect routes
+      - name: Inspect endpoints
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
-          s=Path("out/mobile-bqx.js").read_text(encoding="utf-8",errors="replace")
-          print("chars",len(s))
-          vals=[]
-          pats=[
-            r'https?://[^"\x27]+',
-            r'["\x27](/[^"\x27]{0,200}(?:api|ajax|chapter|read|content|catalog|book)[^"\x27]{0,200})["\x27]',
-          ]
-          for pat in pats:
-            for m in re.finditer(pat,s,re.I):
-              v=m.group(1) if m.groups() else m.group(0)
-              if v not in vals:vals.append(v)
-          print("CANDIDATES")
-          for v in vals[:500]:print(v)
-          for needle in ["chapter","content","ajax","api","bookId","chapterId","m.qidian","getJSON","fetch(","axios","request"]:
-            print("\n###",needle)
-            pos=[m.start() for m in re.finditer(re.escape(needle),s,re.I)]
-            print("count",len(pos))
-            for i in pos[:12]:
-              print(s[max(0,i-500):i+1100])
+          for path in (Path("out/ajax.js"),Path("out/index.js")):
+              s=path.read_text(encoding="utf-8",errors="replace")
+              print("\nFILE",path.name,"chars",len(s))
+              vals=[]
+              for pat in [
+                  r'https?://[^"\x27]+',
+                  r'["\x27](/[^"\x27]{0,250})["\x27]',
+              ]:
+                  for m in re.finditer(pat,s,re.I):
+                      v=m.group(1) if m.groups() else m.group(0)
+                      if any(k in v.lower() for k in ("api","ajax","chapter","read","content","book","catalog","info")) and v not in vals:
+                          vals.append(v)
+              print("CANDIDATES")
+              for v in vals[:500]:print(v)
+              for needle in ["fetch(","XMLHttpRequest","ajax","request","chapter","content","bookId","chapterId","csrf","token"]:
+                  pos=[m.start() for m in re.finditer(re.escape(needle),s,re.I)]
+                  if pos:
+                      print("\n###",needle,"count",len(pos))
+                      for i in pos[:12]:print(s[max(0,i-450):i+1000])
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: witch-readnovel-mobile-api
+          name: witch-readnovel-ajax-chunks
           path: out/
           retention-days: 1
