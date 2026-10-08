@@ -1,0 +1,419 @@
+name: Build witch RAW corpus in parallel
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/witch-corpus-parallel.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 10
+    steps:
+      - name: Fetch and parse chunk
+        env:
+          CHUNK: ${{ matrix.chunk }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          from concurrent.futures import ThreadPoolExecutor, as_completed
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urljoin
+          import hashlib
+          import json
+          import os
+          import subprocess
+          import tempfile
+          import time
+
+          CHUNK = int(os.environ["CHUNK"])
+          CHUNK_SIZE = 24
+          BASE = "https://www.jiangchenxs.com/du_75248/"
+
+          def curl(url, target):
+              cmd = [
+                  "curl", "--compressed", "--fail", "--location",
+                  "--silent", "--show-error",
+                  "--connect-timeout", "8", "--max-time", "25",
+                  "--retry", "4", "--retry-delay", "1",
+                  "--user-agent", "Mozilla/5.0",
+                  url, "-o", str(target),
+              ]
+              last = ""
+              for attempt in range(1, 4):
+                  p = subprocess.run(cmd, capture_output=True, text=True)
+                  if p.returncode == 0 and target.exists() and target.stat().st_size > 1000:
+                      return
+                  last = p.stderr.strip()
+                  time.sleep(attempt)
+              raise RuntimeError(f"curl failed url={url} error={last}")
+
+          index_file = Path("index.html")
+          curl(BASE, index_file)
+          html = index_file.read_text(encoding="utf-8", errors="replace")
+          marker = "《魔女大人，请按剧本黑化！》正文"
+          if marker not in html:
+              raise SystemExit("main corpus marker missing")
+          html = html.split(marker, 1)[1]
+
+          class IndexParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.in_dd = False
+                  self.href = None
+                  self.text = []
+                  self.rows = []
+              def handle_starttag(self, tag, attrs):
+                  tag = tag.lower()
+                  if tag == "dd":
+                      self.in_dd = True
+                  elif tag == "a" and self.in_dd:
+                      self.href = dict(attrs).get("href")
+                      self.text = []
+              def handle_data(self, data):
+                  if self.href is not None:
+                      self.text.append(data)
+              def handle_endtag(self, tag):
+                  tag = tag.lower()
+                  if tag == "a" and self.href is not None:
+                      title = "".join(self.text).strip()
+                      if self.href and title:
+                          self.rows.append((self.href, title))
+                      self.href = None
+                      self.text = []
+                  elif tag == "dd":
+                      self.in_dd = False
+
+          ip = IndexParser()
+          ip.feed(html)
+          rows = []
+          seen = set()
+          for href, heading in ip.rows:
+              if href in seen:
+                  continue
+              seen.add(href)
+              rows.append({
+                  "ordinal": len(rows) + 1,
+                  "url": urljoin(BASE, href),
+                  "source_heading": heading,
+              })
+          if len(rows) != 504:
+              raise SystemExit(f"expected 504 index entries, got {len(rows)}")
+
+          start = CHUNK * CHUNK_SIZE
+          subset = rows[start:start + CHUNK_SIZE]
+
+          class ContentParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.in_content = False
+                  self.depth = 0
+                  self.current = []
+                  self.parts = []
+                  self.in_h1 = False
+                  self.h1 = []
+              def flush(self):
+                  text = "".join(self.current).replace("\xa0", " ").strip()
+                  if text:
+                      self.parts.append(text)
+                  self.current = []
+              def handle_starttag(self, tag, attrs):
+                  tag = tag.lower()
+                  d = dict(attrs)
+                  if tag == "h1" and not self.in_content:
+                      self.in_h1 = True
+                      self.h1 = []
+                  if tag == "div" and d.get("id") == "content":
+                      self.in_content = True
+                      self.depth = 1
+                      return
+                  if self.in_content:
+                      if tag == "div":
+                          self.depth += 1
+                      if tag in ("br", "p"):
+                          self.flush()
+              def handle_data(self, data):
+                  if self.in_h1:
+                      self.h1.append(data)
+                  if self.in_content:
+                      self.current.append(data)
+              def handle_endtag(self, tag):
+                  tag = tag.lower()
+                  if tag == "h1" and self.in_h1:
+                      self.in_h1 = False
+                  if self.in_content:
+                      if tag in ("p", "br"):
+                          self.flush()
+                      if tag == "div":
+                          self.depth -= 1
+                          if self.depth == 0:
+                              self.flush()
+                              self.in_content = False
+
+          def fetch_one(row):
+              target = Path(tempfile.gettempdir()) / f"witch-{row['ordinal']:03d}.html"
+              curl(row["url"], target)
+              page = target.read_text(encoding="utf-8", errors="replace")
+              p = ContentParser()
+              p.feed(page)
+              page_heading = "".join(p.h1).strip()
+              paras = []
+              for part in p.parts:
+                  if part.startswith("如果此书侵犯了您的权益"):
+                      continue
+                  if "小主子，这个章节后面还有哦" in part:
+                      continue
+                  paras.append(part)
+              body = "\n".join(paras).strip()
+              if not body:
+                  raise RuntimeError(f"empty body ordinal={row['ordinal']} url={row['url']}")
+              out = dict(row)
+              out["page_heading"] = page_heading
+              out["body"] = body
+              out["body_chars"] = len(body)
+              out["body_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
+              return out
+
+          results = []
+          with ThreadPoolExecutor(max_workers=4) as ex:
+              fs = {ex.submit(fetch_one, row): row for row in subset}
+              for fut in as_completed(fs):
+                  results.append(fut.result())
+
+          results.sort(key=lambda r: r["ordinal"])
+          out = Path(f"out/chunk-{CHUNK:02d}.jsonl")
+          out.write_text(
+              "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in results),
+              encoding="utf-8",
+          )
+          print(f"chunk={CHUNK} rows={len(results)}")
+          print(f"chars={sum(r['body_chars'] for r in results)}")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: witch-corpus-chunk-${{ matrix.chunk }}
+          path: out/*.jsonl
+          if-no-files-found: error
+          retention-days: 2
+
+  combine:
+    needs: fetch
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: witch-corpus-chunk-*
+          path: chunks
+          merge-multiple: true
+
+      - name: Build canonical corpus and verify
+        run: |
+          set -euo pipefail
+          mkdir -p out work
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import json
+          import re
+          import subprocess
+
+          rows = []
+          for path in sorted(Path("chunks").glob("chunk-*.jsonl")):
+              for line in path.read_text(encoding="utf-8").splitlines():
+                  if line.strip():
+                      rows.append(json.loads(line))
+          rows.sort(key=lambda r: r["ordinal"])
+          assert len(rows) == 504, len(rows)
+          assert [r["ordinal"] for r in rows] == list(range(1, 505))
+
+          class OfficialParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.active = False
+                  self.depth = 0
+                  self.href = None
+                  self.text = []
+                  self.rows = []
+              def handle_starttag(self, tag, attrs):
+                  d = dict(attrs)
+                  tag = tag.lower()
+                  if tag == "section" and "chapterlist" in d.get("class", "").split():
+                      self.active = True
+                      self.depth = 1
+                      return
+                  if self.active:
+                      if tag == "section":
+                          self.depth += 1
+                      elif tag == "a":
+                          href = d.get("href")
+                          if href and "qidian.com/chapter/" in href:
+                              self.href = href
+                              self.text = []
+              def handle_data(self, data):
+                  if self.href is not None:
+                      self.text.append(data)
+              def handle_endtag(self, tag):
+                  tag = tag.lower()
+                  if self.active and tag == "a" and self.href is not None:
+                      title = "".join(self.text).strip()
+                      if title:
+                          self.rows.append((self.href, title))
+                      self.href = None
+                      self.text = []
+                  if self.active and tag == "section":
+                      self.depth -= 1
+                      if self.depth == 0:
+                          self.active = False
+
+          official = []
+          for n in range(1, 35):
+              url = "https://www.readnovel.com/bqx/qbdykg" if n == 1 else f"https://www.readnovel.com/bqx/qbdykg/p{n}"
+              target = Path(f"work/official-{n}.html")
+              subprocess.run([
+                  "curl", "--compressed", "--fail", "--location",
+                  "--silent", "--show-error", "--retry", "3",
+                  "--user-agent", "Mozilla/5.0",
+                  url, "-o", str(target)
+              ], check=True)
+              p = OfficialParser()
+              p.feed(target.read_text(encoding="utf-8", errors="replace"))
+              official.extend({"url": href, "heading": heading} for href, heading in p.rows)
+          assert len(official) == 505, len(official)
+
+          official_by_num = {}
+          service_official = []
+          for idx, row in enumerate(official, 1):
+              m = re.match(r"^第\s*(\d+)\s*章", row["heading"])
+              if m:
+                  n = int(m.group(1))
+                  official_by_num[n] = {
+                      "heading": row["heading"],
+                      "url": row["url"],
+                      "official_ordinal": idx,
+                  }
+              else:
+                  service_official.append({
+                      "heading": row["heading"],
+                      "url": row["url"],
+                      "official_ordinal": idx,
+                  })
+
+          assert len(official_by_num) == 497
+          assert sorted(official_by_num) == list(range(1, 498))
+          assert len(service_official) == 8
+
+          numbered = []
+          service = []
+          for row in rows:
+              m = re.match(r"^第\s*(\d+)\s*章", row["source_heading"])
+              if m:
+                  n = int(m.group(1))
+                  canon = official_by_num[n]
+                  numbered.append({
+                      "number": n,
+                      "ordinal_jiangchen": row["ordinal"],
+                      "title_cn": canon["heading"],
+                      "source_title_cn": row["source_heading"],
+                      "source_url": row["url"],
+                      "official_url": canon["url"],
+                      "official_ordinal": canon["official_ordinal"],
+                      "body": row["body"],
+                      "body_chars": row["body_chars"],
+                      "body_sha256": row["body_sha256"],
+                  })
+              else:
+                  service.append(row)
+
+          numbered.sort(key=lambda r: r["number"])
+          assert len(numbered) == 497
+          assert [r["number"] for r in numbered] == list(range(1, 498))
+          assert len(service) == 7
+
+          mismatches = [
+              {"number": r["number"], "jiangchen": r["source_title_cn"], "official": r["title_cn"]}
+              for r in numbered if r["source_title_cn"] != r["title_cn"]
+          ]
+
+          Path("out/numbered.jsonl").write_text(
+              "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in numbered),
+              encoding="utf-8",
+          )
+          Path("out/service-jiangchen.jsonl").write_text(
+              "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in service),
+              encoding="utf-8",
+          )
+          Path("out/service-official.json").write_text(
+              json.dumps(service_official, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          combined = "\n".join(r["title_cn"] + "\n\n" + r["body"] + "\n" for r in numbered)
+          Path("out/combined-numbered.txt").write_text(combined, encoding="utf-8")
+
+          summary = {
+              "numbered_chapters": len(numbered),
+              "number_range": [1, 497],
+              "number_gaps": [n for n in range(1, 498) if n not in {r["number"] for r in numbered}],
+              "jiangchen_entries": len(rows),
+              "jiangchen_service_entries": len(service),
+              "official_entries": len(official),
+              "official_service_entries": len(service_official),
+              "title_mismatches": mismatches,
+              "total_body_chars": sum(r["body_chars"] for r in numbered),
+              "min_body_chars": min(r["body_chars"] for r in numbered),
+              "max_body_chars": max(r["body_chars"] for r in numbered),
+              "empty_bodies": [r["number"] for r in numbered if not r["body"].strip()],
+          }
+          Path("out/verification.json").write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+          )
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          assert not summary["number_gaps"]
+          assert not summary["empty_bodies"]
+          PY
+
+      - name: Verify production parser
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import importlib.util
+          import pathlib
+          import sys
+
+          source = pathlib.Path("tools/novel-ingest/extract_chapter.py")
+          spec = importlib.util.spec_from_file_location("extract_chapter", source)
+          mod = importlib.util.module_from_spec(spec)
+          sys.modules[spec.name] = mod
+          assert spec.loader is not None
+          spec.loader.exec_module(mod)
+
+          text = pathlib.Path("out/combined-numbered.txt").read_text(encoding="utf-8")
+          entries = mod.parse_book(text)
+          numbered = [e for e in entries if e.entry_type == "chapter"]
+          nums = [e.author_number for e in numbered]
+          assert len(numbered) == 497
+          assert nums == list(range(1, 498))
+          print("production_parser_numbered=497")
+          print("production_parser_range=1..497")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: witch-raw-corpus-497
+          path: out/
+          if-no-files-found: error
+          retention-days: 7
