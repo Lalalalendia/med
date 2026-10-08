@@ -1,0 +1,47 @@
+{
+  "entries": 504,
+  "numbered": 497,
+  "services": 7,
+  "max_number": 497,
+  "missing_numbers": [],
+  "missing_resource_entries": [
+    {
+      "ordinal": 487,
+      "heading": "第483章 游戏与沙堡"
+    },
+    {
+      "ordinal": 488,
+      "heading": "第484章 完美与瑕疵。"
+    },
+    {
+      "ordinal": 489,
+      "heading": "第485章 予万物以生"
+    },
+    {
+      "ordinal": 490,
+      "heading": "第486章 于黎明前夕"
+    },
+    {
+      "ordinal": 491,
+      "heading": "第487章 信仰的救济"
+    },
+    {
+      "ordinal": 492,
+      "heading": "第488章 于世界尽头"
+    },
+    {
+      "ordinal": 493,
+      "heading": "第489章 巨人屹立不倒"
+    }
+  ],
+  "page_count_distribution": {
+    "2": 327,
+    "1": 88,
+    "3": 80,
+    "7": 1,
+    "4": 7,
+    "5": 1
+  },
+  "chars": 1371349,
+  "sha256": "d7ba59d34ef7aaf475af5196ba4822661b180f60f64ec5d4021d05c92662e0b9"
+}
