@@ -1,0 +1,59 @@
+name: Fetch missing witch service record
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/witch-service-fetch.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - name: Fetch official page candidates
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          urls=(
+            "https://www.qidian.com/chapter/1043611747/890168560/"
+            "https://www.readnovel.com/chapter/1043611747/890168560"
+          )
+          i=0
+          for url in "${urls[@]}"; do
+            i=$((i+1))
+            echo "URL $url"
+            curl --compressed --location --retry 2 --max-time 30               --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36"               -D "out/headers-$i.txt" "$url" -o "out/page-$i.html" || true
+            echo "bytes_$i=$(wc -c < "out/page-$i.html" 2>/dev/null || echo 0)"
+          done
+
+      - name: Inspect official page payloads
+        run: |
+          python - <<'PY' | tee out/probe.txt
+          from pathlib import Path
+          import re, html as h
+
+          for i in (1,2):
+              p=Path(f"out/page-{i}.html")
+              print("PAGE",i,"exists",p.exists(),"bytes",p.stat().st_size if p.exists() else 0)
+              if not p.exists(): continue
+              s=p.read_text(encoding="utf-8",errors="replace")
+              for needle in ["群炸了，请前往评论区","chapter-content","content","__NEXT_DATA__","g_data","chapterInfo","vipStatus"]:
+                  pos=s.find(needle)
+                  print(" needle",repr(needle),"at",pos)
+                  if pos>=0:
+                      snippet=s[max(0,pos-800):pos+3000]
+                      snippet=re.sub(r"\s+"," ",snippet)
+                      print(snippet[:3800])
+              metas=re.findall(r'<meta[^>]+(?:name|property)=["\'](?:description|og:description)["\'][^>]+content=["\']([^"\']+)',s,re.I)
+              print(" metas", [h.unescape(x) for x in metas[:5]])
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: witch-missing-service-probe
+          path: out
+          retention-days: 2
