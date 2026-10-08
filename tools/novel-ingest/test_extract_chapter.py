@@ -1,5 +1,6 @@
 import importlib.util
 import pathlib
+import sys
 import unittest
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -7,6 +8,7 @@ SPEC = importlib.util.spec_from_file_location(
     "extract_chapter", HERE / "extract_chapter.py"
 )
 MOD = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = MOD
 assert SPEC.loader is not None
 SPEC.loader.exec_module(MOD)
 
