@@ -1,4 +1,4 @@
-name: Probe Gotham tail mirrors
+name: Probe Gotham tail mirrors v2
 
 on:
   push:
