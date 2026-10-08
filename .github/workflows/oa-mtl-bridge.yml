@@ -1,4 +1,4 @@
-name: OA EN MTL bridge 221-290 - manual
+name: OA EN MTL bridge 221-290
 
 on:
   pull_request:
@@ -12,9 +12,9 @@ on:
         required: true
         type: choice
         options:
-          - fanmtl
           - wuxiabox
-        default: fanmtl
+          - fanmtl
+        default: wuxiabox
       story_start:
         required: true
         default: "221"
@@ -53,13 +53,6 @@ jobs:
             --book oa --source "$SOURCE" \
             --story-start "$STORY_START" --story-end "$STORY_END" \
             --delay 1.5 --strict --out-dir out/oa-mtl
-      - name: Fetch OA 226-235 from confirmed public Wuxiabox source
-        if: github.event_name == 'pull_request' && github.head_ref == 'feature/oa-mtl-bridge-221-290'
-        run: |
-          python tools/fanmtl-bridge/fetch_fanmtl_bridge.py \
-            --book oa --source wuxiabox \
-            --story-start 226 --story-end 235 \
-            --delay 2.0 --strict --out-dir out/oa-mtl
       - name: Summarize findings
         if: always()
         run: |
@@ -72,5 +65,5 @@ jobs:
         with:
           name: oa-mtl-${{ github.event_name }}-${{ github.run_id }}
           path: out/oa-mtl/**
-          retention-days: 7
+          retention-days: 30
           if-no-files-found: warn

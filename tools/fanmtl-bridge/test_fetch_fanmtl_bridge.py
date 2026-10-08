@@ -26,6 +26,7 @@ class BridgeTests(unittest.TestCase):
     def test_default_oa_mapping(self):
         book, source, start, end = bridge.resolve_request(self.args())
         self.assertEqual((source, start, end, book.offset), ("fanmtl", 221, 225, 0))
+        self.assertEqual(bridge.resolve_request(self.args(source=None))[1], "wuxiabox")
 
     def test_legacy_witch_mapping_and_boundary(self):
         args = self.args(book="witch", source="wuxiaspot",
@@ -63,6 +64,31 @@ class BridgeTests(unittest.TestCase):
         expected = bridge.BOOKS["oa"].expected_series
         self.assertTrue(bridge.has_expected_series(good, expected))
         self.assertFalse(bridge.has_expected_series(wrong, expected))
+
+    def test_good_oa_article_saved_with_content_digest(self):
+        body = "Kasha discussed the event with Thor and Odin. " * 200
+        html = (
+            "<html><head><title>Chapter 221 | American Comics: My Understanding "
+            "is Incredible, I Create OA Magical Power</title></head>"
+            "<body><h2>Chapter 221</h2><article><p>"
+            + body + "</p></article></body></html>"
+        )
+        response = Mock(status_code=200, url="https://example.com/oa221",
+                        text=html, apparent_encoding="utf-8", encoding="utf-8")
+        session = Mock()
+        session.get.return_value = response
+        with tempfile.TemporaryDirectory() as temp:
+            result = bridge.fetch_one(
+                session, source_name="wuxiabox",
+                slug=bridge.BOOKS["oa"].slug,
+                story_chapter=221, source_position=221,
+                out_dir=Path(temp), timeout=5,
+                max_valid_position=290,
+                expected_series=bridge.BOOKS["oa"].expected_series,
+            )
+            self.assertEqual(result.status, "ok")
+            self.assertEqual(len(result.sha256), 64)
+            self.assertTrue((Path(temp) / "chapters/221.txt").exists())
 
     def test_wrong_book_never_saved(self):
         html = ("<html><head><title>Chapter 221 | Different novel</title></head>"

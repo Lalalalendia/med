@@ -17,6 +17,7 @@ import re
 import sys
 import time
 from dataclasses import asdict, dataclass
+from hashlib import sha256
 from pathlib import Path
 
 import requests
@@ -79,6 +80,7 @@ class Result:
     title: str | None = None
     chars: int = 0
     words: int = 0
+    sha256: str | None = None
     file: str | None = None
     note: str | None = None
 
@@ -104,7 +106,7 @@ BOOKS = {
     "oa": BookProfile(
         "oa", "美漫：悟性逆天，我创造OA神力",
         "american-comics-my-understanding-is-incredible-i-create-oa-magical-power",
-        221, 290, 0, 290, ("fanmtl", "wuxiabox"),
+        221, 290, 0, 290, ("wuxiabox", "fanmtl"),
         "american comics: my understanding is incredible, i create oa magical power",
     ),
 }
@@ -303,6 +305,7 @@ def fetch_one(
     header.extend(["", text, ""])
 
     path.write_text("\n".join(header), encoding="utf-8")
+    result.sha256 = sha256(text.encode("utf-8")).hexdigest()
     result.file = str(path.relative_to(out_dir))
     result.status = "ok"
     result.note = f"selector={selector}"
@@ -352,6 +355,14 @@ def write_outputs(results: list[Result], out_dir: Path, source_name: str, book: 
     ]
     for key in sorted(counts):
         lines.append(f"- {key}: {counts[key]}")
+
+    lines.extend(["", "## Extracted chapter proofs", ""])
+    for r in results:
+        if r.status == "ok":
+            lines.append(
+                f"- chapter {r.story_chapter}: words={r.words}, "
+                f"sha256={r.sha256}, url={r.url}"
+            )
 
     lines.extend(["", "## Attention", ""])
     attention = [r for r in results if r.status != "ok"]

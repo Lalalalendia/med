@@ -1,18 +1,36 @@
-# FanMTL bridge for 美漫中餐馆：员工绯红女巫
+# English MTL bridge
 
-Manual-only helper for the missing tail of the book.
+This directory contains an evidence fetcher; it **does not perform EN-to-RU translation** or publish to Rulate. Use only publicly accessible pages, with no authentication bypass.
 
-## Mapping
+## Historical profile: witch (66–77)
+- Book: 美漫中餐馆：员工绯红女巫
+- Story 66 maps to source position 67; story 77 maps to position 78.
+- The next source position belongs to a different book: retained strict guard at 78.
+- Default source: Wuxiaspot. Old workflow `fanmtl-bridge.yml` is unchanged.
+- EN/MTL is not Chinese RAW and always requires source review.
 
-FanMTL inserts a service entry after story chapter 65:
+## OA profile: 221–290
+- Book: 美漫：悟性逆天，我创造OA神力 (Kasha).
+- Registered slug: `american-comics-my-understanding-is-incredible-i-create-oa-magical-power`.
+- Mapping: story number = source position, offset 0; range 221–290; at most 10 chapters per run.
+- Default public mirror: **Wuxiabox**. FanMTL returned HTTP 403 on a GitHub runner (2026-10-08).
+- Direct chapter URLs, page series identity, chapter number, minimum text size, access blocks and book boundaries are checked. Unknown or mismatched pages are never saved as `ok`.
+- Successful records include the chapter's SHA-256 in `manifest.jsonl` and `summary.md`.
+- A nonzero exit with `--strict` indicates at least one unverified / blocked chapter.
 
-- FanMTL position 67 = story chapter 66
-- ...
-- FanMTL position 78 = story chapter 77
-- position 79+ belongs to another novel and is intentionally blocked by the script
+Command for a locally runnable source check:
 
-## Important
+```bash
+python tools/fanmtl-bridge/fetch_fanmtl_bridge.py \
+  --book oa --source wuxiabox --story-start 221 --story-end 225 \
+  --delay 2.0 --strict --out-dir out/oa-mtl
+```
 
-The downloaded text is **English machine translation**, not Chinese RAW. It is suitable only as a temporary bridge for Draft RU and must remain marked `requires RAW check`.
+The [OA EN MTL bridge 221-290](../../.github/workflows/oa-mtl-bridge.yml) workflow supports manual `workflow_dispatch` after this branch reaches `main`. Choose a maximum of ten story chapters per invocation. It uploads TXT files, combined text, manifest and summary as a 30-day artifact.
 
-The workflow has only `workflow_dispatch`; committing these files does not run it.
+### Hosted source receipts
+- [221–225, 5/5](https://github.com/Lalalalendia/med/actions/runs/37828487140).
+- [226–235, 10/10](https://github.com/Lalalalendia/med/actions/runs/37829027821).
+- All 15 are **EN machine-translation bridge evidence**, not Chinese RAW or Russian draft chapters.
+
+Translation work lives in [Notion's OA book](https://app.notion.com/p/3f332a84beec81a8b8c4d524db15e2cb); full-quality / published status requires separate translation and QA. A pre-existing Russian Rulate project (105168) does not constitute permission for an independent publication.
