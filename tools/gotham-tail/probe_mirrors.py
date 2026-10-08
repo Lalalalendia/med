@@ -9,6 +9,7 @@ TITLE="人在哥谭当神父，开局捡到小男孩"
 UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129.0 Safari/537.36"
 
 CANDIDATES=[
+    ("bqg422","https://www.bqg422.cc/map/"),
     ("bqgiu","https://www.bqgiu.cc/map/"),
     ("bqg677","https://www.bqg677.cc/map/"),
     ("bigee","https://www.bigee.cc/map/2.html"),
