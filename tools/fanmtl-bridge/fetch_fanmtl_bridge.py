@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
-"""Fetch an English MTL bridge for story chapters 66..77.
+"""Fetch bounded English MTL bridge chapters for explicitly identified books.
 
-Known numbering for this book:
-- source position 67 = story chapter 66
-- ...
-- source position 78 = story chapter 77
-- position 79+ belongs to another novel and must never be used
+The historical 'witch' profile keeps its strict 66..77 / +1 mapping and
+78-position boundary. The independent 'oa' profile covers story chapters
+221..290 with exact source-number mapping and a book-identity check.
 
-Supported public mirrors:
-- wuxiaspot (preferred)
-- fanmtl (fallback; currently returns 403 from GitHub Actions)
-
-The script uses public HTTP GET only and does not bypass authentication,
-CAPTCHAs, paywalls, anti-bot challenges, or other access controls.
+Public HTTP GET only: never bypass logins, CAPTCHAs, paywalls or rate limits.
+Outputs are EN machine-translation evidence, never verified Chinese RAW.
 """
 
 from __future__ import annotations
@@ -34,6 +28,7 @@ MAX_VALID_POSITION = 78
 SOURCE_TEMPLATES = {
     "wuxiaspot": "https://www.wuxiaspot.com/novel/{slug}_{position}.html",
     "fanmtl": "https://www.fanmtl.com/novel/{slug}_{position}.html",
+    "wuxiabox": "https://www.wuxiabox.com/novel/{slug}_{position}.html",
 }
 DEFAULT_USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) "
@@ -86,6 +81,49 @@ class Result:
     words: int = 0
     file: str | None = None
     note: str | None = None
+
+
+@dataclass(frozen=True)
+class BookProfile:
+    key: str
+    cn_title: str
+    slug: str
+    first_chapter: int
+    last_chapter: int
+    offset: int
+    last_source_position: int
+    sources: tuple[str, ...]
+    expected_series: str | None = None
+
+
+BOOKS = {
+    "witch": BookProfile(
+        "witch", "美漫中餐馆：员工绯红女巫", BOOK_SLUG,
+        66, 77, 1, MAX_VALID_POSITION, ("wuxiaspot", "fanmtl"),
+    ),
+    "oa": BookProfile(
+        "oa", "美漫：悟性逆天，我创造OA神力",
+        "american-comics-my-understanding-is-incredible-i-create-oa-magical-power",
+        221, 290, 0, 290, ("fanmtl", "wuxiabox"),
+        "american comics: my understanding is incredible, i create oa magical power",
+    ),
+}
+
+
+def has_expected_series(soup: BeautifulSoup, expected: str) -> bool:
+    """Require the OA book's name, not merely a plausible chapter number."""
+    candidates = [
+        node.get_text(" ", strip=True)
+        for node in soup.select("h1, .book-title, .novel-title, .book_name")
+    ]
+    if soup.title:
+        candidates.append(soup.title.get_text(" ", strip=True))
+    for meta in soup.select('meta[property="og:title"]'):
+        candidates.append(meta.get("content", ""))
+    return any(
+        expected in re.sub(r"\s+", " ", name).casefold()
+        for name in candidates
+    )
 
 
 def normalize(text: str) -> str:
@@ -176,15 +214,17 @@ def fetch_one(
     source_position: int,
     out_dir: Path,
     timeout: float,
+    max_valid_position: int = MAX_VALID_POSITION,
+    expected_series: str | None = None,
 ) -> Result:
-    if source_position > MAX_VALID_POSITION:
+    if source_position > max_valid_position:
         return Result(
             story_chapter=story_chapter,
             source_position=source_position,
             source_name=source_name,
             url="",
             status="refused",
-            note=f"position {source_position} exceeds safe boundary {MAX_VALID_POSITION}",
+            note=f"position {source_position} exceeds safe boundary {max_valid_position}",
         )
 
     template = SOURCE_TEMPLATES[source_name]
@@ -225,12 +265,22 @@ def fetch_one(
         result.note = f"HTTP {response.status_code}"
         return result
 
+    if expected_series and not has_expected_series(soup, expected_series):
+        result.status = "needs_check"
+        result.note = "book identity missing or mismatched; chapter not saved"
+        return result
+
+    if expected_series and not title:
+        result.status = "needs_check"
+        result.note = "chapter title missing; chapter not saved"
+        return result
+
     if not title_matches_story_chapter(title, story_chapter):
         result.status = "needs_check"
         result.note = f"title does not match story chapter {story_chapter}: {title!r}"
         return result
 
-    if len(text) < 800 or result.words < 150:
+    if len(text) < 800 or result.words < 150 or (expected_series and selector == "body-fallback"):
         result.status = "needs_check"
         result.note = (
             f"too little extracted text; selector={selector}; "
@@ -259,7 +309,7 @@ def fetch_one(
     return result
 
 
-def write_outputs(results: list[Result], out_dir: Path, source_name: str) -> None:
+def write_outputs(results: list[Result], out_dir: Path, source_name: str, book: BookProfile) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     (out_dir / "manifest.jsonl").write_text(
@@ -285,17 +335,17 @@ def write_outputs(results: list[Result], out_dir: Path, source_name: str) -> Non
     lines = [
         "# MTL bridge fetch",
         "",
-        "Book: 美漫中餐馆：员工绯红女巫",
+        f"Book: {book.cn_title}",
         f"Mirror: {source_name}",
         "",
         "This output is English machine translation only and must not be treated as Chinese RAW.",
         "",
         "## Mapping",
         "",
-        "- source position 67 -> story chapter 66",
-        "- ...",
-        "- source position 78 -> story chapter 77",
-        "- source position 79+ -> different novel; intentionally refused",
+        f"- mapping: source_position = story_chapter + ({book.offset})",
+        f"- allowed story chapters: {book.first_chapter}..{book.last_chapter}",
+        f"- highest safe source position: {book.last_source_position}",
+        f"- expected series: {book.expected_series or 'historical profile'}",
         "",
         "## Counts",
         "",
@@ -319,35 +369,65 @@ def write_outputs(results: list[Result], out_dir: Path, source_name: str) -> Non
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
-    p.add_argument("--source", choices=sorted(SOURCE_TEMPLATES), default="wuxiaspot")
-    p.add_argument("--slug", default=BOOK_SLUG)
-    p.add_argument("--story-start", type=int, default=66)
-    p.add_argument("--story-end", type=int, default=77)
-    p.add_argument("--offset", type=int, default=1)
+    p.add_argument("--book", choices=sorted(BOOKS), default="witch")
+    p.add_argument("--source", choices=sorted(SOURCE_TEMPLATES), default=None)
+    p.add_argument("--slug", default=None)
+    p.add_argument("--story-start", type=int, default=None)
+    p.add_argument("--story-end", type=int, default=None)
+    p.add_argument("--offset", type=int, default=None)
     p.add_argument("--delay", type=float, default=1.5)
     p.add_argument("--timeout", type=float, default=20.0)
     p.add_argument("--out-dir", default="out/mtl-bridge")
     p.add_argument("--user-agent", default=DEFAULT_USER_AGENT)
+    p.add_argument(
+        "--strict", action="store_true",
+        help="Fail unless every requested chapter has passed all checks",
+    )
     return p.parse_args()
+
+
+def resolve_request(args: argparse.Namespace) -> tuple[BookProfile, str, int, int]:
+    book = BOOKS[args.book]
+    source = args.source or book.sources[0]
+    start = args.story_start if args.story_start is not None else book.first_chapter
+    default_end = min(start + 4, book.last_chapter) if book.key == "oa" else book.last_chapter
+    end = args.story_end if args.story_end is not None else default_end
+    offset = args.offset if args.offset is not None else book.offset
+    slug = args.slug or book.slug
+
+    if source not in book.sources:
+        raise ValueError(f"source {source} is not permitted for {book.key}")
+    if slug != book.slug:
+        raise ValueError("slug differs from the registered book identity")
+    if offset != book.offset:
+        raise ValueError(
+            f"unsafe chapter offset {offset}: {book.key} requires {book.offset}"
+        )
+    if not (book.first_chapter <= start <= end <= book.last_chapter):
+        raise ValueError(
+            f"invalid story range {start}..{end}; "
+            f"{book.key} permits {book.first_chapter}..{book.last_chapter}"
+        )
+    if end + offset > book.last_source_position:
+        raise ValueError("requested source position exceeds verified book boundary")
+    if book.key == "oa" and end - start + 1 > 10:
+        raise ValueError("OA bridge accepts at most 10 chapters per run")
+    return book, source, start, end
 
 
 def main() -> int:
     args = parse_args()
-
-    if args.story_start < 1 or args.story_end < args.story_start:
-        print("invalid story chapter range", file=sys.stderr)
+    try:
+        book, source, start, end = resolve_request(args)
+    except ValueError as exc:
+        print(f"refusing request: {exc}", file=sys.stderr)
         return 2
+
     if args.delay < 0.5:
         print("delay must be at least 0.5 seconds", file=sys.stderr)
         return 2
-
-    last_position = args.story_end + args.offset
-    if last_position > MAX_VALID_POSITION:
-        print(
-            f"refusing request: source position {last_position} exceeds "
-            f"safe boundary {MAX_VALID_POSITION}",
-            file=sys.stderr,
-        )
+    if args.timeout <= 0:
+        print("timeout must be positive", file=sys.stderr)
         return 2
 
     out_dir = Path(args.out_dir)
@@ -364,32 +444,36 @@ def main() -> int:
     )
 
     results: list[Result] = []
-    for story_chapter in range(args.story_start, args.story_end + 1):
-        source_position = story_chapter + args.offset
+    for story_chapter in range(start, end + 1):
+        source_position = story_chapter + book.offset
         item = fetch_one(
             session,
-            source_name=args.source,
-            slug=args.slug,
+            source_name=source,
+            slug=book.slug,
             story_chapter=story_chapter,
             source_position=source_position,
             out_dir=out_dir,
             timeout=args.timeout,
+            max_valid_position=book.last_source_position,
+            expected_series=book.expected_series,
         )
         results.append(item)
 
         print(
-            f"source={args.source} story={story_chapter:03d} "
+            f"book={book.key} source={source} story={story_chapter:03d} "
             f"position={source_position} status={item.status} "
             f"http={item.http_status} words={item.words} note={item.note or ''}"
         )
 
-        if story_chapter != args.story_end:
+        if story_chapter != end:
             time.sleep(args.delay)
 
-    write_outputs(results, out_dir, args.source)
+    write_outputs(results, out_dir, source, book)
 
     ok = sum(1 for r in results if r.status == "ok")
-    print(f"done: {ok}/{len(results)} bridge chapters extracted from {args.source}")
+    print(f"done: {ok}/{len(results)} EN/MTL chapters extracted from {source}")
+    if args.strict and ok != len(results):
+        return 1
     return 0
 
 
