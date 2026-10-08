@@ -29,7 +29,12 @@ jobs:
 
           USER_ID = 6578
           S = requests.Session()
-          S.headers.update({"User-Agent": "Mozilla/5.0"})
+          S.headers.update({
+              "User-Agent": "Mozilla/5.0",
+              "X-Engine": "cf-browser-rendering",
+              "X-No-Cache": "true",
+              "X-Timeout": "30",
+          })
 
           books = {}
           expected = None
@@ -50,10 +55,12 @@ jobs:
               r = S.get(url, timeout=90)
               print("GET", page, r.status_code, len(r.text), url)
               if r.status_code != 200:
-                  print(r.text[:1000])
+                  print(r.text[:1500])
                   time.sleep(4)
                   continue
               text = r.text
+              if page == 1:
+                  print("PAGE1_HEAD", text[:2000].replace("\n", " | "))
               m = re.search(r"Участвует\s+в\s+(\d+)\s+перевод", text)
               if m:
                   expected = int(m.group(1))
