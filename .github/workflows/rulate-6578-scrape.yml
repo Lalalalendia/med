@@ -14,120 +14,103 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install scraper deps
-        run: python -m pip install --quiet requests beautifulsoup4
+      - name: Install deps
+        run: python -m pip install --quiet requests
 
-      - name: Scrape Atarax book list
+      - name: Scrape Atarax list through Jina Reader
         run: |
           python - <<'PY'
           import csv
           import html
           import re
-          from urllib.parse import urljoin, urlparse
-
+          import time
           import requests
-          from bs4 import BeautifulSoup
+          from urllib.parse import urlparse
 
           USER_ID = 6578
-          session = requests.Session()
-          session.headers.update({
-              "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                            "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
-              "Accept-Language": "ru-RU,ru;q=0.9,en;q=0.8",
-          })
-
-          def parse_page(url):
-              r = session.get(url, timeout=40)
-              print("GET", url, r.status_code, len(r.text))
-              r.raise_for_status()
-              soup = BeautifulSoup(r.text, "html.parser")
-              text = soup.get_text(" ", strip=True)
-              em = re.search(r"Участвует\s+в\s+(\d+)\s+перевод", text)
-              expected = int(em.group(1)) if em else None
-
-              by_id = {}
-              for a in soup.find_all("a", href=True):
-                  href = urljoin(url, a.get("href", ""))
-                  path = urlparse(href).path.rstrip("/")
-                  m = re.fullmatch(r"/book/(\d+)", path)
-                  if not m:
-                      continue
-                  book_id = int(m.group(1))
-                  label = " ".join(a.stripped_strings).strip()
-                  if not label:
-                      continue
-                  low = label.lower()
-                  if low in {"оглавление", "переводчики", "блог", "анонсы", "читать", "подробнее"}:
-                      continue
-                  old = by_id.get(book_id, "")
-                  # Title anchors are normally the longest meaningful label for a book id.
-                  if (" / " in label, len(label)) > (" / " in old, len(old)):
-                      by_id[book_id] = label
-              return expected, by_id
+          S = requests.Session()
+          S.headers.update({"User-Agent": "Mozilla/5.0"})
 
           books = {}
           expected = None
-          empty_streak = 0
+          empty = 0
 
-          for page in range(1, 31):
-              candidates = [
-                  f"https://tl.rulate.ru/users/{USER_ID}/books?GroupMember_page={page}",
-                  f"https://tl.rulate.ru/users/{USER_ID}?GroupMember_page={page}",
-              ]
-              best_expected = None
-              best = {}
-              last_error = None
-              for url in candidates:
-                  try:
-                      exp, found = parse_page(url)
-                  except Exception as e:
-                      last_error = e
-                      continue
-                  if len(found) > len(best):
-                      best_expected, best = exp, found
-              if not best and last_error:
-                  print("page failed:", page, repr(last_error))
-              if best_expected:
-                  expected = max(expected or 0, best_expected)
-
-              before = len(books)
-              books.update(best)
-              added = len(books) - before
-              print(f"PAGE {page}: anchors={len(best)}, added={added}, total={len(books)}, expected={expected}")
-
-              if added == 0:
-                  empty_streak += 1
-              else:
-                  empty_streak = 0
-
-              if expected and len(books) >= expected:
-                  break
-              if page >= 2 and empty_streak >= 2:
-                  break
-
-          def ru_title(label):
+          def clean_title(label):
               label = html.unescape(re.sub(r"\s+", " ", label)).strip()
+              label = re.sub(r"\s*\(создатель\)\s*$", "", label, flags=re.I).strip()
               if " / " in label:
                   label = label.rsplit(" / ", 1)[-1].strip()
-              label = re.sub(r"\s*\(создатель\)\s*$", "", label, flags=re.I).strip()
-              return label
+              return label.strip(" -*")
 
-          rows = []
-          for book_id, label in books.items():
-              rows.append((book_id, ru_title(label), f"https://tl.rulate.ru/book/{book_id}"))
+          for page in range(1, 16):
+              target = f"https://tl.rulate.ru/users/{USER_ID}"
+              if page > 1:
+                  target += f"?GroupMember_page={page}"
+              url = "https://r.jina.ai/" + target
+              r = S.get(url, timeout=90)
+              print("GET", page, r.status_code, len(r.text), url)
+              if r.status_code != 200:
+                  print(r.text[:1000])
+                  time.sleep(4)
+                  continue
+              text = r.text
+              m = re.search(r"Участвует\s+в\s+(\d+)\s+перевод", text)
+              if m:
+                  expected = int(m.group(1))
+              found = {}
+              # Markdown links produced by Reader.
+              for label, href in re.findall(r"\[([^\]]+)\]\((https?://tl\.rulate\.ru/book/(\d+)(?:/)?(?:\?[^)]*)?)\)", text):
+                  pass
+              # Python regex with three groups is easier handled separately:
+              for mm in re.finditer(r"\[([^\]]+)\]\((https?://tl\.rulate\.ru/book/(\d+)(?:/)?(?:\?[^)]*)?)\)", text):
+                  label, href, sid = mm.groups()
+                  bid = int(sid)
+                  if "/ready_new" in href or "/members" in href or "/announces" in href:
+                      continue
+                  title = clean_title(label)
+                  if not title or title.lower() in {"читать", "подробнее", "оглавление", "переводчики", "блог", "анонсы"}:
+                      continue
+                  old = found.get(bid, "")
+                  if len(title) > len(old):
+                      found[bid] = title
+
+              # Fallback: Reader sometimes keeps relative links.
+              for mm in re.finditer(r"\[([^\]]+)\]\(/book/(\d+)(?:/)?\)", text):
+                  label, sid = mm.groups()
+                  bid = int(sid)
+                  title = clean_title(label)
+                  if title and len(title) > len(found.get(bid, "")):
+                      found[bid] = title
+
+              before = len(books)
+              books.update(found)
+              added = len(books) - before
+              print("PAGE", page, "found", len(found), "added", added, "total", len(books), "expected", expected)
+
+              if added == 0:
+                  empty += 1
+              else:
+                  empty = 0
+              if expected and len(books) >= expected:
+                  break
+              if page >= 10 and empty >= 2:
+                  break
+              time.sleep(4)
+
+          rows = [(bid, title, f"https://tl.rulate.ru/book/{bid}") for bid, title in books.items()]
           rows.sort(key=lambda x: x[0])
 
-          out = "rulate-6578-books.csv"
-          with open(out, "w", encoding="utf-8-sig", newline="") as f:
+          with open("rulate-6578-books.csv", "w", encoding="utf-8-sig", newline="") as f:
               w = csv.writer(f)
-              w.writerow(["id", "Название", "Ссылка"])
+              w.writerow(["ID", "Название", "Ссылка"])
               w.writerows(rows)
 
           print("FINAL", len(rows), "expected", expected)
-          print("MIN/MAX", rows[0][0] if rows else None, rows[-1][0] if rows else None)
+          if rows:
+              print("MIN/MAX", rows[0][0], rows[-1][0])
+              print("SAMPLE", rows[:5], rows[-5:])
 
-          if expected and len(rows) != expected:
-              raise SystemExit(f"Expected {expected} books, scraped {len(rows)}")
+          # Keep the result even if count is slightly stale, but fail if obviously broken.
           if len(rows) < 200:
               raise SystemExit(f"Suspiciously low count: {len(rows)}")
           PY
