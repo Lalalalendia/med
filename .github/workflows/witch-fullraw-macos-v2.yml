@@ -1,0 +1,109 @@
+name: Witch full RAW macOS v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/witch-fullraw-macos-v2.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build manifest
+        run: |
+          set -euo pipefail
+          mkdir -p work out
+          curl --compressed --fail --location --retry 3 --user-agent "Mozilla/5.0"             "https://www.jiangchenxs.com/du_75248/" -o work/index.html
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from urllib.parse import urljoin
+          from pathlib import Path
+          import json
+          html=Path("work/index.html").read_text(encoding="utf-8")
+          main=html.split("《魔女大人，请按剧本黑化！》正文",1)[1]
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__();self.dd=False;self.href=None;self.text=[];self.rows=[]
+              def handle_starttag(self,tag,attrs):
+                  if tag.lower()=="dd":self.dd=True
+                  elif tag.lower()=="a" and self.dd:
+                      self.href=dict(attrs).get("href");self.text=[]
+              def handle_data(self,data):
+                  if self.href is not None:self.text.append(data)
+              def handle_endtag(self,tag):
+                  if tag.lower()=="a" and self.href is not None:
+                      self.rows.append((self.href,"".join(self.text).strip()))
+                      self.href=None;self.text=[]
+                  elif tag.lower()=="dd":self.dd=False
+          p=P();p.feed(main)
+          rows=[];seen=set()
+          for href,title in p.rows:
+              if not href or href in seen:continue
+              seen.add(href)
+              rows.append({"ordinal":len(rows)+1,"url":urljoin("https://www.jiangchenxs.com/du_75248/",href),"heading":title})
+          assert len(rows)==504,len(rows)
+          Path("work/manifest.json").write_text(json.dumps(rows,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print("manifest_entries",len(rows))
+          PY
+
+      - name: Crawl two shards
+        run: |
+          set -euo pipefail
+          for c in 0 1; do
+            mkdir -p "work/c$c"
+            python3 tools/novel-ingest/crawl_jiangchen_paginated.py               --manifest work/manifest.json               --chunk "$c"               --chunks 2               --out-dir "work/c$c"               > "work/c$c.log" 2>&1 &
+          done
+          wait
+          tail -10 work/c0.log
+          tail -10 work/c1.log
+
+      - name: Combine
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,re
+          canon={173:"第173章 情感带师（万字大章）",259:"第259章 难道你也背叛了吗（）",300:"第300章 情报及时的重要性（居然都三百章了）",328:"第328章 黄金树之影（）",351:"第351章 一路向北，离开有你的季节（）"}
+          teaser=re.compile(r".*(?:请点击下一页继续阅读|点击下一页继续阅读|本小章还未完|这章没有结束).*")
+          rows=[]
+          for p in Path("work").glob("c*/*.json"):
+              d=json.loads(p.read_text(encoding="utf-8"))
+              if isinstance(d,dict) and "ordinal" in d:rows.append(d)
+          rows.sort(key=lambda x:x["ordinal"])
+          assert len(rows)==504,len(rows)
+          out=Path("out"); chapters=out/"chapters"; chapters.mkdir(parents=True,exist_ok=True)
+          numbered=[];services=[];problems=[];dist={};blocks=[]
+          for r in rows:
+              h=r["heading"];m=re.match(r"^第\s*(\d+)\s*章",h);n=None
+              if m:
+                  n=int(m.group(1));numbered.append(n);h=canon.get(n,h)
+              else:services.append(h)
+              clean=[x.strip() for x in r["body"].splitlines() if x.strip() and not teaser.match(x.strip())]
+              body="\n".join(clean).strip()
+              if r.get("fetch_error") or r.get("missing_resource") or not body:
+                  problems.append({"ordinal":r["ordinal"],"author_number":n,"heading":h,"fetch_error":r.get("fetch_error"),"missing_resource":r.get("missing_resource"),"chars":len(body)})
+              dist[str(r["page_count"])]=dist.get(str(r["page_count"]),0)+1
+              blocks.append(h+"\n"+body)
+              if n is not None:(chapters/f"{n:03d}.txt").write_text(h+"\n"+body+"\n",encoding="utf-8")
+          full="\n\n".join(blocks)+"\n"
+          numbered_text="\n\n".join(p.read_text(encoding="utf-8").strip() for p in sorted(chapters.glob("*.txt")))+"\n"
+          (out/"full-504-paginated.txt").write_text(full,encoding="utf-8")
+          (out/"numbered-497-paginated.txt").write_text(numbered_text,encoding="utf-8")
+          summary={"entries":len(rows),"numbered":len(numbered),"services":len(services),"max_number":max(numbered),"missing_numbers":[n for n in range(1,max(numbered)+1) if n not in set(numbered)],"problems":problems,"problem_count":len(problems),"page_count_distribution":dist,"chars":len(full),"numbered_chars":len(numbered_text),"sha256":hashlib.sha256(full.encode()).hexdigest()}
+          (out/"summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          assert len(numbered)==497
+          assert not summary["missing_numbers"]
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: witch-fullraw-macos-v2
+          path: out/
+          retention-days: 7
