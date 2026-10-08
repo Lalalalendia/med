@@ -27,7 +27,7 @@ SERVICE_HEADINGS = {
 # Conservative generic forms that are common across Chinese web-novel TXT dumps.
 SERVICE_HEADING_PATTERNS = (
     re.compile(r"^(?:上架|完本)感言(?:\s*[：:].*)?$"),
-    re.compile(r"^请假(?:条|一天|一天假|.*)?$"),
+    re.compile(r"^请假(?:条|一天|一天假)?(?:\\s*[：:].*)?$"),
     re.compile(r"^新书已发(?:\s*[，,:：。！!…《].*)?$"),
     re.compile(r"^(?:停更|更新)(?:通知|说明)(?:\s*[：:].*)?$"),
 )
