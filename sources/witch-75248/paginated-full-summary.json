@@ -1,0 +1,26 @@
+{
+  "verified_full_range": [
+    1,
+    416
+  ],
+  "verified_full_count": 416,
+  "partial_or_unavailable_range": [
+    417,
+    497
+  ],
+  "partial_count": 81,
+  "known_missing_resource": [
+    483,
+    484,
+    485,
+    486,
+    487,
+    488,
+    489
+  ],
+  "services_on_jiangchen": 7,
+  "full_chars": 1349687,
+  "source_run_id": 37825482184,
+  "source_artifact": "witch-fullraw-paginated",
+  "note": "001-416 are paginated and validated complete on Jiangchen; 417-497 are preview/partial or unavailable and must not be treated as full RAW."
+}
