@@ -1,0 +1,130 @@
+name: Persist witch full RAW 001-416
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/witch-persist-fullraw-001-416.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download successful paginated artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: witch-fullraw-paginated
+          path: work/artifact
+          github-token: ${{ github.token }}
+          run-id: 37825482184
+
+      - name: Clean, split, and validate
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json,re,hashlib
+
+          src=Path("work/artifact/witch-jiangchen-paginated-504.txt")
+          text=src.read_text(encoding="utf-8")
+
+          junk=[
+              re.compile(r".*(?:请点击下一页继续阅读|点击下一页继续阅读|本小章还未完|这章没有结束).*"),
+              re.compile(r"^如果此书侵犯了您的权益.*$"),
+              re.compile(r"^小主子，这个章节后面还有哦.*$"),
+          ]
+          clean_lines=[]
+          for line in text.splitlines():
+              s=line.strip()
+              if any(p.match(s) for p in junk):
+                  continue
+              clean_lines.append(line.rstrip())
+          clean="\n".join(clean_lines).strip()+"\n"
+
+          heading_re=re.compile(r"^第\s*(\d+)\s*章(?:\s*[。.]?)\s*(.*?)\s*$")
+          service={
+              "上架感言","电脑炸了……请假","请假条",
+              "没办法再请天假，顺便说下近况","罪己诏",
+              "新书已发，《司教大人深不可测》",
+              "群炸了，转至备用群，加群方式见评论区",
+          }
+          lines=clean.splitlines()
+          heads=[]
+          for i,line in enumerate(lines):
+              s=line.strip()
+              m=heading_re.match(s)
+              if m:
+                  heads.append((i,int(m.group(1)),s))
+              elif s in service:
+                  heads.append((i,None,s))
+
+          out=Path("sources/witch-75248/chapters")
+          out.mkdir(parents=True,exist_ok=True)
+          manifest=[]
+          services=[]
+          partial=[]
+          safe_blocks=[]
+
+          for idx,(start,n,h) in enumerate(heads):
+              end=heads[idx+1][0] if idx+1<len(heads) else len(lines)
+              body="\n".join(lines[start+1:end]).strip()
+              if n is None:
+                  services.append({"heading":h,"chars":len(body)})
+                  continue
+              row={"n":n,"heading":h,"chars":len(body)}
+              if n<=416:
+                  if len(body)<2000:
+                      raise SystemExit(f"Chapter {n} unexpectedly short: {len(body)}")
+                  content=h+"\n"+body+"\n"
+                  (out/f"{n:03d}.txt").write_text(content,encoding="utf-8")
+                  row["sha256"]=hashlib.sha256(content.encode()).hexdigest()
+                  safe_blocks.append(content.strip())
+              else:
+                  partial.append(row)
+              manifest.append(row)
+
+          nums=[x["n"] for x in manifest]
+          assert len(nums)==497
+          assert max(nums)==497
+          assert not [n for n in range(1,498) if n not in set(nums)]
+          assert len([x for x in manifest if x["n"]<=416])==416
+
+          safe_text="\n\n".join(safe_blocks)+"\n"
+          Path("sources/witch-75248/numbered-001-416-full.txt").write_text(safe_text,encoding="utf-8")
+          summary={
+              "verified_full_range":[1,416],
+              "verified_full_count":416,
+              "partial_or_unavailable_range":[417,497],
+              "partial_count":81,
+              "known_missing_resource":[483,484,485,486,487,488,489],
+              "services_on_jiangchen":len(services),
+              "full_chars":len(safe_text),
+              "source_run_id":37825482184,
+              "source_artifact":"witch-fullraw-paginated",
+              "note":"001-416 are paginated and validated complete on Jiangchen; 417-497 are preview/partial or unavailable and must not be treated as full RAW."
+          }
+          Path("sources/witch-75248/paginated-full-summary.json").write_text(
+              json.dumps(summary,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"
+          )
+          Path("sources/witch-75248/partial-417-497.json").write_text(
+              json.dumps(partial,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"
+          )
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Commit corrected corpus
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sources/witch-75248/chapters                   sources/witch-75248/numbered-001-416-full.txt                   sources/witch-75248/paginated-full-summary.json                   sources/witch-75248/partial-417-497.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Persist full paginated RAW for witch chapters 001-416"
+          git push
