@@ -87,8 +87,8 @@ jobs:
               new_total=0
               empty=0
               for p in range(max_pages):
-                  first=1+p*10
-                  url='https://www.bing.com/search?q='+quote_plus(query)+f'&first={first}&count=10&setlang=ru'
+                  first=1+p*50
+                  url='https://www.bing.com/search?q='+quote_plus(query)+f'&first={first}&count=50&setlang=ru'
                   try:
                       r=S.get(url,timeout=40)
                   except Exception as e:
@@ -126,7 +126,7 @@ jobs:
                       empty=0
                   if empty>=2:
                       break
-                  time.sleep(1.2)
+                  time.sleep(0.3)
               return new_total
 
           queries=[
@@ -143,11 +143,11 @@ jobs:
 
           for i,q in enumerate(queries,1):
               before=len(books)
-              bing(q, max_pages=12 if i<=3 else 6)
+              bing(q, max_pages=4 if i<=3 else 2)
               print('QUERY_DONE',i,'added',len(books)-before,'total',len(books))
               if len(books)>=TARGET:
                   break
-              time.sleep(1.5)
+              time.sleep(0.5)
 
           final=sorted((bid,title,f'https://tl.rulate.ru/book/{bid}',src) for bid,(title,src) in books.items())
           with open('rulate-6578-books.csv','w',encoding='utf-8-sig',newline='') as f:
