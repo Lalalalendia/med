@@ -23,7 +23,7 @@ jobs:
             "https://www.readnovel.com/bqx/qbdykg" -o out/book.html
           curl --compressed --fail --location --retry 3 \
             --user-agent "Mozilla/5.0" \
-            "https://yuxseocdn.yuewen.com/pro/readnovel_pc/_prelease/static/js/bookquery/index.2dca4.js" \
+            "https://yuxseocdn.yuewen.com/pro/readnovel_pc/_prelease/js/bookquery/index.2dca4.js" \
             -o out/bookquery.js
           echo "book=$(wc -c < out/book.html) js=$(wc -c < out/bookquery.js)"
 
