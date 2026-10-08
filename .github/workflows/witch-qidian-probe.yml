@@ -1,4 +1,4 @@
-name: Probe ReadNovel chapter API
+name: Probe ReadNovel mobile reading API
 
 on:
   push:
@@ -14,69 +14,44 @@ jobs:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 5
     steps:
-      - name: Fetch frontend assets
+      - name: Fetch mobile bundle
         run: |
           set -euo pipefail
           mkdir -p out
           curl --compressed --fail --location --retry 3 \
-            --user-agent "Mozilla/5.0" \
-            "https://www.readnovel.com/bqx/qbdykg" -o out/book.html
-          curl --compressed --fail --location --retry 3 \
-            --user-agent "Mozilla/5.0" \
-            "https://yuxseocdn.yuewen.com/pro/readnovel_pc/_prelease/js/bookquery/index.2dca4.js" \
-            -o out/bookquery.js
-          echo "book=$(wc -c < out/book.html) js=$(wc -c < out/bookquery.js)"
-
-      - name: Find API and reading routes
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re
-          s=Path("out/bookquery.js").read_text(encoding="utf-8",errors="replace")
-          print("JS chars",len(s))
-          vals=[]
-          for pat in [
-              r'https?://[^"\x27]+',
-              r'["\x27](/[^"\x27]*(?:api|ajax|chapter|read|content|catalog)[^"\x27]*)["\x27]',
-              r'["\x27]([^"\x27]*(?:chapterInfo|chapterContent|bookInfo|catalog|chapterList)[^"\x27]*)["\x27]',
-          ]:
-              for m in re.finditer(pat,s,re.I):
-                  v=m.group(1) if m.groups() else m.group(0)
-                  if v not in vals:vals.append(v)
-          print("CANDIDATES")
-          for x in vals[:400]:print(x)
-          for needle in ["chapterContent","chapterInfo","chapterId","bookId","ajax","api","read","content"]:
-              print("\nNEEDLE",needle)
-              start=0
-              for _ in range(8):
-                  i=s.lower().find(needle.lower(),start)
-                  if i<0:break
-                  print(s[max(0,i-400):i+900])
-                  start=i+len(needle)
-          PY
-
-      - name: Probe mobile book page
-        run: |
-          set -euo pipefail
-          curl --compressed --fail --location --retry 3 \
             --user-agent "Mozilla/5.0 (Linux; Android 14)" \
-            "https://m.readnovel.com/bqx/qbdykg" -o out/mobile.html
-          echo "mobile=$(wc -c < out/mobile.html)"
+            "https://yuxseocdn.yuewen.com/pro/readnovel_m/_prelease/hongxium/modern-js/bqx/index-c1d8654fc0.js" \
+            -o out/mobile-bqx.js
+          echo "js=$(wc -c < out/mobile-bqx.js)"
+
+      - name: Inspect routes
+        run: |
           python - <<'PY'
           from pathlib import Path
           import re
-          s=Path("out/mobile.html").read_text(encoding="utf-8",errors="replace")
-          for pat in [r'https?://[^"\x27 <]+', r'(?:src|href)=["\x27]([^"\x27]+)["\x27]']:
-              vals=[]
-              for m in re.finditer(pat,s,re.I):
-                  v=m.group(1) if m.groups() else m.group(0)
-                  if any(k in v.lower() for k in ("js","chapter","read","api")) and v not in vals:
-                      vals.append(v)
-              for v in vals[:150]:print(v)
+          s=Path("out/mobile-bqx.js").read_text(encoding="utf-8",errors="replace")
+          print("chars",len(s))
+          vals=[]
+          pats=[
+            r'https?://[^"\x27]+',
+            r'["\x27](/[^"\x27]{0,200}(?:api|ajax|chapter|read|content|catalog|book)[^"\x27]{0,200})["\x27]',
+          ]
+          for pat in pats:
+            for m in re.finditer(pat,s,re.I):
+              v=m.group(1) if m.groups() else m.group(0)
+              if v not in vals:vals.append(v)
+          print("CANDIDATES")
+          for v in vals[:500]:print(v)
+          for needle in ["chapter","content","ajax","api","bookId","chapterId","m.qidian","getJSON","fetch(","axios","request"]:
+            print("\n###",needle)
+            pos=[m.start() for m in re.finditer(re.escape(needle),s,re.I)]
+            print("count",len(pos))
+            for i in pos[:12]:
+              print(s[max(0,i-500):i+1100])
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: witch-readnovel-api-probe
+          name: witch-readnovel-mobile-api
           path: out/
           retention-days: 1
