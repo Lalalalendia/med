@@ -1,0 +1,3978 @@
+[
+  {
+    "author_number": 1,
+    "ordinal_in_jiangchen_corpus": 1,
+    "heading": "第1章 系统脑袋怎么尖尖的",
+    "chars": 1632,
+    "sha256": "79d7237980692ff179d2d9d7094f56db9d3ceee4878c537cb562b84b79ec2a2a",
+    "path": "sources/witch-75248/chapters/001.txt"
+  },
+  {
+    "author_number": 2,
+    "ordinal_in_jiangchen_corpus": 2,
+    "heading": "第2章 事已至此，先吃饭吧",
+    "chars": 1594,
+    "sha256": "1eebf8365f60e025e6465a4cdc7acc0f9a4af55133bd804b553e4401aa2da0bf",
+    "path": "sources/witch-75248/chapters/002.txt"
+  },
+  {
+    "author_number": 3,
+    "ordinal_in_jiangchen_corpus": 3,
+    "heading": "第3章 这下没的选了",
+    "chars": 1600,
+    "sha256": "444bb41415fb189a968de8625e25c6b754bff8b56cb80cd13576449232a6bd40",
+    "path": "sources/witch-75248/chapters/003.txt"
+  },
+  {
+    "author_number": 4,
+    "ordinal_in_jiangchen_corpus": 4,
+    "heading": "第4章 罗兰的妙妙装备",
+    "chars": 1564,
+    "sha256": "70e5fbe9fbbc05be50be98fa596c04d8387a0a7e013fd62445a3412ed8681643",
+    "path": "sources/witch-75248/chapters/004.txt"
+  },
+  {
+    "author_number": 5,
+    "ordinal_in_jiangchen_corpus": 5,
+    "heading": "第5章 满满的科技与狠活",
+    "chars": 1613,
+    "sha256": "eb39837679190b26909f44403243f3206136a4df4cbd44962cb19b9e929bae42",
+    "path": "sources/witch-75248/chapters/005.txt"
+  },
+  {
+    "author_number": 6,
+    "ordinal_in_jiangchen_corpus": 6,
+    "heading": "第6章 魔法使永不跑路",
+    "chars": 1563,
+    "sha256": "7de9257ba9698dda0355c5332e6989b9512aa09a3c2ed459c375a96ce8ba2542",
+    "path": "sources/witch-75248/chapters/006.txt"
+  },
+  {
+    "author_number": 7,
+    "ordinal_in_jiangchen_corpus": 7,
+    "heading": "第7章 真理十字天秤",
+    "chars": 1582,
+    "sha256": "275925bf2d336ce8db4599ff2fd9c5f0c1984a87bb97084a74102ca8111720ef",
+    "path": "sources/witch-75248/chapters/007.txt"
+  },
+  {
+    "author_number": 8,
+    "ordinal_in_jiangchen_corpus": 8,
+    "heading": "第8章 夜魇",
+    "chars": 1587,
+    "sha256": "2e8bbab3261e79aa1cd4af94c5b726439f0fba69631b7acd063a96b4404a129c",
+    "path": "sources/witch-75248/chapters/008.txt"
+  },
+  {
+    "author_number": 9,
+    "ordinal_in_jiangchen_corpus": 9,
+    "heading": "第9章 旧日的阴霾如影随形",
+    "chars": 1580,
+    "sha256": "a8868024b5bf3f81cfeaa1d1c1c0e41eb4b1bf8437d53b9a34e74a0884393cf9",
+    "path": "sources/witch-75248/chapters/009.txt"
+  },
+  {
+    "author_number": 10,
+    "ordinal_in_jiangchen_corpus": 10,
+    "heading": "第10章 上校先生请你去军部喝茶",
+    "chars": 1567,
+    "sha256": "8caba93852d4d103f3d230ddf8fcb426f000819ba49a60e93bd0bbe0e62064fd",
+    "path": "sources/witch-75248/chapters/010.txt"
+  },
+  {
+    "author_number": 11,
+    "ordinal_in_jiangchen_corpus": 11,
+    "heading": "第11章 潜藏其下的暗流",
+    "chars": 1592,
+    "sha256": "e89f5d85081c3f62282fe2fae1c044e686ddbeff9dc9ad7af8232e6aa4b246be",
+    "path": "sources/witch-75248/chapters/011.txt"
+  },
+  {
+    "author_number": 12,
+    "ordinal_in_jiangchen_corpus": 12,
+    "heading": "第12章 难道他真的是个天才？",
+    "chars": 1550,
+    "sha256": "7833de1a40a8dad4c6646d5c96294c854945953cbf5319f6f7bf631ad75cfb9f",
+    "path": "sources/witch-75248/chapters/012.txt"
+  },
+  {
+    "author_number": 13,
+    "ordinal_in_jiangchen_corpus": 13,
+    "heading": "第13章 对不起长官，刚刚没认出你来",
+    "chars": 1569,
+    "sha256": "5371d971ca59f8ac4057f49d4a4d14d6e91d5cc7afdd0b1dca0d3e8c776a7179",
+    "path": "sources/witch-75248/chapters/013.txt"
+  },
+  {
+    "author_number": 14,
+    "ordinal_in_jiangchen_corpus": 14,
+    "heading": "第14章 事已至此，先吃饭吧",
+    "chars": 1577,
+    "sha256": "83bb0ded3b8f07ffb4a31a4e9f470f8a943d49b4b265c89f2db0baa1dddb5fac",
+    "path": "sources/witch-75248/chapters/014.txt"
+  },
+  {
+    "author_number": 15,
+    "ordinal_in_jiangchen_corpus": 15,
+    "heading": "第15章 下水道战神！",
+    "chars": 1612,
+    "sha256": "53eea711910ef207230d724b4afa18bcfbe54424479baa8e7030b31c5bf23cb5",
+    "path": "sources/witch-75248/chapters/015.txt"
+  },
+  {
+    "author_number": 16,
+    "ordinal_in_jiangchen_corpus": 16,
+    "heading": "第16章 麻烦的女人",
+    "chars": 1565,
+    "sha256": "9f3d60bebae404487a9e20a6acc6d651644b276d9f261ac861db0e8afc0b89ff",
+    "path": "sources/witch-75248/chapters/016.txt"
+  },
+  {
+    "author_number": 17,
+    "ordinal_in_jiangchen_corpus": 17,
+    "heading": "第17章 神瘟与吊坠",
+    "chars": 1581,
+    "sha256": "7ac939026fc01f8e00d68d4f9206e2aeecb6663175ad4d96ef8a39e8aa90bcdb",
+    "path": "sources/witch-75248/chapters/017.txt"
+  },
+  {
+    "author_number": 18,
+    "ordinal_in_jiangchen_corpus": 18,
+    "heading": "第18章 秘钥、巨剑、陷阱",
+    "chars": 1598,
+    "sha256": "e5698af631cad67889a616902547c22e3fa2509521161009f877d899058d3154",
+    "path": "sources/witch-75248/chapters/018.txt"
+  },
+  {
+    "author_number": 19,
+    "ordinal_in_jiangchen_corpus": 19,
+    "heading": "第19章 飞龙骑脸怎么输？",
+    "chars": 1583,
+    "sha256": "2d45c8852c240c2d902b52a7ffea001e858feac7f49d507ca9983900b802e340",
+    "path": "sources/witch-75248/chapters/019.txt"
+  },
+  {
+    "author_number": 20,
+    "ordinal_in_jiangchen_corpus": 20,
+    "heading": "第20章 我最喜欢对自以为是的人说不",
+    "chars": 1589,
+    "sha256": "ae82ceecc8665ac6758f8ca5567b94bff2bfc045705c4fc4f7aabb6857a3586d",
+    "path": "sources/witch-75248/chapters/020.txt"
+  },
+  {
+    "author_number": 21,
+    "ordinal_in_jiangchen_corpus": 21,
+    "heading": "第21章 只要卡莉娅发起进攻，一切都会好起来的",
+    "chars": 1616,
+    "sha256": "331ce4927a021115214173133701dd507aa0ca8ddffb1f356c87f9bd73816fb3",
+    "path": "sources/witch-75248/chapters/021.txt"
+  },
+  {
+    "author_number": 22,
+    "ordinal_in_jiangchen_corpus": 22,
+    "heading": "第22章 别向后看",
+    "chars": 1558,
+    "sha256": "d09f14e7be5b022cf6a72d15e636e8361995008995433c08851174b0933e6c4d",
+    "path": "sources/witch-75248/chapters/022.txt"
+  },
+  {
+    "author_number": 23,
+    "ordinal_in_jiangchen_corpus": 23,
+    "heading": "第23章 希望人没事",
+    "chars": 1592,
+    "sha256": "fab3b2f3d52c99dd282e8edd2d019b8c21666b26a24b015705cb29fa2215a7bd",
+    "path": "sources/witch-75248/chapters/023.txt"
+  },
+  {
+    "author_number": 24,
+    "ordinal_in_jiangchen_corpus": 24,
+    "heading": "第24章 十分甚至九分的不对",
+    "chars": 1585,
+    "sha256": "f8c289d131b57e0120d149154e746baf8bc3779fd32ae96f0da7b6f9f52cf6a2",
+    "path": "sources/witch-75248/chapters/024.txt"
+  },
+  {
+    "author_number": 25,
+    "ordinal_in_jiangchen_corpus": 25,
+    "heading": "第25章 十分的好吃，十分的美味",
+    "chars": 1583,
+    "sha256": "51b682887de724a871c411cc701cace358c3ed0bb664d57cecfd1dafaec21c15",
+    "path": "sources/witch-75248/chapters/025.txt"
+  },
+  {
+    "author_number": 26,
+    "ordinal_in_jiangchen_corpus": 26,
+    "heading": "第26章 吃人嘴短，拿人手软",
+    "chars": 1594,
+    "sha256": "e9f3eac3906feeaeaa9c01a02bea5c82922fdd439e73429a46c0e476a082516b",
+    "path": "sources/witch-75248/chapters/026.txt"
+  },
+  {
+    "author_number": 27,
+    "ordinal_in_jiangchen_corpus": 27,
+    "heading": "第27章 曲线劝恶从善成功",
+    "chars": 1554,
+    "sha256": "9da7a613cb138089112fc398bd1b41814683ba3922427471f75af4c7950e1ab5",
+    "path": "sources/witch-75248/chapters/027.txt"
+  },
+  {
+    "author_number": 28,
+    "ordinal_in_jiangchen_corpus": 28,
+    "heading": "第28章 神人魔女",
+    "chars": 1578,
+    "sha256": "d4d29c0b72f6506851ffcc9467291e4c5116f5810b9d4d41541eb5f4d1eba78b",
+    "path": "sources/witch-75248/chapters/028.txt"
+  },
+  {
+    "author_number": 29,
+    "ordinal_in_jiangchen_corpus": 29,
+    "heading": "第29章 今日的胜负，卡莉娅败北",
+    "chars": 1568,
+    "sha256": "8f6b7d1cef858a64945353ee49bebdad890bb24fbcd5438435e04c5952675ac5",
+    "path": "sources/witch-75248/chapters/029.txt"
+  },
+  {
+    "author_number": 30,
+    "ordinal_in_jiangchen_corpus": 30,
+    "heading": "第30章 也稍微陪我一下吧",
+    "chars": 1587,
+    "sha256": "e7b17f64bfa2226952b500a2d340129c916fc046ad8b52865f4377e5e435ca21",
+    "path": "sources/witch-75248/chapters/030.txt"
+  },
+  {
+    "author_number": 31,
+    "ordinal_in_jiangchen_corpus": 31,
+    "heading": "第31章 来碰拳吧",
+    "chars": 1554,
+    "sha256": "15f34094c92acc5c76a83e451fe08881d084743c977fc62aaafd56208d999159",
+    "path": "sources/witch-75248/chapters/031.txt"
+  },
+  {
+    "author_number": 32,
+    "ordinal_in_jiangchen_corpus": 32,
+    "heading": "第32章 魔女小姐，你也不想破坏我们之间的友谊吧？",
+    "chars": 1587,
+    "sha256": "47fd03f6765c1bbafe2cdbdd3dc54fb1cce66ba8fc8abd131d775ff4263ec85c",
+    "path": "sources/witch-75248/chapters/032.txt"
+  },
+  {
+    "author_number": 33,
+    "ordinal_in_jiangchen_corpus": 33,
+    "heading": "第33章 更深的漩涡",
+    "chars": 1562,
+    "sha256": "60f3c490dc601664ae65b048fc03bc1c356329bfe97bf96bebdca04dbec5ebc5",
+    "path": "sources/witch-75248/chapters/033.txt"
+  },
+  {
+    "author_number": 34,
+    "ordinal_in_jiangchen_corpus": 34,
+    "heading": "第34章 走哪哪炸",
+    "chars": 1604,
+    "sha256": "74a1eb4df7079d0a21a637927ecc92e3af99702f961d1e0b63f8b9dd72be88af",
+    "path": "sources/witch-75248/chapters/034.txt"
+  },
+  {
+    "author_number": 35,
+    "ordinal_in_jiangchen_corpus": 35,
+    "heading": "第35章 答对了没奖励，答错了有惩罚",
+    "chars": 1603,
+    "sha256": "b7d7bb6db94b06d23888280a8f29c87e593858dc5ff583b77b0c273d9847cd45",
+    "path": "sources/witch-75248/chapters/035.txt"
+  },
+  {
+    "author_number": 36,
+    "ordinal_in_jiangchen_corpus": 36,
+    "heading": "第36章 会有英雄踩着七彩祥云来给我送饭吃",
+    "chars": 1592,
+    "sha256": "a1161edd9ead61712849b5a4b22b5fb2db23614840dd26097470dbbcc15e0073",
+    "path": "sources/witch-75248/chapters/036.txt"
+  },
+  {
+    "author_number": 37,
+    "ordinal_in_jiangchen_corpus": 37,
+    "heading": "第37章 嗨，想我了吗？",
+    "chars": 1564,
+    "sha256": "42ec3149332f85f856c31b90e125c687ca7abe93576124f928a66fe74d4830f9",
+    "path": "sources/witch-75248/chapters/037.txt"
+  },
+  {
+    "author_number": 38,
+    "ordinal_in_jiangchen_corpus": 38,
+    "heading": "第38章 你的笑是你的保护色",
+    "chars": 1607,
+    "sha256": "529ffe20a20c023039f9c0a23866ce235d64bb9c62839b071b78a0b80e211f9d",
+    "path": "sources/witch-75248/chapters/038.txt"
+  },
+  {
+    "author_number": 39,
+    "ordinal_in_jiangchen_corpus": 39,
+    "heading": "第39章 杀死魔法使的三板斧",
+    "chars": 1595,
+    "sha256": "0c94a7a765cdca987ff680254c79a1c64ac4289f74010ce0a4fbccc1eb45797c",
+    "path": "sources/witch-75248/chapters/039.txt"
+  },
+  {
+    "author_number": 40,
+    "ordinal_in_jiangchen_corpus": 40,
+    "heading": "第40章 这种事情不要啊！",
+    "chars": 1565,
+    "sha256": "ff1b6b731b12018e5daf2c23e8dcc412c60d373268cb69c791492b23f25fb64f",
+    "path": "sources/witch-75248/chapters/040.txt"
+  },
+  {
+    "author_number": 41,
+    "ordinal_in_jiangchen_corpus": 41,
+    "heading": "第41章 卡莉娅：敌人！是敌人啊！",
+    "chars": 1618,
+    "sha256": "5b785e093064d22355825f347a1eb6f599d7975da24d9fbcc2a9a7908b05ab09",
+    "path": "sources/witch-75248/chapters/041.txt"
+  },
+  {
+    "author_number": 42,
+    "ordinal_in_jiangchen_corpus": 42,
+    "heading": "第42章 坏了，你不会是在托孤吧？",
+    "chars": 1586,
+    "sha256": "a9b7fb59819c583541f29785f6da5c55dfffda71aa307393f619b00c7c91f2ef",
+    "path": "sources/witch-75248/chapters/042.txt"
+  },
+  {
+    "author_number": 43,
+    "ordinal_in_jiangchen_corpus": 43,
+    "heading": "第43章 默念汝所求之物",
+    "chars": 1599,
+    "sha256": "17152c7e3635c686c931596920f35b7b0325f087a5c4aefd9c058889c5080c7c",
+    "path": "sources/witch-75248/chapters/043.txt"
+  },
+  {
+    "author_number": 44,
+    "ordinal_in_jiangchen_corpus": 44,
+    "heading": "第44章 只是监护人罢了",
+    "chars": 1582,
+    "sha256": "ca89365ad626db167c4be7debec110267831c2e8716d4d4f0160d6c81a2cdc95",
+    "path": "sources/witch-75248/chapters/044.txt"
+  },
+  {
+    "author_number": 45,
+    "ordinal_in_jiangchen_corpus": 45,
+    "heading": "第45章 什么意志坚定，只是吃撑了吃不动而已。",
+    "chars": 1600,
+    "sha256": "4037b6d41d0aed4ab6ea9b165afcdf5f478e0264265d3fa811bbd028af46aece",
+    "path": "sources/witch-75248/chapters/045.txt"
+  },
+  {
+    "author_number": 46,
+    "ordinal_in_jiangchen_corpus": 46,
+    "heading": "第46章 失眠",
+    "chars": 1586,
+    "sha256": "b781b1eea5824ed16b160ee56e602f7c947efa56865b6a0b7f064ff90e048752",
+    "path": "sources/witch-75248/chapters/046.txt"
+  },
+  {
+    "author_number": 47,
+    "ordinal_in_jiangchen_corpus": 47,
+    "heading": "第47章 你有喜欢死老鼠的爱好吗？",
+    "chars": 1572,
+    "sha256": "ebf71d0f20f9e98aa3b87f36b1b396e7088f3951cccca691b230f4bb82d09cd2",
+    "path": "sources/witch-75248/chapters/047.txt"
+  },
+  {
+    "author_number": 48,
+    "ordinal_in_jiangchen_corpus": 48,
+    "heading": "第48章 黄金误入职业赛",
+    "chars": 1591,
+    "sha256": "5d28502ce2685985683d6a01d6f796a51aa2b899720bf8be8c0c072c80fd5cfa",
+    "path": "sources/witch-75248/chapters/048.txt"
+  },
+  {
+    "author_number": 49,
+    "ordinal_in_jiangchen_corpus": 49,
+    "heading": "第49章 卡莉娅是躺赢狗，她的评分是，3.0",
+    "chars": 1602,
+    "sha256": "cd776add00fd8e4e15cfc4d5c11593013958398caed3212a99aa8b7f8ff4cb91",
+    "path": "sources/witch-75248/chapters/049.txt"
+  },
+  {
+    "author_number": 50,
+    "ordinal_in_jiangchen_corpus": 50,
+    "heading": "第50章 老师，你什么只是看着",
+    "chars": 1560,
+    "sha256": "b12af9f4df8866505fed27a194146f4222a872294c80751a5a4689d2d57b413c",
+    "path": "sources/witch-75248/chapters/050.txt"
+  },
+  {
+    "author_number": 51,
+    "ordinal_in_jiangchen_corpus": 51,
+    "heading": "第51章 有些事是不能忘的",
+    "chars": 1602,
+    "sha256": "cbbb8313ee3232aceae686c8a3ba4704fb04f7eee1ce358481983127d44b3640",
+    "path": "sources/witch-75248/chapters/051.txt"
+  },
+  {
+    "author_number": 52,
+    "ordinal_in_jiangchen_corpus": 52,
+    "heading": "第52章 天生邪恶的魔女，老夫这就……",
+    "chars": 1594,
+    "sha256": "5230b182dcd0a01c29b5203a661d9fc43b94d008b3d157cee49f08ee740eec23",
+    "path": "sources/witch-75248/chapters/052.txt"
+  },
+  {
+    "author_number": 53,
+    "ordinal_in_jiangchen_corpus": 53,
+    "heading": "第53章 卡莉娅：总感觉有什么不妙的事情发生了",
+    "chars": 1635,
+    "sha256": "f633e4ddc0f6ea9abd4f39086bbab25d38048f8ecd60a082bb001b6c685f98a3",
+    "path": "sources/witch-75248/chapters/053.txt"
+  },
+  {
+    "author_number": 54,
+    "ordinal_in_jiangchen_corpus": 54,
+    "heading": "第54章 死亡并非结束",
+    "chars": 1584,
+    "sha256": "8e4ee997141f906ec09cd3b60ef94ab4311e2de6c9db718a9f7dbb9ea3c44cd3",
+    "path": "sources/witch-75248/chapters/054.txt"
+  },
+  {
+    "author_number": 55,
+    "ordinal_in_jiangchen_corpus": 55,
+    "heading": "第55章 藏在暗中的敌人才最可怕",
+    "chars": 1595,
+    "sha256": "ba801d0dd2bbfa59d2a940121959414b6bc7adfc87bf4943083638c23f57c427",
+    "path": "sources/witch-75248/chapters/055.txt"
+  },
+  {
+    "author_number": 56,
+    "ordinal_in_jiangchen_corpus": 56,
+    "heading": "第56章 罗兰的惊世智慧",
+    "chars": 1554,
+    "sha256": "582856a2ac6b091f0705db73c600c565970d7f91ef4017ae2c8e369c0afe50fe",
+    "path": "sources/witch-75248/chapters/056.txt"
+  },
+  {
+    "author_number": 57,
+    "ordinal_in_jiangchen_corpus": 57,
+    "heading": "第57章 你身上有她的香水味",
+    "chars": 1618,
+    "sha256": "3559eaadfd0b4524617b18b7e4f58227012d0d9989dbd1e6b9119f7b8f4b6e16",
+    "path": "sources/witch-75248/chapters/057.txt"
+  },
+  {
+    "author_number": 58,
+    "ordinal_in_jiangchen_corpus": 58,
+    "heading": "第58章 公共场所吗，想来就来，想走就走！",
+    "chars": 1603,
+    "sha256": "e39b5e06ac3c10dda1d2960a7cb3422c30036a9863af16a72841d309e08fab62",
+    "path": "sources/witch-75248/chapters/058.txt"
+  },
+  {
+    "author_number": 59,
+    "ordinal_in_jiangchen_corpus": 59,
+    "heading": "第59章 我是不是从未来过这世上比较好",
+    "chars": 1603,
+    "sha256": "c541bdede9f0d9a01754762d322f5b78db7468b051b2bc8bbe530d6915cfed9b",
+    "path": "sources/witch-75248/chapters/059.txt"
+  },
+  {
+    "author_number": 60,
+    "ordinal_in_jiangchen_corpus": 60,
+    "heading": "第60章 芙拉姆：看不懂人类的操作",
+    "chars": 1573,
+    "sha256": "253372fb09e8e298f129433f2d5a2e7d50693646803a3e0297f64a507be6f62b",
+    "path": "sources/witch-75248/chapters/060.txt"
+  },
+  {
+    "author_number": 61,
+    "ordinal_in_jiangchen_corpus": 61,
+    "heading": "第61章 喜剧人勇者的留言",
+    "chars": 1608,
+    "sha256": "50a9b817a4b796a6a1539ee4cd946aee90c05ddbde7770f32bda908fbf5edb80",
+    "path": "sources/witch-75248/chapters/061.txt"
+  },
+  {
+    "author_number": 62,
+    "ordinal_in_jiangchen_corpus": 62,
+    "heading": "第62章 有了这东西，王都就高枕无忧了！",
+    "chars": 1590,
+    "sha256": "cbf1d61588590a3343a1e9120b3848883dd8555b825b6c2b2ecee1d0e80d617a",
+    "path": "sources/witch-75248/chapters/062.txt"
+  },
+  {
+    "author_number": 63,
+    "ordinal_in_jiangchen_corpus": 63,
+    "heading": "第63章 完全就是宠物啊",
+    "chars": 1578,
+    "sha256": "c18857edd79eab075f5083ddee256b7409ae3b4908c5291b0cdbb0dfb0dcb8a7",
+    "path": "sources/witch-75248/chapters/063.txt"
+  },
+  {
+    "author_number": 64,
+    "ordinal_in_jiangchen_corpus": 64,
+    "heading": "第64章 只是有人负重前行罢了",
+    "chars": 1573,
+    "sha256": "ce6e823afb85e57c3d97388807c3965b21bcf6081c0e36f89a5955596872ebaf",
+    "path": "sources/witch-75248/chapters/064.txt"
+  },
+  {
+    "author_number": 65,
+    "ordinal_in_jiangchen_corpus": 65,
+    "heading": "第65章 来自导师的沉重铁拳",
+    "chars": 1610,
+    "sha256": "ed0bbcf28b74ec853c32b5fa7872ffc2c15d2412fd9e35ec8fd82dfca276f0c5",
+    "path": "sources/witch-75248/chapters/065.txt"
+  },
+  {
+    "author_number": 66,
+    "ordinal_in_jiangchen_corpus": 66,
+    "heading": "第66章 哦豁，这下东西真找不回来了",
+    "chars": 1597,
+    "sha256": "db51faee25d7509ddb390781174ba7754097506782b9700132b11554d2193135",
+    "path": "sources/witch-75248/chapters/066.txt"
+  },
+  {
+    "author_number": 67,
+    "ordinal_in_jiangchen_corpus": 67,
+    "heading": "第67章 以后我就是你的债主了",
+    "chars": 1598,
+    "sha256": "6e1953890ea7619f7a072b7140cbb1d8a8e7787ef83a7f45327f13eac77c3db0",
+    "path": "sources/witch-75248/chapters/067.txt"
+  },
+  {
+    "author_number": 68,
+    "ordinal_in_jiangchen_corpus": 68,
+    "heading": "第68章 芙拉姆：你小子针对性太强了",
+    "chars": 1591,
+    "sha256": "b24590b09d56e0c0b405258b3b7b696bb5e2b7a9ccd78745a11de9d811372480",
+    "path": "sources/witch-75248/chapters/068.txt"
+  },
+  {
+    "author_number": 69,
+    "ordinal_in_jiangchen_corpus": 69,
+    "heading": "第69章 纳尼，情报是假的？！",
+    "chars": 1573,
+    "sha256": "c91e94bb82fe39ae56c9152b6fc506479181efa9d5063d2197c132563e3368b4",
+    "path": "sources/witch-75248/chapters/069.txt"
+  },
+  {
+    "author_number": 70,
+    "ordinal_in_jiangchen_corpus": 71,
+    "heading": "第70章 爆破鬼才大师兄",
+    "chars": 1557,
+    "sha256": "29074991162b203dbdaf1066804c6db46c5fe056bec162103dc595d17ddeb9a1",
+    "path": "sources/witch-75248/chapters/070.txt"
+  },
+  {
+    "author_number": 71,
+    "ordinal_in_jiangchen_corpus": 72,
+    "heading": "第71章 加点料",
+    "chars": 1592,
+    "sha256": "40ff4476c8302446ae7e6cd35ca5a3c316702b23f8e12edd885970e260741b21",
+    "path": "sources/witch-75248/chapters/071.txt"
+  },
+  {
+    "author_number": 72,
+    "ordinal_in_jiangchen_corpus": 73,
+    "heading": "第72章 老师难道你是奸细吗？",
+    "chars": 1594,
+    "sha256": "94ddd3826657ede50131c632b6469341afabfc3ddd6d57ecf0fbf51e5bd525c4",
+    "path": "sources/witch-75248/chapters/072.txt"
+  },
+  {
+    "author_number": 73,
+    "ordinal_in_jiangchen_corpus": 74,
+    "heading": "第73章 将阴间进行到底",
+    "chars": 1582,
+    "sha256": "9f4d1b2ae8eceb3c5bfbe6485a81570c2b9825068376a98a22f605d849605785",
+    "path": "sources/witch-75248/chapters/073.txt"
+  },
+  {
+    "author_number": 74,
+    "ordinal_in_jiangchen_corpus": 75,
+    "heading": "第74章 符石与号角",
+    "chars": 1587,
+    "sha256": "a52efe3163f8516161c84a039e2d204f72609f65a0b2182a8ee120fecce687c7",
+    "path": "sources/witch-75248/chapters/074.txt"
+  },
+  {
+    "author_number": 75,
+    "ordinal_in_jiangchen_corpus": 76,
+    "heading": "第75章 法师近战是传统",
+    "chars": 1586,
+    "sha256": "fcd4c88b12afd7f29763bdb581dabd6eb274dc471b105aed6f53a7d1c49eb3db",
+    "path": "sources/witch-75248/chapters/075.txt"
+  },
+  {
+    "author_number": 76,
+    "ordinal_in_jiangchen_corpus": 77,
+    "heading": "第76章 转角偶遇神秘保镖，拼尽全力无法战胜",
+    "chars": 1593,
+    "sha256": "dc0bccb16aea8b9a6c7e244130849da246d6deeb41b4b5fc088091db2c4a5254",
+    "path": "sources/witch-75248/chapters/076.txt"
+  },
+  {
+    "author_number": 77,
+    "ordinal_in_jiangchen_corpus": 78,
+    "heading": "第77章 难道你也是？",
+    "chars": 1582,
+    "sha256": "bbc9fd81c77e8cfb455858cdad52a9f178165f7e271d59446499461f34f748c9",
+    "path": "sources/witch-75248/chapters/077.txt"
+  },
+  {
+    "author_number": 78,
+    "ordinal_in_jiangchen_corpus": 79,
+    "heading": "第78章 有缺点，但缺点不多",
+    "chars": 1606,
+    "sha256": "0fc830ec3099e36c73bddee2267f78af40d28ea080d0796b86691d7cbba6e2dc",
+    "path": "sources/witch-75248/chapters/078.txt"
+  },
+  {
+    "author_number": 79,
+    "ordinal_in_jiangchen_corpus": 80,
+    "heading": "第79章 卧槽，这魔王怎么这么坏啊",
+    "chars": 1592,
+    "sha256": "aee52c0118c7e3cd8c3cefc8a04c37199285c04c63199ef813f90e34421f42d8",
+    "path": "sources/witch-75248/chapters/079.txt"
+  },
+  {
+    "author_number": 80,
+    "ordinal_in_jiangchen_corpus": 81,
+    "heading": "第80章 卡莉娅：哪来这么多谜语人？",
+    "chars": 1616,
+    "sha256": "17bb67b845f2766eb3343e5c0ff1cb67b7a54645dbaaa0a6a46cbaf3787e0e1b",
+    "path": "sources/witch-75248/chapters/080.txt"
+  },
+  {
+    "author_number": 81,
+    "ordinal_in_jiangchen_corpus": 82,
+    "heading": "第81章 除虫射日",
+    "chars": 1564,
+    "sha256": "b2804e0a0fe25701d2d7a3478abbc855a1a5e3cb69cdab6b60a6909e654140f9",
+    "path": "sources/witch-75248/chapters/081.txt"
+  },
+  {
+    "author_number": 82,
+    "ordinal_in_jiangchen_corpus": 83,
+    "heading": "第82章 有时候觉得自己挺失败的",
+    "chars": 1566,
+    "sha256": "3eb58006d50a5da0e0aa7ecfd8d95a31a6b98ae0d9fea04a1ea67a435c389363",
+    "path": "sources/witch-75248/chapters/082.txt"
+  },
+  {
+    "author_number": 83,
+    "ordinal_in_jiangchen_corpus": 84,
+    "heading": "第83章 目标已锁定",
+    "chars": 1589,
+    "sha256": "a46c9161efa21bf87bcc17bf8a8e2f7b59b4d07a216c97eb55b7cdd2d40cf99e",
+    "path": "sources/witch-75248/chapters/083.txt"
+  },
+  {
+    "author_number": 84,
+    "ordinal_in_jiangchen_corpus": 85,
+    "heading": "第84章 笑啊，你怎么不笑了，是不喜欢吗",
+    "chars": 1596,
+    "sha256": "d244928663c4b488cc5cfcd3aa404580defa0718622a37cacd594c58061a4d89",
+    "path": "sources/witch-75248/chapters/084.txt"
+  },
+  {
+    "author_number": 85,
+    "ordinal_in_jiangchen_corpus": 86,
+    "heading": "第85章 还真有三阶段啊",
+    "chars": 1584,
+    "sha256": "76954a0dc38dc5130146f3012639eeaca56e0b6bc2bb031713e6ee964675fb58",
+    "path": "sources/witch-75248/chapters/085.txt"
+  },
+  {
+    "author_number": 86,
+    "ordinal_in_jiangchen_corpus": 87,
+    "heading": "第86章 任务可能完成了，但任务完成不太可能",
+    "chars": 1600,
+    "sha256": "f2bea8d583cf6e6dec74e81ffe96878a5e5b9c5329728ad3edae5b63edb4d610",
+    "path": "sources/witch-75248/chapters/086.txt"
+  },
+  {
+    "author_number": 87,
+    "ordinal_in_jiangchen_corpus": 88,
+    "heading": "第87章 我已经在你家住了好几天了",
+    "chars": 1603,
+    "sha256": "e2e0d124239923aa0952b81cd5167d2fdf529f0c1ff477a7373c9560ae816b87",
+    "path": "sources/witch-75248/chapters/087.txt"
+  },
+  {
+    "author_number": 88,
+    "ordinal_in_jiangchen_corpus": 89,
+    "heading": "第88章 免费劳动力get",
+    "chars": 1592,
+    "sha256": "804e485b0ef3281b1dd1f978c4504256d3a72761b899755ebf238025eba8696d",
+    "path": "sources/witch-75248/chapters/088.txt"
+  },
+  {
+    "author_number": 89,
+    "ordinal_in_jiangchen_corpus": 90,
+    "heading": "第89章 卡莉娅：好防守！",
+    "chars": 1562,
+    "sha256": "02693b77d8fb0ab8e8ba43ee13b66e7647267d13a277fbd84de7b88371c18d21",
+    "path": "sources/witch-75248/chapters/089.txt"
+  },
+  {
+    "author_number": 90,
+    "ordinal_in_jiangchen_corpus": 91,
+    "heading": "第90章 订婚的事情你要不考虑一下",
+    "chars": 1572,
+    "sha256": "888e3d0f0aa22718851ead45444e8fca5e23226f4508ee463de1b77e0af02383",
+    "path": "sources/witch-75248/chapters/090.txt"
+  },
+  {
+    "author_number": 91,
+    "ordinal_in_jiangchen_corpus": 92,
+    "heading": "第91章 萨拉赫三世：都男人，我懂的",
+    "chars": 1603,
+    "sha256": "4bfe5d989ff5e12b45032aa471c6963ed8f815e927288340526d69e799cf5526",
+    "path": "sources/witch-75248/chapters/091.txt"
+  },
+  {
+    "author_number": 92,
+    "ordinal_in_jiangchen_corpus": 93,
+    "heading": "第92章 勇者表示逃过一劫",
+    "chars": 1567,
+    "sha256": "c2e42d7f49714e309d8a8d804f3ce7b43be558c82ec8bf7072c830776ee1519f",
+    "path": "sources/witch-75248/chapters/092.txt"
+  },
+  {
+    "author_number": 93,
+    "ordinal_in_jiangchen_corpus": 94,
+    "heading": "第93章 卡莉娅不吃东西了，事情大条了",
+    "chars": 1586,
+    "sha256": "37bc9ba349e2235f0791ca133fda4c86b4bd9a325c62903c7fce13d337aff520",
+    "path": "sources/witch-75248/chapters/093.txt"
+  },
+  {
+    "author_number": 94,
+    "ordinal_in_jiangchen_corpus": 95,
+    "heading": "第94章 双人行？三人游！",
+    "chars": 1599,
+    "sha256": "901dc062985541104f67b0d1172c782d632d824ade8f73191ebb600ba939beb7",
+    "path": "sources/witch-75248/chapters/094.txt"
+  },
+  {
+    "author_number": 95,
+    "ordinal_in_jiangchen_corpus": 96,
+    "heading": "第95章 强者处处是惊喜",
+    "chars": 1613,
+    "sha256": "67e42dd42c6202ac3514794756339389537f47489bf5fc3976e2b95e8bea5516",
+    "path": "sources/witch-75248/chapters/095.txt"
+  },
+  {
+    "author_number": 96,
+    "ordinal_in_jiangchen_corpus": 97,
+    "heading": "第96章 卡莉娅：我家还蛮大的",
+    "chars": 1619,
+    "sha256": "a8c36ea6db25efa846bf9b2ef6f5062c7c7ed980724d9441701d13bcdcece9fb",
+    "path": "sources/witch-75248/chapters/096.txt"
+  },
+  {
+    "author_number": 97,
+    "ordinal_in_jiangchen_corpus": 98,
+    "heading": "第97章 男朋友结婚了，新娘不是我",
+    "chars": 1559,
+    "sha256": "318dac52cb1217759347bae7a809f570aaa75c6ef1484c1b28f9360ab0b8d246",
+    "path": "sources/witch-75248/chapters/097.txt"
+  },
+  {
+    "author_number": 98,
+    "ordinal_in_jiangchen_corpus": 99,
+    "heading": "第98章 亚龙之间亦有差距",
+    "chars": 1550,
+    "sha256": "9a4bcd3d77e7334b0406c67ce1a40eb435c9dfec617f47dd22d270001f674e91",
+    "path": "sources/witch-75248/chapters/098.txt"
+  },
+  {
+    "author_number": 99,
+    "ordinal_in_jiangchen_corpus": 100,
+    "heading": "第99章 不是很懂你们这些魔女的癖好",
+    "chars": 1552,
+    "sha256": "0220f0c33d72df55dd082efcbc5d7f1c69f06bcf888e21c370688b99ee97e805",
+    "path": "sources/witch-75248/chapters/099.txt"
+  },
+  {
+    "author_number": 100,
+    "ordinal_in_jiangchen_corpus": 101,
+    "heading": "第100章 猫龙也可以是龙",
+    "chars": 1590,
+    "sha256": "94c6a44eda0dae77505608f82bc8a56be86811cb0b5dd7d75eda421f60698b44",
+    "path": "sources/witch-75248/chapters/100.txt"
+  },
+  {
+    "author_number": 101,
+    "ordinal_in_jiangchen_corpus": 102,
+    "heading": "第101章 经典暴风雪山庄，什么时候开始死人？",
+    "chars": 1581,
+    "sha256": "b5043dcf237555ccf68e85cf77e9b42d732988592c931d4a3ba80ef237138ddf",
+    "path": "sources/witch-75248/chapters/101.txt"
+  },
+  {
+    "author_number": 102,
+    "ordinal_in_jiangchen_corpus": 103,
+    "heading": "第102章 傻猫：罗兰你这家伙也背叛人类了吗",
+    "chars": 1561,
+    "sha256": "59a6c50f74f9c3065588e1c125d2fc0879a3d5919599536a4cfd8d5becb2d3c7",
+    "path": "sources/witch-75248/chapters/102.txt"
+  },
+  {
+    "author_number": 103,
+    "ordinal_in_jiangchen_corpus": 104,
+    "heading": "第103章 卡莉娅的“新朋友”",
+    "chars": 1561,
+    "sha256": "1666c622d3d99716b1f1b2acf774d794c2d9f884ee8b36540a45f455dbce9ea7",
+    "path": "sources/witch-75248/chapters/103.txt"
+  },
+  {
+    "author_number": 104,
+    "ordinal_in_jiangchen_corpus": 105,
+    "heading": "第104章 扯虎皮真好使",
+    "chars": 1566,
+    "sha256": "82f342f81a8198c65194389f501625a6acc484d07d2699849ea733ba7c8e5f80",
+    "path": "sources/witch-75248/chapters/104.txt"
+  },
+  {
+    "author_number": 105,
+    "ordinal_in_jiangchen_corpus": 106,
+    "heading": "第105章 沉默行军",
+    "chars": 1579,
+    "sha256": "3498ff4ce6257dd4a6d5ca2dc97d857d7d7abc54143bc5e8c66fb72a4a306ee7",
+    "path": "sources/witch-75248/chapters/105.txt"
+  },
+  {
+    "author_number": 106,
+    "ordinal_in_jiangchen_corpus": 107,
+    "heading": "第106章 我要把你变成我的东西，嘿嘿嘿~~~",
+    "chars": 1597,
+    "sha256": "636bf8cf8219e986899bb11d1700b1b3550818b5e0bcfaa30b0bb25a9ef8ab28",
+    "path": "sources/witch-75248/chapters/106.txt"
+  },
+  {
+    "author_number": 107,
+    "ordinal_in_jiangchen_corpus": 108,
+    "heading": "第107章 卡莉娅的动物朋友们",
+    "chars": 1579,
+    "sha256": "864f66bc7d645c09d600de5f7fdff401ae78090e628dc2b61563230ee8f0d07a",
+    "path": "sources/witch-75248/chapters/107.txt"
+  },
+  {
+    "author_number": 108,
+    "ordinal_in_jiangchen_corpus": 109,
+    "heading": "第108章 论猪队友造成的危害能有多大",
+    "chars": 1593,
+    "sha256": "2c26fd50c2711b179f4944e603743a4c6ac15ee8fd315a30a3b48f675eea3c62",
+    "path": "sources/witch-75248/chapters/108.txt"
+  },
+  {
+    "author_number": 109,
+    "ordinal_in_jiangchen_corpus": 110,
+    "heading": "第109章 芙拉姆：毁灭吧，累了",
+    "chars": 1558,
+    "sha256": "958c1a9aee744cfdac86b933718c77e2129b6d68dfa64172966b18070e8c78a8",
+    "path": "sources/witch-75248/chapters/109.txt"
+  },
+  {
+    "author_number": 110,
+    "ordinal_in_jiangchen_corpus": 111,
+    "heading": "第110章 恐怖兽耳娘",
+    "chars": 1564,
+    "sha256": "f7ef285fd2854ffa11f34d5a10480f9e59afa07909cfa9c8e4170e01d26bb9f4",
+    "path": "sources/witch-75248/chapters/110.txt"
+  },
+  {
+    "author_number": 111,
+    "ordinal_in_jiangchen_corpus": 112,
+    "heading": "第111章 总督遇刺，封锁现场",
+    "chars": 1588,
+    "sha256": "25faf3eec8d2df53fd6f4273a2e96d1099a5652bd83469fd90631a3dc9780b57",
+    "path": "sources/witch-75248/chapters/111.txt"
+  },
+  {
+    "author_number": 112,
+    "ordinal_in_jiangchen_corpus": 113,
+    "heading": "第112章 这老女人肯定有读心术",
+    "chars": 1579,
+    "sha256": "08ddac87099d9807ad7fff3ddbfc128d11e451e03628b057f46d335862f0230c",
+    "path": "sources/witch-75248/chapters/112.txt"
+  },
+  {
+    "author_number": 113,
+    "ordinal_in_jiangchen_corpus": 114,
+    "heading": "第113章 傻孩子成天想些有的没的",
+    "chars": 1575,
+    "sha256": "890caefdee6a8e2f189fb8f0afd7a0754a6fc52cf8f87e56517ebc2269e31915",
+    "path": "sources/witch-75248/chapters/113.txt"
+  },
+  {
+    "author_number": 114,
+    "ordinal_in_jiangchen_corpus": 115,
+    "heading": "第114章 卡莉娅，你有想过毁灭世界吗？",
+    "chars": 1589,
+    "sha256": "fde7bc8c7155f85d0b99779716ba106f467b682567d4a53a9a764d64790bff11",
+    "path": "sources/witch-75248/chapters/114.txt"
+  },
+  {
+    "author_number": 115,
+    "ordinal_in_jiangchen_corpus": 116,
+    "heading": "第115章 事不过三，魔王的归来",
+    "chars": 1584,
+    "sha256": "d30b1d2d0e4913789d04f2832f9cfdcb054276c11dbf74f1d4d53498b941e5cb",
+    "path": "sources/witch-75248/chapters/115.txt"
+  },
+  {
+    "author_number": 116,
+    "ordinal_in_jiangchen_corpus": 117,
+    "heading": "第116章 猫呢，猫去哪儿了？！",
+    "chars": 1590,
+    "sha256": "087d47d57a300bb81345ac8d345699bd20558f96591b132ae00857f2b6dd5ba7",
+    "path": "sources/witch-75248/chapters/116.txt"
+  },
+  {
+    "author_number": 117,
+    "ordinal_in_jiangchen_corpus": 118,
+    "heading": "第117章 卓有成效的实验，芙拉姆的计划",
+    "chars": 1607,
+    "sha256": "cd9e0bba7f4d713f47d2a6c3ab62ba3513afffefca0813a6cfbf0158bec4f5ad",
+    "path": "sources/witch-75248/chapters/117.txt"
+  },
+  {
+    "author_number": 118,
+    "ordinal_in_jiangchen_corpus": 119,
+    "heading": "第118章 所谓夜魇",
+    "chars": 1573,
+    "sha256": "2753808325895627686ebf6351ebfc56d4d6928bbf74b4f29546dacb58bbc83b",
+    "path": "sources/witch-75248/chapters/118.txt"
+  },
+  {
+    "author_number": 119,
+    "ordinal_in_jiangchen_corpus": 120,
+    "heading": "第119章 梦该醒了，编织者",
+    "chars": 1590,
+    "sha256": "95520ff1b5a5b0df88be1442bcbe8d904900095ca9bd3da0a21084f524d69512",
+    "path": "sources/witch-75248/chapters/119.txt"
+  },
+  {
+    "author_number": 120,
+    "ordinal_in_jiangchen_corpus": 121,
+    "heading": "第120章 世界树：你好",
+    "chars": 1581,
+    "sha256": "846e9e5299ee389082dbc2fb14214e378d60f13e0e887a8ba3f4c90dd7d54a3f",
+    "path": "sources/witch-75248/chapters/120.txt"
+  },
+  {
+    "author_number": 121,
+    "ordinal_in_jiangchen_corpus": 122,
+    "heading": "第121章 这不比反伤强",
+    "chars": 1595,
+    "sha256": "0154b967d1ac899e28d4962a8f6bb10a46735d464bf94db47dcc99224100c486",
+    "path": "sources/witch-75248/chapters/121.txt"
+  },
+  {
+    "author_number": 122,
+    "ordinal_in_jiangchen_corpus": 123,
+    "heading": "第122章 意外如期而至，再度来袭的系列任务",
+    "chars": 1604,
+    "sha256": "0cf7f187d2ca27e16cd41c08549a051c65b2e2a1ce0d3f3a23b4f977c827bd1f",
+    "path": "sources/witch-75248/chapters/122.txt"
+  },
+  {
+    "author_number": 123,
+    "ordinal_in_jiangchen_corpus": 124,
+    "heading": "第123章 脱困，意料之外的合作",
+    "chars": 1608,
+    "sha256": "7f9541f4eca129bdd54bc8f9aac3d6798dbcc4cbefd9f19fda5628eddd014793",
+    "path": "sources/witch-75248/chapters/123.txt"
+  },
+  {
+    "author_number": 124,
+    "ordinal_in_jiangchen_corpus": 125,
+    "heading": "第124章 伊露维娅：食我超视距空间斩！",
+    "chars": 1589,
+    "sha256": "0bba6142966ff3f22e1b9631cbe94ef54c8bbc862a4679f1d4ae90a68e5b4f10",
+    "path": "sources/witch-75248/chapters/124.txt"
+  },
+  {
+    "author_number": 125,
+    "ordinal_in_jiangchen_corpus": 126,
+    "heading": "第125章 死从天降",
+    "chars": 1604,
+    "sha256": "78a18f3c864405b1059dd26c768d65e43c66b78431e438a0bb76145a60b82a02",
+    "path": "sources/witch-75248/chapters/125.txt"
+  },
+  {
+    "author_number": 126,
+    "ordinal_in_jiangchen_corpus": 127,
+    "heading": "第126章 哥们，你怎么碎了？",
+    "chars": 1572,
+    "sha256": "be8147f5366bb7c045e76aaa978583ce792038eec1f22801f1da19a1faeb00e9",
+    "path": "sources/witch-75248/chapters/126.txt"
+  },
+  {
+    "author_number": 127,
+    "ordinal_in_jiangchen_corpus": 128,
+    "heading": "第127章 嗨嗨嗨，我是魔王，我是魔王！",
+    "chars": 1580,
+    "sha256": "d6199dbbeb5ffcf49bf61b31c21260b5684598c6ff304982960a439625d11836",
+    "path": "sources/witch-75248/chapters/127.txt"
+  },
+  {
+    "author_number": 128,
+    "ordinal_in_jiangchen_corpus": 129,
+    "heading": "第128章 不给我好处，我很难给你办事啊",
+    "chars": 1626,
+    "sha256": "dc06e1e601d90077d8102f4e8adc5cfa2f2aee9b28311c3458e62038a0429a55",
+    "path": "sources/witch-75248/chapters/128.txt"
+  },
+  {
+    "author_number": 129,
+    "ordinal_in_jiangchen_corpus": 130,
+    "heading": "第129章 扩散开来的战场",
+    "chars": 1560,
+    "sha256": "2ed42d83fdaeef3d40bc84051a6b65a6026ca5ebb69e3543148386e6bbbce4f5",
+    "path": "sources/witch-75248/chapters/129.txt"
+  },
+  {
+    "author_number": 130,
+    "ordinal_in_jiangchen_corpus": 131,
+    "heading": "第130章 高达，屹立于大地之上！啊不对不对，不是高达",
+    "chars": 1624,
+    "sha256": "c05a30ea134ba2ac5dc3a3d9a1185fe392ba90459e3d14713048c90b4fe9a6e0",
+    "path": "sources/witch-75248/chapters/130.txt"
+  },
+  {
+    "author_number": 131,
+    "ordinal_in_jiangchen_corpus": 132,
+    "heading": "第131章 炸他娘的！",
+    "chars": 1602,
+    "sha256": "087677e59fc94a97db6b27d2d55d02d96675187cf700af74cc986ffa760d408e",
+    "path": "sources/witch-75248/chapters/131.txt"
+  },
+  {
+    "author_number": 132,
+    "ordinal_in_jiangchen_corpus": 133,
+    "heading": "第132章 哦豁，这一炮下去动静有些大了",
+    "chars": 1593,
+    "sha256": "fa89ba73719a392bb4afc764f73e9b6ad1a02a771f46a64969d86a19b322e5d7",
+    "path": "sources/witch-75248/chapters/132.txt"
+  },
+  {
+    "author_number": 133,
+    "ordinal_in_jiangchen_corpus": 134,
+    "heading": "第133章 与魔王的“交易”",
+    "chars": 1603,
+    "sha256": "4fe30df9a44dba5a8eb449daa5596ba115791f8cfafb810f088a186ebaab11fe",
+    "path": "sources/witch-75248/chapters/133.txt"
+  },
+  {
+    "author_number": 134,
+    "ordinal_in_jiangchen_corpus": 135,
+    "heading": "第134章 高端局打多了，一下子没融入分段",
+    "chars": 1593,
+    "sha256": "61b665e5ee1524ca4889177696982ee0aafb7507ec3617d99f88423ec735efa2",
+    "path": "sources/witch-75248/chapters/134.txt"
+  },
+  {
+    "author_number": 135,
+    "ordinal_in_jiangchen_corpus": 136,
+    "heading": "第135章 杀猫啦！",
+    "chars": 1597,
+    "sha256": "4c2c18dc27186f6f77cfa4c144ad7b871922e28941fad4ff81ea89ed9aac03f7",
+    "path": "sources/witch-75248/chapters/135.txt"
+  },
+  {
+    "author_number": 136,
+    "ordinal_in_jiangchen_corpus": 137,
+    "heading": "第136章 突然扑朔迷离的身世",
+    "chars": 1603,
+    "sha256": "5f13952298683768aab475c2d7156dd792c92683c4552e0709a6c01cfc8ad772",
+    "path": "sources/witch-75248/chapters/136.txt"
+  },
+  {
+    "author_number": 137,
+    "ordinal_in_jiangchen_corpus": 138,
+    "heading": "第137章 来自世界树发的金水",
+    "chars": 1565,
+    "sha256": "61ce83625a19e3d89f8957bd47b3734387d1c48f422d73c242613a2f0caefd33",
+    "path": "sources/witch-75248/chapters/137.txt"
+  },
+  {
+    "author_number": 138,
+    "ordinal_in_jiangchen_corpus": 139,
+    "heading": "第138章 该死的长生种",
+    "chars": 1593,
+    "sha256": "56fbec9ad8f4afb37071337032acb5361a5b46586698053ea45a1e18b402ef62",
+    "path": "sources/witch-75248/chapters/138.txt"
+  },
+  {
+    "author_number": 139,
+    "ordinal_in_jiangchen_corpus": 140,
+    "heading": "第139章 你怎么红温了？",
+    "chars": 1596,
+    "sha256": "6d2a02c9f0eadc266437a6ef09b6d94126b99cdf861931f64411fb3606f03f0c",
+    "path": "sources/witch-75248/chapters/139.txt"
+  },
+  {
+    "author_number": 140,
+    "ordinal_in_jiangchen_corpus": 141,
+    "heading": "第140章 好久不见，矮个儿贫乳精灵",
+    "chars": 1586,
+    "sha256": "f07fe15ff54aa2e1f8f7803654eed635aa6f07fcd75e12e467892028a12dd686",
+    "path": "sources/witch-75248/chapters/140.txt"
+  },
+  {
+    "author_number": 141,
+    "ordinal_in_jiangchen_corpus": 142,
+    "heading": "第141章 人与人的悲欢并不相同",
+    "chars": 1612,
+    "sha256": "a1cf6b4202bf0cfb7eee0e23ec83c5651a65093376d81a1a7ee3ac08cfa1646d",
+    "path": "sources/witch-75248/chapters/141.txt"
+  },
+  {
+    "author_number": 142,
+    "ordinal_in_jiangchen_corpus": 143,
+    "heading": "第142章 万能的大师兄",
+    "chars": 1601,
+    "sha256": "386f3b4cae2d7623150240f550a451a873fd836df7ca7c1d458d7da08839496c",
+    "path": "sources/witch-75248/chapters/142.txt"
+  },
+  {
+    "author_number": 143,
+    "ordinal_in_jiangchen_corpus": 144,
+    "heading": "第143章 两面包夹芝士",
+    "chars": 1571,
+    "sha256": "5c1325428a3dc399b5d57446e0d68ed9335c9c9caf69dec4afb135ac2c2da948",
+    "path": "sources/witch-75248/chapters/143.txt"
+  },
+  {
+    "author_number": 144,
+    "ordinal_in_jiangchen_corpus": 145,
+    "heading": "第144章 场面逐渐焦灼起来",
+    "chars": 1591,
+    "sha256": "2c3d6e36b07cc571bd0abc2a5f75a2c7e1d3f0edaa85cbbd3fb2ab50ccd43615",
+    "path": "sources/witch-75248/chapters/144.txt"
+  },
+  {
+    "author_number": 145,
+    "ordinal_in_jiangchen_corpus": 146,
+    "heading": "第145章 为什么你那么熟练啊！",
+    "chars": 1580,
+    "sha256": "ee3e82a95bf0c337e37446a8cf8caf86e43398822d37780e18eaa078230e30cf",
+    "path": "sources/witch-75248/chapters/145.txt"
+  },
+  {
+    "author_number": 146,
+    "ordinal_in_jiangchen_corpus": 147,
+    "heading": "第146章 情敌某种意义上是同好",
+    "chars": 1569,
+    "sha256": "6084de4d2c139663e378e64c5c6554758376fa19f976b86d71d4441070d61c41",
+    "path": "sources/witch-75248/chapters/146.txt"
+  },
+  {
+    "author_number": 147,
+    "ordinal_in_jiangchen_corpus": 148,
+    "heading": "第147章 皇女殿下不为人知的小爱好",
+    "chars": 1607,
+    "sha256": "a645f87932b48552ac4017754534ad7bcb2515373ac452a659429ea36797fe6c",
+    "path": "sources/witch-75248/chapters/147.txt"
+  },
+  {
+    "author_number": 148,
+    "ordinal_in_jiangchen_corpus": 149,
+    "heading": "第148章 翅膀打结？",
+    "chars": 1604,
+    "sha256": "0bc076e172a1b95d70e9ca27bcae2ec1c1361bc14792a3b95fbb46d033628730",
+    "path": "sources/witch-75248/chapters/148.txt"
+  },
+  {
+    "author_number": 149,
+    "ordinal_in_jiangchen_corpus": 150,
+    "heading": "第149章 误会解除，退让者满盘皆输",
+    "chars": 1596,
+    "sha256": "201a349013c1b81ce4ba6fd27abd644f2b208077c9e2b0a8aab2d3554122572f",
+    "path": "sources/witch-75248/chapters/149.txt"
+  },
+  {
+    "author_number": 150,
+    "ordinal_in_jiangchen_corpus": 151,
+    "heading": "第150章 系列任务大结算，信任与否",
+    "chars": 1586,
+    "sha256": "3fd521b5bfac848698f421e08c7e5d3b1668014b79466fff7bce5f6e5f6634ec",
+    "path": "sources/witch-75248/chapters/150.txt"
+  },
+  {
+    "author_number": 151,
+    "ordinal_in_jiangchen_corpus": 152,
+    "heading": "第151章 纳什：“喵，我不会说话喵。”",
+    "chars": 1593,
+    "sha256": "0e85379910fd22022dd3df61be21c95422c4628cb615071f5f2c2a0627d32f41",
+    "path": "sources/witch-75248/chapters/151.txt"
+  },
+  {
+    "author_number": 152,
+    "ordinal_in_jiangchen_corpus": 153,
+    "heading": "第152章 别玩猫了，再玩猫你男人真跑了",
+    "chars": 1588,
+    "sha256": "3b9e27f242cf10141b3680ef4892aff8ee1f464d79213067f070f232b71fb3d8",
+    "path": "sources/witch-75248/chapters/152.txt"
+  },
+  {
+    "author_number": 153,
+    "ordinal_in_jiangchen_corpus": 154,
+    "heading": "第153章 精神物质干涉",
+    "chars": 1641,
+    "sha256": "4ffb2e84db70d56ed7735f3ff96bcb5d6300b1879b309482ef9da3dd3f4c6b57",
+    "path": "sources/witch-75248/chapters/153.txt"
+  },
+  {
+    "author_number": 154,
+    "ordinal_in_jiangchen_corpus": 155,
+    "heading": "第154章 重返瑞斯坎",
+    "chars": 1581,
+    "sha256": "e8cab6a2b29480eaf6695590b4a5ad5d2c197de4a84d15953f2f3260a61db8ed",
+    "path": "sources/witch-75248/chapters/154.txt"
+  },
+  {
+    "author_number": 155,
+    "ordinal_in_jiangchen_corpus": 156,
+    "heading": "第155章 哥们，你还没死呢！？",
+    "chars": 1562,
+    "sha256": "08d5b1bc78c3d66258284b24c95bcc5113f5a0b560814e61baee47f4a91a1db1",
+    "path": "sources/witch-75248/chapters/155.txt"
+  },
+  {
+    "author_number": 156,
+    "ordinal_in_jiangchen_corpus": 157,
+    "heading": "第156章 猫猫队立大功",
+    "chars": 1573,
+    "sha256": "7d5005a8828fc7f545334af543d110076be5b3d60fbaf942919a778c142c69db",
+    "path": "sources/witch-75248/chapters/156.txt"
+  },
+  {
+    "author_number": 157,
+    "ordinal_in_jiangchen_corpus": 158,
+    "heading": "第157章 来自魔王的忠告",
+    "chars": 1585,
+    "sha256": "4d198e4206ebe298b5a7c07d16d5982842896935f3f11b7c9e9ab0716af27ded",
+    "path": "sources/witch-75248/chapters/157.txt"
+  },
+  {
+    "author_number": 158,
+    "ordinal_in_jiangchen_corpus": 159,
+    "heading": "第158章 并未沉没的沉船",
+    "chars": 1587,
+    "sha256": "f7e3089059bb2c7a173a8ad14d6db6bca121292faf5766cd08a0b6a6a796bc02",
+    "path": "sources/witch-75248/chapters/158.txt"
+  },
+  {
+    "author_number": 159,
+    "ordinal_in_jiangchen_corpus": 160,
+    "heading": "第159章 给你一百万，离开我学生！",
+    "chars": 1587,
+    "sha256": "c6923e9667d496c3c1e4a743b701e36e6b093c0b16fd2e81222edae090a2c3fd",
+    "path": "sources/witch-75248/chapters/159.txt"
+  },
+  {
+    "author_number": 160,
+    "ordinal_in_jiangchen_corpus": 161,
+    "heading": "第160章 巧立名目，才能骗到经费",
+    "chars": 1594,
+    "sha256": "5b775d3efb6315cc706e5829cf300e0cebaaa784fa2c5d425a34b5cee99340e8",
+    "path": "sources/witch-75248/chapters/160.txt"
+  },
+  {
+    "author_number": 161,
+    "ordinal_in_jiangchen_corpus": 162,
+    "heading": "第161章 魔王：你们人类太没礼貌了！",
+    "chars": 1575,
+    "sha256": "c78e2fda53a85ff8eb23e1414529cd3e4396a0cff8ca758788e14d26fae93685",
+    "path": "sources/witch-75248/chapters/161.txt"
+  },
+  {
+    "author_number": 162,
+    "ordinal_in_jiangchen_corpus": 163,
+    "heading": "第162章 直接开定位",
+    "chars": 1600,
+    "sha256": "22e7ebb1826c38382c5249026e3a4285691504689f578eec633c1c57560c07c7",
+    "path": "sources/witch-75248/chapters/162.txt"
+  },
+  {
+    "author_number": 163,
+    "ordinal_in_jiangchen_corpus": 164,
+    "heading": "第163章 罗兰也干了",
+    "chars": 1609,
+    "sha256": "c251f10f2a2e8a025738f005267471b99fe1e835d1fc6ab278284abccccfdf77",
+    "path": "sources/witch-75248/chapters/163.txt"
+  },
+  {
+    "author_number": 164,
+    "ordinal_in_jiangchen_corpus": 165,
+    "heading": "第164章 已老实，求放过",
+    "chars": 1593,
+    "sha256": "6f80ae11256e217f0a21f368d54e1618b55521e3b3d5fe4ba684be2d53f3e227",
+    "path": "sources/witch-75248/chapters/164.txt"
+  },
+  {
+    "author_number": 165,
+    "ordinal_in_jiangchen_corpus": 166,
+    "heading": "第165章 无法捷足先登，那就同归于尽",
+    "chars": 1581,
+    "sha256": "18a2b0200b0841665187f03df74cf817b1b0f0a9042ad99a0fe2e1eb891cb0b8",
+    "path": "sources/witch-75248/chapters/165.txt"
+  },
+  {
+    "author_number": 166,
+    "ordinal_in_jiangchen_corpus": 167,
+    "heading": "第166章 Jackpot！",
+    "chars": 1587,
+    "sha256": "009fe6f9a1280afb3a5f7659ee832f37040fc63a2dbfc618a931767afdd67344",
+    "path": "sources/witch-75248/chapters/166.txt"
+  },
+  {
+    "author_number": 167,
+    "ordinal_in_jiangchen_corpus": 168,
+    "heading": "第167章 半场开香槟",
+    "chars": 1600,
+    "sha256": "5b9e647bac05b91f3302b76b755faa5b10e7c6e860bcc6822a7ab5724735ceaa",
+    "path": "sources/witch-75248/chapters/167.txt"
+  },
+  {
+    "author_number": 168,
+    "ordinal_in_jiangchen_corpus": 169,
+    "heading": "第168章 噬魂",
+    "chars": 1598,
+    "sha256": "047a8164df7583480625d2805989c9f3005988df26a3dc9dc2b340ffdba922ed",
+    "path": "sources/witch-75248/chapters/168.txt"
+  },
+  {
+    "author_number": 169,
+    "ordinal_in_jiangchen_corpus": 170,
+    "heading": "第169章 猫：不好了，罗兰似了！！！",
+    "chars": 1554,
+    "sha256": "17ec1a6b0393205d1c6a509152a45c0f0f20dc9bae41724668c02dcd748fb00e",
+    "path": "sources/witch-75248/chapters/169.txt"
+  },
+  {
+    "author_number": 170,
+    "ordinal_in_jiangchen_corpus": 171,
+    "heading": "第170章 不可能，绝对不可能，你们放心",
+    "chars": 1573,
+    "sha256": "cbbddd73df1c279b734b3d8018c0693f18d8cf2e1428b3577a178b8e2159bb2b",
+    "path": "sources/witch-75248/chapters/170.txt"
+  },
+  {
+    "author_number": 171,
+    "ordinal_in_jiangchen_corpus": 172,
+    "heading": "第171章 星环之律",
+    "chars": 1616,
+    "sha256": "d719b56fd2020399ee1cdc469be6acf30c2aff26f53fe00d05574efd98725e68",
+    "path": "sources/witch-75248/chapters/171.txt"
+  },
+  {
+    "author_number": 172,
+    "ordinal_in_jiangchen_corpus": 173,
+    "heading": "第172章 封爵，好奇宝宝苏伦",
+    "chars": 1575,
+    "sha256": "f09f25d20a05890240f070b4af597b4541b427f01c13c708605450ccb7859b8b",
+    "path": "sources/witch-75248/chapters/172.txt"
+  },
+  {
+    "author_number": 173,
+    "ordinal_in_jiangchen_corpus": 174,
+    "heading": "第173章 情感带师（万字大章）",
+    "chars": 1578,
+    "sha256": "72e116e01aa5d086f87ce5d0cb6c3390b453d047f9522d7722af73eb030d53ae",
+    "path": "sources/witch-75248/chapters/173.txt"
+  },
+  {
+    "author_number": 174,
+    "ordinal_in_jiangchen_corpus": 175,
+    "heading": "第174章 要不你还是信任一下魔王吧，危险的风暴洋",
+    "chars": 1578,
+    "sha256": "985e9c430ce7239cffada58686125d57440d3c3e36d0d3fd8feb30309e5cfa28",
+    "path": "sources/witch-75248/chapters/174.txt"
+  },
+  {
+    "author_number": 175,
+    "ordinal_in_jiangchen_corpus": 176,
+    "heading": "第175章 消杀程序，海洋与邪神",
+    "chars": 1592,
+    "sha256": "118f0a09f5cb2cbe9842c8b08d789a153c4a9fa718a7e3e66b551ea0ba274ad2",
+    "path": "sources/witch-75248/chapters/175.txt"
+  },
+  {
+    "author_number": 176,
+    "ordinal_in_jiangchen_corpus": 177,
+    "heading": "第176章 加里胡斯的黄金号角",
+    "chars": 1579,
+    "sha256": "fbbefc769c19844185ceec63b45232b8d68985ccdc6847a0ff58e0492ec74934",
+    "path": "sources/witch-75248/chapters/176.txt"
+  },
+  {
+    "author_number": 177,
+    "ordinal_in_jiangchen_corpus": 178,
+    "heading": "第177章 加入变量，然后增加更多的变量",
+    "chars": 1610,
+    "sha256": "ec834f02bcbd3001bb8b8b1b413d1fd86b74abcfa8a0ebca4c0be085b8f883ee",
+    "path": "sources/witch-75248/chapters/177.txt"
+  },
+  {
+    "author_number": 178,
+    "ordinal_in_jiangchen_corpus": 179,
+    "heading": "第178章 让你把猫变回龙，没让你变回猫娘",
+    "chars": 1573,
+    "sha256": "879e107559441b4c15f2b8d39900aba7bcecf3fba55a83e77f9aeeae9c50f477",
+    "path": "sources/witch-75248/chapters/178.txt"
+  },
+  {
+    "author_number": 179,
+    "ordinal_in_jiangchen_corpus": 180,
+    "heading": "第179章 魔王大人手艺高超啊！",
+    "chars": 1581,
+    "sha256": "98ac82b3e460065e30bc56bd1fa59c46c2ce018f55b928b2a93616d1bc054348",
+    "path": "sources/witch-75248/chapters/179.txt"
+  },
+  {
+    "author_number": 180,
+    "ordinal_in_jiangchen_corpus": 181,
+    "heading": "第180章 苏伦：这是二位的孩子吗？",
+    "chars": 1594,
+    "sha256": "d684d1a2f8876c1da673b4a7c58087b2802e7e237d8d72a39f4759ba22e4a3f3",
+    "path": "sources/witch-75248/chapters/180.txt"
+  },
+  {
+    "author_number": 181,
+    "ordinal_in_jiangchen_corpus": 182,
+    "heading": "第181章 必须记得的事，不能忘记的事",
+    "chars": 1619,
+    "sha256": "e41993e4c6b21b1410ed73b2e06d0cf58372b5ca9e16aaa8363ebfb09acaefda",
+    "path": "sources/witch-75248/chapters/181.txt"
+  },
+  {
+    "author_number": 182,
+    "ordinal_in_jiangchen_corpus": 183,
+    "heading": "第182章 魔王的愿景",
+    "chars": 1598,
+    "sha256": "49d50e050edd4177ef7c08a109617851427e4f42aaa62ae4b80988cbc51cb09e",
+    "path": "sources/witch-75248/chapters/182.txt"
+  },
+  {
+    "author_number": 183,
+    "ordinal_in_jiangchen_corpus": 185,
+    "heading": "第183章 统子哥爆金币咯！",
+    "chars": 1596,
+    "sha256": "8e644793118249efc056a4e9c6980da80f2da20796cb149f4eae478f59566e35",
+    "path": "sources/witch-75248/chapters/183.txt"
+  },
+  {
+    "author_number": 184,
+    "ordinal_in_jiangchen_corpus": 186,
+    "heading": "第184章 劲增！暴增！狂增！",
+    "chars": 1576,
+    "sha256": "41ca992494c42b31419482efe7960b3190193d514b6755940b49c10651432f04",
+    "path": "sources/witch-75248/chapters/184.txt"
+  },
+  {
+    "author_number": 185,
+    "ordinal_in_jiangchen_corpus": 187,
+    "heading": "第185章 诡异三十海里",
+    "chars": 1591,
+    "sha256": "a7ae5f828c1884335585a8c2da444fc7506a9f359b07ff2fadf0034e769af0f0",
+    "path": "sources/witch-75248/chapters/185.txt"
+  },
+  {
+    "author_number": 186,
+    "ordinal_in_jiangchen_corpus": 188,
+    "heading": "第186章 濒临崩溃的边界",
+    "chars": 1590,
+    "sha256": "b6a40b0996c511a0d6272342574dcdb79b36bf749cab8f526fcd812c608c7a08",
+    "path": "sources/witch-75248/chapters/186.txt"
+  },
+  {
+    "author_number": 187,
+    "ordinal_in_jiangchen_corpus": 189,
+    "heading": "第187章 魔王在帮忙？我一定没睡醒。",
+    "chars": 1587,
+    "sha256": "3dd2f0d02bdd6c432ca4ed7c738c800044d98770f8341249da2e5160889125fa",
+    "path": "sources/witch-75248/chapters/187.txt"
+  },
+  {
+    "author_number": 188,
+    "ordinal_in_jiangchen_corpus": 190,
+    "heading": "第188章 惨重伤亡，废船之影",
+    "chars": 1557,
+    "sha256": "f85694a30555338acf587818ad4ec14e5cd99ecbaf7c4dbb250a7abcdbd5fe1a",
+    "path": "sources/witch-75248/chapters/188.txt"
+  },
+  {
+    "author_number": 189,
+    "ordinal_in_jiangchen_corpus": 191,
+    "heading": "第189章 从未真正停歇的探索心",
+    "chars": 1593,
+    "sha256": "111173ad592aabac79547a39c2af7dbc50bb5451fb0c0e207710616cb0d1eacb",
+    "path": "sources/witch-75248/chapters/189.txt"
+  },
+  {
+    "author_number": 190,
+    "ordinal_in_jiangchen_corpus": 192,
+    "heading": "第190章 你以为我是谁，把船给我靠过去！",
+    "chars": 1556,
+    "sha256": "d78b1139bead6e9def99aac59d282a45f3214e41c361d1f8b7d0b561d7e51e0a",
+    "path": "sources/witch-75248/chapters/190.txt"
+  },
+  {
+    "author_number": 191,
+    "ordinal_in_jiangchen_corpus": 193,
+    "heading": "第191章 魔王：我上辈子欠你的行了吧",
+    "chars": 1579,
+    "sha256": "6b4b55af17f701bb61cfadc315c5ae3118679aa033c233b02963c641b532de34",
+    "path": "sources/witch-75248/chapters/191.txt"
+  },
+  {
+    "author_number": 192,
+    "ordinal_in_jiangchen_corpus": 194,
+    "heading": "第192章 重叠的空间",
+    "chars": 1570,
+    "sha256": "ea03248ee6a02226614ba1a653d49b3fcbefa24611a4852ee77ef68ae2d4140c",
+    "path": "sources/witch-75248/chapters/192.txt"
+  },
+  {
+    "author_number": 193,
+    "ordinal_in_jiangchen_corpus": 195,
+    "heading": "第193章 静滞的时间",
+    "chars": 1556,
+    "sha256": "0d4dee731a774d48211dcc369e7a5274d8fd5780ea84a01336278a781fad39e8",
+    "path": "sources/witch-75248/chapters/193.txt"
+  },
+  {
+    "author_number": 194,
+    "ordinal_in_jiangchen_corpus": 196,
+    "heading": "第194章 无人知晓的伟业",
+    "chars": 1562,
+    "sha256": "b273e50c97a2ae54f682ece349aa311ba0b765a8ca47df7244726004ed727723",
+    "path": "sources/witch-75248/chapters/194.txt"
+  },
+  {
+    "author_number": 195,
+    "ordinal_in_jiangchen_corpus": 197,
+    "heading": "第195章 锚定命运之矛",
+    "chars": 1585,
+    "sha256": "ee4c10ae77d9fd6cd44fabb574615055286bb34b4fe8fe1795f43ccfb9c5c91e",
+    "path": "sources/witch-75248/chapters/195.txt"
+  },
+  {
+    "author_number": 196,
+    "ordinal_in_jiangchen_corpus": 198,
+    "heading": "第196章 邪神半身",
+    "chars": 1588,
+    "sha256": "6aba5a8c5701682eb4bd2db9e57371a01ad112df215beb519b45471a7dee9ce6",
+    "path": "sources/witch-75248/chapters/196.txt"
+  },
+  {
+    "author_number": 197,
+    "ordinal_in_jiangchen_corpus": 199,
+    "heading": "第197章 永夜泪滴",
+    "chars": 1597,
+    "sha256": "263b83e62266358d6cd75d49c390fa4b009cf2de40b0ebb7bd056d778d503b84",
+    "path": "sources/witch-75248/chapters/197.txt"
+  },
+  {
+    "author_number": 198,
+    "ordinal_in_jiangchen_corpus": 200,
+    "heading": "第198章 敬赴死者",
+    "chars": 1590,
+    "sha256": "632db9bb5d1c9a5904f8e438ae09bcaab010c6ca9555e48966e294ce4aefa559",
+    "path": "sources/witch-75248/chapters/198.txt"
+  },
+  {
+    "author_number": 199,
+    "ordinal_in_jiangchen_corpus": 201,
+    "heading": "第199章 魔族的方法",
+    "chars": 1581,
+    "sha256": "556fd53dcaf5f3e36cf9b5ac9f77994a2ac50373766d312e2c1985e433fe9256",
+    "path": "sources/witch-75248/chapters/199.txt"
+  },
+  {
+    "author_number": 200,
+    "ordinal_in_jiangchen_corpus": 202,
+    "heading": "第200章 当罗兰醒来……",
+    "chars": 1603,
+    "sha256": "9e2ddef768b521f36fb60a80a10c22eaef898925927f67471cec1b84d4265215",
+    "path": "sources/witch-75248/chapters/200.txt"
+  },
+  {
+    "author_number": 201,
+    "ordinal_in_jiangchen_corpus": 203,
+    "heading": "第201章 芙拉姆的复仇计划，劫后余生",
+    "chars": 1597,
+    "sha256": "bc2b20780d400c93f7434f1a0593a4fbd2c42ef12ec63f92931eec56943cf07b",
+    "path": "sources/witch-75248/chapters/201.txt"
+  },
+  {
+    "author_number": 202,
+    "ordinal_in_jiangchen_corpus": 204,
+    "heading": "第202章 另一股认知干扰，老丈人的警惕",
+    "chars": 1574,
+    "sha256": "65f67c1a3da42d907d7b64d7d91846a18ac3e78329f30fa66c77e48454a80e8f",
+    "path": "sources/witch-75248/chapters/202.txt"
+  },
+  {
+    "author_number": 203,
+    "ordinal_in_jiangchen_corpus": 205,
+    "heading": "第203章 我是谁？",
+    "chars": 1597,
+    "sha256": "218ebac79abe48a6ba0fed1b61c1565816ee7b70502deb93b428f82b319bc084",
+    "path": "sources/witch-75248/chapters/203.txt"
+  },
+  {
+    "author_number": 204,
+    "ordinal_in_jiangchen_corpus": 206,
+    "heading": "第204章 死而复生",
+    "chars": 1617,
+    "sha256": "a2ef25757f2b0b924887e32116dd451a2a622cc5c1851c81833a8aa34c1b2c16",
+    "path": "sources/witch-75248/chapters/204.txt"
+  },
+  {
+    "author_number": 205,
+    "ordinal_in_jiangchen_corpus": 207,
+    "heading": "第205章 《关于死而复生的五次可靠记录》",
+    "chars": 1589,
+    "sha256": "f6a0d287b02f69f2915b9e645db6c00fb1f975724aa136b9480643edae100f04",
+    "path": "sources/witch-75248/chapters/205.txt"
+  },
+  {
+    "author_number": 206,
+    "ordinal_in_jiangchen_corpus": 208,
+    "heading": "第206章 人类有两大基础欲望，而我现在已经吃饱了。",
+    "chars": 1587,
+    "sha256": "29ec85b3bb80e470061412567880fa7b278ebe84865dc74b3b4a4f092123625c",
+    "path": "sources/witch-75248/chapters/206.txt"
+  },
+  {
+    "author_number": 207,
+    "ordinal_in_jiangchen_corpus": 209,
+    "heading": "第207章 可怜的纳什被玩弄于股掌之中",
+    "chars": 1553,
+    "sha256": "4be86c48e1ba648f1fc835be2b54a0eb5e4131d0821193a2dcbce08f3ee9878f",
+    "path": "sources/witch-75248/chapters/207.txt"
+  },
+  {
+    "author_number": 208,
+    "ordinal_in_jiangchen_corpus": 210,
+    "heading": "第208章 靠谱的成年女性",
+    "chars": 1618,
+    "sha256": "55917d341fcbc4f6ac18432d19ab4fa7550a61d33b44b14c1a5d07fd700adf97",
+    "path": "sources/witch-75248/chapters/208.txt"
+  },
+  {
+    "author_number": 209,
+    "ordinal_in_jiangchen_corpus": 211,
+    "heading": "第209章 全撞一块了，难得强势卡莉娅",
+    "chars": 1583,
+    "sha256": "bf836ae12c98789fac4f89eca551ec63e6485b754d6a8af8a71a59ed277137b1",
+    "path": "sources/witch-75248/chapters/209.txt"
+  },
+  {
+    "author_number": 210,
+    "ordinal_in_jiangchen_corpus": 212,
+    "heading": "第210章 只是暂时逃离死亡",
+    "chars": 1562,
+    "sha256": "c0e9f65fddb52c062b367fadc1a8e58d32e1468d5993daf228bbd5322c67eea3",
+    "path": "sources/witch-75248/chapters/210.txt"
+  },
+  {
+    "author_number": 211,
+    "ordinal_in_jiangchen_corpus": 213,
+    "heading": "第211章 那所谓的灾祸，世界毁灭的倒计时",
+    "chars": 1586,
+    "sha256": "0f586cfdc9c40c0d418f97d127d40e30ad6466f43d4ca4fa652e1105916e3fbb",
+    "path": "sources/witch-75248/chapters/211.txt"
+  },
+  {
+    "author_number": 212,
+    "ordinal_in_jiangchen_corpus": 214,
+    "heading": "第212章 魔王：诶！我有个大胆的想法！",
+    "chars": 1599,
+    "sha256": "987c977e2a91c3b45de9863f33811f8e58da3ab0622fa801fdca08a6b2a39f67",
+    "path": "sources/witch-75248/chapters/212.txt"
+  },
+  {
+    "author_number": 213,
+    "ordinal_in_jiangchen_corpus": 215,
+    "heading": "第213章 盟约与使命，遗失的符石",
+    "chars": 1584,
+    "sha256": "7deae45ae5d75784fec825e6d20af8f6f01aceb835260e9b9cc21d471d231acc",
+    "path": "sources/witch-75248/chapters/213.txt"
+  },
+  {
+    "author_number": 214,
+    "ordinal_in_jiangchen_corpus": 216,
+    "heading": "第214章 卡莉娅/伊露维娅：“不好意思，我才是第一个”",
+    "chars": 1612,
+    "sha256": "f83cecd47e5c7b6df5e19818ba6a79d0b305d6a5f981d80d5ebf7955e6aa8dd4",
+    "path": "sources/witch-75248/chapters/214.txt"
+  },
+  {
+    "author_number": 215,
+    "ordinal_in_jiangchen_corpus": 217,
+    "heading": "第215章 老登又开始派活了",
+    "chars": 1592,
+    "sha256": "5511e6e0f5287b35cccac9918931b5d11709b7c1b26f38873a1a67bc5a35c517",
+    "path": "sources/witch-75248/chapters/215.txt"
+  },
+  {
+    "author_number": 216,
+    "ordinal_in_jiangchen_corpus": 218,
+    "heading": "第216章 多少带些个人情绪",
+    "chars": 1583,
+    "sha256": "783f3c266d9ac1e4ea4e8b0aba514e8235ea98dbb50b7e424ffa558c623e2a2a",
+    "path": "sources/witch-75248/chapters/216.txt"
+  },
+  {
+    "author_number": 217,
+    "ordinal_in_jiangchen_corpus": 219,
+    "heading": "第217章 梦中的神秘女人",
+    "chars": 1629,
+    "sha256": "35f659eed829cb30deb1c9ac9b43a89ae7dc8d3160b7e94dbc08094940d6150a",
+    "path": "sources/witch-75248/chapters/217.txt"
+  },
+  {
+    "author_number": 218,
+    "ordinal_in_jiangchen_corpus": 220,
+    "heading": "第218章 帝国已经决定了，非你不可！",
+    "chars": 1584,
+    "sha256": "d4728e343b11b17a775d43e4856e634b1008440304b5e7140767ceece201026b",
+    "path": "sources/witch-75248/chapters/218.txt"
+  },
+  {
+    "author_number": 219,
+    "ordinal_in_jiangchen_corpus": 221,
+    "heading": "第219章 你最好真的没兴趣",
+    "chars": 1609,
+    "sha256": "6089825c44bc4d8eda1916f67808e849b7624de41153a20c3de17d8af2d3da47",
+    "path": "sources/witch-75248/chapters/219.txt"
+  },
+  {
+    "author_number": 220,
+    "ordinal_in_jiangchen_corpus": 222,
+    "heading": "第220章 这就是你说的支援？",
+    "chars": 1621,
+    "sha256": "40b8977242a65e92f3db17dba9ebfee9167a1b03fc17fd5d83911d94b0885f57",
+    "path": "sources/witch-75248/chapters/220.txt"
+  },
+  {
+    "author_number": 221,
+    "ordinal_in_jiangchen_corpus": 223,
+    "heading": "第221章 老丈人给的身份真好用",
+    "chars": 1592,
+    "sha256": "3dcd1aae0d59acf545bdf212cf39cf5c8207d909add6b9564db3897117306558",
+    "path": "sources/witch-75248/chapters/221.txt"
+  },
+  {
+    "author_number": 222,
+    "ordinal_in_jiangchen_corpus": 224,
+    "heading": "第222章 一位血魔亲王轻轻的碎了",
+    "chars": 1601,
+    "sha256": "d2c2d17f0664c1ade490010505a8d1dfd9ee34c9d691565595ead05a282d686f",
+    "path": "sources/witch-75248/chapters/222.txt"
+  },
+  {
+    "author_number": 223,
+    "ordinal_in_jiangchen_corpus": 225,
+    "heading": "第223章 呜呜呜，不要霸凌我！",
+    "chars": 1603,
+    "sha256": "98822d73a94b68c576341631c6380cb1208040529d32d15986f724fd5d22dc96",
+    "path": "sources/witch-75248/chapters/223.txt"
+  },
+  {
+    "author_number": 224,
+    "ordinal_in_jiangchen_corpus": 226,
+    "heading": "第224章 卖身契，临时打手（存疑）加一",
+    "chars": 1566,
+    "sha256": "ff90d43660992d36dbf096a73a3619882d7dc892556d3427770dfc98c94890f3",
+    "path": "sources/witch-75248/chapters/224.txt"
+  },
+  {
+    "author_number": 225,
+    "ordinal_in_jiangchen_corpus": 227,
+    "heading": "第225章 罗兰的单人调查",
+    "chars": 1574,
+    "sha256": "b0edbba77be307d1a51a253dea35411a814b842621a57b097e9d8428521832ce",
+    "path": "sources/witch-75248/chapters/225.txt"
+  },
+  {
+    "author_number": 226,
+    "ordinal_in_jiangchen_corpus": 228,
+    "heading": "第226章 哎你大爷的，给我干哪儿来了，这还是伊斯法尔吗？",
+    "chars": 1554,
+    "sha256": "85bc2eae00868c3258e86916a33c08d51bb4b2a32ff9b07baa6e2e2b4f02cf64",
+    "path": "sources/witch-75248/chapters/226.txt"
+  },
+  {
+    "author_number": 227,
+    "ordinal_in_jiangchen_corpus": 229,
+    "heading": "第227章 循环的时间，虚实边界",
+    "chars": 1592,
+    "sha256": "83de5a305f0d660ba15b994fbd94e95bb9c0decfb630149c280bce23fa5a3796",
+    "path": "sources/witch-75248/chapters/227.txt"
+  },
+  {
+    "author_number": 228,
+    "ordinal_in_jiangchen_corpus": 230,
+    "heading": "第228章 魔王的胸大肌为何如此浮夸",
+    "chars": 1582,
+    "sha256": "3016b82206e65d787a0f345db2a0863e247acec35b8db1a7685e1eb8d1adf357",
+    "path": "sources/witch-75248/chapters/228.txt"
+  },
+  {
+    "author_number": 229,
+    "ordinal_in_jiangchen_corpus": 231,
+    "heading": "第229章 消失的梦",
+    "chars": 1592,
+    "sha256": "9ca06021d09bc074a520034937c2ee143d94ef7cb9c5b696ef1434105c74c46e",
+    "path": "sources/witch-75248/chapters/229.txt"
+  },
+  {
+    "author_number": 230,
+    "ordinal_in_jiangchen_corpus": 232,
+    "heading": "第230章 神之眷属",
+    "chars": 1567,
+    "sha256": "c522afb13e4294b270bd4b825904c00cdca1330966e05d257d13718116bf1a23",
+    "path": "sources/witch-75248/chapters/230.txt"
+  },
+  {
+    "author_number": 231,
+    "ordinal_in_jiangchen_corpus": 233,
+    "heading": "第231章 一切战术转跳帮",
+    "chars": 1577,
+    "sha256": "0c9eace7b1e5bc69dc219fc5ea6b92ef057664f26cb5e69fbf2d0b04acc9d3d5",
+    "path": "sources/witch-75248/chapters/231.txt"
+  },
+  {
+    "author_number": 232,
+    "ordinal_in_jiangchen_corpus": 234,
+    "heading": "第232章 意料之外的熟人",
+    "chars": 1573,
+    "sha256": "6dbed33c7f950ae41a94bb138c0a366f9332966e3abb29c7a45352d979ee887d",
+    "path": "sources/witch-75248/chapters/232.txt"
+  },
+  {
+    "author_number": 233,
+    "ordinal_in_jiangchen_corpus": 235,
+    "heading": "第233章 充斥着误伤的事件",
+    "chars": 1599,
+    "sha256": "2770a932c7a622f9f25a4b0270b97412d35fe08d7a788716b6d11285df0a04d1",
+    "path": "sources/witch-75248/chapters/233.txt"
+  },
+  {
+    "author_number": 234,
+    "ordinal_in_jiangchen_corpus": 236,
+    "heading": "第234章 可是能成为我母亲的人啊！",
+    "chars": 1586,
+    "sha256": "661fd72321c5ac4809898da709c595513ed424d50c95fa53a5f39a5aad19653a",
+    "path": "sources/witch-75248/chapters/234.txt"
+  },
+  {
+    "author_number": 235,
+    "ordinal_in_jiangchen_corpus": 237,
+    "heading": "第235章 这已经不是一般的灾变了，必须出重拳",
+    "chars": 1559,
+    "sha256": "0dace556dd8a89f7c6b3f7031f0dbb480094f703caf655491a49a3383816d126",
+    "path": "sources/witch-75248/chapters/235.txt"
+  },
+  {
+    "author_number": 236,
+    "ordinal_in_jiangchen_corpus": 238,
+    "heading": "第236章 你知道的太多了",
+    "chars": 1568,
+    "sha256": "d5c00568a063c2a422efc3fb214517f8f22879d253d93bb87b79ea0f8b0191d1",
+    "path": "sources/witch-75248/chapters/236.txt"
+  },
+  {
+    "author_number": 237,
+    "ordinal_in_jiangchen_corpus": 239,
+    "heading": "第237章 朽败苦黑",
+    "chars": 1626,
+    "sha256": "5d6b66f749ca85a887d309b6551cde4e0875c8e32e8c1344314283af6c97cb02",
+    "path": "sources/witch-75248/chapters/237.txt"
+  },
+  {
+    "author_number": 238,
+    "ordinal_in_jiangchen_corpus": 240,
+    "heading": "第238章 直面邪神",
+    "chars": 1592,
+    "sha256": "bfad540909a63e0c270efebec2cfe90cb048de5b9b94d6690f77edf0c73d3021",
+    "path": "sources/witch-75248/chapters/238.txt"
+  },
+  {
+    "author_number": 239,
+    "ordinal_in_jiangchen_corpus": 241,
+    "heading": "第239章 如有来世",
+    "chars": 1602,
+    "sha256": "ba2f814ce1a75874dcdccb2680f04cb276fb083c58feee6cc6de0afbe1f26468",
+    "path": "sources/witch-75248/chapters/239.txt"
+  },
+  {
+    "author_number": 240,
+    "ordinal_in_jiangchen_corpus": 242,
+    "heading": "第240章 禁咒·天空坠落",
+    "chars": 1555,
+    "sha256": "b06e9de422e74e3b0f861e7cdeef20e48d12031df54997ece654f80ae9f89893",
+    "path": "sources/witch-75248/chapters/240.txt"
+  },
+  {
+    "author_number": 241,
+    "ordinal_in_jiangchen_corpus": 243,
+    "heading": "第241章 伊蕾娜，燃烧的世界树",
+    "chars": 1643,
+    "sha256": "058fa2c0e1a91a9d7ad973162b65b5d25f492875f11aee30acf1146e4d901c75",
+    "path": "sources/witch-75248/chapters/241.txt"
+  },
+  {
+    "author_number": 242,
+    "ordinal_in_jiangchen_corpus": 244,
+    "heading": "第242章 看来我真得狠狠教育你了",
+    "chars": 1584,
+    "sha256": "ab9b8ee9548137f7f7a5b9d5efaaa9762cfcafd408e90d2a7dd5901b3919f4f4",
+    "path": "sources/witch-75248/chapters/242.txt"
+  },
+  {
+    "author_number": 243,
+    "ordinal_in_jiangchen_corpus": 245,
+    "heading": "第243章 超好用的大魔族",
+    "chars": 1548,
+    "sha256": "736545a7921eabd72fae515a3bd900c7ba19d87769e4738820cc5c53abd32771",
+    "path": "sources/witch-75248/chapters/243.txt"
+  },
+  {
+    "author_number": 244,
+    "ordinal_in_jiangchen_corpus": 246,
+    "heading": "第244章 鉴定为闲的，传说中的两手准备",
+    "chars": 1593,
+    "sha256": "d72838c3424427ac090aa9e05c266bbb5d3fdd966dc0601045feea4b07b2b80b",
+    "path": "sources/witch-75248/chapters/244.txt"
+  },
+  {
+    "author_number": 245,
+    "ordinal_in_jiangchen_corpus": 247,
+    "heading": "第245章 伊露维娅大胜利",
+    "chars": 1640,
+    "sha256": "b0423b08d49b85c1bca4f46044f7eeb441eb4393a7f3382299940b521f58f33e",
+    "path": "sources/witch-75248/chapters/245.txt"
+  },
+  {
+    "author_number": 246,
+    "ordinal_in_jiangchen_corpus": 248,
+    "heading": "第246章 罗兰发表博爱宣言",
+    "chars": 1570,
+    "sha256": "4b287e5e269101580d87ab3eff1c2e8b7f643ec55cde89ee9a8881e521ac9f4f",
+    "path": "sources/witch-75248/chapters/246.txt"
+  },
+  {
+    "author_number": 247,
+    "ordinal_in_jiangchen_corpus": 249,
+    "heading": "第247章 世界名画，蕾米莉亚在加班",
+    "chars": 1638,
+    "sha256": "acc693b8251a97e26d72ade0b17c6848877796ff1f6cf0af3fe722d1cd73a002",
+    "path": "sources/witch-75248/chapters/247.txt"
+  },
+  {
+    "author_number": 248,
+    "ordinal_in_jiangchen_corpus": 250,
+    "heading": "第248章 魔族王庭的异样",
+    "chars": 1588,
+    "sha256": "7a77c6b42f5e3466aed2a6fbba8a2340e22558c18282caf55bb405b94150818f",
+    "path": "sources/witch-75248/chapters/248.txt"
+  },
+  {
+    "author_number": 249,
+    "ordinal_in_jiangchen_corpus": 251,
+    "heading": "第249章 碎裂之躯",
+    "chars": 1602,
+    "sha256": "3afcf5e7640b18c2532657952f939c786a4f99d18da4be19e637c70397b9d1dd",
+    "path": "sources/witch-75248/chapters/249.txt"
+  },
+  {
+    "author_number": 250,
+    "ordinal_in_jiangchen_corpus": 252,
+    "heading": "第250章 罗兰，你怎么碎了？",
+    "chars": 1555,
+    "sha256": "5909e1f0caa21f1eda14ef3218629b0390a46e2a004a17b8aab254a900ca564c",
+    "path": "sources/witch-75248/chapters/250.txt"
+  },
+  {
+    "author_number": 251,
+    "ordinal_in_jiangchen_corpus": 253,
+    "heading": "第251章 这下不得不一路向北了",
+    "chars": 1561,
+    "sha256": "e8d5d7459b67029763ae251c99112174d6e02ab69a2d5688fa60c4a699f7935d",
+    "path": "sources/witch-75248/chapters/251.txt"
+  },
+  {
+    "author_number": 252,
+    "ordinal_in_jiangchen_corpus": 254,
+    "heading": "第252章 预料外的谈判者，邻国的困境",
+    "chars": 1580,
+    "sha256": "9588ad606c6552fa6a8ff9c7e96419256912c0ecbde410deac779438ee1869fe",
+    "path": "sources/witch-75248/chapters/252.txt"
+  },
+  {
+    "author_number": 253,
+    "ordinal_in_jiangchen_corpus": 255,
+    "heading": "第253章 不是很懂你们魔女",
+    "chars": 1591,
+    "sha256": "77db528dd7e04212b709327fac99c959d727893b919a23cf564e09f48ff015e2",
+    "path": "sources/witch-75248/chapters/253.txt"
+  },
+  {
+    "author_number": 254,
+    "ordinal_in_jiangchen_corpus": 256,
+    "heading": "第254章 帮帮忙吧，我们什么都会做的",
+    "chars": 1589,
+    "sha256": "5638d4c9e0aa5bb353e5c5bbe0ebaacfc116cce5b4f537fa0b3a2705e7e583d9",
+    "path": "sources/witch-75248/chapters/254.txt"
+  },
+  {
+    "author_number": 255,
+    "ordinal_in_jiangchen_corpus": 257,
+    "heading": "第255章 我们是二人小队！",
+    "chars": 1573,
+    "sha256": "0b64db6c74ed6de70327e67e352586c6f280a86170cfe231d4de05108370405e",
+    "path": "sources/witch-75248/chapters/255.txt"
+  },
+  {
+    "author_number": 256,
+    "ordinal_in_jiangchen_corpus": 258,
+    "heading": "第256章 大师！救救我吧！",
+    "chars": 1583,
+    "sha256": "2c0a7f30cab2cf4b5664f13f897e3cf1bf28f2b1192d08e3c737ec0b744b32d6",
+    "path": "sources/witch-75248/chapters/256.txt"
+  },
+  {
+    "author_number": 257,
+    "ordinal_in_jiangchen_corpus": 259,
+    "heading": "第257章 没救了，等死吧。",
+    "chars": 1579,
+    "sha256": "f3ddc532aa5312ebfb6a23eadf2e81da19da20eaaf2a3c3570221f595aac1ee4",
+    "path": "sources/witch-75248/chapters/257.txt"
+  },
+  {
+    "author_number": 258,
+    "ordinal_in_jiangchen_corpus": 260,
+    "heading": "第258章 沟槽的教科书",
+    "chars": 1552,
+    "sha256": "d2ea54d9a2103329ffc10632f9348404234ccc28a347fef3abe1a4276cd61c15",
+    "path": "sources/witch-75248/chapters/258.txt"
+  },
+  {
+    "author_number": 259,
+    "ordinal_in_jiangchen_corpus": 261,
+    "heading": "第259章 难道你也背叛了吗（）",
+    "chars": 1595,
+    "sha256": "d428100a45a4d96c271f8935625168c300a73ee5f161c43254cc570dbacaebab",
+    "path": "sources/witch-75248/chapters/259.txt"
+  },
+  {
+    "author_number": 260,
+    "ordinal_in_jiangchen_corpus": 262,
+    "heading": "第260章 她是没了父亲，但这不是还有我吗",
+    "chars": 1589,
+    "sha256": "7889ec1c1d1a2cf5defed861edfce57837af10225b2dc5926be7f9baff68de8d",
+    "path": "sources/witch-75248/chapters/260.txt"
+  },
+  {
+    "author_number": 261,
+    "ordinal_in_jiangchen_corpus": 263,
+    "heading": "第261章 呱！是大户啊！",
+    "chars": 1587,
+    "sha256": "7c537bdd3cec7ed7ae3070d8c836bf202292f8a31c9515357d7fb5dfbfd0e289",
+    "path": "sources/witch-75248/chapters/261.txt"
+  },
+  {
+    "author_number": 262,
+    "ordinal_in_jiangchen_corpus": 264,
+    "heading": "第262章 好方略，但我想稍作修改",
+    "chars": 1580,
+    "sha256": "0842e8e2aa9aca35815d117016c382acbaa2da0c176dcd523daa238a5c99d9d3",
+    "path": "sources/witch-75248/chapters/262.txt"
+  },
+  {
+    "author_number": 263,
+    "ordinal_in_jiangchen_corpus": 265,
+    "heading": "第263章 很遗憾，没有死亡的风险",
+    "chars": 1565,
+    "sha256": "31bf8598c6d0dab73f076df781286127e24435c15ad9d2b39b1096d34d37da64",
+    "path": "sources/witch-75248/chapters/263.txt"
+  },
+  {
+    "author_number": 264,
+    "ordinal_in_jiangchen_corpus": 266,
+    "heading": "第264章 我看你是完全不懂哦",
+    "chars": 1602,
+    "sha256": "65d65b365d01b601e40295ecc1940012291a26aea1cea81eb1ec711a3649b3d9",
+    "path": "sources/witch-75248/chapters/264.txt"
+  },
+  {
+    "author_number": 265,
+    "ordinal_in_jiangchen_corpus": 267,
+    "heading": "第265章 我房间还蛮大的",
+    "chars": 1566,
+    "sha256": "2ef444e0366d2d07625fd5e6d8c24f583eb6fd85a8c749196bb1c0fda142d42d",
+    "path": "sources/witch-75248/chapters/265.txt"
+  },
+  {
+    "author_number": 266,
+    "ordinal_in_jiangchen_corpus": 268,
+    "heading": "第266章 什么叫战争开始了？",
+    "chars": 1569,
+    "sha256": "8dbe0687cb1fba59361d31dfb6810ca20e45c43c106b17cef5feb4ec7b82ccfc",
+    "path": "sources/witch-75248/chapters/266.txt"
+  },
+  {
+    "author_number": 267,
+    "ordinal_in_jiangchen_corpus": 269,
+    "heading": "第267章 他妈的罗兰，想象力这么好做什么？",
+    "chars": 1575,
+    "sha256": "6d5db54d44f518c9bba3ac6757b5977b035555ba286f602e679119d8471a9186",
+    "path": "sources/witch-75248/chapters/267.txt"
+  },
+  {
+    "author_number": 268,
+    "ordinal_in_jiangchen_corpus": 270,
+    "heading": "第268章 现在的我，强的可怕",
+    "chars": 1603,
+    "sha256": "17c1d91dbcfdfb0fe3b558eb209d2863d0de9c9557165512ade81ce720b17bb1",
+    "path": "sources/witch-75248/chapters/268.txt"
+  },
+  {
+    "author_number": 269,
+    "ordinal_in_jiangchen_corpus": 271,
+    "heading": "第269章 此刻，等待夜幕降临",
+    "chars": 1569,
+    "sha256": "5a7b612900d08e2271ed6db5a097ee329060efd82187720ebb88c1703c7d98d8",
+    "path": "sources/witch-75248/chapters/269.txt"
+  },
+  {
+    "author_number": 270,
+    "ordinal_in_jiangchen_corpus": 272,
+    "heading": "第270章 于此刻锚定星象",
+    "chars": 1598,
+    "sha256": "c7ee172668801d996abe891a7e2782ae434c6a2fb122597d65b128f19d3f0313",
+    "path": "sources/witch-75248/chapters/270.txt"
+  },
+  {
+    "author_number": 271,
+    "ordinal_in_jiangchen_corpus": 273,
+    "heading": "第271章 至此，工程已毕",
+    "chars": 1569,
+    "sha256": "57f21733a0088a2a245881a4e931c66a32eba5468243c690da04c0c658eac7b0",
+    "path": "sources/witch-75248/chapters/271.txt"
+  },
+  {
+    "author_number": 272,
+    "ordinal_in_jiangchen_corpus": 274,
+    "heading": "第272章 风向是会改变的……",
+    "chars": 1615,
+    "sha256": "0051bdd7d1edb1b869a7061ff0e66279366e0580c8cd65da4d013618b2400300",
+    "path": "sources/witch-75248/chapters/272.txt"
+  },
+  {
+    "author_number": 273,
+    "ordinal_in_jiangchen_corpus": 275,
+    "heading": "第273章 谁敢杀我！还望陛下出山",
+    "chars": 1584,
+    "sha256": "13941b55fe8d35cfa58ced91e77de6767b103ca419dd3dbf010693dcaed64437",
+    "path": "sources/witch-75248/chapters/273.txt"
+  },
+  {
+    "author_number": 274,
+    "ordinal_in_jiangchen_corpus": 276,
+    "heading": "第274章 为师很欣慰",
+    "chars": 1596,
+    "sha256": "7087b54a3f60b6d4effc88857f9c10c2c37c51a8ca08c90f856720832bc9c746",
+    "path": "sources/witch-75248/chapters/274.txt"
+  },
+  {
+    "author_number": 275,
+    "ordinal_in_jiangchen_corpus": 277,
+    "heading": "第275章 哼，想跑！？",
+    "chars": 1597,
+    "sha256": "8b844c5173db1e8823d6f12f0d5e5c85954e58470a16c483cc42e966e4cde738",
+    "path": "sources/witch-75248/chapters/275.txt"
+  },
+  {
+    "author_number": 276,
+    "ordinal_in_jiangchen_corpus": 278,
+    "heading": "第276章 假面骑士の诞生（并非）",
+    "chars": 1580,
+    "sha256": "8858c6417f91a7ee100f6f18fe185fe6ae64005d9666c1fe23e872e777b007cc",
+    "path": "sources/witch-75248/chapters/276.txt"
+  },
+  {
+    "author_number": 277,
+    "ordinal_in_jiangchen_corpus": 279,
+    "heading": "第277章 血魔前辈，你也背叛了吗OMO",
+    "chars": 1570,
+    "sha256": "eb50a2bdd3193473be1dca8751d6ce55512fdbca98f91963fad3a9dabf618ade",
+    "path": "sources/witch-75248/chapters/277.txt"
+  },
+  {
+    "author_number": 278,
+    "ordinal_in_jiangchen_corpus": 280,
+    "heading": "第278章 百般武艺，此乃美式居合",
+    "chars": 1564,
+    "sha256": "e40199e0024d645b4eca4fc988e7128110a954d2082932c4efe6c1aaeb6f2921",
+    "path": "sources/witch-75248/chapters/278.txt"
+  },
+  {
+    "author_number": 279,
+    "ordinal_in_jiangchen_corpus": 281,
+    "heading": "第279章 过期美少女",
+    "chars": 1553,
+    "sha256": "b4a6c82fa07709ca1fd69e77461278ee7ba93f7c16cb46c007b248bc020c4372",
+    "path": "sources/witch-75248/chapters/279.txt"
+  },
+  {
+    "author_number": 280,
+    "ordinal_in_jiangchen_corpus": 282,
+    "heading": "第280章 传说中的债主，教廷使者",
+    "chars": 1608,
+    "sha256": "9200264f681a6186f2d73ff5b6c768ff52dffce75b9b1f4f84b883799363f70a",
+    "path": "sources/witch-75248/chapters/280.txt"
+  },
+  {
+    "author_number": 281,
+    "ordinal_in_jiangchen_corpus": 283,
+    "heading": "第281章 阳光开朗圣骑士",
+    "chars": 1560,
+    "sha256": "471224137a4bab1eacd0a3b8a8702670d38a56e69c602ca00a3912259b195a3e",
+    "path": "sources/witch-75248/chapters/281.txt"
+  },
+  {
+    "author_number": 282,
+    "ordinal_in_jiangchen_corpus": 284,
+    "heading": "第282章 装高手，教廷的异样",
+    "chars": 1605,
+    "sha256": "fab11eb8dbcb533d97df9c91b9cb15d6148c9b0db6128c79d1badd2283b3f8b6",
+    "path": "sources/witch-75248/chapters/282.txt"
+  },
+  {
+    "author_number": 283,
+    "ordinal_in_jiangchen_corpus": 285,
+    "heading": "第283章 他还得谢谢咱呢",
+    "chars": 1600,
+    "sha256": "226c64c3e4d43b8bd5daf3b3c7626655756ddd4ae6cbb7d3efc413f67a34eb7e",
+    "path": "sources/witch-75248/chapters/283.txt"
+  },
+  {
+    "author_number": 284,
+    "ordinal_in_jiangchen_corpus": 286,
+    "heading": "第284章 窃来珍贵的一晚",
+    "chars": 1586,
+    "sha256": "417983be512ea60934468fcddd57bb38576db9779f4803064f30a8abd8109dac",
+    "path": "sources/witch-75248/chapters/284.txt"
+  },
+  {
+    "author_number": 285,
+    "ordinal_in_jiangchen_corpus": 287,
+    "heading": "第285章 坏了，这下器灵入住了",
+    "chars": 1602,
+    "sha256": "68e1e87db6a530cda53878a7c55ff0c78ae10a48ef308be8c6b93d3828bcc5bc",
+    "path": "sources/witch-75248/chapters/285.txt"
+  },
+  {
+    "author_number": 286,
+    "ordinal_in_jiangchen_corpus": 288,
+    "heading": "第286章 给我朝着转轮机枪冲过来！",
+    "chars": 1597,
+    "sha256": "f009614f7298f846830366a3e8fadaad9c6a05e2492ed1f9673f875699d2e213",
+    "path": "sources/witch-75248/chapters/286.txt"
+  },
+  {
+    "author_number": 287,
+    "ordinal_in_jiangchen_corpus": 289,
+    "heading": "第287章 我会在危机中拯救你的，至于危机怎么来的你不要管",
+    "chars": 1587,
+    "sha256": "87d4763e849c2000588e5c7b8fec044a5251baf17d9e84bfa48e396620ae0446",
+    "path": "sources/witch-75248/chapters/287.txt"
+  },
+  {
+    "author_number": 288,
+    "ordinal_in_jiangchen_corpus": 290,
+    "heading": "第288章 “及时”赶到的大贤者",
+    "chars": 1618,
+    "sha256": "9105a7c7b0653ab33e6a8f6ce78fc042470f86cd2a8fd84a80472d92cc33ddb7",
+    "path": "sources/witch-75248/chapters/288.txt"
+  },
+  {
+    "author_number": 289,
+    "ordinal_in_jiangchen_corpus": 291,
+    "heading": "第289章 魔王的义体计划",
+    "chars": 1551,
+    "sha256": "360d9f8348d4c64f9fd8927c25be94d34bac72cc5487d4e9fd067e30a61cf314",
+    "path": "sources/witch-75248/chapters/289.txt"
+  },
+  {
+    "author_number": 290,
+    "ordinal_in_jiangchen_corpus": 292,
+    "heading": "第290章 总是想太多",
+    "chars": 1576,
+    "sha256": "b14e6c827d04dae0bed068fc33f3e9f1daa6ad579aa0440d3a92508c386f36c3",
+    "path": "sources/witch-75248/chapters/290.txt"
+  },
+  {
+    "author_number": 291,
+    "ordinal_in_jiangchen_corpus": 293,
+    "heading": "第291章 死神：因为……没有钱啊",
+    "chars": 1560,
+    "sha256": "a644961dfd3d2b2ffffdd014c7021f952de932c86a690ba5f8dd41d8abaf56aa",
+    "path": "sources/witch-75248/chapters/291.txt"
+  },
+  {
+    "author_number": 292,
+    "ordinal_in_jiangchen_corpus": 294,
+    "heading": "第292章 有关那位大人的真相",
+    "chars": 1603,
+    "sha256": "096f636d1346d77e4d061a90b33a9edab3a585601a0c40bada683a54d11aeb16",
+    "path": "sources/witch-75248/chapters/292.txt"
+  },
+  {
+    "author_number": 293,
+    "ordinal_in_jiangchen_corpus": 295,
+    "heading": "第293章 弄死了再复活，那不是傻逼吗？",
+    "chars": 1588,
+    "sha256": "0cc729106b01da114ec3f403891309184626fdc82bf0bb48aeed61a160ba865d",
+    "path": "sources/witch-75248/chapters/293.txt"
+  },
+  {
+    "author_number": 294,
+    "ordinal_in_jiangchen_corpus": 296,
+    "heading": "第294章 对于此世的实感",
+    "chars": 1574,
+    "sha256": "105874520e0c1bc53f60acaef4334114321d915c50462b8621a302ff1482d66b",
+    "path": "sources/witch-75248/chapters/294.txt"
+  },
+  {
+    "author_number": 295,
+    "ordinal_in_jiangchen_corpus": 297,
+    "heading": "第295章 比起做什么，更应该在意的是两人独处的机会",
+    "chars": 1582,
+    "sha256": "87442ffa0ee73ac1d86c6fd71e834c80ecc25ee6eae91d5c9ef36e1dd4db7baf",
+    "path": "sources/witch-75248/chapters/295.txt"
+  },
+  {
+    "author_number": 296,
+    "ordinal_in_jiangchen_corpus": 298,
+    "heading": "第296章 骑士王传说",
+    "chars": 1576,
+    "sha256": "fcb66294cc12972bae65883ccfb69604f7ae8e2c169bd528d76b845d448927e0",
+    "path": "sources/witch-75248/chapters/296.txt"
+  },
+  {
+    "author_number": 297,
+    "ordinal_in_jiangchen_corpus": 299,
+    "heading": "第297章 圣光啊！看见那个敌人了吗！？",
+    "chars": 1567,
+    "sha256": "0c6e478aeecf8de79af849f108a4a650ba2e0dbe443d6cd4c6990c8878eeeb60",
+    "path": "sources/witch-75248/chapters/297.txt"
+  },
+  {
+    "author_number": 298,
+    "ordinal_in_jiangchen_corpus": 300,
+    "heading": "第298章 背叛者",
+    "chars": 1602,
+    "sha256": "cf6c7f5014e891b9fa770c6f0b5d484070183a49da1b608d96529b1139c4e1a2",
+    "path": "sources/witch-75248/chapters/298.txt"
+  },
+  {
+    "author_number": 299,
+    "ordinal_in_jiangchen_corpus": 301,
+    "heading": "第299章 不可不防啊",
+    "chars": 1551,
+    "sha256": "93cb5e22a4b15bbe8bc511f40f808b34ca615dedf006b91a2c91898caa741dab",
+    "path": "sources/witch-75248/chapters/299.txt"
+  },
+  {
+    "author_number": 300,
+    "ordinal_in_jiangchen_corpus": 302,
+    "heading": "第300章 情报及时的重要性（居然都三百章了）",
+    "chars": 1606,
+    "sha256": "83cbd0b4b4c6f9039a992bb202b206ac9b18a84ed803d83b28d69ee3a79b804e",
+    "path": "sources/witch-75248/chapters/300.txt"
+  },
+  {
+    "author_number": 301,
+    "ordinal_in_jiangchen_corpus": 303,
+    "heading": "第301章 纳什：呱！我不要上实验台啊！",
+    "chars": 1580,
+    "sha256": "0472208ec6d86a9d91e4f4a7a1212cfbf64364894a4a066b4545a1fc1e3467f2",
+    "path": "sources/witch-75248/chapters/301.txt"
+  },
+  {
+    "author_number": 302,
+    "ordinal_in_jiangchen_corpus": 304,
+    "heading": "第302章 虽然是玩笑，但有人不是开玩笑",
+    "chars": 1606,
+    "sha256": "1af011d92f665379402e9f4188f24c69dd6aacb90930020f4a714cb9ce2df5e6",
+    "path": "sources/witch-75248/chapters/302.txt"
+  },
+  {
+    "author_number": 303,
+    "ordinal_in_jiangchen_corpus": 305,
+    "heading": "第303章 残忍的得失",
+    "chars": 1598,
+    "sha256": "44e0feaf6dbf2e22c94eceec62e99eb6e22f1d3b6889acc8d1615a73ca2864ce",
+    "path": "sources/witch-75248/chapters/303.txt"
+  },
+  {
+    "author_number": 304,
+    "ordinal_in_jiangchen_corpus": 306,
+    "heading": "第304章 我不是在梦里都处理完了吗？",
+    "chars": 1586,
+    "sha256": "6f6812f440d98b7ae73fe1f8dffb9a784bc2a6068b2634eac0cea5c8321843f7",
+    "path": "sources/witch-75248/chapters/304.txt"
+  },
+  {
+    "author_number": 305,
+    "ordinal_in_jiangchen_corpus": 307,
+    "heading": "第305章 魔王，堂堂复活！",
+    "chars": 1583,
+    "sha256": "13c585d8ab0687272cca77bda3b63d4c0cf55f6361c07c94c52ac1372c47bf4e",
+    "path": "sources/witch-75248/chapters/305.txt"
+  },
+  {
+    "author_number": 306,
+    "ordinal_in_jiangchen_corpus": 308,
+    "heading": "第306章 庆贺吧！（请输入文本）",
+    "chars": 1576,
+    "sha256": "3b6223e13032306b2267493fcc3deb18b059e501851382614791abe5e1a6a0bb",
+    "path": "sources/witch-75248/chapters/306.txt"
+  },
+  {
+    "author_number": 307,
+    "ordinal_in_jiangchen_corpus": 309,
+    "heading": "第307章 老罗家祖上也是阔过的",
+    "chars": 1564,
+    "sha256": "da7c5b982df8968433cabeced6c95cbd587fb591124599fda0bf04e5ec06859c",
+    "path": "sources/witch-75248/chapters/307.txt"
+  },
+  {
+    "author_number": 308,
+    "ordinal_in_jiangchen_corpus": 310,
+    "heading": "第308章 三柱神的去向",
+    "chars": 1594,
+    "sha256": "a181095d0056c0f7f04a9d38937bd3d7d966af963bde3ea84c416145d5fd8b55",
+    "path": "sources/witch-75248/chapters/308.txt"
+  },
+  {
+    "author_number": 309,
+    "ordinal_in_jiangchen_corpus": 311,
+    "heading": "第309章 纳什：对哦，我爸怎么还不来",
+    "chars": 1554,
+    "sha256": "36c2dc92c4ebbed583c15ac9a9e62c2e2834128655dad650d20d5ff4a1cf896d",
+    "path": "sources/witch-75248/chapters/309.txt"
+  },
+  {
+    "author_number": 310,
+    "ordinal_in_jiangchen_corpus": 312,
+    "heading": "第310章 你爹来咯",
+    "chars": 1582,
+    "sha256": "20057b1cbaef8efc3c81c80e86ceead027adc62d50cc77049c4e595da511b2b9",
+    "path": "sources/witch-75248/chapters/310.txt"
+  },
+  {
+    "author_number": 311,
+    "ordinal_in_jiangchen_corpus": 313,
+    "heading": "第311章 得加钱",
+    "chars": 1586,
+    "sha256": "501dbb266b31f76d60f745716f32f9b3db81da11ff556d9aa8bd4007a3fe3286",
+    "path": "sources/witch-75248/chapters/311.txt"
+  },
+  {
+    "author_number": 312,
+    "ordinal_in_jiangchen_corpus": 314,
+    "heading": "第312章 跨越万年的承诺",
+    "chars": 1576,
+    "sha256": "29b6f350141122374f9a5c02edd21016b31a838ef372e1ba072d39cd1952546f",
+    "path": "sources/witch-75248/chapters/312.txt"
+  },
+  {
+    "author_number": 313,
+    "ordinal_in_jiangchen_corpus": 315,
+    "heading": "第313章 伊露维娅：我没意见",
+    "chars": 1579,
+    "sha256": "0457dfc6981fb67311463dc0415b8082d51cc4d1a21d248b72cc405050e46f7c",
+    "path": "sources/witch-75248/chapters/313.txt"
+  },
+  {
+    "author_number": 314,
+    "ordinal_in_jiangchen_corpus": 316,
+    "heading": "第314章 在奇怪的地方较上劲了",
+    "chars": 1579,
+    "sha256": "bbec1210e72a5eaa5a9730643509981f594ae09b8e6967692c8c7d000ad06608",
+    "path": "sources/witch-75248/chapters/314.txt"
+  },
+  {
+    "author_number": 315,
+    "ordinal_in_jiangchen_corpus": 317,
+    "heading": "第315章 罗兰的特殊性",
+    "chars": 1600,
+    "sha256": "ddd3cccb215a883e0b73dfd24fd0e7348d71d3549288ffc934029c84fe5dadd5",
+    "path": "sources/witch-75248/chapters/315.txt"
+  },
+  {
+    "author_number": 316,
+    "ordinal_in_jiangchen_corpus": 318,
+    "heading": "第316章 不经意显露出来的真正靠山",
+    "chars": 1579,
+    "sha256": "65d78bf15a147f81250765ae9592ca98254171c7a0c2111ad18947d2f81fd621",
+    "path": "sources/witch-75248/chapters/316.txt"
+  },
+  {
+    "author_number": 317,
+    "ordinal_in_jiangchen_corpus": 319,
+    "heading": "第317章 晋升超凡，天外星空",
+    "chars": 1588,
+    "sha256": "32c403db609c4b884506034ee5da846026d9645fd08fa66f1a3c53bcfa2e7db7",
+    "path": "sources/witch-75248/chapters/317.txt"
+  },
+  {
+    "author_number": 318,
+    "ordinal_in_jiangchen_corpus": 320,
+    "heading": "第318章 我不干净了",
+    "chars": 1586,
+    "sha256": "71d42838bd6462854a45a020c15aaa510d7c3cb829bbdcb17b5c84a2ed648073",
+    "path": "sources/witch-75248/chapters/318.txt"
+  },
+  {
+    "author_number": 319,
+    "ordinal_in_jiangchen_corpus": 321,
+    "heading": "第319章 一脉相承的称呼",
+    "chars": 1578,
+    "sha256": "2c703a5bccf4bb0152f5dcd76683e69a7a31c2ff97ec5f9da6bcc97a06919a23",
+    "path": "sources/witch-75248/chapters/319.txt"
+  },
+  {
+    "author_number": 320,
+    "ordinal_in_jiangchen_corpus": 322,
+    "heading": "第320章 世界树：你来辣？",
+    "chars": 1580,
+    "sha256": "5527b2b2252ebe6018192d0b720eed8083f50a98b64b5a2298d8e2a4a472fa99",
+    "path": "sources/witch-75248/chapters/320.txt"
+  },
+  {
+    "author_number": 321,
+    "ordinal_in_jiangchen_corpus": 323,
+    "heading": "第321章 金发长腿的精灵姐姐",
+    "chars": 1577,
+    "sha256": "b04fd2a66634c859de22133feb1d6ab587193aea4b9c83729a8689ddc0a345b6",
+    "path": "sources/witch-75248/chapters/321.txt"
+  },
+  {
+    "author_number": 322,
+    "ordinal_in_jiangchen_corpus": 324,
+    "heading": "第322章 王的馈赠",
+    "chars": 1592,
+    "sha256": "9d3eb0adc4a4a39cc79c469d2a7d909747ade53e170769a47e37282b21fe6c31",
+    "path": "sources/witch-75248/chapters/322.txt"
+  },
+  {
+    "author_number": 323,
+    "ordinal_in_jiangchen_corpus": 325,
+    "heading": "第323章 树中剑",
+    "chars": 1604,
+    "sha256": "f9695163a6eb63698045a9f4df62815d3b77f67813ac90f24a3e5fa5ce542508",
+    "path": "sources/witch-75248/chapters/323.txt"
+  },
+  {
+    "author_number": 324,
+    "ordinal_in_jiangchen_corpus": 326,
+    "heading": "第324章 被打成球了",
+    "chars": 1578,
+    "sha256": "7afc0b96c12dfd39b7c6956d4eed0a982eb90fc9ee666d57da7884d866d26daa",
+    "path": "sources/witch-75248/chapters/324.txt"
+  },
+  {
+    "author_number": 325,
+    "ordinal_in_jiangchen_corpus": 327,
+    "heading": "第325章 因为争抢男人和自己的老师在皇宫门前打起来了",
+    "chars": 1570,
+    "sha256": "19c4a9c67434b86ce1c04f2ffcd12583bad8f2955d27f7f79a51129aff61f698",
+    "path": "sources/witch-75248/chapters/325.txt"
+  },
+  {
+    "author_number": 326,
+    "ordinal_in_jiangchen_corpus": 328,
+    "heading": "第326章 跳进智慧泉也洗不清了",
+    "chars": 1558,
+    "sha256": "dc7445ee7ff429e43aaec74696b131d80f01d88bc68c6dd5285d7709b99819dd",
+    "path": "sources/witch-75248/chapters/326.txt"
+  },
+  {
+    "author_number": 327,
+    "ordinal_in_jiangchen_corpus": 329,
+    "heading": "第327章 人偶关下门，楼下那个铁闸门",
+    "chars": 1585,
+    "sha256": "88f95307b7bacaff25001a14852e8652583be2caaf8fca40b66d2d0549d670c3",
+    "path": "sources/witch-75248/chapters/327.txt"
+  },
+  {
+    "author_number": 328,
+    "ordinal_in_jiangchen_corpus": 330,
+    "heading": "第328章 黄金树之影（）",
+    "chars": 1595,
+    "sha256": "4d9f5de6810be02bf76522ef4304ad0d783392f50beed98a420ab9d4cdaa4b02",
+    "path": "sources/witch-75248/chapters/328.txt"
+  },
+  {
+    "author_number": 329,
+    "ordinal_in_jiangchen_corpus": 331,
+    "heading": "第329章 血魔大君：我也可以忠诚",
+    "chars": 1564,
+    "sha256": "9842baa9241333432b51d6229586df31a01d49f1bf3b81dc6ba293dfaad1ef89",
+    "path": "sources/witch-75248/chapters/329.txt"
+  },
+  {
+    "author_number": 330,
+    "ordinal_in_jiangchen_corpus": 332,
+    "heading": "第330章 老妪何故惺惺然作处子态?",
+    "chars": 1590,
+    "sha256": "dcadb079b705b17fd537a3227385f7be1abaeea30bd7e2be7013c2c1a50dfb6a",
+    "path": "sources/witch-75248/chapters/330.txt"
+  },
+  {
+    "author_number": 331,
+    "ordinal_in_jiangchen_corpus": 333,
+    "heading": "第331章 原型机真正的作用",
+    "chars": 1562,
+    "sha256": "19231b0201205ed0648907e4e728a9da056b10c6fc40574c9c71aad09929dfa1",
+    "path": "sources/witch-75248/chapters/331.txt"
+  },
+  {
+    "author_number": 332,
+    "ordinal_in_jiangchen_corpus": 334,
+    "heading": "第332章 你已经是成熟的符石了，应该学会自己去找其他的符石朋友",
+    "chars": 1590,
+    "sha256": "51dc01c8b6a0ffd8daf570ccfd259e22689b2cfce0129e1e63df46ca4f9c822b",
+    "path": "sources/witch-75248/chapters/332.txt"
+  },
+  {
+    "author_number": 333,
+    "ordinal_in_jiangchen_corpus": 335,
+    "heading": "第333章 邪教徒静悄悄，必定在作妖",
+    "chars": 1576,
+    "sha256": "21238267ce165dad0c057219735f6171cc437776627f35a9b5b2867236d83b6b",
+    "path": "sources/witch-75248/chapters/333.txt"
+  },
+  {
+    "author_number": 334,
+    "ordinal_in_jiangchen_corpus": 336,
+    "heading": "第334章 k-423和她的龙（不是）",
+    "chars": 1574,
+    "sha256": "827b78c57f42b2395e40bc53f18c3fdff424a6326fe275ffe0c46ed952a747e8",
+    "path": "sources/witch-75248/chapters/334.txt"
+  },
+  {
+    "author_number": 335,
+    "ordinal_in_jiangchen_corpus": 337,
+    "heading": "第335章 这定是死神大人的伟力呀！",
+    "chars": 1590,
+    "sha256": "1b025451598f233647ac0cbf599cd5f8b84020c69425f90a16b90495ee4cfe5a",
+    "path": "sources/witch-75248/chapters/335.txt"
+  },
+  {
+    "author_number": 336,
+    "ordinal_in_jiangchen_corpus": 338,
+    "heading": "第336章 意为“诸神”",
+    "chars": 1564,
+    "sha256": "3b2284865c036a2b66e74210446c749506f39c4798162c94021591ffc2fcdd59",
+    "path": "sources/witch-75248/chapters/336.txt"
+  },
+  {
+    "author_number": 337,
+    "ordinal_in_jiangchen_corpus": 339,
+    "heading": "第337章 恩赐",
+    "chars": 1636,
+    "sha256": "f326558ecd10a20bdd998751380a5cf52da4de36b8ace81c107ed04b58076d97",
+    "path": "sources/witch-75248/chapters/337.txt"
+  },
+  {
+    "author_number": 338,
+    "ordinal_in_jiangchen_corpus": 340,
+    "heading": "第338章 旧的姓名，新的生活",
+    "chars": 1576,
+    "sha256": "98ee7c24f205cc191741b4f65812b64b92b7fb65679b6609cc5b4d71d0b8c5f5",
+    "path": "sources/witch-75248/chapters/338.txt"
+  },
+  {
+    "author_number": 339,
+    "ordinal_in_jiangchen_corpus": 341,
+    "heading": "第339章 杂鱼魔王",
+    "chars": 1609,
+    "sha256": "ad2357598a3cd09e8d7364c44df0660de344c4c2eae3e4f0adcf35ff16292033",
+    "path": "sources/witch-75248/chapters/339.txt"
+  },
+  {
+    "author_number": 340,
+    "ordinal_in_jiangchen_corpus": 342,
+    "heading": "第340章 异变",
+    "chars": 1574,
+    "sha256": "7234d4a76709de3aa6c89dadaeeaa78645e104c65aa505f12684da9e79516dd8",
+    "path": "sources/witch-75248/chapters/340.txt"
+  },
+  {
+    "author_number": 341,
+    "ordinal_in_jiangchen_corpus": 343,
+    "heading": "第341章 冥河摆渡人到底丢了多少柄船桨",
+    "chars": 1619,
+    "sha256": "467a750d84ebae3529ee30f06bb26bf234c6b2e352bec6366d2e897380fba8f5",
+    "path": "sources/witch-75248/chapters/341.txt"
+  },
+  {
+    "author_number": 342,
+    "ordinal_in_jiangchen_corpus": 344,
+    "heading": "第342章 司祭与司教",
+    "chars": 1603,
+    "sha256": "2c0bec4164ea009f7615666938eb1b8b112ed354b1ea4658d41cbd702a0f6a4b",
+    "path": "sources/witch-75248/chapters/342.txt"
+  },
+  {
+    "author_number": 343,
+    "ordinal_in_jiangchen_corpus": 345,
+    "heading": "第343章 意想不到的援军",
+    "chars": 1599,
+    "sha256": "0baf797249f2d97e758d02a046d53fdf14b78d3000b4a93ad94761b79ed623ec",
+    "path": "sources/witch-75248/chapters/343.txt"
+  },
+  {
+    "author_number": 344,
+    "ordinal_in_jiangchen_corpus": 346,
+    "heading": "第344章 情报员德古拉",
+    "chars": 1583,
+    "sha256": "b7f0a0ffa11604478ee7a0ba6e824229e1fe86b7b96cf0a70bec54b138f30356",
+    "path": "sources/witch-75248/chapters/344.txt"
+  },
+  {
+    "author_number": 345,
+    "ordinal_in_jiangchen_corpus": 347,
+    "heading": "第345章 我草，好酷炫的骨龙",
+    "chars": 1608,
+    "sha256": "30e5504f958ed8d6c72d25203056cf3c9e19021980f6f13bd8813f9d3b19791b",
+    "path": "sources/witch-75248/chapters/345.txt"
+  },
+  {
+    "author_number": 346,
+    "ordinal_in_jiangchen_corpus": 348,
+    "heading": "第346章 真实目的，苍牙往事",
+    "chars": 1605,
+    "sha256": "61deb4e0465991a330cd69c63964501196134752117c96639ac4113dc917874c",
+    "path": "sources/witch-75248/chapters/346.txt"
+  },
+  {
+    "author_number": 347,
+    "ordinal_in_jiangchen_corpus": 349,
+    "heading": "第347章 能群殴绝不单挑",
+    "chars": 1624,
+    "sha256": "86a0fbc9e018defb6b429f76e4fc17fd56488a4091b5422f1c7806f9b75679a3",
+    "path": "sources/witch-75248/chapters/347.txt"
+  },
+  {
+    "author_number": 348,
+    "ordinal_in_jiangchen_corpus": 350,
+    "heading": "第348章 尴尬到脚趾扣别墅",
+    "chars": 1587,
+    "sha256": "3ff46899fad1c3a0d2c3286a2966533bdd43d0d07b1ab86775e00f11cc648936",
+    "path": "sources/witch-75248/chapters/348.txt"
+  },
+  {
+    "author_number": 349,
+    "ordinal_in_jiangchen_corpus": 351,
+    "heading": "第349章 那你能帮帮我吗？",
+    "chars": 1564,
+    "sha256": "0ebd7349d4021615753bf7cb90a355cf271ad3a524fe1988b02a86d0dbd7f840",
+    "path": "sources/witch-75248/chapters/349.txt"
+  },
+  {
+    "author_number": 350,
+    "ordinal_in_jiangchen_corpus": 352,
+    "heading": "第350章 行动人员名单",
+    "chars": 1549,
+    "sha256": "eddf5bc3a16274d98e7ce05286916c432463a7e6706655e30c404b9248801011",
+    "path": "sources/witch-75248/chapters/350.txt"
+  },
+  {
+    "author_number": 351,
+    "ordinal_in_jiangchen_corpus": 353,
+    "heading": "第351章 一路向北，离开有你的季节（）",
+    "chars": 1590,
+    "sha256": "4def9b6ed0377a0f6fc72489d97cb061105ab9ec7e8cb5046d8443452fd4eb42",
+    "path": "sources/witch-75248/chapters/351.txt"
+  },
+  {
+    "author_number": 352,
+    "ordinal_in_jiangchen_corpus": 354,
+    "heading": "第352章 已经习以为常的守城战",
+    "chars": 1595,
+    "sha256": "ca45e718689b48f640adf60c240051d56627ba788e87bcc9e7d5755acc778fe4",
+    "path": "sources/witch-75248/chapters/352.txt"
+  },
+  {
+    "author_number": 353,
+    "ordinal_in_jiangchen_corpus": 355,
+    "heading": "第353章 忠诚不绝对，就是绝对不忠诚",
+    "chars": 1567,
+    "sha256": "e1eef9fbee1991f2fbc6e8765fb04d5461eed8a56aff430d3f6d02f991d5ae0a",
+    "path": "sources/witch-75248/chapters/353.txt"
+  },
+  {
+    "author_number": 354,
+    "ordinal_in_jiangchen_corpus": 356,
+    "heading": "第354章 只要大公阁下发起弹劾，一切都会好起来的",
+    "chars": 1581,
+    "sha256": "09df787e118cc761bfcda0db8ee675b2d0feb8de25d1d0aba80a7d51e25328ea",
+    "path": "sources/witch-75248/chapters/354.txt"
+  },
+  {
+    "author_number": 355,
+    "ordinal_in_jiangchen_corpus": 357,
+    "heading": "第355章 光杆司令",
+    "chars": 1588,
+    "sha256": "06b96e9fc01a7c2db6dc1a09c20d14b3114de30280f99f7d71e03e3b69668243",
+    "path": "sources/witch-75248/chapters/355.txt"
+  },
+  {
+    "author_number": 356,
+    "ordinal_in_jiangchen_corpus": 358,
+    "heading": "第356章 权限？我就是权限！",
+    "chars": 1566,
+    "sha256": "69fb6d11d386ce01b7780be41c54fdc206d15f1ef3e75b6bc45a2795d85dc91e",
+    "path": "sources/witch-75248/chapters/356.txt"
+  },
+  {
+    "author_number": 357,
+    "ordinal_in_jiangchen_corpus": 359,
+    "heading": "第357章 恭迎吾王，弹劾通过，全境宣告",
+    "chars": 1612,
+    "sha256": "6b4f83f0fa3c4d2c0062bf52118e57b85d5956ec6daa2a2a36465e14d4c205ee",
+    "path": "sources/witch-75248/chapters/357.txt"
+  },
+  {
+    "author_number": 358,
+    "ordinal_in_jiangchen_corpus": 360,
+    "heading": "第358章 我们联合！优势在我！",
+    "chars": 1553,
+    "sha256": "0f6673c338586f4fa8ced07befd975fa27fb115bdc7fce0de53b13daf87dd052",
+    "path": "sources/witch-75248/chapters/358.txt"
+  },
+  {
+    "author_number": 359,
+    "ordinal_in_jiangchen_corpus": 361,
+    "heading": "第359章 魔王小课堂开课啦",
+    "chars": 1563,
+    "sha256": "0e366c9b716c5dbd290cbc8d3a5c42e935dc6b104ed0fd1c64fd2825d9a3bbc3",
+    "path": "sources/witch-75248/chapters/359.txt"
+  },
+  {
+    "author_number": 360,
+    "ordinal_in_jiangchen_corpus": 362,
+    "heading": "第360章 人王的冠冕",
+    "chars": 1609,
+    "sha256": "9a6d9e60a78b34d8bcf7883dbb05345c713be9ef8a6ccbcbb2ae5bdc7a633501",
+    "path": "sources/witch-75248/chapters/360.txt"
+  },
+  {
+    "author_number": 361,
+    "ordinal_in_jiangchen_corpus": 363,
+    "heading": "第361章 倒霉蛋二人组",
+    "chars": 1581,
+    "sha256": "a6960f13cf5d9aea20b311bbd3ebde01481dd2bff8e2d18a3406f68a19a04408",
+    "path": "sources/witch-75248/chapters/361.txt"
+  },
+  {
+    "author_number": 362,
+    "ordinal_in_jiangchen_corpus": 364,
+    "heading": "第362章 不得不上",
+    "chars": 1621,
+    "sha256": "c38740b339875ef76a0b868bc2576f7d7366397b90a24c71792602b0bb038a38",
+    "path": "sources/witch-75248/chapters/362.txt"
+  },
+  {
+    "author_number": 363,
+    "ordinal_in_jiangchen_corpus": 365,
+    "heading": "第363章 原型机的末路",
+    "chars": 1601,
+    "sha256": "773a80f562989b05fc2e18f8f71c463b2c5446b9afff9c42a8043ef3e95b8c17",
+    "path": "sources/witch-75248/chapters/363.txt"
+  },
+  {
+    "author_number": 364,
+    "ordinal_in_jiangchen_corpus": 366,
+    "heading": "第364章 启动启动全部启动！食我九十九万匹罗兰爆破拳！",
+    "chars": 1613,
+    "sha256": "94bce324f8c8393c3faa4a44755c49a52a9a698dc1b2c3538686fc584fec9b5d",
+    "path": "sources/witch-75248/chapters/364.txt"
+  },
+  {
+    "author_number": 365,
+    "ordinal_in_jiangchen_corpus": 367,
+    "heading": "第365章 你在偷看我，对吧？",
+    "chars": 1569,
+    "sha256": "478a3411ec96c747bd5a4bb23dee8dfdae04ce7d3195c4801e363f4c91f19665",
+    "path": "sources/witch-75248/chapters/365.txt"
+  },
+  {
+    "author_number": 366,
+    "ordinal_in_jiangchen_corpus": 368,
+    "heading": "第366章 原型机：妈的，跟你爆了！后备隐藏能源！",
+    "chars": 1567,
+    "sha256": "6059e2af33011cdd08c01e1e7d61a6841ba40b70ecfefbec83ff25bb2d0d30f7",
+    "path": "sources/witch-75248/chapters/366.txt"
+  },
+  {
+    "author_number": 367,
+    "ordinal_in_jiangchen_corpus": 369,
+    "heading": "第367章 我烧起来了",
+    "chars": 1581,
+    "sha256": "043e9a2a4b74cb90ab501fbfa0221e2b45a286984c9d53f96571f5725020dc41",
+    "path": "sources/witch-75248/chapters/367.txt"
+  },
+  {
+    "author_number": 368,
+    "ordinal_in_jiangchen_corpus": 370,
+    "heading": "第368章 通讯中断，苍牙古堡",
+    "chars": 1588,
+    "sha256": "5c14421667132000c7997b39bb20625e3a6d4df6abd229482392ce5b7aaf6056",
+    "path": "sources/witch-75248/chapters/368.txt"
+  },
+  {
+    "author_number": 369,
+    "ordinal_in_jiangchen_corpus": 371,
+    "heading": "第369章 卡莉娅还在输出",
+    "chars": 1573,
+    "sha256": "b68a1814480e1cd745ea78ecbb29979c96ab6229dcc99dc0f8cb16b02a0a8795",
+    "path": "sources/witch-75248/chapters/369.txt"
+  },
+  {
+    "author_number": 370,
+    "ordinal_in_jiangchen_corpus": 372,
+    "heading": "第370章 先别灭火了，让我烧着冒充炎魔先",
+    "chars": 1576,
+    "sha256": "4026c6ed1c3810d671dfed663c65c78fbe6475aa42863aca0096ec658432d2c0",
+    "path": "sources/witch-75248/chapters/370.txt"
+  },
+  {
+    "author_number": 371,
+    "ordinal_in_jiangchen_corpus": 373,
+    "heading": "第371章 连主人都不知道的秘密地下室",
+    "chars": 1575,
+    "sha256": "4003dd3bb74caf1c6f9069e486a0b5d74d1c969fd4942da1f6d1fc179bc94c56",
+    "path": "sources/witch-75248/chapters/371.txt"
+  },
+  {
+    "author_number": 372,
+    "ordinal_in_jiangchen_corpus": 374,
+    "heading": "第372章 本程序依靠bug运作",
+    "chars": 1561,
+    "sha256": "eb45559e51a9e3b83dd52ef33cb97d4ace90ad2b0be8423c584d2ded1f6fbf32",
+    "path": "sources/witch-75248/chapters/372.txt"
+  },
+  {
+    "author_number": 373,
+    "ordinal_in_jiangchen_corpus": 375,
+    "heading": "第373章 赶紧绑架我",
+    "chars": 1579,
+    "sha256": "b35c23dbc29f61d69b88649c769b4b37afd21c5435273b69e4952b4722c219d5",
+    "path": "sources/witch-75248/chapters/373.txt"
+  },
+  {
+    "author_number": 374,
+    "ordinal_in_jiangchen_corpus": 376,
+    "heading": "第374章 魔族遍地是内鬼",
+    "chars": 1562,
+    "sha256": "3cf4131aa80e2cac1f66a0a369bfe70d12aab3de5c56fc37bf0421b2a4a9a277",
+    "path": "sources/witch-75248/chapters/374.txt"
+  },
+  {
+    "author_number": 375,
+    "ordinal_in_jiangchen_corpus": 377,
+    "heading": "第375章 大人，请走此小道",
+    "chars": 1588,
+    "sha256": "bdd8f29e76f13b0ce699fcffc80100f6f2cb9279544901ffe744b5dcb7168d1c",
+    "path": "sources/witch-75248/chapters/375.txt"
+  },
+  {
+    "author_number": 376,
+    "ordinal_in_jiangchen_corpus": 378,
+    "heading": "第376章 这下不会数数了",
+    "chars": 1540,
+    "sha256": "5f0697ef2d91292f3ad77ffc1eaf7b81f3d9499780af4468469e748fcbb9cd47",
+    "path": "sources/witch-75248/chapters/376.txt"
+  },
+  {
+    "author_number": 377,
+    "ordinal_in_jiangchen_corpus": 379,
+    "heading": "第377章 找到匹配钥匙的锁了",
+    "chars": 1569,
+    "sha256": "73bef2de3040ba05fd04d4dc1c56449e2403a0ec736cf72d171b51edaeef8d89",
+    "path": "sources/witch-75248/chapters/377.txt"
+  },
+  {
+    "author_number": 378,
+    "ordinal_in_jiangchen_corpus": 380,
+    "heading": "第378章 你先这样，再这样，最后这样，就能找到人了",
+    "chars": 1578,
+    "sha256": "6eae391dc4b6b23ff7ab52200e28917c8dd4000514e17378e60b1f31c2fdf60b",
+    "path": "sources/witch-75248/chapters/378.txt"
+  },
+  {
+    "author_number": 379,
+    "ordinal_in_jiangchen_corpus": 381,
+    "heading": "第379章 魔王陛下，你是了解我的",
+    "chars": 1602,
+    "sha256": "29185f7516b2e574fd77e076fab491588a7f66a88de7710db21824e4fcc552ec",
+    "path": "sources/witch-75248/chapters/379.txt"
+  },
+  {
+    "author_number": 380,
+    "ordinal_in_jiangchen_corpus": 382,
+    "heading": "第380章 血魔大君雪夜上梁山（不是）",
+    "chars": 1576,
+    "sha256": "2b833966f97d37396594693f7fecd1f39877c9e66c47681189b42ffded1ee00b",
+    "path": "sources/witch-75248/chapters/380.txt"
+  },
+  {
+    "author_number": 381,
+    "ordinal_in_jiangchen_corpus": 383,
+    "heading": "第381章 那么答案只有一个了",
+    "chars": 1602,
+    "sha256": "3bf06327dfbba5b7c271d5bbd173303c68af31f4f5074e7880ac3a7d31ab6c04",
+    "path": "sources/witch-75248/chapters/381.txt"
+  },
+  {
+    "author_number": 382,
+    "ordinal_in_jiangchen_corpus": 384,
+    "heading": "第382章 挟魔王以令魔族",
+    "chars": 1604,
+    "sha256": "27c3baa35a875afe11051633968a3fed40a07c37118c3a63e278e7af914737dd",
+    "path": "sources/witch-75248/chapters/382.txt"
+  },
+  {
+    "author_number": 383,
+    "ordinal_in_jiangchen_corpus": 385,
+    "heading": "第383章 来大郎，啊不对，魔王，该吃药了。",
+    "chars": 1565,
+    "sha256": "45f16d6010b7e73ca43e9cb96278e0e8c84fe21c5ec7bc4c3ce3260fdaf2e52b",
+    "path": "sources/witch-75248/chapters/383.txt"
+  },
+  {
+    "author_number": 384,
+    "ordinal_in_jiangchen_corpus": 386,
+    "heading": "第384章 为什么怕我？可能是因为我差点把他们弄死了吧",
+    "chars": 1607,
+    "sha256": "fc2580ef75b2bac50effac8c6cb9a75ad9e915e26a1310aee97448b9b9e2706b",
+    "path": "sources/witch-75248/chapters/384.txt"
+  },
+  {
+    "author_number": 385,
+    "ordinal_in_jiangchen_corpus": 387,
+    "heading": "第385章 魔王：我要把精力放在军事上",
+    "chars": 1547,
+    "sha256": "2f16bb7c6d0460ad74e868c3d24d7fe199c69bfee23e9ddbdd3dd311c09369cb",
+    "path": "sources/witch-75248/chapters/385.txt"
+  },
+  {
+    "author_number": 386,
+    "ordinal_in_jiangchen_corpus": 388,
+    "heading": "第386章 恩瓦巨变，大仇得报",
+    "chars": 1540,
+    "sha256": "3797959586341ebd0d47b4fbecc2e90ab8a055fb1f993e3326f13dfd949d35e2",
+    "path": "sources/witch-75248/chapters/386.txt"
+  },
+  {
+    "author_number": 387,
+    "ordinal_in_jiangchen_corpus": 389,
+    "heading": "第387章 不败军神的遗泽",
+    "chars": 1608,
+    "sha256": "b96b20e915ed458b9a6daff1b3628d883308860f97b7ebef40b89b590ffa7d59",
+    "path": "sources/witch-75248/chapters/387.txt"
+  },
+  {
+    "author_number": 388,
+    "ordinal_in_jiangchen_corpus": 390,
+    "heading": "第388章 时隔三百年的联合行动。",
+    "chars": 1614,
+    "sha256": "ab5198facc3d73eab5725e49702e676b24eb822782a0aead6e2450b27bee6378",
+    "path": "sources/witch-75248/chapters/388.txt"
+  },
+  {
+    "author_number": 389,
+    "ordinal_in_jiangchen_corpus": 391,
+    "heading": "第389章 我看不见得，他只是玩忽职守",
+    "chars": 1586,
+    "sha256": "47bbc9dc593a9a8a41afcfd79199f860f67607cd93b97577ed783a38838d951f",
+    "path": "sources/witch-75248/chapters/389.txt"
+  },
+  {
+    "author_number": 390,
+    "ordinal_in_jiangchen_corpus": 392,
+    "heading": "第390章 只要微笑就好了",
+    "chars": 1564,
+    "sha256": "db78411dc0c48339c85ff6fc6723279367828c6cc3df676d16d7b30ebb694ce4",
+    "path": "sources/witch-75248/chapters/390.txt"
+  },
+  {
+    "author_number": 391,
+    "ordinal_in_jiangchen_corpus": 393,
+    "heading": "第391章 那位大人的传说",
+    "chars": 1549,
+    "sha256": "86bd630effc550253e3785f31bc32afff1a8acaefd051d91c2682ecf09f1674a",
+    "path": "sources/witch-75248/chapters/391.txt"
+  },
+  {
+    "author_number": 392,
+    "ordinal_in_jiangchen_corpus": 394,
+    "heading": "第392章 我回来了，老师",
+    "chars": 1579,
+    "sha256": "efd819d4be53c7ed50bf078ed067237ec5ba95c4d7ce87780493baedd078a45f",
+    "path": "sources/witch-75248/chapters/392.txt"
+  },
+  {
+    "author_number": 393,
+    "ordinal_in_jiangchen_corpus": 395,
+    "heading": "第393章 当过去追上现今",
+    "chars": 1593,
+    "sha256": "b3c49a606d8c3571507847733dac38be9ee08b2ccad6457824239528d62499e9",
+    "path": "sources/witch-75248/chapters/393.txt"
+  },
+  {
+    "author_number": 394,
+    "ordinal_in_jiangchen_corpus": 396,
+    "heading": "第394章 始终如一",
+    "chars": 1608,
+    "sha256": "203c12f9031ab6c703fb80fe3d9e20e81d51e302f5445320406f2fbdc14bf906",
+    "path": "sources/witch-75248/chapters/394.txt"
+  },
+  {
+    "author_number": 395,
+    "ordinal_in_jiangchen_corpus": 397,
+    "heading": "第395章 给我和罗兰来间隔音的房间",
+    "chars": 1588,
+    "sha256": "4d0e9daf5a2ea9c55150a38b3d8895fe80a0c0feab4b24b4761ed171bee4bb73",
+    "path": "sources/witch-75248/chapters/395.txt"
+  },
+  {
+    "author_number": 396,
+    "ordinal_in_jiangchen_corpus": 398,
+    "heading": "第396章 血魔大君有种不妙的预感",
+    "chars": 1595,
+    "sha256": "67fb01cbc1adea5e8506d5b6a33bec9511fe7d819b7f0eec3d4e5992098ce7e2",
+    "path": "sources/witch-75248/chapters/396.txt"
+  },
+  {
+    "author_number": 397,
+    "ordinal_in_jiangchen_corpus": 399,
+    "heading": "第397章 不安desu",
+    "chars": 1609,
+    "sha256": "bbf30448080a5f80591ca043c1a4e263c7eb233cf59a7feb5c3c59837d383054",
+    "path": "sources/witch-75248/chapters/397.txt"
+  },
+  {
+    "author_number": 398,
+    "ordinal_in_jiangchen_corpus": 400,
+    "heading": "第398章 女祭司",
+    "chars": 1575,
+    "sha256": "c575d504cac237964b377f263fc97deed73f800cc254753939ca3c2a2218e3db",
+    "path": "sources/witch-75248/chapters/398.txt"
+  },
+  {
+    "author_number": 399,
+    "ordinal_in_jiangchen_corpus": 401,
+    "heading": "第399章 区区黑泥，看我给他推回去",
+    "chars": 1581,
+    "sha256": "293c1129cffc329ce55d21bc3e3d240f3a89fbfbb6f18df7726dec1c8f1074fb",
+    "path": "sources/witch-75248/chapters/399.txt"
+  },
+  {
+    "author_number": 400,
+    "ordinal_in_jiangchen_corpus": 402,
+    "heading": "第400章 他将如闪电般归来",
+    "chars": 1560,
+    "sha256": "721729c8b4a394ebbb0b0c21294e0ac036855a60807856ce9e92ffbc534d80b6",
+    "path": "sources/witch-75248/chapters/400.txt"
+  },
+  {
+    "author_number": 401,
+    "ordinal_in_jiangchen_corpus": 403,
+    "heading": "第401章 冥界航空为您服务",
+    "chars": 1606,
+    "sha256": "a6a942423098d51d58bd29b618249495aa2bfee2de5f6e8542486d62f79aadc2",
+    "path": "sources/witch-75248/chapters/401.txt"
+  },
+  {
+    "author_number": 402,
+    "ordinal_in_jiangchen_corpus": 404,
+    "heading": "第402章 我来助你！",
+    "chars": 1589,
+    "sha256": "187f1f3ae9ade7d95002cfa6e895312ca5d8569b86e6a8927dc95dd44f6e6a2a",
+    "path": "sources/witch-75248/chapters/402.txt"
+  },
+  {
+    "author_number": 403,
+    "ordinal_in_jiangchen_corpus": 405,
+    "heading": "第403章 伞兵一号申请空投",
+    "chars": 1583,
+    "sha256": "a410126249a8957be790434c0b34402b827e3286d0814ef24471f5cd2430a578",
+    "path": "sources/witch-75248/chapters/403.txt"
+  },
+  {
+    "author_number": 404,
+    "ordinal_in_jiangchen_corpus": 406,
+    "heading": "第404章 大刀向，克莱夫的头上砍去",
+    "chars": 1581,
+    "sha256": "8a95361a047b391910f2ec1b94a8c5a0300b476a4a289bb1e0bd245ead6273f5",
+    "path": "sources/witch-75248/chapters/404.txt"
+  },
+  {
+    "author_number": 405,
+    "ordinal_in_jiangchen_corpus": 407,
+    "heading": "第405章 她运气真好",
+    "chars": 1560,
+    "sha256": "379c132cc19ac8d75e4a0ae5e5ef5edf543218c774fe737fe176b0c381f13c9f",
+    "path": "sources/witch-75248/chapters/405.txt"
+  },
+  {
+    "author_number": 406,
+    "ordinal_in_jiangchen_corpus": 408,
+    "heading": "第406章 被覆盖的时间线",
+    "chars": 1574,
+    "sha256": "2017043fd1da8b3cf40e076e102602f37db93e2198bf2c3233859f8ab1760e9c",
+    "path": "sources/witch-75248/chapters/406.txt"
+  },
+  {
+    "author_number": 407,
+    "ordinal_in_jiangchen_corpus": 409,
+    "heading": "第407章 难办就别办了",
+    "chars": 1585,
+    "sha256": "1d9e9e7dee1a3b13e19183835f115161c2447de8ff1c2dcb5784580333ab1384",
+    "path": "sources/witch-75248/chapters/407.txt"
+  },
+  {
+    "author_number": 408,
+    "ordinal_in_jiangchen_corpus": 410,
+    "heading": "第408章 只有你不在的时空（上）",
+    "chars": 1608,
+    "sha256": "213f2b92af7e7a792dc1ba4a838c19be80eb06f3a5d6a932298c21cd6825780e",
+    "path": "sources/witch-75248/chapters/408.txt"
+  },
+  {
+    "author_number": 409,
+    "ordinal_in_jiangchen_corpus": 411,
+    "heading": "第409章 只有你不在的时空（下）",
+    "chars": 1576,
+    "sha256": "e78d663e319d7fb1a00e4237b81ae9db54359c02a712bb2ce4af7c0c0d835bf6",
+    "path": "sources/witch-75248/chapters/409.txt"
+  },
+  {
+    "author_number": 410,
+    "ordinal_in_jiangchen_corpus": 412,
+    "heading": "第410章 真拿你没办法",
+    "chars": 1586,
+    "sha256": "4f546ea16f51f862caa04b2a0a275227cb6252cc9f0d322a20bb2ca81fa3e9ee",
+    "path": "sources/witch-75248/chapters/410.txt"
+  },
+  {
+    "author_number": 411,
+    "ordinal_in_jiangchen_corpus": 413,
+    "heading": "第411章 我说，王主高见。",
+    "chars": 1552,
+    "sha256": "bad33f2da7b1bfe0a2f1b79e3bcfb4e8712bd395559d8b83356b66cd3bb94894",
+    "path": "sources/witch-75248/chapters/411.txt"
+  },
+  {
+    "author_number": 412,
+    "ordinal_in_jiangchen_corpus": 414,
+    "heading": "第412章 床下埋雷",
+    "chars": 1601,
+    "sha256": "58ca25f64b58871bf31c9e16cdce9224516bcfabb5a0485af1247f21eebf137d",
+    "path": "sources/witch-75248/chapters/412.txt"
+  },
+  {
+    "author_number": 413,
+    "ordinal_in_jiangchen_corpus": 415,
+    "heading": "第413章 诸神已死",
+    "chars": 1563,
+    "sha256": "a56faed62267d88c4b359c80f84e90819c5ff5b34822594a898fcf01083eb390",
+    "path": "sources/witch-75248/chapters/413.txt"
+  },
+  {
+    "author_number": 414,
+    "ordinal_in_jiangchen_corpus": 416,
+    "heading": "第414章 四种终焉",
+    "chars": 1603,
+    "sha256": "b26d5c50e1dce34581bc05c676afaa9c7a73d73e5eddbc420d45488cfc90c9d4",
+    "path": "sources/witch-75248/chapters/414.txt"
+  },
+  {
+    "author_number": 415,
+    "ordinal_in_jiangchen_corpus": 417,
+    "heading": "第415章 另一个自己的馈赠",
+    "chars": 1622,
+    "sha256": "3c71e6c239b20b7a7ccc4bf74142164e6eaadb4402aea56194648dfac251c673",
+    "path": "sources/witch-75248/chapters/415.txt"
+  },
+  {
+    "author_number": 416,
+    "ordinal_in_jiangchen_corpus": 418,
+    "heading": "第416章 顶号战术",
+    "chars": 1596,
+    "sha256": "8c9e568f90d265fbc7cf85a640ebc42e902e1722028d9c61ce74f3a1dd325dd7",
+    "path": "sources/witch-75248/chapters/416.txt"
+  },
+  {
+    "author_number": 417,
+    "ordinal_in_jiangchen_corpus": 419,
+    "heading": "第417章 龙神：西诺斯，听说你小子发财了？",
+    "chars": 94,
+    "sha256": "98412e0b079cbc49f6c9643901358cb5c2f3d91be5741a3c472833c6db4fba98",
+    "path": "sources/witch-75248/chapters/417.txt"
+  },
+  {
+    "author_number": 418,
+    "ordinal_in_jiangchen_corpus": 420,
+    "heading": "第418章 神之子之间亦有差距",
+    "chars": 88,
+    "sha256": "fcc6854057a9c21dc0134035f8147c7e8d0a036f6a99cdd4a0e4163cde1f280d",
+    "path": "sources/witch-75248/chapters/418.txt"
+  },
+  {
+    "author_number": 419,
+    "ordinal_in_jiangchen_corpus": 421,
+    "heading": "第419章 仁善的王，你在何方",
+    "chars": 91,
+    "sha256": "4c84aa62b30ab2e31c80bb1098467c60c1226ddc1a14823cac526ca0326fc5ca",
+    "path": "sources/witch-75248/chapters/419.txt"
+  },
+  {
+    "author_number": 420,
+    "ordinal_in_jiangchen_corpus": 422,
+    "heading": "第420章 龙神家今天的饭",
+    "chars": 91,
+    "sha256": "be9b5c07e7a6800411e423bc5b7774f0e36ad3ec6ffb63e3135c3abda9c8ee77",
+    "path": "sources/witch-75248/chapters/420.txt"
+  },
+  {
+    "author_number": 421,
+    "ordinal_in_jiangchen_corpus": 423,
+    "heading": "第421章 当灰烬覆盖教廷城",
+    "chars": 91,
+    "sha256": "3ee7508d416a882e6bd6a16cc4ba666a21a5a55795dd763ace7b42e45a628800",
+    "path": "sources/witch-75248/chapters/421.txt"
+  },
+  {
+    "author_number": 422,
+    "ordinal_in_jiangchen_corpus": 424,
+    "heading": "第422章 会是一个好兆头",
+    "chars": 91,
+    "sha256": "71bd5e442a0a1313034ce3e90da87d03c1ec02fe2af93032fa3d65995e4d649b",
+    "path": "sources/witch-75248/chapters/422.txt"
+  },
+  {
+    "author_number": 423,
+    "ordinal_in_jiangchen_corpus": 425,
+    "heading": "第423章 无名少女",
+    "chars": 94,
+    "sha256": "d6decb97450fd21725661c87600def06ae8eb5812c8bd234dd381143172487f8",
+    "path": "sources/witch-75248/chapters/423.txt"
+  },
+  {
+    "author_number": 424,
+    "ordinal_in_jiangchen_corpus": 426,
+    "heading": "第424章 我要给你起个难听的绰号",
+    "chars": 82,
+    "sha256": "dbc4ad50dc1dcd857d41f00485693faae5a2c0693702da2a5eb78d5e16150041",
+    "path": "sources/witch-75248/chapters/424.txt"
+  },
+  {
+    "author_number": 425,
+    "ordinal_in_jiangchen_corpus": 427,
+    "heading": "第425章 坚定守住，就有办法",
+    "chars": 88,
+    "sha256": "560ca6eded38db1372fc438e4fc54832a9d82fcb503a73a6fb754e387d28b195",
+    "path": "sources/witch-75248/chapters/425.txt"
+  },
+  {
+    "author_number": 426,
+    "ordinal_in_jiangchen_corpus": 428,
+    "heading": "第426章 当灰烬弥漫",
+    "chars": 88,
+    "sha256": "c5e4e8f48279338013576e5dc1471badffc54fe41af9bb783d851342810c3b85",
+    "path": "sources/witch-75248/chapters/426.txt"
+  },
+  {
+    "author_number": 427,
+    "ordinal_in_jiangchen_corpus": 429,
+    "heading": "第427章 只要罗兰发动进攻，一切都会好起来的",
+    "chars": 94,
+    "sha256": "1672cd908f1dbdd162e62dc17ca0321174d96b37cf95bef443e0fe463bf5b516",
+    "path": "sources/witch-75248/chapters/427.txt"
+  },
+  {
+    "author_number": 428,
+    "ordinal_in_jiangchen_corpus": 430,
+    "heading": "第428章 英灵",
+    "chars": 91,
+    "sha256": "4784909900140cc0703a27fe41edb1abb76743d47fff574ae7d443676da5005e",
+    "path": "sources/witch-75248/chapters/428.txt"
+  },
+  {
+    "author_number": 429,
+    "ordinal_in_jiangchen_corpus": 431,
+    "heading": "第429章 金闪闪的家伙没一个好东西！",
+    "chars": 97,
+    "sha256": "9ff5c9ad42c9e8ad4b0da8ea93e1ab324b101cef29b81fa1bbde6617c0ddf6e2",
+    "path": "sources/witch-75248/chapters/429.txt"
+  },
+  {
+    "author_number": 430,
+    "ordinal_in_jiangchen_corpus": 432,
+    "heading": "第430章 那位大人的恩情还不完",
+    "chars": 91,
+    "sha256": "bde3eed51c4e0ce53c8f2fa55d7b0ee5f57a0ba72ab57754a04fe51a835f2973",
+    "path": "sources/witch-75248/chapters/430.txt"
+  },
+  {
+    "author_number": 431,
+    "ordinal_in_jiangchen_corpus": 433,
+    "heading": "第431章 卡莉娅？卡神！",
+    "chars": 94,
+    "sha256": "254da7da6129c6d048864c190e4716e7755ad199ea38e379ae2aee0321612338",
+    "path": "sources/witch-75248/chapters/431.txt"
+  },
+  {
+    "author_number": 432,
+    "ordinal_in_jiangchen_corpus": 434,
+    "heading": "第432章 罗兰疑似物",
+    "chars": 91,
+    "sha256": "9b2940f7ef22584f7f4fa49d326a4fc02df6f9229498ff14105238be31dda7c4",
+    "path": "sources/witch-75248/chapters/432.txt"
+  },
+  {
+    "author_number": 433,
+    "ordinal_in_jiangchen_corpus": 435,
+    "heading": "第433章 虚幻的美好",
+    "chars": 91,
+    "sha256": "5930d049406c665eb1f8861ec3ee5b18e59b759a80f88e61aab7a2b710b2b1aa",
+    "path": "sources/witch-75248/chapters/433.txt"
+  },
+  {
+    "author_number": 434,
+    "ordinal_in_jiangchen_corpus": 436,
+    "heading": "第434章 罪孽深重的男人",
+    "chars": 85,
+    "sha256": "50e836a2a526c84838643599c4308de8addd61d9f50c8fd89502b283b8ec2638",
+    "path": "sources/witch-75248/chapters/434.txt"
+  },
+  {
+    "author_number": 435,
+    "ordinal_in_jiangchen_corpus": 437,
+    "heading": "第435章 双标狗",
+    "chars": 91,
+    "sha256": "8e0564364369d077ac10876c3cef3d350df30d8f47899139c129d93327e4c3f2",
+    "path": "sources/witch-75248/chapters/435.txt"
+  },
+  {
+    "author_number": 436,
+    "ordinal_in_jiangchen_corpus": 438,
+    "heading": "第436章 事已至此，先吃饭吧",
+    "chars": 91,
+    "sha256": "6b8954e91746ffcda16d8f487fb0d26902f042f51ac335637d7f5e1da99a0c5c",
+    "path": "sources/witch-75248/chapters/436.txt"
+  },
+  {
+    "author_number": 437,
+    "ordinal_in_jiangchen_corpus": 439,
+    "heading": "第437章 圣者",
+    "chars": 94,
+    "sha256": "1504d4c26155d9c56a9b99dd4de703e9058ea3bcc5000415f040ec2183f71981",
+    "path": "sources/witch-75248/chapters/437.txt"
+  },
+  {
+    "author_number": 438,
+    "ordinal_in_jiangchen_corpus": 440,
+    "heading": "第438章 他们都失败了",
+    "chars": 91,
+    "sha256": "293156293dc9187fe4621ef8c66630614cdda32a16b53f00d7a77221f5772b2d",
+    "path": "sources/witch-75248/chapters/438.txt"
+  },
+  {
+    "author_number": 439,
+    "ordinal_in_jiangchen_corpus": 441,
+    "heading": "第439章 新世界见",
+    "chars": 91,
+    "sha256": "a1f5919def8d2af0941914d34724fac52bb2513a68edf6cb0579fdd5f973d75c",
+    "path": "sources/witch-75248/chapters/439.txt"
+  },
+  {
+    "author_number": 440,
+    "ordinal_in_jiangchen_corpus": 442,
+    "heading": "第440章 你太傲慢了罗兰",
+    "chars": 91,
+    "sha256": "d83ddfb8ee3cffa806699facb3c94a9c3b9e9a40d60b8a9d1381104c7f702f59",
+    "path": "sources/witch-75248/chapters/440.txt"
+  },
+  {
+    "author_number": 441,
+    "ordinal_in_jiangchen_corpus": 443,
+    "heading": "第441章 少女与少年",
+    "chars": 94,
+    "sha256": "b97c8a673c707fc4e05641b591d5ead911af73383831be70d505b03d10fb7f8e",
+    "path": "sources/witch-75248/chapters/441.txt"
+  },
+  {
+    "author_number": 442,
+    "ordinal_in_jiangchen_corpus": 444,
+    "heading": "第442章 一切都溃散如泥",
+    "chars": 91,
+    "sha256": "64844a223a1d1191a5fb05f592e8a926ca8ee4dc7d8e06c44da0ff5488d76156",
+    "path": "sources/witch-75248/chapters/442.txt"
+  },
+  {
+    "author_number": 443,
+    "ordinal_in_jiangchen_corpus": 445,
+    "heading": "第443章 你先走，剩下的交给我们",
+    "chars": 94,
+    "sha256": "57d4d3f2a8045b8e8a85e38bc6a57d057b001abc05c924c95d4aa6bb622c718a",
+    "path": "sources/witch-75248/chapters/443.txt"
+  },
+  {
+    "author_number": 444,
+    "ordinal_in_jiangchen_corpus": 446,
+    "heading": "第444章 雕虫小技还敢班门弄斧？",
+    "chars": 94,
+    "sha256": "2ef73e27e1dadcb1b1cd6ce9284f15179e9010b68b07a11f56b632e8f49994a9",
+    "path": "sources/witch-75248/chapters/444.txt"
+  },
+  {
+    "author_number": 445,
+    "ordinal_in_jiangchen_corpus": 447,
+    "heading": "第445章 昨日重现",
+    "chars": 91,
+    "sha256": "cf733345f2345cf8ce6c09c99354861ae4aa833b7d0725f47828c5d3400bde58",
+    "path": "sources/witch-75248/chapters/445.txt"
+  },
+  {
+    "author_number": 446,
+    "ordinal_in_jiangchen_corpus": 448,
+    "heading": "第446章 典狱长发力了",
+    "chars": 91,
+    "sha256": "c6d27f3f9298c4adb0a479d2ab3dd81eafc3448c4e4b69dbc272e676ba494b25",
+    "path": "sources/witch-75248/chapters/446.txt"
+  },
+  {
+    "author_number": 447,
+    "ordinal_in_jiangchen_corpus": 449,
+    "heading": "第447章 真我",
+    "chars": 91,
+    "sha256": "f6063f01de844b3b96fec62dbd1461bd3c14728278d29b7307300cebbc564026",
+    "path": "sources/witch-75248/chapters/447.txt"
+  },
+  {
+    "author_number": 448,
+    "ordinal_in_jiangchen_corpus": 450,
+    "heading": "第448章 那你还是多吃点吧",
+    "chars": 91,
+    "sha256": "57ed0f2fded5c19607bdacc2d48c7a017a720a6479b12c8536a84fd44a3bdd4f",
+    "path": "sources/witch-75248/chapters/448.txt"
+  },
+  {
+    "author_number": 449,
+    "ordinal_in_jiangchen_corpus": 451,
+    "heading": "第449章 对不起，我是好人",
+    "chars": 94,
+    "sha256": "542ed7a13a4d88d5d0d74ab1f1aa9731c5ab8ff02d5032a5f76d6df2aa5c0090",
+    "path": "sources/witch-75248/chapters/449.txt"
+  },
+  {
+    "author_number": 450,
+    "ordinal_in_jiangchen_corpus": 452,
+    "heading": "第450章 当往事只余尘埃",
+    "chars": 94,
+    "sha256": "e6310610ff35b777761a11f9702581c0bcc7447da6de89c8728d4bcccd407808",
+    "path": "sources/witch-75248/chapters/450.txt"
+  },
+  {
+    "author_number": 451,
+    "ordinal_in_jiangchen_corpus": 453,
+    "heading": "第451章 当事态结束",
+    "chars": 88,
+    "sha256": "cf67c13c64bb5289fb354048e44b1679cc0419f763ad740e5ad8c267d4017255",
+    "path": "sources/witch-75248/chapters/451.txt"
+  },
+  {
+    "author_number": 452,
+    "ordinal_in_jiangchen_corpus": 454,
+    "heading": "第452章 食物储备告急",
+    "chars": 94,
+    "sha256": "0b9e4fd8d35a405f3b1918a9ca5ed1d7a5183b25971bd31249ffc8c2123b05f4",
+    "path": "sources/witch-75248/chapters/452.txt"
+  },
+  {
+    "author_number": 453,
+    "ordinal_in_jiangchen_corpus": 455,
+    "heading": "第453章 新的生活",
+    "chars": 91,
+    "sha256": "44038e94b4dfa4555a008a603f8703177b0542103b0e5d22bc668368a8885464",
+    "path": "sources/witch-75248/chapters/453.txt"
+  },
+  {
+    "author_number": 454,
+    "ordinal_in_jiangchen_corpus": 456,
+    "heading": "第454章 东线无战事",
+    "chars": 91,
+    "sha256": "939d9e6efcbbe6433c93fa64f7425e907333b75743ab71ffbe71d38166d01566",
+    "path": "sources/witch-75248/chapters/454.txt"
+  },
+  {
+    "author_number": 455,
+    "ordinal_in_jiangchen_corpus": 457,
+    "heading": "第455章 让我看看你发育正不正常啊",
+    "chars": 91,
+    "sha256": "bf7d5ef42b25f93b68506288dd238106209a19103800610d0b6b77d0009170e6",
+    "path": "sources/witch-75248/chapters/455.txt"
+  },
+  {
+    "author_number": 456,
+    "ordinal_in_jiangchen_corpus": 458,
+    "heading": "第456章 伪装之下",
+    "chars": 92,
+    "sha256": "b04e08365fc950553868dd760e6c9a6579fbb537a19447045274ac6157eaf01e",
+    "path": "sources/witch-75248/chapters/456.txt"
+  },
+  {
+    "author_number": 457,
+    "ordinal_in_jiangchen_corpus": 459,
+    "heading": "第457章 封印与无趣的人生",
+    "chars": 88,
+    "sha256": "db15b169ccd11fa2a377593edaa203a2b3bfd38ec3d7e0322282d80100d67c2d",
+    "path": "sources/witch-75248/chapters/457.txt"
+  },
+  {
+    "author_number": 458,
+    "ordinal_in_jiangchen_corpus": 461,
+    "heading": "第458章 不要小看学会的情报网啊混蛋",
+    "chars": 94,
+    "sha256": "c4276b16c05920979cca620bac9a6c3340118e8dce443e53ae280bd25352beb9",
+    "path": "sources/witch-75248/chapters/458.txt"
+  },
+  {
+    "author_number": 459,
+    "ordinal_in_jiangchen_corpus": 462,
+    "heading": "第459章 1030年3月1日",
+    "chars": 94,
+    "sha256": "d4a4ef2bffaa0602cdcbad0c4d1f908f992ebae1d34cef190cfbc65d65b2f73d",
+    "path": "sources/witch-75248/chapters/459.txt"
+  },
+  {
+    "author_number": 460,
+    "ordinal_in_jiangchen_corpus": 463,
+    "heading": "第460章 肇始的危机",
+    "chars": 94,
+    "sha256": "82bc982c482c92f639a12de0326b803dc10c42426e7b307ee0571afce6d54690",
+    "path": "sources/witch-75248/chapters/460.txt"
+  },
+  {
+    "author_number": 461,
+    "ordinal_in_jiangchen_corpus": 464,
+    "heading": "第461章 抉择",
+    "chars": 94,
+    "sha256": "f8c7d793b83d547b835ee04c26b419e1e35d75fb3a47048f5bff66b0853b6fb6",
+    "path": "sources/witch-75248/chapters/461.txt"
+  },
+  {
+    "author_number": 462,
+    "ordinal_in_jiangchen_corpus": 465,
+    "heading": "第462章 然位不见王影",
+    "chars": 88,
+    "sha256": "f82986e9b744821c2194655f885d8dd1b4bf467955c11d7b93e8a329c1bde771",
+    "path": "sources/witch-75248/chapters/462.txt"
+  },
+  {
+    "author_number": 463,
+    "ordinal_in_jiangchen_corpus": 466,
+    "heading": "第463章 罗兰的异常之处",
+    "chars": 88,
+    "sha256": "0e59a39b77cb05bceed79b6aa8528b277624389be200e1d44f4221ceb1db71d4",
+    "path": "sources/witch-75248/chapters/463.txt"
+  },
+  {
+    "author_number": 464,
+    "ordinal_in_jiangchen_corpus": 467,
+    "heading": "第464章 多少我也能当个帮手不是吗？",
+    "chars": 88,
+    "sha256": "92ab36ca36896a2cb85bf8055960d9898fc12610c0a34651ceb31b3c9cd4919b",
+    "path": "sources/witch-75248/chapters/464.txt"
+  },
+  {
+    "author_number": 465,
+    "ordinal_in_jiangchen_corpus": 468,
+    "heading": "第465章 雾中骇兽",
+    "chars": 94,
+    "sha256": "dc33977b2d14dc41be2d1c1b93e7ae7824dc8bd177efd6292bc5874e7167b24b",
+    "path": "sources/witch-75248/chapters/465.txt"
+  },
+  {
+    "author_number": 466,
+    "ordinal_in_jiangchen_corpus": 469,
+    "heading": "第466章 自动机兵，点燃刀刃！",
+    "chars": 94,
+    "sha256": "d38d45c2399340e6fc8b6f39accad41326a1f17529b4472bc96f53da48b8e8ac",
+    "path": "sources/witch-75248/chapters/466.txt"
+  },
+  {
+    "author_number": 467,
+    "ordinal_in_jiangchen_corpus": 470,
+    "heading": "第467章 不存在的考验",
+    "chars": 94,
+    "sha256": "1d1ddacd01c359f641ed81f63c19e3e74b1be10ec5d84874878cf4e5bd476f0f",
+    "path": "sources/witch-75248/chapters/467.txt"
+  },
+  {
+    "author_number": 468,
+    "ordinal_in_jiangchen_corpus": 471,
+    "heading": "第468章 缺失的概念",
+    "chars": 91,
+    "sha256": "2df58afef089893ff6bffe3896774a6992461c35c2257826f7bb6cb728204629",
+    "path": "sources/witch-75248/chapters/468.txt"
+  },
+  {
+    "author_number": 469,
+    "ordinal_in_jiangchen_corpus": 473,
+    "heading": "第469章 罗兰回来了？！",
+    "chars": 94,
+    "sha256": "ad3421a8bdbee43f6d624050e2ae752397cdd021943167a2fd417ae103943d59",
+    "path": "sources/witch-75248/chapters/469.txt"
+  },
+  {
+    "author_number": 470,
+    "ordinal_in_jiangchen_corpus": 474,
+    "heading": "第470章 那就让世界燃烧",
+    "chars": 88,
+    "sha256": "c2be3e5b01dd435bab12a3760ae7fa5e583eee068dc9c7a3170228009adec375",
+    "path": "sources/witch-75248/chapters/470.txt"
+  },
+  {
+    "author_number": 471,
+    "ordinal_in_jiangchen_corpus": 475,
+    "heading": "第471章 教皇：现在还不能笑",
+    "chars": 94,
+    "sha256": "997880ae699dc1cce41aed2bd97cbd48cfcad05e6e933770e3641ead0783238c",
+    "path": "sources/witch-75248/chapters/471.txt"
+  },
+  {
+    "author_number": 472,
+    "ordinal_in_jiangchen_corpus": 476,
+    "heading": "第472章 神降",
+    "chars": 91,
+    "sha256": "eba0093826703a34be817665504b45c82aa13d78cf873f00d4eeae15ef756236",
+    "path": "sources/witch-75248/chapters/472.txt"
+  },
+  {
+    "author_number": 473,
+    "ordinal_in_jiangchen_corpus": 477,
+    "heading": "第473章 世界千疮百孔，别问疮和孔是怎么来的",
+    "chars": 97,
+    "sha256": "995734552c2fae0712ae951c55e8e4e4637d4f1674c04bae469e62e273f4f11f",
+    "path": "sources/witch-75248/chapters/473.txt"
+  },
+  {
+    "author_number": 474,
+    "ordinal_in_jiangchen_corpus": 478,
+    "heading": "第474章 锈蚀号角",
+    "chars": 91,
+    "sha256": "323eb6e3672c01325f3f2610a76737e9718e1c706f284f7aa8c0805b9d8a0d1f",
+    "path": "sources/witch-75248/chapters/474.txt"
+  },
+  {
+    "author_number": 475,
+    "ordinal_in_jiangchen_corpus": 479,
+    "heading": "第475章 已死之身，灾变前夜",
+    "chars": 91,
+    "sha256": "34bc6df4c7804ef5bae5abcd450547472bb01df4c241005d93026ebe6578cb3f",
+    "path": "sources/witch-75248/chapters/475.txt"
+  },
+  {
+    "author_number": 476,
+    "ordinal_in_jiangchen_corpus": 480,
+    "heading": "第476章 魔女之夜",
+    "chars": 94,
+    "sha256": "bc789cb3bc09a79b147cb0577cf0d21eac2c4a94b165e754c59df27ea1590e1e",
+    "path": "sources/witch-75248/chapters/476.txt"
+  },
+  {
+    "author_number": 477,
+    "ordinal_in_jiangchen_corpus": 481,
+    "heading": "第477章 吾等即为帝国之影，吾等即为帝国之刃（一）",
+    "chars": 91,
+    "sha256": "c2cfabb27565b9dd2f0753090cef1f8689aef421a6d8be71d6ef26a5b83f91a0",
+    "path": "sources/witch-75248/chapters/477.txt"
+  },
+  {
+    "author_number": 478,
+    "ordinal_in_jiangchen_corpus": 482,
+    "heading": "第478章 吾等即为帝国之影，吾等即为帝国之刃（二）",
+    "chars": 91,
+    "sha256": "cbb899208057316909aca7868f61918267a80e4d18f52b212a551bcf08e577a8",
+    "path": "sources/witch-75248/chapters/478.txt"
+  },
+  {
+    "author_number": 479,
+    "ordinal_in_jiangchen_corpus": 483,
+    "heading": "第479章 吾等即为帝国之影，吾等即为帝国之刃（三）",
+    "chars": 89,
+    "sha256": "88227b88393297cd92edcca7979ba4baab5ee8cfcb73d2d1993af60411c4c2ce",
+    "path": "sources/witch-75248/chapters/479.txt"
+  },
+  {
+    "author_number": 480,
+    "ordinal_in_jiangchen_corpus": 484,
+    "heading": "第480章 吾等即为帝国之影，吾等即为帝国之刃（四）",
+    "chars": 91,
+    "sha256": "4797f34ececc5cd4290ed8c660e8e86c279be8935da27a74ffb4112006f18eab",
+    "path": "sources/witch-75248/chapters/480.txt"
+  },
+  {
+    "author_number": 481,
+    "ordinal_in_jiangchen_corpus": 485,
+    "heading": "第481章 吾等即为帝国之影，吾等即为帝国之刃（五）",
+    "chars": 91,
+    "sha256": "d468634bdf93bda59e68d155dea6d54dc6904c761b1af634408446ea27f410d9",
+    "path": "sources/witch-75248/chapters/481.txt"
+  },
+  {
+    "author_number": 482,
+    "ordinal_in_jiangchen_corpus": 486,
+    "heading": "第482章 第五邪神",
+    "chars": 94,
+    "sha256": "45e3d70b38294ca8cf7482966150b2d1a7eb5672beb4ab2da05746b977715135",
+    "path": "sources/witch-75248/chapters/482.txt"
+  },
+  {
+    "author_number": 483,
+    "ordinal_in_jiangchen_corpus": 487,
+    "heading": "第483章 游戏与沙堡",
+    "chars": 48,
+    "sha256": "f1e08087250d03bc02377907e7c9d7a10d705912354e7fe27f69b309ceee6c37",
+    "path": "sources/witch-75248/chapters/483.txt"
+  },
+  {
+    "author_number": 484,
+    "ordinal_in_jiangchen_corpus": 488,
+    "heading": "第484章 完美与瑕疵。",
+    "chars": 48,
+    "sha256": "5e94ba927df2d17270171906f00c0ac949023238bb7eb02fa73a8b4772be045a",
+    "path": "sources/witch-75248/chapters/484.txt"
+  },
+  {
+    "author_number": 485,
+    "ordinal_in_jiangchen_corpus": 489,
+    "heading": "第485章 予万物以生",
+    "chars": 48,
+    "sha256": "c2b9cac35d4590f8caa1e6d3f01c98e322e585858712298dd90ca646cc17fcd5",
+    "path": "sources/witch-75248/chapters/485.txt"
+  },
+  {
+    "author_number": 486,
+    "ordinal_in_jiangchen_corpus": 490,
+    "heading": "第486章 于黎明前夕",
+    "chars": 48,
+    "sha256": "e3c92c600bfcff78c4438cb1cd2b0f8ec95d72bed36f83025a8851c034e7a610",
+    "path": "sources/witch-75248/chapters/486.txt"
+  },
+  {
+    "author_number": 487,
+    "ordinal_in_jiangchen_corpus": 491,
+    "heading": "第487章 信仰的救济",
+    "chars": 48,
+    "sha256": "52ee42690f905c410c2c53c5baee0cd9fdf238d0f9d8db359a2d75e19c541fba",
+    "path": "sources/witch-75248/chapters/487.txt"
+  },
+  {
+    "author_number": 488,
+    "ordinal_in_jiangchen_corpus": 492,
+    "heading": "第488章 于世界尽头",
+    "chars": 48,
+    "sha256": "bcd117703877117cb12f883eae413ddc997dd99da1afcb1b484c626e2d65e42f",
+    "path": "sources/witch-75248/chapters/488.txt"
+  },
+  {
+    "author_number": 489,
+    "ordinal_in_jiangchen_corpus": 493,
+    "heading": "第489章 巨人屹立不倒",
+    "chars": 48,
+    "sha256": "9b354b1c0fca406cb93ea18d476a41b2f68875de466c55790895446b83a04f79",
+    "path": "sources/witch-75248/chapters/489.txt"
+  },
+  {
+    "author_number": 490,
+    "ordinal_in_jiangchen_corpus": 494,
+    "heading": "第490章 溃散的野望",
+    "chars": 159,
+    "sha256": "5292e8b6dfab38131b2931f889f14f9d21cd531a3b8057ef84379dabe276cee4",
+    "path": "sources/witch-75248/chapters/490.txt"
+  },
+  {
+    "author_number": 491,
+    "ordinal_in_jiangchen_corpus": 495,
+    "heading": "第491章 于是精灵们准备搓个大的",
+    "chars": 165,
+    "sha256": "2c496231c9ba6f8b8bfb31ff7a373a0267f782bf972c9bf289b13fa2c07de900",
+    "path": "sources/witch-75248/chapters/491.txt"
+  },
+  {
+    "author_number": 492,
+    "ordinal_in_jiangchen_corpus": 496,
+    "heading": "第492章 两害相权",
+    "chars": 169,
+    "sha256": "6840ef9613a8dcaff97a4fefcd7f08583dd87d65d7146a6968ba17114694de1b",
+    "path": "sources/witch-75248/chapters/492.txt"
+  },
+  {
+    "author_number": 493,
+    "ordinal_in_jiangchen_corpus": 497,
+    "heading": "第493章 拥抱希望",
+    "chars": 165,
+    "sha256": "e6d212d65e9f69bcaac14e6c55e382f9c8a6cf1d396c2ac1fd039fd7dc428f9b",
+    "path": "sources/witch-75248/chapters/493.txt"
+  },
+  {
+    "author_number": 494,
+    "ordinal_in_jiangchen_corpus": 498,
+    "heading": "第494章 天外之战，梦境的罅隙",
+    "chars": 171,
+    "sha256": "c87454e78ede68a86290fc1e28f9746ef1a8bf1c5d062ee37d9c5edcbdc89340",
+    "path": "sources/witch-75248/chapters/494.txt"
+  },
+  {
+    "author_number": 495,
+    "ordinal_in_jiangchen_corpus": 499,
+    "heading": "第495章 白光",
+    "chars": 168,
+    "sha256": "c33db0dfffbf30893ab1085d2e47a46f94f160ae13eb33bfdfdb3afe6ea834dc",
+    "path": "sources/witch-75248/chapters/495.txt"
+  },
+  {
+    "author_number": 496,
+    "ordinal_in_jiangchen_corpus": 500,
+    "heading": "第496章 那么，再见了罗兰",
+    "chars": 168,
+    "sha256": "a1e755a1cd3a483dafa083cfb99c9b782551d15795b63b9aaf587b9ae432f285",
+    "path": "sources/witch-75248/chapters/496.txt"
+  },
+  {
+    "author_number": 497,
+    "ordinal_in_jiangchen_corpus": 501,
+    "heading": "第497章 明日（完）",
+    "chars": 165,
+    "sha256": "71899d8420f780c9b5cc90e35d62839f0386cd725df4046683c6db7989d9d772",
+    "path": "sources/witch-75248/chapters/497.txt"
+  }
+]
