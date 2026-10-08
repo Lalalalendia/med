@@ -23,12 +23,37 @@ jobs:
             "https://www.jiangchenxs.com/du_75248/" \
             -o page.html
           echo "bytes=$(wc -c < page.html)"
-          echo "Candidate download links:"
-          grep -Eo 'href=["'\'''][^"'\''']+["'\''']' page.html \
-            | sed -E 's/^href=["'\''']|["'\''']$//g' \
-            | grep -Ei 'txt|down|download' \
-            | sort -u \
-            | head -100 || true
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from urllib.parse import urljoin
+
+          base = "https://www.jiangchenxs.com/du_75248/"
+          html = open("page.html", "r", encoding="utf-8", errors="replace").read()
+
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links = []
+              def handle_starttag(self, tag, attrs):
+                  if tag.lower() != "a":
+                      return
+                  d = dict(attrs)
+                  href = d.get("href")
+                  if href:
+                      self.links.append((href, d.get("title", "")))
+
+          p = P()
+          p.feed(html)
+          print("Candidate download links:")
+          seen = set()
+          for href, title in p.links:
+              full = urljoin(base, href)
+              hay = (href + " " + title).lower()
+              if any(k in hay for k in ("txt", "down", "download")) and full not in seen:
+                  seen.add(full)
+                  print(full)
+          print(f"total_links={len(p.links)} candidates={len(seen)}")
+          PY
 
       - name: Upload probe page
         uses: actions/upload-artifact@v4
