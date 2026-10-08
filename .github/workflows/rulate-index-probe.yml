@@ -1,0 +1,81 @@
+name: Rulate search index probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/rulate-index-probe.yml'
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: python -m pip install --quiet requests beautifulsoup4
+      - name: Search indexes
+        run: |
+          python - <<'PY'
+          import requests, re, base64
+          from bs4 import BeautifulSoup
+          from urllib.parse import quote_plus, urlparse, parse_qs, unquote
+          H={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36','Accept-Language':'ru-RU,ru;q=0.9,en;q=0.8'}
+          S=requests.Session(); S.headers.update(H)
+          titles=[
+            'Phoenix Force from an American Comic',
+            'Amazo Armor in American Comics',
+            'Start with a 100-Meter Bone Dragon: Is This a Trash Hidden Class?',
+          ]
+          engines=[
+            ('bing','https://www.bing.com/search?q={q}&count=50&setlang=ru'),
+            ('yahoo','https://search.yahoo.com/search?p={q}&n=100'),
+            ('brave','https://search.brave.com/search?q={q}&source=web'),
+            ('mojeek','https://www.mojeek.com/search?q={q}'),
+            ('google','https://www.google.com/search?q={q}&num=100&hl=ru&gbv=1&filter=0'),
+            ('yandex','https://yandex.com/search/?text={q}&lr=213'),
+          ]
+          def unwrap(h):
+            h=html_unescape(h)
+            if h.startswith('/url?q='): h=h.split('/url?q=',1)[1].split('&',1)[0]
+            if 'bing.com/ck/a' in h:
+              try:
+                u=(parse_qs(urlparse(h).query).get('u') or [''])[0]
+                if u.startswith('a1'):
+                  raw=u[2:]; raw += '='*((4-len(raw)%4)%4)
+                  h=base64.b64decode(raw).decode('utf-8','ignore')
+              except Exception: pass
+            if 'uddg=' in h:
+              try: h=unquote((parse_qs(urlparse(h).query).get('uddg') or [h])[0])
+              except Exception: pass
+            return h
+          def html_unescape(x):
+            import html
+            return html.unescape(x)
+          for title in titles:
+            print('\n### TITLE',title)
+            queries=[
+              f'"{title}"',
+              f'"{title}" tl.rulate.ru',
+              f'site:tl.rulate.ru "{title}"',
+            ]
+            for q in queries:
+              for name,tpl in engines:
+                u=tpl.format(q=quote_plus(q))
+                try:
+                  r=S.get(u,timeout=30,allow_redirects=True)
+                except Exception as e:
+                  print('ERR',name,repr(e)); continue
+                print('ENGINE',name,'STATUS',r.status_code,'LEN',len(r.text),'Q',q)
+                s=BeautifulSoup(r.text,'html.parser')
+                seen=set()
+                for a in s.find_all('a',href=True):
+                  href=unwrap(a.get('href',''))
+                  txt=' '.join(a.stripped_strings).strip()
+                  if not href or href in seen: continue
+                  seen.add(href)
+                  if 'rulate.ru' in href.lower() or title.lower() in txt.lower():
+                    print('RESULT',name,'|',txt[:250],'|',href[:600])
+                # raw URL scan
+                for m in re.finditer(r'https?://[^\s"<>]+',r.text):
+                  h=html_unescape(m.group(0)).replace('\\/','/')
+                  if 'rulate.ru' in h.lower():
+                    print('RAW',name,'|',h[:800])
+                print('---')
+          PY
