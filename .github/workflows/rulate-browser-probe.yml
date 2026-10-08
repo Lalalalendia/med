@@ -1,0 +1,53 @@
+name: Rulate browser probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/rulate-browser-probe.yml'
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe Rulate with Chrome
+        run: |
+          set -euxo pipefail
+          google-chrome --version || chromium --version || true
+          python - <<'PY'
+          import subprocess, urllib.parse, re
+
+          titles = [
+              "Phoenix Force from an American Comic",
+              "Amazo Armor in American Comics",
+              "Start with a 100-Meter Bone Dragon: Is This a Trash Hidden Class?",
+          ]
+          urls = ["https://tl.rulate.ru/users/6578", "https://tl.rulate.ru/users/385601"]
+          for t in titles:
+              urls.append("https://tl.rulate.ru/search?t=" + urllib.parse.quote_plus(t))
+
+          for i,u in enumerate(urls):
+              print("\nURL",u)
+              cmd = [
+                  "google-chrome","--headless=new","--disable-gpu","--no-sandbox",
+                  "--disable-dev-shm-usage","--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36",
+                  "--virtual-time-budget=12000","--dump-dom",u
+              ]
+              try:
+                  p=subprocess.run(cmd,capture_output=True,text=True,timeout=45)
+              except Exception as e:
+                  print("ERR",repr(e)); continue
+              print("RC",p.returncode,"OUT",len(p.stdout),"ERR",len(p.stderr))
+              s=p.stdout
+              print(s[:2500].replace("\n"," ")[:2500])
+              for title in titles:
+                  if title in s:
+                      print("FOUND TITLE",title)
+                      pos=s.find(title)
+                      print(s[max(0,pos-1200):pos+1500])
+              # print any book ids near our title names
+              for m in re.finditer(r'href=["\']([^"\']*/book/(\d+)[^"\']*)["\']',s):
+                  a=max(0,m.start()-500); b=min(len(s),m.end()+700)
+                  frag=s[a:b]
+                  if any(t in frag for t in titles):
+                      print("MATCH",m.group(2),m.group(1),frag[:1500].replace("\n"," "))
+          PY
