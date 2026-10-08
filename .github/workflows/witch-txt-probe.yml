@@ -1,4 +1,4 @@
-name: Verify witch novel TXT corpus
+name: Probe witch chapter HTML
 
 on:
   push:
@@ -11,155 +11,44 @@ permissions:
   contents: read
 
 jobs:
-  verify:
+  probe:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Resolve Jiangchen TXT URL
+      - name: Fetch first chapter
         run: |
           set -euo pipefail
-          mkdir -p work out
           curl --compressed --fail --location --retry 3 \
             --user-agent "Mozilla/5.0" \
-            "https://www.jiangchenxs.com/xiazai_75248.html" \
-            -o work/download.html
+            "https://www.jiangchenxs.com/du_75248/11093480.html" \
+            -o chapter.html
+          echo "bytes=$(wc -c < chapter.html)"
           python - <<'PY'
           from html.parser import HTMLParser
-          from urllib.parse import urlsplit, urlunsplit, quote
 
-          html = open("work/download.html", "r", encoding="utf-8").read()
+          html = open("chapter.html", "r", encoding="utf-8", errors="replace").read()
 
           class P(HTMLParser):
-              def __init__(self):
-                  super().__init__()
-                  self.a = None
-                  self.text = []
-                  self.candidates = []
               def handle_starttag(self, tag, attrs):
-                  if tag.lower() == "a":
-                      self.a = dict(attrs).get("href")
-                      self.text = []
-              def handle_data(self, data):
-                  if self.a is not None:
-                      self.text.append(data)
-              def handle_endtag(self, tag):
-                  if tag.lower() == "a" and self.a is not None:
-                      label = "".join(self.text).strip()
-                      if label.endswith("全文下载.txt"):
-                          self.candidates.append((self.a, label))
-                      self.a = None
-                      self.text = []
+                  d = dict(attrs)
+                  if tag in ("div", "article", "main", "section", "h1", "h2"):
+                      ident = d.get("id", "")
+                      cls = d.get("class", "")
+                      if ident or cls or tag in ("article", "main", "h1", "h2"):
+                          print(f"TAG {tag} id={ident!r} class={cls!r}")
+          P().feed(html)
 
-          p = P()
-          p.feed(html)
-          if len(p.candidates) != 1:
-              raise SystemExit(f"Expected exactly one TXT download link, got {p.candidates!r}")
-
-          raw_url, label = p.candidates[0]
-          url = raw_url.replace("https://https://", "https://", 1)
-          parts = urlsplit(url)
-          encoded = urlunsplit((
-              parts.scheme,
-              parts.netloc,
-              quote(parts.path, safe="/:@"),
-              parts.query,
-              parts.fragment,
-          ))
-          print(f"download_label={label}")
-          print(f"download_host={parts.netloc}")
-          open("work/txt_url.txt", "w", encoding="utf-8").write(encoded)
+          for needle in ("系统脑袋怎么尖尖的", "content", "chapter", "read", "正文"):
+              i = html.find(needle)
+              print(f"NEEDLE {needle!r} at {i}")
+              if i >= 0:
+                  print(html[max(0, i-600):i+1200])
           PY
 
-      - name: Download and normalize full TXT
-        run: |
-          set -euo pipefail
-          TXT_URL="$(cat work/txt_url.txt)"
-          curl --compressed --fail --location --retry 3 \
-            --user-agent "Mozilla/5.0" \
-            "$TXT_URL" \
-            -o work/book.raw
-          echo "download_bytes=$(wc -c < work/book.raw)"
-          file work/book.raw
-          python - <<'PY'
-          from pathlib import Path
-          import gzip
-
-          raw = Path("work/book.raw").read_bytes()
-          if raw.startswith(b"\x1f\x8b"):
-              raw = gzip.decompress(raw)
-
-          tried = []
-          for enc in ("utf-8-sig", "utf-8", "gb18030", "big5"):
-              try:
-                  text = raw.decode(enc)
-                  print(f"encoding={enc}")
-                  break
-              except UnicodeDecodeError as e:
-                  tried.append((enc, str(e)))
-          else:
-              raise SystemExit(f"Could not decode TXT: {tried}")
-
-          Path("work/book.txt").write_text(text, encoding="utf-8")
-          print(f"utf8_chars={len(text)}")
-          PY
-
-      - name: Verify corpus with production parser
-        run: |
-          set -euo pipefail
-          python - <<'PY' | tee out/corpus-summary.json
-          import importlib.util
-          import json
-          import pathlib
-          import sys
-
-          source = pathlib.Path("tools/novel-ingest/extract_chapter.py")
-          spec = importlib.util.spec_from_file_location("extract_chapter", source)
-          mod = importlib.util.module_from_spec(spec)
-          sys.modules[spec.name] = mod
-          assert spec.loader is not None
-          spec.loader.exec_module(mod)
-
-          text = pathlib.Path("work/book.txt").read_text(encoding="utf-8")
-          entries = mod.parse_book(text)
-          numbered = [e for e in entries if e.entry_type == "chapter"]
-          extras = [e for e in entries if e.entry_type == "extra"]
-          service = [e for e in entries if e.entry_type == "service"]
-          nums = [e.author_number for e in numbered]
-          max_no = max(nums) if nums else 0
-          missing = [n for n in range(1, max_no + 1) if n not in set(nums)]
-
-          summary = {
-              "total_entries": len(entries),
-              "numbered_chapters": len(numbered),
-              "extra_entries": len(extras),
-              "service_entries": len(service),
-              "non_numbered_entries": len(extras) + len(service),
-              "max_author_number": max_no,
-              "missing_author_numbers": missing,
-              "first_numbered_heading": numbered[0].heading if numbered else None,
-              "last_numbered_heading": numbered[-1].heading if numbered else None,
-              "extra_headings": [e.heading for e in extras],
-              "service_headings": [e.heading for e in service],
-          }
-          print(json.dumps(summary, ensure_ascii=False, indent=2))
-
-          assert len(numbered) == 497, summary
-          assert max_no == 497, summary
-          assert not missing, summary
-          assert len(entries) == 505, summary
-          assert len(extras) + len(service) == 8, summary
-          PY
-
-      - name: Upload verification summary
+      - name: Upload chapter HTML
         uses: actions/upload-artifact@v4
         with:
-          name: witch-corpus-verification
-          path: out/corpus-summary.json
+          name: witch-chapter-1-html
+          path: chapter.html
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 1
