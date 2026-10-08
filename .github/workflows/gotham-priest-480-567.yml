@@ -1,0 +1,39 @@
+name: Gotham Priest RAW 480-567
+
+on:
+  push:
+    paths:
+      - ".github/workflows/gotham-priest-480-567.yml"
+      - "tools/txl1/fetch_gotham_priest_tail.py"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Fetch and split chapters 480-567
+        run: |
+          python tools/txl1/fetch_gotham_priest_tail.py \
+            --start 480 \
+            --end 567 \
+            --out-dir novels/gotham-priest
+      - name: Persist corpus
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add novels/gotham-priest
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Persist Gotham Priest RAW chapters 480-567"
+          git push
