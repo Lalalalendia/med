@@ -16,6 +16,7 @@ EXTRA_HEADING_RE = re.compile(r"^番外\s*[:：]?\s*(.*?)\s*$")
 # Keep the list explicit so unusual one-off headings are not mistaken for prose.
 SERVICE_HEADINGS = {
     "上架感言",
+    "群炸了，请前往评论区",
     "电脑炸了……请假",
     "请假条",
     "没办法再请天假，顺便说下近况",
