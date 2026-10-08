@@ -53,6 +53,14 @@ jobs:
             --book oa --source "$SOURCE" \
             --story-start "$STORY_START" --story-end "$STORY_END" \
             --delay 1.5 --strict --out-dir out/oa-mtl
+      - name: Diagnostic probe of one public OA chapter on PR
+        if: github.event_name == 'pull_request' && github.head_ref == 'feature/oa-mtl-bridge-221-290'
+        run: |
+          # Diagnostic only: do not mark book ingestion complete on HTTP errors.
+          python tools/fanmtl-bridge/fetch_fanmtl_bridge.py \
+            --book oa --source fanmtl \
+            --story-start 221 --story-end 221 \
+            --delay 1.5 --out-dir out/oa-mtl
       - name: Summarize findings
         if: always()
         run: |
@@ -63,7 +71,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: oa-mtl-${{ inputs.source }}-${{ inputs.story_start }}-${{ inputs.story_end }}
+          name: oa-mtl-${{ github.event_name }}-${{ github.run_id }}
           path: out/oa-mtl/**
           retention-days: 7
           if-no-files-found: warn
