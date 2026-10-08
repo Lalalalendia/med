@@ -15,94 +15,148 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install deps
         run: python -m pip install --quiet requests beautifulsoup4
-      - name: Scrape via Wayback
+      - name: Discover Atarax books from search indexes
         run: |
           python - <<'PY'
-          import csv, html, re, requests, time
+          import base64, csv, html, re, time
           from bs4 import BeautifulSoup
-          from urllib.parse import urljoin, urlparse
+          from urllib.parse import quote_plus, urlparse, parse_qs
+          import requests
 
+          TARGET=273
           S=requests.Session()
-          S.headers.update({"User-Agent":"Mozilla/5.0"})
-          cdx='https://web.archive.org/cdx/search/cdx'
-          params={
-              'url':'tl.rulate.ru/users/6578*',
-              'output':'json',
-              'filter':['statuscode:200','mimetype:text/html'],
-              'fl':'timestamp,original,statuscode,digest',
-              'collapse':'digest',
-              'limit':'1000',
-              'from':'2025',
-          }
-          r=S.get(cdx,params=params,timeout=60)
-          print('CDX',r.status_code,len(r.text),r.url)
-          print(r.text[:3000])
-          r.raise_for_status()
-          data=r.json()
-          rows=data[1:] if data and isinstance(data[0],list) else []
-          print('CDX ROWS',len(rows))
-
-          snaps={}
-          for ts,orig,*rest in rows:
-              if '/users/6578' not in orig:
-                  continue
-              m=re.search(r'GroupMember_page=(\d+)',orig)
-              if '/books' in orig and not m:
-                  page=1
-              elif m:
-                  page=int(m.group(1))
-              elif orig.rstrip('/').endswith('/users/6578'):
-                  page=1
-              else:
-                  continue
-              if page not in snaps or ts>snaps[page][0]:
-                  snaps[page]=(ts,orig)
-
-          print('PAGES',snaps)
+          S.headers.update({
+              'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+              'Accept-Language':'ru-RU,ru;q=0.9,en;q=0.8',
+          })
           books={}
 
-          def clean(label):
-              label=html.unescape(re.sub(r'\s+',' ',label)).strip()
-              label=re.sub(r'\s*\(создатель\)\s*$','',label,flags=re.I).strip()
-              if ' / ' in label:
-                  label=label.rsplit(' / ',1)[-1].strip()
-              return label
+          def clean_title(t):
+              t=html.unescape(re.sub(r'\s+',' ',t)).strip()
+              t=re.sub(r'\s*[-–—]\s*переводчики.*$','',t,flags=re.I)
+              t=re.sub(r'\s*::\s*Tl\.Rulate\.ru.*$','',t,flags=re.I)
+              t=re.sub(r'^Ранобэ\s+','',t,flags=re.I)
+              t=re.sub(r'\s*\|\s*Rulate.*$','',t,flags=re.I)
+              if ' / ' in t:
+                  t=t.rsplit(' / ',1)[-1].strip()
+              return t.strip()
 
-          for page,(ts,orig) in sorted(snaps.items()):
-              u=f'https://web.archive.org/web/{ts}id_/{orig}'
-              q=S.get(u,timeout=60)
-              print('SNAP',page,q.status_code,len(q.text),u)
-              if q.status_code!=200:
-                  continue
-              soup=BeautifulSoup(q.text,'html.parser')
-              found={}
-              for a in soup.find_all('a',href=True):
-                  href=urljoin(orig,a.get('href',''))
-                  m=re.search(r'https?://tl\.rulate\.ru/book/(\d+)(?:/)?(?:$|[?#])',href)
-                  if not m:
+          def add(bid,title,source):
+              title=clean_title(title)
+              if not title or len(title)<2:
+                  return False
+              old=books.get(bid)
+              if old is None or len(title)>len(old[0]):
+                  books[bid]=(title,source)
+                  return old is None
+              return False
+
+          # Seed with the latest available Wayback snapshot of page 1.
+          try:
+              wb='https://web.archive.org/web/20260527133514id_/https://tl.rulate.ru/users/6578'
+              r=S.get(wb,timeout=60)
+              print('WAYBACK',r.status_code,len(r.text))
+              if r.status_code==200:
+                  soup=BeautifulSoup(r.text,'html.parser')
+                  for a in soup.find_all('a',href=True):
                       m=re.search(r'/book/(\d+)(?:/)?(?:$|[?#])',a.get('href',''))
-                  if not m:
-                      continue
-                  bid=int(m.group(1))
-                  label=' '.join(a.stripped_strings).strip()
-                  title=clean(label)
-                  if not title or title.lower() in {'читать','подробнее','оглавление','переводчики','блог','анонсы'}:
-                      continue
-                  if len(title)>len(found.get(bid,'')):
-                      found[bid]=title
-              before=len(books)
-              books.update(found)
-              print('PAGE',page,'found',len(found),'added',len(books)-before,'total',len(books))
-              time.sleep(1)
+                      if not m: continue
+                      label=' '.join(a.stripped_strings)
+                      if label:
+                          add(int(m.group(1)),label,'wayback')
+              print('SEED',len(books))
+          except Exception as e:
+              print('WAYBACK_ERR',repr(e))
 
-          out='rulate-6578-books.csv'
-          final=sorted((bid,title,f'https://tl.rulate.ru/book/{bid}') for bid,title in books.items())
-          with open(out,'w',encoding='utf-8-sig',newline='') as f:
-              w=csv.writer(f); w.writerow(['ID','Название','Ссылка']); w.writerows(final)
+          def unwrap_bing(href):
+              if 'tl.rulate.ru/' in href:
+                  return href
+              # Bing redirects sometimes encode target in query parameter u=a1<base64>.
+              try:
+                  q=parse_qs(urlparse(href).query)
+                  u=(q.get('u') or [None])[0]
+                  if u and u.startswith('a1'):
+                      raw=u[2:]
+                      raw += '='*((4-len(raw)%4)%4)
+                      return base64.b64decode(raw).decode('utf-8','ignore')
+              except Exception:
+                  pass
+              return href
+
+          def bing(query, max_pages=10):
+              new_total=0
+              empty=0
+              for p in range(max_pages):
+                  first=1+p*10
+                  url='https://www.bing.com/search?q='+quote_plus(query)+f'&first={first}&count=10&setlang=ru'
+                  try:
+                      r=S.get(url,timeout=40)
+                  except Exception as e:
+                      print('BING_ERR',query,p,repr(e)); break
+                  print('BING',p,r.status_code,len(r.text),query)
+                  if p==0:
+                      print('BING_HEAD',r.text[:500].replace('\n',' '))
+                  if r.status_code!=200:
+                      break
+                  soup=BeautifulSoup(r.text,'html.parser')
+                  page_new=0
+                  candidates=[]
+                  for h2 in soup.select('li.b_algo h2'):
+                      a=h2.find('a',href=True)
+                      if not a: continue
+                      href=unwrap_bing(a['href'])
+                      title=' '.join(a.stripped_strings)
+                      candidates.append((title,href))
+                  if p==0:
+                      print('BING_SAMPLE',candidates[:5])
+                  for title,href in candidates:
+                      m=re.match(r'https?://tl\.rulate\.ru/book/(\d+)(?:/members)?/?(?:\?.*)?$',href)
+                      if not m:
+                          continue
+                      bid=int(m.group(1))
+                      if add(bid,title,'bing:'+query):
+                          page_new+=1
+                  new_total+=page_new
+                  print('BING_PAGE',p,'new',page_new,'total',len(books))
+                  if len(books)>=TARGET:
+                      return new_total
+                  if page_new==0:
+                      empty+=1
+                  else:
+                      empty=0
+                  if empty>=2:
+                      break
+                  time.sleep(1.2)
+              return new_total
+
+          queries=[
+              'site:tl.rulate.ru/book Atarax переводчики Модератор',
+              'site:tl.rulate.ru/book "Atarax (создатель)"',
+              'site:tl.rulate.ru/book "владелец: Atarax"',
+          ]
+          for y in range(2016,2027):
+              queries.append(f'site:tl.rulate.ru/book Atarax переводчики "{y} г."')
+          months=['янв.','февр.','марта','апр.','мая','июня','июля','авг.','сент.','окт.','нояб.','дек.']
+          for y in [2024,2025,2026]:
+              for mon in months:
+                  queries.append(f'site:tl.rulate.ru/book Atarax переводчики "{mon}" "{y} г."')
+
+          for i,q in enumerate(queries,1):
+              before=len(books)
+              bing(q, max_pages=12 if i<=3 else 6)
+              print('QUERY_DONE',i,'added',len(books)-before,'total',len(books))
+              if len(books)>=TARGET:
+                  break
+              time.sleep(1.5)
+
+          final=sorted((bid,title,f'https://tl.rulate.ru/book/{bid}',src) for bid,(title,src) in books.items())
+          with open('rulate-6578-books.csv','w',encoding='utf-8-sig',newline='') as f:
+              w=csv.writer(f); w.writerow(['ID','Название','Ссылка','Источник']); w.writerows(final)
           print('FINAL',len(final))
-          print('SAMPLE',final[:10],final[-10:])
+          print('FIRST',final[:15])
+          print('LAST',final[-15:])
           if len(final)<200:
-              raise SystemExit(f'Wayback incomplete: {len(final)}')
+              raise SystemExit(f'Index discovery too small: {len(final)}')
           PY
       - name: Commit scraped list
         run: |
