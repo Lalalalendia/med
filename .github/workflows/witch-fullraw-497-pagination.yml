@@ -104,7 +104,8 @@ jobs:
           rows=[]
           for p in sorted(Path("work").glob("*.json")):
               d=json.loads(p.read_text(encoding="utf-8"))
-              rows.append(d)
+              if isinstance(d, dict) and "ordinal" in d:
+                  rows.append(d)
           rows.sort(key=lambda x:x["ordinal"])
           assert len(rows)==504, len(rows)
           blocks=[]; numbered=[]; services=[]; missing=[]
