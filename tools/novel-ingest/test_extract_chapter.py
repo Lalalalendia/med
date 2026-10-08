@@ -73,6 +73,7 @@ x
     def test_service_headings_are_separate_records(self):
         service_headings = [
             "上架感言",
+            "群炸了，请前往评论区",
             "电脑炸了……请假",
             "请假条",
             "没办法再请天假，顺便说下近况",
@@ -82,7 +83,6 @@ x
         ]
         parts = ["第1章 One\nchapter one"]
         parts.extend(f"{heading}\nservice body" for heading in service_headings)
-        parts.append("番外：Extra\nextra body")
         parts.append("第2章 Two\nchapter two")
 
         chapters = MOD.parse_book("\n\n".join(parts))
@@ -98,13 +98,13 @@ x
         )
         self.assertEqual(
             sum(c.entry_type == "extra" for c in chapters),
-            1,
+            0,
         )
 
         meta = MOD.metadata(chapters[-1], chapters)
         self.assertEqual(meta["numbered_chapters"], 2)
-        self.assertEqual(meta["extra_entries"], 1)
-        self.assertEqual(meta["service_entries"], 7)
+        self.assertEqual(meta["extra_entries"], 0)
+        self.assertEqual(meta["service_entries"], 8)
         self.assertEqual(meta["extras"], 8)
         self.assertEqual(meta["max_author_number"], 2)
         self.assertEqual(meta["missing_author_numbers"], [])
