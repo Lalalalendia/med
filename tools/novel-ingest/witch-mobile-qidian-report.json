@@ -1,0 +1,306 @@
+[
+  {
+    "chapter": 1,
+    "curl_rc": 0,
+    "http": "HTTP/1.1 200 OK",
+    "html_chars": 42420,
+    "visible_chars": 2313,
+    "visible_cjk": 1908,
+    "title": "《魔女大人，请按剧本黑化！》第1章 系统脑袋怎么尖尖的 _小说在线阅读 - 起点中文网手机版",
+    "captcha": true,
+    "paywall": false,
+    "top_containers": [
+      {
+        "tag": "div",
+        "id": "app",
+        "class": "",
+        "chars": 2181,
+        "cjk": 1873
+      },
+      {
+        "tag": "div",
+        "id": "reader",
+        "class": "reader bg-b-gray-50 min-h-full custom_reader TotalCommentTopPadding",
+        "chars": 2181,
+        "cjk": 1873
+      },
+      {
+        "tag": "div",
+        "id": "reader-content",
+        "class": "bg-b-gray-50 relative pb-$sai-bottom z-1",
+        "chars": 2181,
+        "cjk": 1873
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "relative",
+        "chars": 2163,
+        "cjk": 1857
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "relative transition-transform",
+        "chars": 2163,
+        "cjk": 1857
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "chapter-wrapper relative border-outline-black-8 border-t first-of-type:border-none pb-1px h-full flex flex-col",
+        "chars": 2163,
+        "cjk": 1857
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "print <sm:pt-56px <sm:mb-48px <sm:px-20px pt-64px px-64px mb-64px enable-review",
+        "chars": 2056,
+        "cjk": 1760
+      },
+      {
+        "tag": "main",
+        "id": "c-828479342",
+        "class": "content mt-1.5em text-s-gray-900 leading-[1.8] relative z-0 r-font-black",
+        "chars": 2043,
+        "cjk": 1749
+      },
+      {
+        "tag": "p",
+        "id": "",
+        "class": "",
+        "chars": 2043,
+        "cjk": 1749
+      }
+    ]
+  },
+  {
+    "chapter": 418,
+    "curl_rc": 0,
+    "http": "HTTP/1.1 200 OK",
+    "html_chars": 36126,
+    "visible_chars": 260,
+    "visible_cjk": 204,
+    "title": "《魔女大人，请按剧本黑化！》第418章 神之子之间亦有差距 _小说在线阅读 - 起点中文网手机版",
+    "captcha": true,
+    "paywall": true,
+    "top_containers": [
+      {
+        "tag": "div",
+        "id": "app",
+        "class": "",
+        "chars": 194,
+        "cjk": 169
+      },
+      {
+        "tag": "div",
+        "id": "reader",
+        "class": "reader bg-b-gray-50 min-h-full custom_reader TotalCommentTopPadding",
+        "chars": 194,
+        "cjk": 169
+      },
+      {
+        "tag": "div",
+        "id": "reader-content",
+        "class": "bg-b-gray-50 relative pb-$sai-bottom z-1",
+        "chars": 194,
+        "cjk": 169
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "relative",
+        "chars": 174,
+        "cjk": 153
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "relative transition-transform",
+        "chars": 174,
+        "cjk": 153
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "chapter-wrapper relative border-outline-black-8 border-t first-of-type:border-none pb-1px h-full flex flex-col",
+        "chars": 174,
+        "cjk": 153
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "print <sm:pt-56px <sm:mb-48px <sm:px-20px pt-64px px-64px mb-64px enable-review",
+        "chars": 100,
+        "cjk": 86
+      },
+      {
+        "tag": "main",
+        "id": "c-858550306",
+        "class": "content mt-1.5em text-s-gray-900 leading-[1.8] relative z-0 r-font-black lock-mask",
+        "chars": 85,
+        "cjk": 75
+      },
+      {
+        "tag": "p",
+        "id": "",
+        "class": "",
+        "chars": 85,
+        "cjk": 75
+      }
+    ]
+  },
+  {
+    "chapter": 483,
+    "curl_rc": 0,
+    "http": "HTTP/1.1 200 OK",
+    "html_chars": 37214,
+    "visible_chars": 244,
+    "visible_cjk": 171,
+    "title": "《魔女大人，请按剧本黑化！》第483章 游戏与沙堡 _小说在线阅读 - 起点中文网手机版",
+    "captcha": true,
+    "paywall": true,
+    "top_containers": [
+      {
+        "tag": "div",
+        "id": "app",
+        "class": "",
+        "chars": 181,
+        "cjk": 140
+      },
+      {
+        "tag": "div",
+        "id": "reader",
+        "class": "reader bg-b-gray-50 min-h-full custom_reader TotalCommentTopPadding",
+        "chars": 181,
+        "cjk": 140
+      },
+      {
+        "tag": "div",
+        "id": "reader-content",
+        "class": "bg-b-gray-50 relative pb-$sai-bottom z-1",
+        "chars": 181,
+        "cjk": 140
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "relative",
+        "chars": 165,
+        "cjk": 128
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "relative transition-transform",
+        "chars": 165,
+        "cjk": 128
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "chapter-wrapper relative border-outline-black-8 border-t first-of-type:border-none pb-1px h-full flex flex-col",
+        "chars": 165,
+        "cjk": 128
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "print <sm:pt-56px <sm:mb-48px <sm:px-20px pt-64px px-64px mb-64px enable-review",
+        "chars": 92,
+        "cjk": 69
+      },
+      {
+        "tag": "main",
+        "id": "c-871845598",
+        "class": "content mt-1.5em text-s-gray-900 leading-[1.8] relative z-0 r-font-black lock-mask",
+        "chars": 81,
+        "cjk": 62
+      },
+      {
+        "tag": "p",
+        "id": "",
+        "class": "",
+        "chars": 81,
+        "cjk": 62
+      }
+    ]
+  },
+  {
+    "chapter": 497,
+    "curl_rc": 0,
+    "http": "HTTP/1.1 200 OK",
+    "html_chars": 36203,
+    "visible_chars": 249,
+    "visible_cjk": 187,
+    "title": "《魔女大人，请按剧本黑化！》第497章 明日（完） _小说在线阅读 - 起点中文网手机版",
+    "captcha": true,
+    "paywall": true,
+    "top_containers": [
+      {
+        "tag": "div",
+        "id": "app",
+        "class": "",
+        "chars": 188,
+        "cjk": 158
+      },
+      {
+        "tag": "div",
+        "id": "reader",
+        "class": "reader bg-b-gray-50 min-h-full custom_reader TotalCommentTopPadding",
+        "chars": 188,
+        "cjk": 158
+      },
+      {
+        "tag": "div",
+        "id": "reader-content",
+        "class": "bg-b-gray-50 relative pb-$sai-bottom z-1",
+        "chars": 188,
+        "cjk": 158
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "relative",
+        "chars": 172,
+        "cjk": 148
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "relative transition-transform",
+        "chars": 172,
+        "cjk": 148
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "chapter-wrapper relative border-outline-black-8 border-t first-of-type:border-none pb-1px h-full flex flex-col",
+        "chars": 172,
+        "cjk": 148
+      },
+      {
+        "tag": "div",
+        "id": "",
+        "class": "print <sm:pt-56px <sm:mb-48px <sm:px-20px pt-64px px-64px mb-64px enable-review",
+        "chars": 100,
+        "cjk": 85
+      },
+      {
+        "tag": "main",
+        "id": "c-879991154",
+        "class": "content mt-1.5em text-s-gray-900 leading-[1.8] relative z-0 r-font-black lock-mask",
+        "chars": 89,
+        "cjk": 80
+      },
+      {
+        "tag": "p",
+        "id": "",
+        "class": "",
+        "chars": 89,
+        "cjk": 80
+      }
+    ]
+  }
+]
