@@ -1,0 +1,83 @@
+name: Fanqie P0 reader probe
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fanqie-p0-reader-probe.yml"
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe Fanqie reader pages
+        run: |
+          set -euo pipefail
+          mkdir -p out tools/novel-ingest
+          python - <<'PY'
+          from pathlib import Path
+          import json,re,subprocess
+
+          samples = [
+            {
+              "book":"仙界基建",
+              "chapter":122,
+              "reader_id":"7629306266275283481",
+              "expected":"修仙界第一通电话"
+            },
+            {
+              "book":"程序员仙门基建",
+              "chapter":120,
+              "reader_id":"7602510590015177278",
+              "expected":"仙网1.0测试版上线"
+            }
+          ]
+
+          report=[]
+          for s in samples:
+              rid=s["reader_id"]
+              htmlp=Path(f"out/{rid}.html")
+              headp=Path(f"out/{rid}.headers")
+              p=subprocess.run([
+                "curl","--compressed","--location","--silent","--show-error",
+                "--connect-timeout","10","--max-time","30","--retry","3",
+                "--user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+                "-D",str(headp),
+                f"https://fanqienovel.com/reader/{rid}",
+                "-o",str(htmlp)
+              ],capture_output=True,text=True)
+              html=htmlp.read_text("utf-8",errors="replace") if htmlp.exists() else ""
+              headers=headp.read_text("utf-8",errors="replace") if headp.exists() else ""
+              statuses=[x for x in headers.splitlines() if x.startswith("HTTP/")]
+              cjk=len(re.findall(r"[\u3400-\u9fff]",html))
+              expected=s["expected"] in html
+              markers={m:(m in html) for m in [
+                "__NEXT_DATA__","chapterData","content","paragraph",
+                "登录","下载番茄小说","验证码","安全验证"
+              ]}
+              report.append({
+                **s,
+                "curl_rc":p.returncode,
+                "http":statuses[-1] if statuses else None,
+                "html_chars":len(html),
+                "cjk_chars":cjk,
+                "expected_title_present":expected,
+                "markers":markers
+              })
+          out=Path("tools/novel-ingest/fanqie-p0-reader-report.json")
+          out.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Commit report
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/novel-ingest/fanqie-p0-reader-report.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Probe Fanqie P0 reader pages"
+          git push
