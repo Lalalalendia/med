@@ -1,0 +1,85 @@
+name: Fanqie P0 full corpus
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fanqie-p0-full-corpus.yml"
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - slug: xianjie-jijian
+            book_id: "7625593996286364696"
+          - slug: programmer-xianmen
+            book_id: "7601360760131832856"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build full corpus
+        run: |
+          set -euo pipefail
+          python tools/novel-ingest/fanqie_full_build.py \
+            --book-id "${{ matrix.book_id }}" \
+            --slug "${{ matrix.slug }}" \
+            --workers 4 \
+            --out-root out/fanqie-full
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fanqie-full-${{ matrix.slug }}
+          path: out/fanqie-full/${{ matrix.slug }}/
+          if-no-files-found: warn
+          retention-days: 7
+
+  persist:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fanqie-full-*
+          path: merged
+          merge-multiple: false
+
+      - name: Validate and persist corpora
+        run: |
+          set -euo pipefail
+          for slug in xianjie-jijian programmer-xianmen; do
+            src="merged/fanqie-full-$slug"
+            test -f "$src/summary.json"
+            python - "$src/summary.json" <<'PY'
+          import json,sys
+          p=sys.argv[1]
+          s=json.load(open(p,encoding='utf-8'))
+          assert s['downloaded']==s['catalog_entries'], s
+          assert not s['failures'], s
+          assert not s['missing_ordinals'], s
+          print(json.dumps(s,ensure_ascii=False))
+          PY
+            target="corpora/fanqie/$slug/full"
+            rm -rf "$target"
+            mkdir -p "$(dirname "$target")"
+            cp -R "$src" "$target"
+          done
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add corpora/fanqie/xianjie-jijian/full corpora/fanqie/programmer-xianmen/full
+          git diff --cached --quiet && exit 0
+          git commit -m "Persist complete Fanqie P0 corpora"
+          git pull --rebase origin main
+          git push
