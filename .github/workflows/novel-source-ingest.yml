@@ -30,6 +30,16 @@ on:
         required: true
         type: boolean
         default: false
+      rulate_url:
+        description: Optional related Rulate URL
+        required: false
+        type: string
+        default: ''
+      notion_book_url:
+        description: Optional Notion canonical book page URL
+        required: false
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -107,11 +117,13 @@ jobs:
           START: ${{ inputs.start }}
           END: ${{ inputs.end }}
           CATALOG_ONLY: ${{ inputs.catalog_only }}
+          RULATE_URL: ${{ inputs.rulate_url }}
+          NOTION_BOOK_URL: ${{ inputs.notion_book_url }}
         run: |
           set -euo pipefail
           extra=()
           if [ "$CATALOG_ONLY" = "true" ]; then extra+=(--catalog-only); fi
-          python tools/novel-ingest/source_ingest.py --source "$SOURCE" --book-url "$BOOK_URL" --book-key "$BOOK_KEY" --start "$START" --end "$END" --rulate-url "https://tl.rulate.ru/book/150719" --out-dir out/novel-source "${extra[@]}"
+          python tools/novel-ingest/source_ingest.py --source "$SOURCE" --book-url "$BOOK_URL" --book-key "$BOOK_KEY" --start "$START" --end "$END" --rulate-url "$RULATE_URL" --notion-book-url "$NOTION_BOOK_URL" --out-dir out/novel-source "${extra[@]}"
       - name: Job summary
         if: always()
         run: |
