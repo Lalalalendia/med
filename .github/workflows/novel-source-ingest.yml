@@ -1,0 +1,141 @@
+name: Novel source ingest - verified RAW
+on:
+  push:
+    paths: ['tools/novel-ingest/source_ingest.py', 'tools/novel-ingest/test_source_ingest.py', '.github/workflows/novel-source-ingest.yml']
+  pull_request:
+    paths: ['tools/novel-ingest/source_ingest.py', 'tools/novel-ingest/test_source_ingest.py', '.github/workflows/novel-source-ingest.yml']
+  workflow_dispatch:
+    inputs:
+      source:
+        required: true
+        type: choice
+        options: [royalroad, webnovel]
+      book_url:
+        required: true
+        type: string
+        default: https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming
+      book_key:
+        required: true
+        type: string
+        default: aura-farming
+      start:
+        required: true
+        type: number
+        default: 1
+      end:
+        required: true
+        type: number
+        default: 5
+      catalog_only:
+        required: true
+        type: boolean
+        default: false
+      rulate_url:
+        description: Optional related Rulate URL
+        required: false
+        type: string
+        default: ''
+      notion_book_url:
+        description: Optional Notion canonical book page URL
+        required: false
+        type: string
+        default: ''
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - run: python -m unittest discover -s tools/novel-ingest -p test_source_ingest.py -v
+  live-pilot:
+    if: github.event_name == 'pull_request'
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Public Royal Road pilot, story chapters 1-5
+        id: pilot
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/source_ingest.py \
+            --source royalroad \
+            --book-url https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming \
+            --book-key aura-farming --start 1 --end 5 \
+            --rulate-url https://tl.rulate.ru/book/150719 \
+            --out-dir out/novel-source
+      - name: Report verified chapter receipts (no story text)
+        if: always()
+        run: |
+          if [ -f out/novel-source/summary.md ]; then cat out/novel-source/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+          if [ -f out/novel-source/manifest.json ]; then
+            python - <<'PY'
+          import json
+          data = json.load(open("out/novel-source/manifest.json", encoding="utf-8"))
+          print("STATUS:", data["status"])
+          print("CATALOG:", data["catalog_count"], "GAPS:", data["catalog_gaps"])
+          for c in data["chapters"]:
+              print("CHAPTER", c["ordinal"], c["status"], c.get("chars"), c.get("sha256"), c.get("error"))
+          PY
+          fi
+      - name: Upload pilot data and failure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aura-farming-raw-pilot-1-5
+          path: out/novel-source/**
+          if-no-files-found: warn
+          retention-days: 7
+  ingest:
+    if: github.event_name == 'workflow_dispatch'
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Fetch and validate public chapters
+        id: ingest
+        continue-on-error: true
+        env:
+          SOURCE: ${{ inputs.source }}
+          BOOK_URL: ${{ inputs.book_url }}
+          BOOK_KEY: ${{ inputs.book_key }}
+          START: ${{ inputs.start }}
+          END: ${{ inputs.end }}
+          CATALOG_ONLY: ${{ inputs.catalog_only }}
+          RULATE_URL: ${{ inputs.rulate_url }}
+          NOTION_BOOK_URL: ${{ inputs.notion_book_url }}
+        run: |
+          set -euo pipefail
+          extra=()
+          if [ "$CATALOG_ONLY" = "true" ]; then extra+=(--catalog-only); fi
+          python tools/novel-ingest/source_ingest.py --source "$SOURCE" --book-url "$BOOK_URL" --book-key "$BOOK_KEY" --start "$START" --end "$END" --rulate-url "$RULATE_URL" --notion-book-url "$NOTION_BOOK_URL" --out-dir out/novel-source "${extra[@]}"
+      - name: Job summary
+        if: always()
+        run: |
+          if [ -f out/novel-source/summary.md ]; then cat out/novel-source/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload raw and failure receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: novel-source-${{ inputs.book_key }}-${{ inputs.start }}-${{ inputs.end }}
+          path: out/novel-source/**
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Reject incomplete batch
+        if: steps.ingest.outcome != 'success'
+        run: exit 1
