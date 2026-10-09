@@ -38,13 +38,23 @@ jobs:
           def get(url):
               p=subprocess.run([
                 "curl","--compressed","--location","--silent","--show-error",
-                "--connect-timeout","8","--max-time","25","--retry","2",
+                "--connect-timeout","6","--max-time","15","--retry","0",
                 "--user-agent","Mozilla/5.0",
                 "-w","\n__HTTP__%{http_code}",
                 url
-              ],capture_output=True,text=True)
-              body,_,code=p.stdout.rpartition("\n__HTTP__")
-              return p.returncode,code,body,p.stderr
+              ],capture_output=True)
+              marker=b"\n__HTTP__"
+              body_b,sep,code_b=p.stdout.rpartition(marker)
+              def dec(b):
+                  for enc in ("utf-8","gb18030"):
+                      try:
+                          return b.decode(enc)
+                      except UnicodeDecodeError:
+                          pass
+                  return b.decode("utf-8","replace")
+              body=dec(body_b if sep else p.stdout)
+              code=code_b.decode("ascii","replace") if sep else ""
+              return p.returncode,code,body,dec(p.stderr)
 
           report=[]
           for book,ch,item in samples:
