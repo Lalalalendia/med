@@ -1,0 +1,127 @@
+name: Fanqie P0 content audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fanqie-p0-content-audit.yml"
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit chapter payload completeness
+        run: |
+          set -euo pipefail
+          mkdir -p tools/novel-ingest work
+          curl --fail --location --silent --show-error \
+            https://raw.githubusercontent.com/gs1147/fanqie-booksource/72d6804c89a66ff0b00ecf2353c76ef0a1d3e644/charset.json \
+            -o work/charset.json
+          python - <<'PY'
+          import json,re,subprocess,html as htmlmod
+          from pathlib import Path
+
+          raw=Path("work/charset.json").read_text("utf-8-sig")
+          cs=json.loads(raw)
+          if isinstance(cs,dict):
+              cs=cs.get("charset",[])
+          charset=cs[0]
+          START=58344
+
+          def decode(s):
+              out=[]
+              for ch in s:
+                  o=ord(ch)
+                  i=o-START
+                  if 0 <= i < len(charset) and charset[i] not in ("?",""):
+                      out.append(charset[i])
+                  else:
+                      out.append(ch)
+              return "".join(out)
+
+          def fetch(url):
+              p=subprocess.run([
+                "curl","--compressed","--location","--silent","--show-error",
+                "--connect-timeout","10","--max-time","30","--retry","3",
+                "--user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+                url
+              ],capture_output=True,text=True,check=True)
+              return p.stdout
+
+          def state_from_html(src):
+              marker="window.__INITIAL_STATE__="
+              i=src.find(marker)
+              if i<0: raise RuntimeError("initial state not found")
+              i+=len(marker)
+              depth=0; in_str=False; esc=False
+              for j in range(i,len(src)):
+                  c=src[j]
+                  if in_str:
+                      if esc: esc=False
+                      elif c=="\\": esc=True
+                      elif c=='"': in_str=False
+                      continue
+                  if c=='"': in_str=True
+                  elif c=="{": depth+=1
+                  elif c=="}":
+                      depth-=1
+                      if depth==0:
+                          return json.loads(src[i:j+1])
+              raise RuntimeError("unterminated state")
+
+          samples=[
+            ("仙界基建",1,None),
+            ("仙界基建",122,"7629306266275283481"),
+            ("程序员仙门基建",1,None),
+            ("程序员仙门基建",120,"7602510590015177278"),
+          ]
+          books={
+            "仙界基建":"7625593996286364696",
+            "程序员仙门基建":"7601360760131832856",
+          }
+          report=[]
+          for book,ch,rid in samples:
+              if rid is None:
+                  psrc=fetch(f"https://fanqienovel.com/page/{books[book]}")
+                  pst=state_from_html(psrc)
+                  vols=pst["page"]["chapterListWithVolume"]
+                  flat=[x for v in vols for x in v]
+                  ent=flat[ch-1]
+                  rid=str(ent["itemId"])
+              src=fetch(f"https://fanqienovel.com/reader/{rid}")
+              st=state_from_html(src)
+              cd=st["reader"]["chapterData"]
+              content=cd.get("content","")
+              plain=re.sub(r"<[^>]+>","\n",content)
+              plain=htmlmod.unescape(plain)
+              plain=re.sub(r"\n+","\n",plain).strip()
+              decoded=decode(plain)
+              report.append({
+                "book":book,
+                "chapter":ch,
+                "reader_id":rid,
+                "title":decode(str(cd.get("title",""))),
+                "isChapterLock":cd.get("isChapterLock"),
+                "content_html_chars":len(content),
+                "plain_chars":len(plain),
+                "pua_chars":sum(0xE000<=ord(x)<=0xF8FF for x in plain),
+                "decoded_prefix":decoded[:300],
+                "decoded_suffix":decoded[-180:],
+                "chapterData_keys":sorted(cd.keys()),
+              })
+          out=Path("tools/novel-ingest/fanqie-p0-content-audit.json")
+          out.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit report
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/novel-ingest/fanqie-p0-content-audit.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Audit Fanqie P0 chapter payload completeness"
+          git push
