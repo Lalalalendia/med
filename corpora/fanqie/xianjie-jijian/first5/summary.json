@@ -1,0 +1,15 @@
+{
+  "book_id": "7625593996286364696",
+  "catalog_entries": 399,
+  "catalog_max_author_number": 400,
+  "selected": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "downloaded": 5,
+  "failures": [],
+  "duplicate_author_numbers": []
+}
