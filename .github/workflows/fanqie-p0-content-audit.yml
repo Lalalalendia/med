@@ -25,7 +25,10 @@ jobs:
           from pathlib import Path
 
           data=Path("work/charset.json").read_bytes()
-          raw=data.decode("utf-16" if data[:2] in (b"\\xff\\xfe",b"\\xfe\\xff") else "utf-8-sig")
+          try:
+              raw=data.decode("utf-8-sig")
+          except UnicodeDecodeError:
+              raw=data.decode("utf-16")
           cs=json.loads(raw)
           if isinstance(cs,dict):
               cs=cs.get("charset",[])
