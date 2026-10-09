@@ -1,0 +1,52 @@
+name: Fanqie batch response shape
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fanqie-batch-shape.yml"
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect batch JSON shape
+        run: |
+          set -euo pipefail
+          url='http://101.35.133.34:5000/api/content?tab=%E6%89%B9%E9%87%8F&book_id=7601360760131832856&item_ids=7602510590015177278,7617408365332808217'
+          curl --compressed --location --silent --show-error --connect-timeout 8 --max-time 60 --user-agent 'Mozilla/5.0' "$url" -o /tmp/r.bin
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          b=Path('/tmp/r.bin').read_bytes()
+          for enc in ('utf-8','gb18030'):
+              try:
+                  s=b.decode(enc); break
+              except UnicodeDecodeError:
+                  pass
+          root=json.loads(s)
+          data=root.get('data')
+          out={'bytes':len(b),'data_type':type(data).__name__}
+          if isinstance(data,dict):
+              out['keys']=list(data)[:10]
+              out['value_types']={str(k):type(v).__name__ for k,v in list(data.items())[:10]}
+              out['value_prefixes']={str(k):str(v)[:240] for k,v in list(data.items())[:3]}
+          elif isinstance(data,list):
+              out['length']=len(data)
+              out['item_types']=[type(v).__name__ for v in data[:10]]
+              out['item_prefixes']=[str(v)[:240] for v in data[:3]]
+          Path('tools/novel-ingest/fanqie-batch-shape.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit report
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/novel-ingest/fanqie-batch-shape.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Inspect Fanqie batch response shape"
+          git pull --rebase origin main
+          git push
