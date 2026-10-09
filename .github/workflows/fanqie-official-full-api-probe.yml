@@ -1,0 +1,76 @@
+name: Fanqie official full API probe
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fanqie-official-full-api-probe.yml"
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe official full chapter API
+        run: |
+          set -euo pipefail
+          mkdir -p tools/novel-ingest
+          python - <<'PY'
+          import json,subprocess,re
+          from pathlib import Path
+
+          samples=[
+            ("仙界基建",122,"7629306266275283481"),
+            ("程序员仙门基建",120,"7602510590015177278"),
+            ("程序员仙门基建",284,"7617408365332808217"),
+          ]
+
+          def get(url):
+              p=subprocess.run([
+                "curl","--compressed","--location","--silent","--show-error",
+                "--connect-timeout","10","--max-time","30","--retry","3",
+                "--user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+                "-w","\n__HTTP__%{http_code}",
+                url
+              ],capture_output=True,text=True)
+              body,_,code=p.stdout.rpartition("\n__HTTP__")
+              return p.returncode,code,body,p.stderr
+
+          report=[]
+          for book,ch,item in samples:
+              rc,code,body,err=get(f"https://fanqienovel.com/api/reader/full?itemId={item}")
+              rec={"book":book,"chapter":ch,"item_id":item,"curl_rc":rc,"http":code,"body_chars":len(body),"stderr":err[-300:]}
+              try:
+                  data=json.loads(body)
+                  rec["top_keys"]=sorted(data.keys()) if isinstance(data,dict) else []
+                  cd=((data.get("data") or {}).get("chapterData") or {}) if isinstance(data,dict) else {}
+                  cont=cd.get("content","")
+                  rec.update({
+                    "chapter_keys":sorted(cd.keys()),
+                    "title":cd.get("title"),
+                    "content_chars":len(cont),
+                    "content_cjk":len(re.findall(r"[\u3400-\u9fff]",cont)),
+                    "content_pua":sum(0xE000<=ord(x)<=0xF8FF for x in cont),
+                    "content_prefix":cont[:240],
+                    "content_suffix":cont[-160:],
+                  })
+              except Exception as e:
+                  rec["json_error"]=repr(e)
+                  rec["body_prefix"]=body[:300]
+              report.append(rec)
+
+          out=Path("tools/novel-ingest/fanqie-official-full-api-report.json")
+          out.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit report
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/novel-ingest/fanqie-official-full-api-report.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Probe Fanqie official full chapter API"
+          git push
