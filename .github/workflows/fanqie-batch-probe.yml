@@ -1,0 +1,62 @@
+name: Fanqie batch content probe
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fanqie-batch-probe.yml"
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe batch endpoint
+        run: |
+          set -euo pipefail
+          mkdir -p tools/novel-ingest
+          url='http://101.35.133.34:5000/api/content?tab=%E6%89%B9%E9%87%8F&book_id=7601360760131832856&item_ids=7602510590015177278,7617408365332808217'
+          curl --compressed --location --silent --show-error \
+            --connect-timeout 8 --max-time 60 --user-agent 'Mozilla/5.0' \
+            "$url" -o /tmp/batch.bin
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          b=Path('/tmp/batch.bin').read_bytes()
+          s=None
+          for enc in ('utf-8','gb18030'):
+              try:
+                  s=b.decode(enc); break
+              except UnicodeDecodeError: pass
+          if s is None: s=b.decode('utf-8','replace')
+          root=json.loads(s)
+          rows=[]
+          for x in root.get('data',[]) if isinstance(root,dict) else []:
+              c=str(x.get('content',''))
+              plain=re.sub(r'<[^>]+>','\n',c)
+              plain=re.sub(r'\n+','\n',plain).strip()
+              rows.append({
+                'item_id':str(x.get('item_id') or x.get('itemId') or ''),
+                'content_chars':len(c),
+                'plain_chars':len(plain),
+                'cjk':len(re.findall(r'[\u3400-\u9fff]',plain)),
+                'prefix':plain[:180],
+                'suffix':plain[-120:],
+              })
+          out={'bytes':len(b),'root_keys':sorted(root.keys()),'rows':rows}
+          Path('tools/novel-ingest/fanqie-batch-probe-report.json').write_text(
+              json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit report
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/novel-ingest/fanqie-batch-probe-report.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Probe Fanqie batch content endpoint"
+          git pull --rebase origin main
+          git push
