@@ -60,6 +60,16 @@ class IngestTests(unittest.TestCase):
         self.assertEqual([c.ordinal for c in result], [1, 2])
         self.assertEqual([c.source_id for c in result], ["60001", "60002"])
 
+    def test_comment_counts_not_counted_as_chapters(self):
+        catalog = CATALOG.replace(
+            "</div>",
+            '<a href="/fiction/142007/slug/chapter/69999/other">10 Comments</a>'
+            '<a href="/fiction/142007/slug/chapter/69998/1-other">7 - Wrong chapter</a>'
+            "</div>",
+        )
+        found = mod.make_adapter("royalroad", BASE).parse_catalog(catalog)
+        self.assertEqual([c.ordinal for c in found], [1, 2])
+
     def test_catalog_conflict_is_error(self):
         broken = CATALOG.replace("60002", "60001")
         self.assertEqual(len(mod.make_adapter("royalroad", BASE).parse_catalog(broken)), 2)
