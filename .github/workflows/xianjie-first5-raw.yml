@@ -1,0 +1,46 @@
+name: Xianjie first5 RAW
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/xianjie-first5-raw.yml"
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch RAW 001-005
+        run: |
+          set -euo pipefail
+          python tools/novel-ingest/fanqie_ingest.py \
+            --book-id "7625593996286364696" \
+            --slug "xianjie-jijian-first5" \
+            --ordinals "1-5" \
+            --out-root out
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xianjie-first5-raw
+          path: out/xianjie-jijian-first5/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Persist verified first package RAW
+        if: success()
+        run: |
+          set -euo pipefail
+          target="corpora/fanqie/xianjie-jijian/first5"
+          rm -rf "$target"
+          cp -R out/xianjie-jijian-first5 "$target"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          git diff --cached --quiet && exit 0
+          git commit -m "Persist xianjie-jijian RAW 001-005"
+          git pull --rebase origin main
+          git push
