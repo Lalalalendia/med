@@ -18,7 +18,7 @@ jobs:
           set -euo pipefail
           mkdir -p tools/novel-ingest work
           curl --fail --location --silent --show-error \
-            https://raw.githubusercontent.com/gs1147/fanqie-booksource/72d6804c89a66ff0b00ecf2353c76ef0a1d3e644/charset.json \
+            https://raw.githubusercontent.com/gs1147/fanqie-booksource/399910ec4f3f955a673a9999573f25cd4e0ef093/charset.json \
             -o work/charset.json
           python - <<'PY'
           import json,re,subprocess,html as htmlmod
