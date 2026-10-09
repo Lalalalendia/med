@@ -24,7 +24,7 @@ jobs:
           import json,re,subprocess,html as htmlmod
           from pathlib import Path
 
-          raw=Path("work/charset.json").read_text("utf-8-sig")
+          data=Path("work/charset.json").read_bytes()\n          raw=data.decode("utf-16" if data[:2] in (b"\\xff\\xfe",b"\\xfe\\xff") else "utf-8-sig")
           cs=json.loads(raw)
           if isinstance(cs,dict):
               cs=cs.get("charset",[])
