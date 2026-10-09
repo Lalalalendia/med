@@ -1,0 +1,61 @@
+name: Xianjie fast full corpus
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/xianjie-fast-full.yml"
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build P0 corpus with staged fallback
+        run: |
+          set -euo pipefail
+          python tools/novel-ingest/fanqie_full_fast.py \
+            --book-id "7625593996286364696" \
+            --slug "xianjie-jijian" \
+            --out-root out/fanqie-fast
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xianjie-fast-full
+          path: out/fanqie-fast/xianjie-jijian/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Persist complete corpus
+        if: success()
+        run: |
+          set -euo pipefail
+          src="out/fanqie-fast/xianjie-jijian"
+          python - "$src/summary.json" <<'PY'
+          import json,sys
+          s=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert s["downloaded"] == 399, s
+          assert s["catalog_entries"] == 399, s
+          assert s["missing_ordinals"] == [], s
+          assert s["failures"] == [], s
+          assert s["unique_item_ids"] == 399, s
+          assert s["missing_author_numbers"] == [316], s
+          print(json.dumps(s,ensure_ascii=False))
+          PY
+
+          target="corpora/fanqie/xianjie-jijian/full"
+          rm -rf "$target"
+          mkdir -p "$(dirname "$target")"
+          cp -R "$src" "$target"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          git diff --cached --quiet && exit 0
+          git commit -m "Persist complete xianjie-jijian corpus 399 of 399"
+          git pull --rebase origin main
+          git push
