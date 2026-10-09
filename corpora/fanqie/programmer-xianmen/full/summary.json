@@ -1,0 +1,19 @@
+{
+  "book_id": "7601360760131832856",
+  "catalog_entries": 401,
+  "catalog_max_author_number": 400,
+  "downloaded": 401,
+  "failures": [],
+  "missing_ordinals": [],
+  "missing_author_numbers": [],
+  "duplicate_author_numbers": [
+    299
+  ],
+  "duplicate_bodies": [],
+  "unique_item_ids": 401,
+  "source_counts": {
+    "api-content": 368,
+    "api-raw-full": 33
+  },
+  "combined_chars": 2702121
+}
