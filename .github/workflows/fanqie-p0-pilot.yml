@@ -1,0 +1,59 @@
+name: Fanqie P0 pilot corpus
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fanqie-p0-pilot.yml"
+      - "tools/novel-ingest/fanqie_ingest.py"
+permissions:
+  contents: write
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - slug: xianjie-jijian
+            book_id: "7625593996286364696"
+            ordinals: "1,122,300,399"
+          - slug: programmer-xianmen
+            book_id: "7601360760131832856"
+            ordinals: "1,120,284,299-301,401"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run pilot
+        run: |
+          set -euo pipefail
+          python tools/novel-ingest/fanqie_ingest.py \
+            --book-id "${{ matrix.book_id }}" \
+            --slug "${{ matrix.slug }}" \
+            --ordinals "${{ matrix.ordinals }}" \
+            --out-root out/fanqie
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fanqie-pilot-${{ matrix.slug }}
+          path: out/fanqie/${{ matrix.slug }}/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Persist successful pilot
+        if: success()
+        run: |
+          set -euo pipefail
+          target="corpora/fanqie/${{ matrix.slug }}/pilot"
+          rm -rf "$target"
+          mkdir -p "$(dirname "$target")"
+          cp -R "out/fanqie/${{ matrix.slug }}" "$target"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          git diff --cached --quiet && exit 0
+          git commit -m "Persist Fanqie pilot corpus: ${{ matrix.slug }}"
+          git pull --rebase origin main
+          git push
