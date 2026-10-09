@@ -135,11 +135,26 @@ class PublicHtmlAdapter:
             title = m.group(2).strip()
             if number < 1 or not title:
                 continue
+            # Contents tables can expose numeric comment/view links.
+            # Counts must never be interpreted as chapter ordinals.
+            if re.fullmatch(r"\d+\s+(?:comments?|views?|reviews?|likes?|replies)", label, re.I):
+                continue
+            if self.source == "royalroad":
+                parts = urlsplit(url).path.split("/chapter/", 1)[-1].split("/")
+                slug = parts[1] if len(parts) > 1 else ""
+                slug_number = re.match(r"^(\d{1,5})(?:[-_]|$)", slug)
+                if slug_number and int(slug_number.group(1)) != number:
+                    continue
             candidate = Chapter(number, title, url, chapter_id)
             prior = found.get(number)
             if prior and prior.source_id != chapter_id:
-                raise IngestError("catalog_conflict", f"Chapter {number} has conflicting URLs")
-            found[number] = candidate
+                raise IngestError(
+                    "catalog_conflict",
+                    f"Chapter {number} conflict: {prior.title!r} {prior.url} vs {title!r} {url}",
+                )
+            # Prefer a descriptive title when the same chapter has duplicate anchors.
+            if prior is None or len(candidate.title) > len(prior.title):
+                found[number] = candidate
         return [found[n] for n in sorted(found)]
 
     def parse_body(self, html: str) -> str:
@@ -266,7 +281,7 @@ def run_ingest(
     successful = [row for row in rows if row["status"] == "ok"]
     failures = [row for row in rows if row["status"] != "ok"]
     if catalog_error:
-        status = "BLOCKED"
+        status = "BLOCKED" if catalog_error == "blocked" else "CATALOG_ERROR"
     elif catalog_only:
         status = "CATALOG_ONLY"
     elif failures:
