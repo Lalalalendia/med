@@ -1,0 +1,46 @@
+name: Xianjie RAW 006-010
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/xianjie-006-010-raw.yml"
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch RAW 006-010
+        run: |
+          set -euo pipefail
+          python tools/novel-ingest/fanqie_ingest.py \
+            --book-id "7625593996286364696" \
+            --slug "xianjie-jijian-006-010" \
+            --ordinals "6-10" \
+            --out-root out
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xianjie-006-010-raw
+          path: out/xianjie-jijian-006-010/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Persist RAW 006-010
+        if: success()
+        run: |
+          set -euo pipefail
+          target="corpora/fanqie/xianjie-jijian/006-010"
+          rm -rf "$target"
+          cp -R out/xianjie-jijian-006-010 "$target"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          git diff --cached --quiet && exit 0
+          git commit -m "Persist xianjie-jijian RAW 006-010"
+          git pull --rebase origin main
+          git push
