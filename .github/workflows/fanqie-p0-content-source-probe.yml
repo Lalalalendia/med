@@ -1,0 +1,104 @@
+name: Fanqie P0 content source probe
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fanqie-p0-content-source-probe.yml"
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe candidate content sources
+        run: |
+          set -euo pipefail
+          mkdir -p tools/novel-ingest
+          python - <<'PY'
+          import json,subprocess,re,hashlib
+          from pathlib import Path
+          from urllib.parse import quote
+
+          samples=[
+            ("仙界基建",122,"7629306266275283481"),
+            ("程序员仙门基建",120,"7602510590015177278"),
+            ("程序员仙门基建",284,"7617408365332808217"),
+          ]
+
+          endpoints=[
+            ("api-content", lambda i: f"http://101.35.133.34:5000/api/content?tab={quote('小说')}&item_id={i}"),
+            ("api-chapter", lambda i: f"http://101.35.133.34:5000/api/chapter?item_id={i}"),
+            ("api-raw-full", lambda i: f"http://101.35.133.34:5000/api/raw_full?item_id={i}"),
+            ("sjmyzq-raw-full", lambda i: f"https://tt.sjmyzq.cn/api/raw_full?item_id={i}"),
+          ]
+
+          def get(url):
+              p=subprocess.run([
+                "curl","--compressed","--location","--silent","--show-error",
+                "--connect-timeout","8","--max-time","25","--retry","2",
+                "--user-agent","Mozilla/5.0",
+                "-w","\n__HTTP__%{http_code}",
+                url
+              ],capture_output=True,text=True)
+              body,_,code=p.stdout.rpartition("\n__HTTP__")
+              return p.returncode,code,body,p.stderr
+
+          report=[]
+          for book,ch,item in samples:
+              for name,mk in endpoints:
+                  url=mk(item)
+                  rc,code,body,err=get(url)
+                  rec={
+                    "book":book,"chapter":ch,"item_id":item,
+                    "source":name,"http":code,"curl_rc":rc,
+                    "body_chars":len(body),"stderr":err[-240:],
+                  }
+                  try:
+                      root=json.loads(body)
+                      data=root.get("data") if isinstance(root,dict) else None
+                      if isinstance(data,dict):
+                          content=data.get("content","")
+                          title=data.get("title") or data.get("chapter_title") or data.get("name")
+                      else:
+                          content=""
+                          title=None
+                      plain=re.sub(r"<[^>]+>","\n",str(content))
+                      plain=re.sub(r"\n+","\n",plain).strip()
+                      rec.update({
+                        "json":True,
+                        "title":title,
+                        "content_chars":len(str(content)),
+                        "plain_chars":len(plain),
+                        "cjk":len(re.findall(r"[\u3400-\u9fff]",plain)),
+                        "pua":sum(0xE000<=ord(x)<=0xF8FF for x in plain),
+                        "sha256":hashlib.sha256(plain.encode("utf-8")).hexdigest() if plain else "",
+                        "prefix":plain[:180],
+                        "suffix":plain[-120:],
+                        "top_keys":sorted(root.keys()) if isinstance(root,dict) else [],
+                        "data_keys":sorted(data.keys()) if isinstance(data,dict) else [],
+                      })
+                  except Exception as e:
+                      rec.update({
+                        "json":False,
+                        "json_error":repr(e),
+                        "body_prefix":body[:240],
+                      })
+                  report.append(rec)
+
+          out=Path("tools/novel-ingest/fanqie-p0-content-source-report.json")
+          out.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Commit report
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/novel-ingest/fanqie-p0-content-source-report.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Probe Fanqie P0 content sources"
+          git push
