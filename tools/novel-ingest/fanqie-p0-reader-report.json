@@ -1,0 +1,44 @@
+[
+  {
+    "book": "仙界基建",
+    "chapter": 122,
+    "reader_id": "7629306266275283481",
+    "expected": "修仙界第一通电话",
+    "curl_rc": 0,
+    "http": "HTTP/2 200 ",
+    "html_chars": 29301,
+    "cjk_chars": 616,
+    "expected_title_present": true,
+    "markers": {
+      "__NEXT_DATA__": false,
+      "chapterData": true,
+      "content": true,
+      "paragraph": false,
+      "登录": true,
+      "下载番茄小说": true,
+      "验证码": false,
+      "安全验证": false
+    }
+  },
+  {
+    "book": "程序员仙门基建",
+    "chapter": 120,
+    "reader_id": "7602510590015177278",
+    "expected": "仙网1.0测试版上线",
+    "curl_rc": 0,
+    "http": "HTTP/2 200 ",
+    "html_chars": 29311,
+    "cjk_chars": 552,
+    "expected_title_present": true,
+    "markers": {
+      "__NEXT_DATA__": false,
+      "chapterData": true,
+      "content": true,
+      "paragraph": false,
+      "登录": true,
+      "下载番茄小说": true,
+      "验证码": false,
+      "安全验证": false
+    }
+  }
+]
