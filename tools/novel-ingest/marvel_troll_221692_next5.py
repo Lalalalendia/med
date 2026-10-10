@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect public TWKAN chapter pages and report extraction/verification status."""
+"""Collect public CZBooks chapter pages and report extraction/verification status."""
 import hashlib
 import json
 import re
@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 
 CHAPTERS = [
     (6, "6", "坏了，差点儿成为卷福替身"),
-    (7, "7", "奥巴代亚斯坦尼的恶意"),
+    (7, "7", "奥巴代亚·斯坦尼的恶意"),
     (8, "8", "贾维斯：讨厌没有边界感的人"),
     (9, "9", "蛇盾局与托尼的回归"),
     (10, "10", "当年的真相"),
@@ -25,7 +25,7 @@ CZ_IDS = {
 }
 TRAD_TITLES = {
     "6": "壞了，差點兒成為卷福替身",
-    "7": "奧巴代亞斯坦尼的惡意",
+    "7": "奧巴代亞·斯坦尼的惡意",
     "8": "賈維斯：討厭沒有邊界感的人",
     "9": "蛇盾局與托尼的回歸",
     "10": "當年的真相",
