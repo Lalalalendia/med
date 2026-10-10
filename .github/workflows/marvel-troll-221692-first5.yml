@@ -1,0 +1,33 @@
+name: Marvel Troll 221692 - CN RAW 001-005
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/novel-ingest/marvel_troll_221692_first5.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parser
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Fetch public chapter pages
+        run: python tools/novel-ingest/marvel_troll_221692_first5.py
+      - name: Upload manifest and chapter texts for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marvel-troll-221692-cn-001-005
+          path: out/marvel-troll-221692/001-005/
+          if-no-files-found: warn
+          retention-days: 7
