@@ -28,7 +28,7 @@ jobs:
       - run: python -m unittest discover -s tools/novel-ingest -p test_ttks_142107.py -v
 
   chapters:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
     needs: tests
     runs-on: ubuntu-latest
     timeout-minutes: 18
@@ -76,7 +76,7 @@ jobs:
         run: exit 1
 
   assemble:
-    if: always() && github.event_name == 'workflow_dispatch' && needs.tests.result == 'success'
+    if: always() && needs.tests.result == 'success'
     needs: [tests, chapters]
     runs-on: ubuntu-latest
     timeout-minutes: 10
