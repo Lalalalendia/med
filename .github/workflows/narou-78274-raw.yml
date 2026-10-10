@@ -1,0 +1,58 @@
+name: Narou 78274 - verified 201 chapters
+
+on:
+  push:
+    branches:
+      - novels/narou-78274-raw-201-20261010
+    paths:
+      - tools/novel-ingest/narou_78274_export.py
+      - .github/workflows/narou-78274-raw.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Dependencies
+        run: python -m pip install requests==2.32.3 beautifulsoup4==4.12.3
+      - name: Collect public chapters 001-201
+        id: collect
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/narou_78274_export.py --start 1 --end 201 --delay 2.5 --out out/narou-78274
+      - name: Report integrity result
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path("out/narou-78274/manifest.json")
+          if path.is_file():
+              result=json.loads(path.read_text(encoding="utf-8"))
+              summary=f"Fetched {len(result.get('chapters', []))}/201 chapters; errors {len(result.get('failures', []))}.\n"
+              summary+=f"Complete: {result.get('complete', False)}\n"
+              print(summary)
+              with open(__import__('os').environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+                  f.write("## Narou 78274\n"+summary)
+          else:
+              print("No manifest generated")
+          PY
+      - name: Preserve checked RAW for private translation workflow
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-78274-raw-001-201
+          path: out/narou-78274/**
+          if-no-files-found: warn
+          retention-days: 1
+      - name: Reject incomplete acquisition
+        if: steps.collect.outcome != 'success'
+        run: exit 1
