@@ -1,0 +1,112 @@
+{
+  "book": "My Hero Academia: Aura Farming",
+  "source": "Royal Road",
+  "source_catalog": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming",
+  "catalog_count_checked": 97,
+  "checked_local_date": "2026-10-11",
+  "range": {
+    "start": 47,
+    "end": 56
+  },
+  "notion_book": "https://app.notion.com/p/3f432a84beec8114b7b9cacaaa8e6b7d",
+  "notion_raw_database": "https://app.notion.com/p/055fb9f857cf4c0d9bd33eda1c3dc6da",
+  "github_raw_run_for_this_batch": null,
+  "chapters": [
+    {
+      "number": 47,
+      "title": "USJ",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3059456/47-usj",
+      "notion_page": "https://app.notion.com/p/3f532a84beec81eea9fcc9720eea23ec",
+      "notion_status": "Нужен RAW",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    },
+    {
+      "number": 48,
+      "title": "USJ Incident 1",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3068292/48-usj-incident-1",
+      "notion_page": null,
+      "notion_status": "Карточка не создана",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    },
+    {
+      "number": 49,
+      "title": "Maintain the attitude",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3086402/49-maintain-the-attitude",
+      "notion_page": null,
+      "notion_status": "Карточка не создана",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    },
+    {
+      "number": 50,
+      "title": "The Nomu",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3096590/50-the-nomu",
+      "notion_page": null,
+      "notion_status": "Карточка не создана",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    },
+    {
+      "number": 51,
+      "title": "Go All Out",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3124723/51-go-all-out",
+      "notion_page": null,
+      "notion_status": "Карточка не создана",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    },
+    {
+      "number": 52,
+      "title": "Wrapping Things Up",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3124727/52-wrapping-things-up",
+      "notion_page": null,
+      "notion_status": "Карточка не создана",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    },
+    {
+      "number": 53,
+      "title": "Reality Check",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3138225/53-reality-check",
+      "notion_page": null,
+      "notion_status": "Карточка не создана",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    },
+    {
+      "number": 54,
+      "title": "Sports Festival Incoming",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3148386/54-sports-festival-incoming",
+      "notion_page": null,
+      "notion_status": "Карточка не создана",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    },
+    {
+      "number": 55,
+      "title": "Challenge",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3158882/55-challenge",
+      "notion_page": null,
+      "notion_status": "Карточка не создана",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    },
+    {
+      "number": 56,
+      "title": "Shhh",
+      "source_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming/chapter/3177839/56-shhh",
+      "notion_page": null,
+      "notion_status": "Карточка не создана",
+      "raw_text_in_notion": false,
+      "content_sha256": null
+    }
+  ],
+  "notes": [
+    "Metadata-only. No chapter text copied. No SHA-256 claims.",
+    "Existing GitHub Actions run 38048905690 applies to chapters 087-096, not this batch.",
+    "Notion bulk page creation for chapters 048-056 rejected by safety checks; do not misreport as imported.",
+    "Chapter 097 newly appears in the Royal Road catalog; not part of this 10-chapter batch."
+  ]
+}
