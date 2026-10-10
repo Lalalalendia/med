@@ -6,10 +6,12 @@ on:
     paths:
       - tools/novel-ingest/ttks_142107.py
       - tools/novel-ingest/test_ttks_142107.py
+      - tools/novel-ingest/ttks_142107_recover.py
       - .github/workflows/ttks-142107-raw-336-555.yml
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: ttks-142107-${{ github.ref }}
@@ -28,7 +30,7 @@ jobs:
       - run: python -m unittest discover -s tools/novel-ingest -p test_ttks_142107.py -v
 
   chapters:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     needs: tests
     runs-on: ubuntu-latest
     timeout-minutes: 18
@@ -76,7 +78,7 @@ jobs:
         run: exit 1
 
   assemble:
-    if: always() && needs.tests.result == 'success'
+    if: always() && github.event_name == 'workflow_dispatch' && needs.tests.result == 'success'
     needs: [tests, chapters]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -113,4 +115,49 @@ jobs:
           retention-days: 7
       - name: Reject incomplete corpus
         if: steps.assemble.outcome != 'success'
+        run: exit 1
+
+  recovery:
+    if: github.event_name == 'pull_request'
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Restore validated 153/220 baseline from previous run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh run download 38060997402
+          --repo "$GITHUB_REPOSITORY"
+          --name dao-142107-chapters-336-555
+          --dir out/baseline
+      - name: Serial recovery of missing chapters (respect TTKS 429)
+        id: recover
+        continue-on-error: true
+        run: >-
+          python tools/novel-ingest/ttks_142107_recover.py
+          --baseline out/baseline
+          --out-dir out/recovered
+          --delay 4.0
+      - name: Recovery summary
+        if: always()
+        run: |
+          if [ -f out/recovered/summary.md ]; then
+            cat out/recovered/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Archive recovered book and all chapter receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dao-142107-chapters-336-555-recovered
+          path: out/recovered/**
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Reject unresolved corpus
+        if: steps.recover.outcome != 'success'
         run: exit 1
