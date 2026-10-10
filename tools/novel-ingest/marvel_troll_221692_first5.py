@@ -16,17 +16,31 @@ CHAPTERS = [
     (4, "22324267", "出师"),
     (5, "22324269", "托尼·斯塔克失踪"),
 ]
-BASE = "https://twkan.com/txt/29742/{}"
+CZ_IDS = {
+    "22324264": "s6pglieh?chapterNumber=0",
+    "22324265": "s6pgliek?chapterNumber=1",
+    "22324266": "s6pgliem?chapterNumber=2",
+    "22324267": "s6pgliee?chapterNumber=3",
+    "22324269": "s6pglie0?chapterNumber=4",
+}
+TRAD_TITLES = {
+    "22324264": "難以言說的穿越方式",
+    "22324265": "壞消息與金手指",
+    "22324266": "喜歡cos的蜀黍們",
+    "22324267": "出師",
+    "22324269": "托尼·斯塔克失蹤",
+}
+BASE = "https://czbooks.net/n/s6p32k/{}"
 OUT = Path("out/marvel-troll-221692/001-005")
 SELECTORS = ("#content", "#chaptercontent", ".read-content", ".chapter-content", ".txtnav", "article", ".content")
 BLOCK = ("验证码", "登录后阅读", "請登入", "访问频繁", "Just a moment", "Access Denied", "cf-challenge", "captcha")
 REMOVE = "script,style,nav,footer,header,aside,.ads,.advertisement,button"
 
 def fetch(number, chapter_id, expected, session):
-    url = BASE.format(chapter_id)
+    url = BASE.format(CZ_IDS[chapter_id])
     response = session.get(url, timeout=30)
     response.raise_for_status()
-    if urlparse(response.url).hostname not in ("twkan.com", "www.twkan.com"):
+    if urlparse(response.url).hostname not in ("czbooks.net", "www.czbooks.net"):
         raise ValueError("Redirect outside source domain")
     response.encoding = response.apparent_encoding or "utf-8"
     soup = BeautifulSoup(response.text, "html.parser")
@@ -49,7 +63,9 @@ def fetch(number, chapter_id, expected, session):
     # TWKAN uses traditional Chinese on some pages. Exact-title mismatches are
     # warnings, not automatic rejection; inspect original HTML title manually.
     html_title = soup.title.get_text(" ", strip=True) if soup.title else ""
-    match = expected in html_title or expected in text[:500]
+    match = expected in html_title or expected in text[:500] or TRAD_TITLES[chapter_id] in html_title or TRAD_TITLES[chapter_id] in text[:500]
+    if not match:
+        raise ValueError("Chapter title mismatch (not writing an unverified chapter)")
     payload = (expected + "\n\n" + text + "\n").encode("utf-8")
     filename = OUT / f"{number:03d}.txt"
     filename.write_bytes(payload)
@@ -69,7 +85,7 @@ def main():
             results.append(fetch(number, chapter_id, title, session))
         except Exception as exc:
             results.append({"number": number, "title_expected": title,
-                            "url": BASE.format(chapter_id), "status": "error",
+                            "url": BASE.format(CZ_IDS[chapter_id]), "status": "error",
                             "error": str(exc)})
     (OUT / "manifest.json").write_text(json.dumps(results, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(results, ensure_ascii=False, indent=2))
