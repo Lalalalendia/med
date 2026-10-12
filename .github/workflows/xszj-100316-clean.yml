@@ -44,7 +44,7 @@ jobs:
         with:
           name: rulate-100316-raw-combined-370-450
           run-id: 38275699969
-          github-token: \${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           path: out/verified-original
       - name: Build a clean input ZIP from the verified artifact
         run: |
