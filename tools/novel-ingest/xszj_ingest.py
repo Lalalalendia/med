@@ -135,6 +135,43 @@ def validate_manifest(data: dict, start: int, end: int) -> list[dict]:
     return index[start - 370:end - 369]
 
 
+RETRYABLE_HTTP = frozenset((429, 500, 502, 503, 504))
+
+
+def fetch_public_part_with_retry(
+    session: requests.Session, url: str, *, max_attempts: int = 4,
+    backoff_seconds: float = 3.0,
+) -> tuple[requests.Response, int]:
+    """Retry only transient transport errors and transient HTTP responses.
+
+    Strict URL checking, redirect refusal, and body size caps remain the
+    responsibility of request_public. Permanent HTTP statuses, including
+    401/403/404, return immediately so no access controls are bypassed.
+    """
+    if not 1 <= max_attempts <= 5 or backoff_seconds < 1:
+        raise ValueError("Invalid public fetch retry settings")
+    for attempt in range(max_attempts):
+        try:
+            response = request_public(session, url)
+        except (requests.ConnectionError, requests.Timeout):
+            if attempt + 1 == max_attempts:
+                raise
+            pause = min(30.0, backoff_seconds * (2 ** attempt))
+        else:
+            if response.status_code not in RETRYABLE_HTTP or attempt + 1 == max_attempts:
+                return response, attempt
+            # Respect Retry-After for server-side rate limits when provided.
+            pause = min(60.0, max(
+                10.0 if response.status_code == 429 else 0.0,
+                backoff_seconds * (2 ** attempt),
+            ))
+            header = response.headers.get("Retry-After", "").strip()
+            if header.isdigit():
+                pause = min(60.0, max(pause, float(header)))
+        time.sleep(pause)
+    raise AssertionError("unreachable fetch retry loop")
+
+
 def gather(manifest: Path, *, start: int, end: int,
            out_dir: Path, emit_text: bool = False, delay: float = 1.5) -> dict:
     if delay < 1.0:
@@ -155,8 +192,10 @@ def gather(manifest: Path, *, start: int, end: int,
                       "status": "error"}
             try:
                 parts = []
+                transient_retries = 0
                 for p, url in enumerate(row["part_urls"], 1):
-                    response = request_public(session, url)
+                    response, retried = fetch_public_part_with_retry(session, url)
+                    transient_retries += retried
                     if response.status_code != 200:
                         raise ChapterError(f"part {p}: HTTP {response.status_code}")
                     if "html" not in response.headers.get("Content-Type", "").lower():
@@ -177,6 +216,7 @@ def gather(manifest: Path, *, start: int, end: int,
                     "part_sha256": [part.sha256 for part in parts],
                     "joined_cjk_chars": len(CJK.findall(merged)),
                     "joined_sha256": digest,
+                    "transient_retry_count": transient_retries,
                     "warnings": warnings,
                     "official_text_collated": False,
                 })
