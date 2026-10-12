@@ -1,0 +1,774 @@
+{
+  "schema_version": 1,
+  "book": {
+    "rulate_id": 100316,
+    "title_zh": "规则怪谈：开局嘴硬说自己没死",
+    "rulate_url": "https://tl.rulate.ru/book/100316",
+    "official_catalog_url": "https://fanqienovel.com/page/7195400888423287823"
+  },
+  "source": {
+    "name": "小说之家",
+    "base_url": "https://xszj.org/b/352919",
+    "notion_index_url": "https://app.notion.com/p/3f732a84beec816492c7e6c3f9dc23c2",
+    "link_check_report_date": "2026-10-12"
+  },
+  "coverage": {
+    "first_catalog_ordinal": 370,
+    "last_catalog_ordinal": 450,
+    "chapters": 81,
+    "parts_per_chapter": 3,
+    "total_part_urls": 243
+  },
+  "status": {
+    "links_indexed": true,
+    "source_text_collected": false,
+    "official_text_full_collation": false,
+    "russian_translation_done": false
+  },
+  "numbering_notes": [
+    {
+      "catalog_ordinal": 407,
+      "note": "The xszj chapter heading says 406 while its catalog ordinal is 407 (Fanqie 407)."
+    },
+    {
+      "catalog_ordinal": 432,
+      "note": "The displayed heading omits the character 章."
+    },
+    {
+      "first_catalog_ordinal": 433,
+      "last_catalog_ordinal": 449,
+      "note": "Official catalog duplicates displayed chapter number 433 at ordinals 433 and 434; downstream displayed chapter labels are shifted. Do not use displayed numbers as identifiers."
+    }
+  ],
+  "chapters": [
+    {
+      "catalog_ordinal": 370,
+      "site_chapter_id": "10618909",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10618909",
+        "https://xszj.org/b/352919/c/10618909?page=2",
+        "https://xszj.org/b/352919/c/10618909?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 371,
+      "site_chapter_id": "10839061",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10839061",
+        "https://xszj.org/b/352919/c/10839061?page=2",
+        "https://xszj.org/b/352919/c/10839061?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 372,
+      "site_chapter_id": "10839062",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10839062",
+        "https://xszj.org/b/352919/c/10839062?page=2",
+        "https://xszj.org/b/352919/c/10839062?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 373,
+      "site_chapter_id": "10839063",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10839063",
+        "https://xszj.org/b/352919/c/10839063?page=2",
+        "https://xszj.org/b/352919/c/10839063?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 374,
+      "site_chapter_id": "10847933",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10847933",
+        "https://xszj.org/b/352919/c/10847933?page=2",
+        "https://xszj.org/b/352919/c/10847933?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 375,
+      "site_chapter_id": "10858663",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10858663",
+        "https://xszj.org/b/352919/c/10858663?page=2",
+        "https://xszj.org/b/352919/c/10858663?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 376,
+      "site_chapter_id": "10890966",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10890966",
+        "https://xszj.org/b/352919/c/10890966?page=2",
+        "https://xszj.org/b/352919/c/10890966?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 377,
+      "site_chapter_id": "10932157",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10932157",
+        "https://xszj.org/b/352919/c/10932157?page=2",
+        "https://xszj.org/b/352919/c/10932157?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 378,
+      "site_chapter_id": "10932158",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10932158",
+        "https://xszj.org/b/352919/c/10932158?page=2",
+        "https://xszj.org/b/352919/c/10932158?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 379,
+      "site_chapter_id": "10932160",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10932160",
+        "https://xszj.org/b/352919/c/10932160?page=2",
+        "https://xszj.org/b/352919/c/10932160?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 380,
+      "site_chapter_id": "10932163",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10932163",
+        "https://xszj.org/b/352919/c/10932163?page=2",
+        "https://xszj.org/b/352919/c/10932163?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 381,
+      "site_chapter_id": "10932165",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10932165",
+        "https://xszj.org/b/352919/c/10932165?page=2",
+        "https://xszj.org/b/352919/c/10932165?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 382,
+      "site_chapter_id": "10932167",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10932167",
+        "https://xszj.org/b/352919/c/10932167?page=2",
+        "https://xszj.org/b/352919/c/10932167?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 383,
+      "site_chapter_id": "10932170",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10932170",
+        "https://xszj.org/b/352919/c/10932170?page=2",
+        "https://xszj.org/b/352919/c/10932170?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 384,
+      "site_chapter_id": "10953856",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10953856",
+        "https://xszj.org/b/352919/c/10953856?page=2",
+        "https://xszj.org/b/352919/c/10953856?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 385,
+      "site_chapter_id": "10953861",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10953861",
+        "https://xszj.org/b/352919/c/10953861?page=2",
+        "https://xszj.org/b/352919/c/10953861?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 386,
+      "site_chapter_id": "10953872",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10953872",
+        "https://xszj.org/b/352919/c/10953872?page=2",
+        "https://xszj.org/b/352919/c/10953872?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 387,
+      "site_chapter_id": "10953877",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10953877",
+        "https://xszj.org/b/352919/c/10953877?page=2",
+        "https://xszj.org/b/352919/c/10953877?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 388,
+      "site_chapter_id": "10993643",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10993643",
+        "https://xszj.org/b/352919/c/10993643?page=2",
+        "https://xszj.org/b/352919/c/10993643?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 389,
+      "site_chapter_id": "10993647",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/10993647",
+        "https://xszj.org/b/352919/c/10993647?page=2",
+        "https://xszj.org/b/352919/c/10993647?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 390,
+      "site_chapter_id": "11075742",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075742",
+        "https://xszj.org/b/352919/c/11075742?page=2",
+        "https://xszj.org/b/352919/c/11075742?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 391,
+      "site_chapter_id": "11075748",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075748",
+        "https://xszj.org/b/352919/c/11075748?page=2",
+        "https://xszj.org/b/352919/c/11075748?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 392,
+      "site_chapter_id": "11075752",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075752",
+        "https://xszj.org/b/352919/c/11075752?page=2",
+        "https://xszj.org/b/352919/c/11075752?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 393,
+      "site_chapter_id": "11075758",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075758",
+        "https://xszj.org/b/352919/c/11075758?page=2",
+        "https://xszj.org/b/352919/c/11075758?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 394,
+      "site_chapter_id": "11075760",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075760",
+        "https://xszj.org/b/352919/c/11075760?page=2",
+        "https://xszj.org/b/352919/c/11075760?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 395,
+      "site_chapter_id": "11075765",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075765",
+        "https://xszj.org/b/352919/c/11075765?page=2",
+        "https://xszj.org/b/352919/c/11075765?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 396,
+      "site_chapter_id": "11075770",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075770",
+        "https://xszj.org/b/352919/c/11075770?page=2",
+        "https://xszj.org/b/352919/c/11075770?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 397,
+      "site_chapter_id": "11075774",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075774",
+        "https://xszj.org/b/352919/c/11075774?page=2",
+        "https://xszj.org/b/352919/c/11075774?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 398,
+      "site_chapter_id": "11075778",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075778",
+        "https://xszj.org/b/352919/c/11075778?page=2",
+        "https://xszj.org/b/352919/c/11075778?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 399,
+      "site_chapter_id": "11075782",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075782",
+        "https://xszj.org/b/352919/c/11075782?page=2",
+        "https://xszj.org/b/352919/c/11075782?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 400,
+      "site_chapter_id": "11075787",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075787",
+        "https://xszj.org/b/352919/c/11075787?page=2",
+        "https://xszj.org/b/352919/c/11075787?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 401,
+      "site_chapter_id": "11075792",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075792",
+        "https://xszj.org/b/352919/c/11075792?page=2",
+        "https://xszj.org/b/352919/c/11075792?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 402,
+      "site_chapter_id": "11075798",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075798",
+        "https://xszj.org/b/352919/c/11075798?page=2",
+        "https://xszj.org/b/352919/c/11075798?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 403,
+      "site_chapter_id": "11075802",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075802",
+        "https://xszj.org/b/352919/c/11075802?page=2",
+        "https://xszj.org/b/352919/c/11075802?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 404,
+      "site_chapter_id": "11075804",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075804",
+        "https://xszj.org/b/352919/c/11075804?page=2",
+        "https://xszj.org/b/352919/c/11075804?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 405,
+      "site_chapter_id": "11075807",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11075807",
+        "https://xszj.org/b/352919/c/11075807?page=2",
+        "https://xszj.org/b/352919/c/11075807?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 406,
+      "site_chapter_id": "11093519",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11093519",
+        "https://xszj.org/b/352919/c/11093519?page=2",
+        "https://xszj.org/b/352919/c/11093519?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 407,
+      "site_chapter_id": "11093520",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11093520",
+        "https://xszj.org/b/352919/c/11093520?page=2",
+        "https://xszj.org/b/352919/c/11093520?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 408,
+      "site_chapter_id": "11786700",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786700",
+        "https://xszj.org/b/352919/c/11786700?page=2",
+        "https://xszj.org/b/352919/c/11786700?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 409,
+      "site_chapter_id": "11786704",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786704",
+        "https://xszj.org/b/352919/c/11786704?page=2",
+        "https://xszj.org/b/352919/c/11786704?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 410,
+      "site_chapter_id": "11786714",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786714",
+        "https://xszj.org/b/352919/c/11786714?page=2",
+        "https://xszj.org/b/352919/c/11786714?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 411,
+      "site_chapter_id": "11786715",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786715",
+        "https://xszj.org/b/352919/c/11786715?page=2",
+        "https://xszj.org/b/352919/c/11786715?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 412,
+      "site_chapter_id": "11786717",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786717",
+        "https://xszj.org/b/352919/c/11786717?page=2",
+        "https://xszj.org/b/352919/c/11786717?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 413,
+      "site_chapter_id": "11786719",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786719",
+        "https://xszj.org/b/352919/c/11786719?page=2",
+        "https://xszj.org/b/352919/c/11786719?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 414,
+      "site_chapter_id": "11786735",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786735",
+        "https://xszj.org/b/352919/c/11786735?page=2",
+        "https://xszj.org/b/352919/c/11786735?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 415,
+      "site_chapter_id": "11786747",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786747",
+        "https://xszj.org/b/352919/c/11786747?page=2",
+        "https://xszj.org/b/352919/c/11786747?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 416,
+      "site_chapter_id": "11786750",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786750",
+        "https://xszj.org/b/352919/c/11786750?page=2",
+        "https://xszj.org/b/352919/c/11786750?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 417,
+      "site_chapter_id": "11786752",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786752",
+        "https://xszj.org/b/352919/c/11786752?page=2",
+        "https://xszj.org/b/352919/c/11786752?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 418,
+      "site_chapter_id": "11786754",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786754",
+        "https://xszj.org/b/352919/c/11786754?page=2",
+        "https://xszj.org/b/352919/c/11786754?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 419,
+      "site_chapter_id": "11786756",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786756",
+        "https://xszj.org/b/352919/c/11786756?page=2",
+        "https://xszj.org/b/352919/c/11786756?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 420,
+      "site_chapter_id": "11786761",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786761",
+        "https://xszj.org/b/352919/c/11786761?page=2",
+        "https://xszj.org/b/352919/c/11786761?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 421,
+      "site_chapter_id": "11786763",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786763",
+        "https://xszj.org/b/352919/c/11786763?page=2",
+        "https://xszj.org/b/352919/c/11786763?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 422,
+      "site_chapter_id": "11786765",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11786765",
+        "https://xszj.org/b/352919/c/11786765?page=2",
+        "https://xszj.org/b/352919/c/11786765?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 423,
+      "site_chapter_id": "11792273",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11792273",
+        "https://xszj.org/b/352919/c/11792273?page=2",
+        "https://xszj.org/b/352919/c/11792273?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 424,
+      "site_chapter_id": "11792278",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11792278",
+        "https://xszj.org/b/352919/c/11792278?page=2",
+        "https://xszj.org/b/352919/c/11792278?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 425,
+      "site_chapter_id": "11792282",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11792282",
+        "https://xszj.org/b/352919/c/11792282?page=2",
+        "https://xszj.org/b/352919/c/11792282?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 426,
+      "site_chapter_id": "11792284",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11792284",
+        "https://xszj.org/b/352919/c/11792284?page=2",
+        "https://xszj.org/b/352919/c/11792284?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 427,
+      "site_chapter_id": "11792292",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11792292",
+        "https://xszj.org/b/352919/c/11792292?page=2",
+        "https://xszj.org/b/352919/c/11792292?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 428,
+      "site_chapter_id": "11792297",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11792297",
+        "https://xszj.org/b/352919/c/11792297?page=2",
+        "https://xszj.org/b/352919/c/11792297?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 429,
+      "site_chapter_id": "11833247",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11833247",
+        "https://xszj.org/b/352919/c/11833247?page=2",
+        "https://xszj.org/b/352919/c/11833247?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 430,
+      "site_chapter_id": "11833248",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11833248",
+        "https://xszj.org/b/352919/c/11833248?page=2",
+        "https://xszj.org/b/352919/c/11833248?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 431,
+      "site_chapter_id": "11855139",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11855139",
+        "https://xszj.org/b/352919/c/11855139?page=2",
+        "https://xszj.org/b/352919/c/11855139?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 432,
+      "site_chapter_id": "11855144",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11855144",
+        "https://xszj.org/b/352919/c/11855144?page=2",
+        "https://xszj.org/b/352919/c/11855144?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 433,
+      "site_chapter_id": "11924202",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11924202",
+        "https://xszj.org/b/352919/c/11924202?page=2",
+        "https://xszj.org/b/352919/c/11924202?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 434,
+      "site_chapter_id": "11924209",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11924209",
+        "https://xszj.org/b/352919/c/11924209?page=2",
+        "https://xszj.org/b/352919/c/11924209?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 435,
+      "site_chapter_id": "11924214",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11924214",
+        "https://xszj.org/b/352919/c/11924214?page=2",
+        "https://xszj.org/b/352919/c/11924214?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 436,
+      "site_chapter_id": "11930826",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11930826",
+        "https://xszj.org/b/352919/c/11930826?page=2",
+        "https://xszj.org/b/352919/c/11930826?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 437,
+      "site_chapter_id": "11942956",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11942956",
+        "https://xszj.org/b/352919/c/11942956?page=2",
+        "https://xszj.org/b/352919/c/11942956?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 438,
+      "site_chapter_id": "11942960",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11942960",
+        "https://xszj.org/b/352919/c/11942960?page=2",
+        "https://xszj.org/b/352919/c/11942960?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 439,
+      "site_chapter_id": "11998664",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/11998664",
+        "https://xszj.org/b/352919/c/11998664?page=2",
+        "https://xszj.org/b/352919/c/11998664?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 440,
+      "site_chapter_id": "12196339",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12196339",
+        "https://xszj.org/b/352919/c/12196339?page=2",
+        "https://xszj.org/b/352919/c/12196339?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 441,
+      "site_chapter_id": "12257769",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12257769",
+        "https://xszj.org/b/352919/c/12257769?page=2",
+        "https://xszj.org/b/352919/c/12257769?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 442,
+      "site_chapter_id": "12196340",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12196340",
+        "https://xszj.org/b/352919/c/12196340?page=2",
+        "https://xszj.org/b/352919/c/12196340?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 443,
+      "site_chapter_id": "12196341",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12196341",
+        "https://xszj.org/b/352919/c/12196341?page=2",
+        "https://xszj.org/b/352919/c/12196341?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 444,
+      "site_chapter_id": "12196342",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12196342",
+        "https://xszj.org/b/352919/c/12196342?page=2",
+        "https://xszj.org/b/352919/c/12196342?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 445,
+      "site_chapter_id": "12241091",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12241091",
+        "https://xszj.org/b/352919/c/12241091?page=2",
+        "https://xszj.org/b/352919/c/12241091?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 446,
+      "site_chapter_id": "12241096",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12241096",
+        "https://xszj.org/b/352919/c/12241096?page=2",
+        "https://xszj.org/b/352919/c/12241096?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 447,
+      "site_chapter_id": "12366986",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12366986",
+        "https://xszj.org/b/352919/c/12366986?page=2",
+        "https://xszj.org/b/352919/c/12366986?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 448,
+      "site_chapter_id": "12366990",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12366990",
+        "https://xszj.org/b/352919/c/12366990?page=2",
+        "https://xszj.org/b/352919/c/12366990?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 449,
+      "site_chapter_id": "12366991",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12366991",
+        "https://xszj.org/b/352919/c/12366991?page=2",
+        "https://xszj.org/b/352919/c/12366991?page=3"
+      ]
+    },
+    {
+      "catalog_ordinal": 450,
+      "site_chapter_id": "12366992",
+      "part_urls": [
+        "https://xszj.org/b/352919/c/12366992",
+        "https://xszj.org/b/352919/c/12366992?page=2",
+        "https://xszj.org/b/352919/c/12366992?page=3"
+      ]
+    }
+  ]
+}

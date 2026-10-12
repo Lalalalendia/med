@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "book_id": 100316,
+  "purpose": "Research corpus for draft translation; not publication authorization.",
+  "catalog_first": 370,
+  "catalog_last": 450,
+  "batches": [
+    [
+      370,
+      379
+    ],
+    [
+      380,
+      389
+    ],
+    [
+      390,
+      399
+    ],
+    [
+      400,
+      409
+    ],
+    [
+      410,
+      419
+    ],
+    [
+      420,
+      429
+    ],
+    [
+      430,
+      439
+    ],
+    [
+      440,
+      449
+    ],
+    [
+      450,
+      450
+    ]
+  ],
+  "emit_text": true,
+  "delay_seconds": 2.5,
+  "rights_review_required_for_publication": true
+}

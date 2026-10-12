@@ -1,0 +1,223 @@
+name: Rulate 100316 - xszj pagination and ingest
+on:
+  pull_request:
+    paths:
+      - "sources/rulate-100316/**"
+      - "tools/novel-ingest/xszj_probe.py"
+      - "tools/novel-ingest/xszj_ingest.py"
+      - "tools/novel-ingest/test_xszj_ingest.py"
+      - ".github/novel-batches/rulate-100316-request.json"
+      - ".github/workflows/xszj-100316-probe.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/novel-batches/rulate-100316-request.json"
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "First catalog ordinal, 370..450"
+        required: true
+        default: "370"
+      end:
+        description: "Last ordinal; maximum ten chapters per batch"
+        required: true
+        default: "370"
+      emit_text:
+        description: "Explicitly include raw chapter TXT in the output artifact"
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install bounded ingestion dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Verify catalog metadata
+        run: python sources/rulate-100316/validate_index.py
+      - name: Parser, stitching, and receipt tests
+        run: python -m unittest discover -s tools/novel-ingest -p "test_xszj_ingest.py" -v
+      - name: Validate bounded corpus request
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path(".github/novel-batches/rulate-100316-request.json").read_text(encoding="utf-8"))
+          assert d["schema_version"] == 1 and d["book_id"] == 100316
+          assert d["catalog_first"] == 370 and d["catalog_last"] == 450
+          assert isinstance(d["batches"], list) and d["batches"]
+          assert all(isinstance(a,int) and isinstance(b,int) and 370 <= a <= b <= 450 and b-a+1<=10 for a,b in d["batches"])
+          assert [n for a,b in d["batches"] for n in range(a,b+1)] == list(range(370,451))
+          assert 2.0 <= float(d["delay_seconds"]) <= 10.0
+          assert isinstance(d["emit_text"], bool)
+          print("PASS: 81 ordinals / bounded ordered batches / polite delay")
+          PY
+
+  page-shape:
+    if: github.event_name == 'pull_request'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Diagnose public 370 and 450 HTML structure (metadata only)
+        run: |
+          python tools/novel-ingest/xszj_probe.py \
+            --manifest sources/rulate-100316/continuation-370-450.json \
+            --ordinals 370 450 \
+            --out out/xszj-probe/report.json
+      - name: Archive shape diagnostics, never chapter text
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-page-shape
+          path: out/xszj-probe/report.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  live-parse-pilot:
+    if: github.event_name == 'pull_request'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Parse and stitch chapter 370 without writing full text
+        run: |
+          python tools/novel-ingest/xszj_ingest.py \
+            --manifest sources/rulate-100316/continuation-370-450.json \
+            --start 370 --end 370 --out-dir out/rulate-100316
+      - name: Archive receipt only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-pilot-receipt
+          path: out/rulate-100316/manifest.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  collect-batch:
+    if: github.event_name == 'workflow_dispatch'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collect indexed source batch with per-page validation
+        env:
+          START: ${{ inputs.start }}
+          END: ${{ inputs.end }}
+          EMIT_TEXT: ${{ inputs.emit_text }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          extra=()
+          if [ "$EMIT_TEXT" = "true" ]; then extra+=(--emit-text); fi
+          python tools/novel-ingest/xszj_ingest.py \
+            --manifest sources/rulate-100316/continuation-370-450.json \
+            --start "$START" --end "$END" \
+            --out-dir out/rulate-100316 "${extra[@]}"
+      - name: Upload chapter receipts and optional TXT
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-${{ inputs.start }}-${{ inputs.end }}
+          path: out/rulate-100316/**
+          if-no-files-found: warn
+          retention-days: 7
+
+  collect-all-indexed:
+    if: github.event_name == 'push'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: rulate-100316-corpus
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collect 370-450 sequentially with chapter receipts
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          config = json.loads(Path(".github/novel-batches/rulate-100316-request.json").read_text(encoding="utf-8"))
+          out = Path("out/rulate-100316")
+          out.mkdir(parents=True, exist_ok=True)
+          summaries = []
+          failed = False
+          for start, end in config["batches"]:
+              dst = out / f"batch-{start}-{end}"
+              command = [
+                  sys.executable, "tools/novel-ingest/xszj_ingest.py",
+                  "--manifest", "sources/rulate-100316/continuation-370-450.json",
+                  "--start", str(start), "--end", str(end),
+                  "--delay", str(config["delay_seconds"]), "--out-dir", str(dst),
+              ]
+              if config["emit_text"]:
+                  command.append("--emit-text")
+              result = subprocess.run(command, capture_output=True, text=True, check=False)
+              receipt_path = dst / "manifest.json"
+              receipt = json.loads(receipt_path.read_text(encoding="utf-8")) if receipt_path.exists() else {}
+              summary = {
+                  "start": start, "end": end, "exit_code": result.returncode,
+                  "status": receipt.get("status", "missing"),
+                  "collected": receipt.get("chapters_collected_or_review", 0),
+                  "errors": receipt.get("chapters_error", end-start+1),
+                  "requires_review": sum(c.get("status") == "needs_review"
+                                         for c in receipt.get("chapters", [])),
+              }
+              summaries.append(summary)
+              print(json.dumps(summary, ensure_ascii=False), flush=True)
+              if result.returncode != 0:
+                  failed = True
+                  print("STOP: source batch failed. See its metadata manifest and artifact.", file=sys.stderr)
+                  break
+          total = sum(s["collected"] for s in summaries)
+          summary = {"book_id": 100316, "requested": 81, "validated": total,
+                     "complete": not failed and total == 81, "batches": summaries,
+                     "official_fanqie_collation": False,
+                     "rights_to_publish_translation_confirmed": False}
+          (out / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print("AGGREGATE", json.dumps({"requested": 81, "validated": total,
+                                       "complete": summary["complete"]}))
+          if not summary["complete"]:
+              raise SystemExit("Full corpus is incomplete; no success claim")
+          PY
+      - name: Archive RAW chapters and provenance manifests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-raw-370-450
+          path: out/rulate-100316/**
+          if-no-files-found: warn
+          retention-days: 7
