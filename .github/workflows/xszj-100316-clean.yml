@@ -1,0 +1,86 @@
+name: Rulate 100316 - clean recovered RAW corpus
+
+on:
+  pull_request:
+    paths:
+      - "tools/novel-ingest/clean_xszj_corpus.py"
+      - "tools/novel-ingest/test_clean_xszj_corpus.py"
+      - ".github/workflows/xszj-100316-clean.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/novel-ingest/clean_xszj_corpus.py"
+      - "tools/novel-ingest/test_clean_xszj_corpus.py"
+      - ".github/workflows/xszj-100316-clean.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests - exact markers, paragraph joins and unsafe-case rejection
+        run: python -m unittest discover -s tools/novel-ingest -p "test_clean_xszj_corpus.py" -v
+
+  clean-and-verify:
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download the verified 81-chapter corpus from pinned run
+        uses: actions/download-artifact@v4
+        with:
+          name: rulate-100316-raw-combined-370-450
+          run-id: 38275699969
+          github-token: \${{ secrets.GITHUB_TOKEN }}
+          path: out/verified-original
+      - name: Build a clean input ZIP from the verified artifact
+        run: |
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+          root=Path('out/verified-original')
+          names=sorted(str(p.relative_to(root)) for p in root.rglob('*') if p.is_file())
+          expected=sorted(['manifest.json']+[f'chapters/{n}.txt' for n in range(370,451)])
+          if names!=expected:
+              raise SystemExit('Original artifact has missing or additional files')
+          out=Path('out/original-source-archive.zip')
+          with zipfile.ZipFile(out, 'w', compression=zipfile.ZIP_DEFLATED) as z:
+              for name in names:
+                  z.write(root/name, arcname=name)
+          print('PASS: 81 chapter files plus canonical manifest')
+          PY
+      - name: Clean exactly proven markers; validate 81 hashes and Han character counts
+        run: |
+          python tools/novel-ingest/clean_xszj_corpus.py \
+            --input-zip out/original-source-archive.zip \
+            --output-zip out/rulate-100316-clean-370-450.zip \
+            --report out/rulate-100316-cleaning-receipts.json
+      - name: Upload change receipts only (not copyrighted chapter text)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-cleaning-QA
+          path: out/rulate-100316-cleaning-receipts.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Upload clean source corpus after main acceptance
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-clean-370-450
+          path: out/rulate-100316-clean-370-450.zip
+          if-no-files-found: error
+          retention-days: 7
