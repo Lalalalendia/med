@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "book_id": 100316,
+  "baseline": {
+    "github_actions_run_id": 38269404761,
+    "artifact_name": "rulate-100316-raw-370-450",
+    "expected_complete_chapters": 59,
+    "known_failed_ordinals": [
+      420
+    ]
+  },
+  "recovery": {
+    "expected_chapter_ordinals": [
+      420,
+      430,
+      431,
+      432,
+      433,
+      434,
+      435,
+      436,
+      437,
+      438,
+      439,
+      440,
+      441,
+      442,
+      443,
+      444,
+      445,
+      446,
+      447,
+      448,
+      449,
+      450
+    ],
+    "batches": [
+      [
+        420,
+        420
+      ],
+      [
+        430,
+        439
+      ],
+      [
+        440,
+        449
+      ],
+      [
+        450,
+        450
+      ]
+    ],
+    "delay_seconds": 2.5,
+    "emit_text": true
+  },
+  "verification": {
+    "require_full_corpus_count": 81,
+    "refuse_duplicate_ordinals": true,
+    "verify_sha256": true,
+    "fanqie_collated": false,
+    "rights_to_publish_confirmed": false
+  }
+}
