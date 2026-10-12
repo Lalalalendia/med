@@ -121,6 +121,52 @@ class ParserTests(unittest.TestCase):
             contents = (out / "manifest.json").read_text(encoding="utf-8")
             self.assertNotIn("甲" * 50, contents)
 
+    def test_transient_connection_failure_retries_same_page(self):
+        response = Response(html(1, "汉" * 180))
+        with (patch.object(ingest, "request_public", side_effect=[
+                  ingest.requests.ConnectionError("server closed connection"), response]) as fetch,
+              patch.object(ingest.time, "sleep") as sleeper):
+            actual, retries = ingest.fetch_public_part_with_retry(
+                object(), "https://xszj.org/b/352919/c/1", max_attempts=3)
+        self.assertIs(actual, response)
+        self.assertEqual(retries, 1)
+        self.assertEqual(fetch.call_count, 2)
+        sleeper.assert_called_once_with(3.0)
+
+    def test_permanent_http_error_does_not_retry(self):
+        response = Response("denied")
+        response.status_code = 403
+        with (patch.object(ingest, "request_public", return_value=response) as fetch,
+              patch.object(ingest.time, "sleep") as sleeper):
+            actual, retries = ingest.fetch_public_part_with_retry(
+                object(), "https://xszj.org/b/352919/c/1")
+        self.assertEqual(actual.status_code, 403)
+        self.assertEqual(retries, 0)
+        self.assertEqual(fetch.call_count, 1)
+        sleeper.assert_not_called()
+
+    def test_rate_limit_retry_after_respected(self):
+        limited = Response("rate limited")
+        limited.status_code = 429
+        limited.headers = {"Retry-After": "17"}
+        ok = Response(html(1, "汉" * 180))
+        with (patch.object(ingest, "request_public", side_effect=[limited, ok]),
+              patch.object(ingest.time, "sleep") as sleeper):
+            _, retries = ingest.fetch_public_part_with_retry(
+                object(), "https://xszj.org/b/352919/c/1")
+        self.assertEqual(retries, 1)
+        sleeper.assert_called_once_with(17.0)
+
+    def test_unrecoverable_connection_error_after_bounded_retries(self):
+        with (patch.object(ingest, "request_public", side_effect=
+                  ingest.requests.ConnectionError("disconnected")) as fetch,
+              patch.object(ingest.time, "sleep") as sleeper):
+            with self.assertRaises(ingest.requests.ConnectionError):
+                ingest.fetch_public_part_with_retry(
+                    object(), "https://xszj.org/b/352919/c/1", max_attempts=3)
+        self.assertEqual(fetch.call_count, 3)
+        self.assertEqual(sleeper.call_count, 2)
+
     def test_emit_text_explicit_and_complete_only(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
