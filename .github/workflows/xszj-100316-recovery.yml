@@ -1,0 +1,146 @@
+name: Rulate 100316 - recover missing 22 chapters
+on:
+  pull_request:
+    paths:
+      - "tools/novel-ingest/xszj_ingest.py"
+      - "tools/novel-ingest/test_xszj_ingest.py"
+      - "tools/novel-ingest/merge_xszj_corpus.py"
+      - "tools/novel-ingest/test_merge_xszj_corpus.py"
+      - ".github/novel-batches/rulate-100316-recovery.json"
+      - ".github/workflows/xszj-100316-recovery.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".github/novel-batches/rulate-100316-recovery.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: rulate-100316-recovery
+  cancel-in-progress: false
+
+jobs:
+  offline-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Validate canonical 81-entry source index
+        run: python sources/rulate-100316/validate_index.py
+      - name: Run page parser, retry and two-archive merger tests
+        run: |
+          python -m unittest discover -s tools/novel-ingest -p "test_xszj_ingest.py" -v
+          python -m unittest discover -s tools/novel-ingest -p "test_merge_xszj_corpus.py" -v
+      - name: Verify recovery selection is EXACTLY the 22 missing entries
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path(".github/novel-batches/rulate-100316-recovery.json").read_text(encoding="utf-8"))
+          assert d["schema_version"] == 1 and d["book_id"] == 100316
+          baseline=d["baseline"]
+          assert baseline["github_actions_run_id"] == 38269404761
+          assert baseline["artifact_name"] == "rulate-100316-raw-370-450"
+          assert baseline["expected_complete_chapters"] == 59
+          assert baseline["known_failed_ordinals"] == [420]
+          recovery=d["recovery"]
+          expected=[420]+list(range(430,451))
+          assert recovery["expected_chapter_ordinals"] == expected
+          batches=recovery["batches"]
+          assert batches==[[420,420],[430,439],[440,449],[450,450]]
+          assert [v for a,b in batches for v in range(a,b+1)]==expected
+          assert 2.0 <= float(recovery["delay_seconds"]) <= 10
+          assert recovery["emit_text"] is True
+          assert d["verification"]["require_full_corpus_count"] == 81
+          assert d["verification"]["verify_sha256"] is True
+          print("PASS: targeted 22/22, baseline 59, no duplicate ordinals")
+          PY
+
+  collect-and-merge:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: offline-verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Fetch 420 and 430-450 without re-fetching 59 existing chapters
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          d=json.loads(Path(".github/novel-batches/rulate-100316-recovery.json").read_text(encoding="utf-8"))
+          plan=d["recovery"]
+          root=Path("out/rulate-100316-recovery")
+          root.mkdir(parents=True,exist_ok=True)
+          results=[]
+          for start,end in plan["batches"]:
+              dst=root/f"batch-{start}-{end}"
+              cmd=[sys.executable, "tools/novel-ingest/xszj_ingest.py",
+                   "--manifest", "sources/rulate-100316/continuation-370-450.json",
+                   "--start", str(start), "--end", str(end),
+                   "--delay", str(plan["delay_seconds"]), "--out-dir", str(dst)]
+              if plan["emit_text"]:
+                  cmd.append("--emit-text")
+              child=subprocess.run(cmd,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE,
+                                   text=True,check=False)
+              manifest=dst/"manifest.json"
+              report=json.loads(manifest.read_text(encoding="utf-8")) if manifest.is_file() else {}
+              result={"range":[start,end], "exit_code":child.returncode,
+                      "collected":report.get("chapters_collected_or_review",0),
+                      "failed":report.get("chapters_error",end-start+1),
+                      "needs_review":sum(c.get("status")=="needs_review" for c in report.get("chapters",[]))}
+              results.append(result)
+              print("BATCH", json.dumps(result,ensure_ascii=False),flush=True)
+              # Failure in one batch must not block independent later chapters.
+          count=sum(row["collected"] for row in results)
+          summary={"book_id":100316, "expected":22, "collected":count,
+                   "complete":count==22 and all(r["exit_code"]==0 for r in results),
+                   "batches":results}
+          (root/"summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print("TOTAL",json.dumps({"expected":22,"collected":count,"complete":summary["complete"]}))
+          if not summary["complete"]:
+              raise SystemExit("Recovery still partial. See independent batch manifests.")
+          PY
+      - name: Download original 59-chapter run artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: rulate-100316-raw-370-450
+          run-id: 38269404761
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: out/rulate-100316-original
+      - name: Validate and merge original + recovered chapters
+        run: |
+          python tools/novel-ingest/merge_xszj_corpus.py \
+            --index sources/rulate-100316/continuation-370-450.json \
+            --baseline-dir out/rulate-100316-original \
+            --recovery-dir out/rulate-100316-recovery \
+            --out-dir out/rulate-100316-combined
+      - name: Upload 81-chapter integrity-checked corpus and QA receipts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-raw-combined-370-450
+          path: out/rulate-100316-combined/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve recovery receipts on success or failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-recovery-evidence
+          path: out/rulate-100316-recovery/**
+          if-no-files-found: warn
+          retention-days: 7
