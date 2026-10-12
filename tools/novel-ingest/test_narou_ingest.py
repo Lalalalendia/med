@@ -57,7 +57,7 @@ class NarouTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             narou.normalise_ncode("../../../etc/passwd")
         self.assertEqual(
-            narou.safe_narou_url("https://ncode.syosetu.com/n3988ka/003/", "n3988ka"),
+            narou.safe_narou_url("https://ncode.syosetu.com/n3988ka/3/", "n3988ka"),
             "https://ncode.syosetu.com/n3988ka/3/",
         )
         for bad in (
@@ -67,6 +67,7 @@ class NarouTests(unittest.TestCase):
             "https://ncode.syosetu.com/n3988ka/1/?mode=hidden",
             "https://ncode.syosetu.com/n9999ka/1/",
             "https://ncode.syosetu.com/n3988ka/foo/",
+            "https://ncode.syosetu.com/n3988ka/003/",
         ):
             with self.subTest(url=bad), self.assertRaises(narou.FetchError):
                 narou.safe_narou_url(bad, "n3988ka")
