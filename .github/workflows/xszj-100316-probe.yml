@@ -1,17 +1,50 @@
-name: Rulate 100316 - public HTML shape probe
+name: Rulate 100316 - xszj pagination and ingest
 on:
   pull_request:
     paths:
       - "sources/rulate-100316/**"
       - "tools/novel-ingest/xszj_probe.py"
+      - "tools/novel-ingest/xszj_ingest.py"
+      - "tools/novel-ingest/test_xszj_ingest.py"
       - ".github/workflows/xszj-100316-probe.yml"
   workflow_dispatch:
+    inputs:
+      start:
+        description: "First catalog ordinal, 370..450"
+        required: true
+        default: "370"
+      end:
+        description: "Last ordinal; maximum ten chapters per batch"
+        required: true
+        default: "370"
+      emit_text:
+        description: "Explicitly include raw chapter TXT in the output artifact"
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   contents: read
 
 jobs:
-  validate-and-probe:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install bounded ingestion dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Verify catalog metadata
+        run: python sources/rulate-100316/validate_index.py
+      - name: Parser, stitching, and receipt tests
+        run: python -m unittest discover -s tools/novel-ingest -p "test_xszj_ingest.py" -v
+
+  page-shape:
+    if: github.event_name == 'pull_request'
+    needs: offline-tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -19,10 +52,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install bounded probe dependencies
-        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Verify chapter metadata without network
-        run: python sources/rulate-100316/validate_index.py
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
       - name: Diagnose public 370 and 450 HTML structure (metadata only)
         run: |
           python tools/novel-ingest/xszj_probe.py \
@@ -35,5 +65,64 @@ jobs:
         with:
           name: rulate-100316-page-shape
           path: out/xszj-probe/report.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  live-parse-pilot:
+    if: github.event_name == 'pull_request'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Parse and stitch chapter 370 without writing full text
+        run: |
+          python tools/novel-ingest/xszj_ingest.py \
+            --manifest sources/rulate-100316/continuation-370-450.json \
+            --start 370 --end 370 --out-dir out/rulate-100316
+      - name: Archive receipt only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-pilot-receipt
+          path: out/rulate-100316/manifest.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  collect-batch:
+    if: github.event_name == 'workflow_dispatch'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collect indexed source batch with per-page validation
+        env:
+          START: ${{ inputs.start }}
+          END: ${{ inputs.end }}
+          EMIT_TEXT: ${{ inputs.emit_text }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          extra=()
+          if [ "$EMIT_TEXT" = "true" ]; then extra+=(--emit-text); fi
+          python tools/novel-ingest/xszj_ingest.py \
+            --manifest sources/rulate-100316/continuation-370-450.json \
+            --start "$START" --end "$END" \
+            --out-dir out/rulate-100316 "${extra[@]}"
+      - name: Upload chapter receipts and optional TXT
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rulate-100316-${{ inputs.start }}-${{ inputs.end }}
+          path: out/rulate-100316/**
           if-no-files-found: warn
           retention-days: 7
