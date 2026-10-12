@@ -71,7 +71,7 @@ class ParserTests(unittest.TestCase):
         merged, warnings = ingest.merge_parts([a, b, c])
         self.assertIn("周年", merged)
         self.assertNotIn("周\n年", merged)
-        self.assertEqual(warnings, [])
+        self.assertIn("short_page_requires_review", warnings)
 
     def test_reject_duplicate_part_hashes(self):
         a = ingest.parse_part(html(1, "甲" * 200), 1)
