@@ -113,6 +113,13 @@ def chapter_body(html: str, expected_number: int) -> tuple[int, str]:
         raise ValueError('browser_challenge')
     if BOOK_TITLE not in text and BOOK_TITLE not in (soup.title.get_text() if soup.title else ''):
         raise ValueError('book_identity_unconfirmed')
+    headings = [node.get_text(' ', strip=True) for node in soup.select('h1,h2')]
+    if soup.title:
+        headings.append(soup.title.get_text(' ', strip=True))
+    found_numbers = [cn_number(m.group(1)) for heading in headings
+                     for m in CHAPTER_RE.finditer(heading)]
+    if expected_number not in found_numbers:
+        raise ValueError('chapter_identity_unconfirmed')
     for selector in BODY_SELECTORS:
         node = soup.select_one(selector)
         if node is None:
