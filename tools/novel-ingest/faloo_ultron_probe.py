@@ -31,7 +31,7 @@ def numeral(raw):
     return None
 def fetch(url):
     p=urlsplit(url)
-    if p.scheme!="https" or p.netloc!="wap.faloo.com" or not re.fullmatch(r"/(?:booklist/567548|567548_\\d+)\\.html",p.path):
+    if p.scheme!="https" or p.netloc!="wap.faloo.com" or not re.fullmatch(r"/(?:booklist/567548|567548_\d+)\.html",p.path):
         raise ValueError("Unapproved URL")
     r=S.get(url,timeout=25,allow_redirects=False)
     if r.status_code!=200 or "html" not in r.headers.get("Content-Type","").lower():
@@ -44,13 +44,13 @@ try:
     found={}
     for a in soup.select("a[href]"):
         label=a.get_text(" ",strip=True)
-        m=re.search(r"(?:^|V)第([零一二三四五六七八九十百\\d]+)章",label)
+        m=re.search(r"(?:^|V)第([零一二三四五六七八九十百\d]+)章",label)
         if not m: continue
         n=numeral(m.group(1))
         url=urljoin(CATALOG,a["href"])
         if not n or n in found: continue
         p=urlsplit(url)
-        if p.netloc!="wap.faloo.com" or not re.fullmatch(r"/567548_\\d+\\.html",p.path): continue
+        if p.netloc!="wap.faloo.com" or not re.fullmatch(r"/567548_\d+\.html",p.path): continue
         found[n]={"number":n,"title":label,"url":url,"vip":label.startswith("V")}
     result["chapters"]=[found[k] for k in sorted(found)]
     result["catalog_count"]=len(found)
@@ -71,18 +71,18 @@ try:
                         dom=BeautifulSoup(html,"html.parser")
                         for node in dom.select("script,style,nav,footer,header"):node.decompose()
                         candidates=[dom.select_one(sel) for sel in ("#content",".content",".novel_content",".read-content",".chapter-content","#novel_content")]
-                        bodies=[node.get_text("\\n",strip=True) for node in candidates if node]
+                        bodies=[node.get_text("\n",strip=True) for node in candidates if node]
                         body=max(bodies,key=len,default="")
-                        chars=len(re.sub(r"\\s+","",body))
+                        chars=len(re.sub(r"\s+","",body))
                         row["chars"]=chars
                         row["status"]="verified_public_body" if chars>=400 else "body_not_verified"
                         if chars>=400:
                             row["sha256"]=hashlib.sha256(body.encode("utf-8")).hexdigest()
-                            (OUT/f"chapter_{n:03d}.txt").write_text(body+"\\n",encoding="utf-8")
+                            (OUT/f"chapter_{n:03d}.txt").write_text(body+"\n",encoding="utf-8")
                     except Exception as e: row.update(status="fetch_error",error=str(e))
                 time.sleep(1)
             result["probe"].append(row)
 except Exception as e:
     result.update(status="FAILED",error=str(e))
-(OUT/"manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+(OUT/"manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 print(json.dumps({k:v for k,v in result.items() if k!="chapters"},ensure_ascii=False,indent=2))
