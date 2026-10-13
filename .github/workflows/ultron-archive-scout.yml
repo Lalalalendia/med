@@ -1,0 +1,46 @@
+name: Ultron archive and syndicated search pilot
+on:
+  push:
+    branches: [probe/faloo-ultron-20261014]
+    paths:
+      - 'tools/novel-ingest/ultron_archive_scout.py'
+      - '.github/workflows/ultron-archive-scout.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install requests beautifulsoup4 lxml
+      - name: Compile
+        run: python -m py_compile tools/novel-ingest/ultron_archive_scout.py
+      - name: Check archives and independent index feeds
+        run: python tools/novel-ingest/ultron_archive_scout.py
+      - name: Summarize
+        if: always()
+        run: |
+          if test -f out/ultron-archive-search/manifest.json; then
+            python - <<'PY'
+          import json, os
+          d=json.load(open('out/ultron-archive-search/manifest.json',encoding='utf-8'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+            f.write('## Archive and alternative search index\n\n')
+            f.write(f"Queries: {len(d['searches'])}, new URLs: {len(d['new_url_candidates'])}\n\n")
+            for c in d['new_url_candidates'][:50]:
+              f.write(f"- {c['title']}: {c['url']}\n")
+          PY
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ultron-archive-search-report
+          path: out/ultron-archive-search/manifest.json
+          if-no-files-found: warn
+          retention-days: 7
