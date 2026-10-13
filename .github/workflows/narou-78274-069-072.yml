@@ -1,0 +1,89 @@
+name: Narou 78274 - RAW chapters 069-072
+
+on:
+  push:
+    branches:
+      - novels/narou-78274-raw-069-072-20261014
+    paths:
+      - .github/workflows/narou-78274-069-072.yml
+      - tools/novel-ingest/narou_78274_export.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install requests==2.32.3 beautifulsoup4==4.12.3
+      - name: Recollect only chapters 069-072
+        id: collect
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/narou_78274_export.py --start 69 --end 72 --delay 2.5 --out out/narou-78274-069-072
+      - name: Verify chapter order, text, and archive
+        id: verify
+        if: steps.collect.outcome == 'success'
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          p = Path('out/narou-78274-069-072')
+          d = json.loads((p / 'manifest.json').read_text(encoding='utf-8'))
+          expected = {69:3417, 70:1061, 71:3415, 72:2475}
+          rows = d.get('chapters', [])
+          assert d['work_id'] == 'n7481gn', 'Wrong book'
+          assert d['start'] == 69 and d['end'] == 72, 'Wrong range'
+          assert not d.get('failures'), 'Download failure'
+          assert [x['chapter'] for x in rows] == list(expected), 'Missing or unordered chapter'
+          zip_path = p / 'narou-n7481gn-069-072.zip'
+          assert zip_path.is_file() and zipfile.is_zipfile(zip_path), 'ZIP is missing'
+          assert hashlib.sha256(zip_path.read_bytes()).hexdigest() == d['zip_sha256'], 'ZIP SHA mismatch'
+          with zipfile.ZipFile(zip_path) as z:
+              for row in rows:
+                  n = row['chapter']
+                  assert row['source_chars'] == expected[n], (
+                      f'Chapter {n}: current source changed ({row["source_chars"]} vs {expected[n]})'
+                  )
+                  name = f'chapters/{n:03}.txt'
+                  body = z.read(name)
+                  assert len(body) > 250, f'Chapter {n} is suspiciously short'
+                  assert hashlib.sha256(body).hexdigest() == row['text_sha256'], f'Hash mismatch {n}'
+                  assert row['url'] == f'https://ncode.syosetu.com/n7481gn/{n}/'
+              assert set(z.namelist()) == (
+                  {f'chapters/{n:03}.txt' for n in expected} | {'combined.txt','manifest.json'}
+              ), 'Unexpected ZIP entries'
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
+              out.write('# 78274 RAW incremental package — chapters 069–072\n\n')
+              out.write('Verified **4/4** public Japanese chapter bodies.\n\n')
+              out.write('| Chapter | JP characters | SHA-256 |\n|---|---:|---|\n')
+              for row in rows:
+                  out.write(f"| {row['chapter']:03} | {row['source_chars']} | `{row['text_sha256']}` |\n")
+              out.write(f"\nArchive SHA-256: `{d['zip_sha256']}`\n")
+              out.write('Texts are for authorized personal translation/research; no publishing rights are implied.\n')
+          print('Verified chapter bodies 069–072, all 4 lengths and SHA-256 receipts')
+          PY
+      - name: Upload temporary ZIP and receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-78274-jp-069-072
+          path: |
+            out/narou-78274-069-072/narou-n7481gn-069-072.zip
+            out/narou-78274-069-072/manifest.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Reject partial or mismatched collection
+        if: steps.collect.outcome != 'success' || steps.verify.outcome != 'success'
+        run: exit 1
