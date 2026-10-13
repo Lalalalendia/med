@@ -90,6 +90,7 @@ def one(label,root):
                         dom=BeautifulSoup(q.text,"html.parser")
                         plain=dom.get_text(" ",strip=True)
                         meta["html_title"]=dom.title.get_text(" ",strip=True)[:180] if dom.title else ""
+                        meta["page_excerpt"]=plain[:700]
                         meta["title_occurrences"]=plain.count(TITLE)
                         meta["author_occurrences"]=plain.count(AUTHOR)
                         meta["challenge"]=any(m in plain[:4000].lower() for m in MARKERS)
