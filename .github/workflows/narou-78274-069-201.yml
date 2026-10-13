@@ -1,0 +1,97 @@
+name: Narou 78274 - remaining JP 069-201
+
+on:
+  push:
+    branches: [novels/narou-78274-raw-069-201-20261014]
+    paths:
+      - '.github/workflows/narou-78274-069-201.yml'
+      - 'tools/novel-ingest/narou_78274_export.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Dependencies
+        run: python -m pip install requests==2.32.3 beautifulsoup4==4.12.3
+      - name: Download remaining 133 public JP chapters
+        id: collect
+        continue-on-error: true
+        run: python tools/novel-ingest/narou_78274_export.py --start 69 --end 201 --delay 2.5 --out out/narou-78274-069-201
+      - name: Verify 133 chapters, receipts and ZIP
+        id: verify
+        if: steps.collect.outcome == 'success'
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          root=Path('out/narou-78274-069-201')
+          manifest_path=root/'manifest.json'
+          manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
+          expected_numbers=list(range(69,202))
+          rows=manifest.get('chapters',[])
+          assert manifest['work_id']=='n7481gn'
+          assert manifest['start']==69 and manifest['end']==201
+          assert not manifest.get('failures'), 'Acquisition errors present'
+          assert len(rows)==133, f'Wrong count: {len(rows)}/133'
+          assert [r['chapter'] for r in rows]==expected_numbers, 'Chapter number mismatch'
+          assert manifest.get('complete') is False, 'Incremental package must not be misreported as whole novel'
+          expected_prev={69:3417,70:1061,71:3415,72:2475}
+          for row in rows:
+              number=row['chapter']
+              assert row['url']==f'https://ncode.syosetu.com/n7481gn/{number}/'
+              assert row['source_chars']>100, f'Body suspiciously short: {number}'
+              if number in expected_prev:
+                  assert row['source_chars']==expected_prev[number], f'Source mismatch vs previous run: {number}'
+          zip_path=root/'narou-n7481gn-069-201.zip'
+          assert zip_path.is_file() and zipfile.is_zipfile(zip_path), 'ZIP invalid'
+          assert hashlib.sha256(zip_path.read_bytes()).hexdigest()==manifest['zip_sha256'], 'Archive SHA-256 mismatch'
+          with zipfile.ZipFile(zip_path) as z:
+              expected_names={f'chapters/{n:03}.txt' for n in expected_numbers}|{'combined.txt','manifest.json'}
+              assert set(z.namelist())==expected_names, 'Missing or extra archive entries'
+              inner=json.loads(z.read('manifest.json'))
+              assert [r['chapter'] for r in inner['chapters']]==expected_numbers
+              for row in rows:
+                  number=row['chapter']
+                  raw=z.read(f'chapters/{number:03}.txt')
+                  assert hashlib.sha256(raw).hexdigest()==row['text_sha256'], f'Bad chapter hash: {number}'
+                  assert len(raw.decode('utf-8').strip())>100, f'Empty body: {number}'
+              combined=z.read('combined.txt').decode('utf-8')
+              assert len(combined)>100000, 'Combined text unexpectedly short'
+              for number in expected_numbers:
+                  assert f'第{number:03}話' in combined, f'Missing chapter heading {number}'
+          summary=(f"**133/133** Japanese RAW chapters verified, range **069–201**.\n\n"
+                   f"ZIP bytes: {zip_path.stat().st_size}.\n\n"
+                   f"ZIP SHA-256: \`{manifest['zip_sha256']}\`\n\n"
+                   "Original novel: 201 chapters; existing RU Draft covers 001–068.\n"
+                   "This is an incremental 133-chapter source bundle, not a Russian translation.\n")
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as f:
+              f.write('## Narou 78274: remaining Japanese originals\n\n'+summary)
+          print('VERIFIED_133_OF_133',flush=True)
+          print('ARCHIVE_SHA256',manifest['zip_sha256'],flush=True)
+          PY
+      - name: Upload ZIP and SHA receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-78274-jp-069-201
+          path: |
+            out/narou-78274-069-201/narou-n7481gn-069-201.zip
+            out/narou-78274-069-201/manifest.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Fail if source or integrity gate failed
+        if: steps.collect.outcome != 'success' || steps.verify.outcome != 'success'
+        run: exit 1
