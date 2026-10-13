@@ -1,0 +1,42 @@
+name: Faloo Ultron public availability pilot
+on:
+  push:
+    branches: [probe/faloo-ultron-20261014]
+    paths:
+      - 'tools/novel-ingest/faloo_ultron_probe.py'
+      - '.github/workflows/faloo-ultron-pilot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests beautifulsoup4
+      - name: Probe public Faloo catalogue and free chapters
+        run: python tools/novel-ingest/faloo_ultron_probe.py
+      - name: Show summary
+        if: always()
+        run: |
+          if [ -f out/faloo-ultron/manifest.json ]; then
+            python - <<'PY'
+          import json
+          d=json.load(open('out/faloo-ultron/manifest.json',encoding='utf-8'))
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'],'a') as out:
+              out.write(f"# Faloo Ultron public pilot\n\n- Status: {d['status']}\n- Catalogue: {d.get('catalog_count',0)}\n- Missing chapters: {d.get('missing_numbers',[])}\n")
+              for row in d['probe']:
+                  out.write(f"- Chapter {row['number']}: {row['status']} ({row.get('chars',0)} chars)\n")
+          PY
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: faloo-ultron-public-pilot
+          path: out/faloo-ultron/**
+          if-no-files-found: warn
+          retention-days: 7
