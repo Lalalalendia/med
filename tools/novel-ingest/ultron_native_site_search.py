@@ -32,7 +32,7 @@ HEADERS={
     "Accept-Language":"zh-CN,zh;q=0.9,en;q=0.7",
 }
 MARKERS=("just a moment","captcha","验证浏览器","人机验证","cloudflare","请完成安全验证")
-SEARCH_NAMES=("searchkey","searchname","keyword","keywords","q","query","search","s","key","name","searchword")
+SEARCH_NAMES=("searchkey","searchname","keyword","keywords","keyboard","q","query","search","s","key","name","searchword")
 EXCLUDE=("password","token","csrf","auth","submit")
 
 def one(label,root):
