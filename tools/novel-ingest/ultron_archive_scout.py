@@ -81,8 +81,8 @@ for provider,(url,static,key) in PROVIDERS.items():
                     host=urlsplit(candidate).hostname or ""
                     if host.endswith(("faloo.com","ixdzs8.com","zongcaiwenxue.org")):
                         classification="known_source"
-                    elif BOOK in title or BOOK in desc or
-                         ("奥创" in title and ("漫威" in title or "老司机" in title)):
+                    elif (BOOK in title or BOOK in desc or
+                          ("奥创" in title and ("漫威" in title or "老司机" in title))):
                         classification="new_match"
                     else:
                         continue
