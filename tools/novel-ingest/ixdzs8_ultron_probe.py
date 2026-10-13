@@ -136,6 +136,8 @@ def download(session: requests.Session, url: str) -> str:
         raise ValueError(f'http_{response.status_code}')
     if 'html' not in response.headers.get('Content-Type', '').lower():
         raise ValueError('unexpected_content_type')
+    if response.encoding is None or response.encoding.lower() in ('iso-8859-1', 'latin-1'):
+        response.encoding = response.apparent_encoding or 'utf-8'
     return response.text
 
 
