@@ -1,0 +1,46 @@
+name: Ultron alternate-source audit
+on:
+  push:
+    branches: [probe/faloo-ultron-20261014]
+    paths:
+      - 'tools/novel-ingest/ultron_alternate_sources_probe.py'
+      - '.github/workflows/ultron-alternate-sources.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests beautifulsoup4
+      - name: Compile check
+        run: python -m py_compile tools/novel-ingest/ultron_alternate_sources_probe.py
+      - name: Test known public URLs, no text export
+        run: python tools/novel-ingest/ultron_alternate_sources_probe.py
+      - name: Add manifest to job summary
+        if: always()
+        run: |
+          if [ -f out/ultron-alternates/manifest.json ]; then
+            python - <<'PY'
+          import json, os
+          d=json.load(open('out/ultron-alternates/manifest.json',encoding='utf-8'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as o:
+            o.write('## Novel alternate sources\n\n')
+            for a in d.get('checks',[]):
+              o.write(f"- {a['name']}: {a['status']} (HTTP {a.get('http_status','n/a')})\n")
+              if a.get('zip_verified'):
+                o.write(f"  - ZIP {a['download_bytes']} bytes; members {a['member_count']}\n")
+          PY
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ultron-alternate-source-metadata
+          path: out/ultron-alternates/manifest.json
+          if-no-files-found: warn
+          retention-days: 7
