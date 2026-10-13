@@ -22,6 +22,7 @@ URLS = [
     ("zong-book", "https://m.zongcaiwenxue.org/38603.html"),
     ("zong-chapter-200", "https://m.zongcaiwenxue.org/38603/10120435.html"),
     ("zong-http-book", "http://m.zongcaiwenxue.org/38603.html"),
+    ("zong-http-index", "http://m.zongcaiwenxue.org/38603/"),
     ("zong-http-chapter-200", "http://m.zongcaiwenxue.org/38603/10120435.html"),
     ("ixdzs8-direct-zip", "https://down7.ixdzs8.com/319824.zip"),
 ]
@@ -161,6 +162,20 @@ for name, url in URLS:
             title = soup.title.get_text(" ", strip=True) if soup.title else ""
             row["html_title"] = title[:140]
             row["body_bytes"] = len(body)
+            if name in ("zong-http-book", "zong-http-index"):
+                from urllib.parse import urljoin
+                book_links = []
+                for a in soup.select("a[href]"):
+                    label = a.get_text(" ", strip=True)
+                    if chapter.search(label):
+                        book_links.append({"title": label[:90], "url": urljoin(url, a["href"])})
+                row["chapter_link_count"] = len(book_links)
+                row["first_links"] = book_links[:5]
+                row["last_links"] = book_links[-5:]
+                row["target_links"] = [l for l in book_links if
+                                       any(x in l["title"] for x in ("第64章", "第六十四章",
+                                           "第120章", "第一百二十章", "第200章", "第二百章",
+                                           "第201章", "第二百零一章"))][:15]
             row["book_identity_in_html"] = "我在漫威当奥创" in text
             row["challenge_markers"] = [m for m in markers if m.lower() in text.lower()]
             plain = soup.get_text(" ", strip=True)
