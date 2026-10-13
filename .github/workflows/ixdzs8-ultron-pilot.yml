@@ -1,0 +1,57 @@
+name: ixdzs8 Ultron mirror availability pilot
+on:
+  push:
+    branches: [probe/faloo-ultron-20261014]
+    paths:
+      - 'tools/novel-ingest/ixdzs8_ultron_probe.py'
+      - 'tools/novel-ingest/test_ixdzs8_ultron_probe.py'
+      - '.github/workflows/ixdzs8-ultron-pilot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Regression tests
+        run: python -m unittest discover -s tools/novel-ingest -p 'test_ixdzs8_ultron_probe.py' -v
+      - name: Check public catalog and selected chapter bodies
+        id: audit
+        continue-on-error: true
+        run: python tools/novel-ingest/ixdzs8_ultron_probe.py
+      - name: Publish audit summary
+        if: always()
+        run: |
+          if test -f out/ixdzs8-ultron/manifest.json; then
+            echo '## ixdzs8 public mirror audit' >> "$GITHUB_STEP_SUMMARY"
+            python - <<'PY'
+          import json, os
+          d = json.load(open('out/ixdzs8-ultron/manifest.json', encoding='utf-8'))
+          lines = [
+              f"Status: {d['status']}",
+              f"Numbered chapters: {d.get('numbered_chapters', 'unavailable')}",
+              f"Missing numbers: {d.get('missing_numbered', 'unavailable')}",
+              f"Error: {d.get('error', 'none')}",
+          ]
+          lines += [f"Chapter {x['chapter']}: {x['status']} ({x.get('reason', x.get('hanzi', ''))})" for x in d.get('probe', [])]
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
+              out.write('\n\n'.join(lines) + '\n')
+          PY
+          fi
+      - name: Save independent metadata receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs8-ultron-availability-manifest
+          path: out/ixdzs8-ultron/manifest.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Report network or catalog failure
+        if: steps.audit.outcome != 'success'
+        run: exit 1
