@@ -24,6 +24,8 @@ URLS = [
     ("zong-http-book", "http://m.zongcaiwenxue.org/38603.html"),
     ("zong-http-index", "http://m.zongcaiwenxue.org/38603/"),
     ("zong-http-chapter-200", "http://m.zongcaiwenxue.org/38603/10120435.html"),
+    ("zong-http-chapter-200-alt", "http://m.zongcaiwenxue.org/38603/9579157.html"),
+    ("zong-http-chapter-1", "http://m.zongcaiwenxue.org/38603/9578955.html"),
     ("ixdzs8-direct-zip", "https://down7.ixdzs8.com/319824.zip"),
 ]
 session = requests.Session()
@@ -169,6 +171,13 @@ for name, url in URLS:
                     label = a.get_text(" ", strip=True)
                     if chapter.search(label):
                         book_links.append({"title": label[:90], "url": urljoin(url, a["href"])})
+                pagination_links = []
+                for a in soup.select("a[href]"):
+                    label = a.get_text(" ", strip=True)
+                    href = urljoin(url, a["href"])
+                    if "页" in label or "目录" in label or label in ("上一页", "下一页", "末页"):
+                        pagination_links.append({"label": label[:70], "url": href})
+                row["pagination"] = pagination_links[-18:]
                 row["chapter_link_count"] = len(book_links)
                 row["first_links"] = book_links[:5]
                 row["last_links"] = book_links[-5:]
