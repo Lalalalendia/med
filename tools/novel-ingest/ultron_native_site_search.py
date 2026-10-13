@@ -106,6 +106,28 @@ def one(label,root):
                                     result["matches"].append({"title":text[:140],"url":url[:300]})
                         result["matches"]=result["matches"][:30]
                     result["search_result"]=meta
+                    if label == "trxs" and not result["matches"]:
+                        # Broad public title index query to catch retitled or annotated editions.
+                        try:
+                            fields[target] = "奥创"
+                            short = ses.post(action, data=fields, timeout=15, allow_redirects=False)
+                            summary = {"http_status": short.status_code,
+                                       "bytes": len(short.content), "related_titles": []}
+                            if short.status_code == 200 and len(short.content) < 1_500_000:
+                                short.encoding = short.apparent_encoding
+                                short_dom = BeautifulSoup(short.text,"html.parser")
+                                text_short = short_dom.get_text(" ",strip=True)
+                                summary["excerpt"] = text_short[:450]
+                                for a in short_dom.select("a[href]"):
+                                    label_text=a.get_text(" ",strip=True)
+                                    if "奥创" in label_text:
+                                        summary["related_titles"].append({"title": label_text[:150],
+                                             "url": urljoin(short.url,a.get("href",""))[:300]})
+                                    if len(summary["related_titles"]) >= 40:
+                                        break
+                            result["short_search_result"] = summary
+                        except requests.RequestException as exc:
+                            result["short_search_result"] = {"error": type(exc).__name__+": "+str(exc)[:200]}
                 except requests.RequestException as e:
                     result["search_result"]={"error":type(e).__name__+": "+str(e)[:200]}
         result["status"]="searched" if "search_result" in result else "forms_inspected"
