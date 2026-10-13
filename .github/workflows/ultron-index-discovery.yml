@@ -1,0 +1,45 @@
+name: Ultron multi-engine discovery pilot
+on:
+  push:
+    branches: [probe/faloo-ultron-20261014]
+    paths:
+      - 'tools/novel-ingest/ultron_index_discovery.py'
+      - '.github/workflows/ultron-index-discovery.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Check syntax
+        run: python -m py_compile tools/novel-ingest/ultron_index_discovery.py
+      - name: Search independent public indexes
+        run: python tools/novel-ingest/ultron_index_discovery.py
+      - name: Append candidate list
+        if: always()
+        run: |
+          if [ -f out/ultron-index-discovery/manifest.json ]; then
+            python - <<'PY'
+          import json,os
+          d=json.load(open('out/ultron-index-discovery/manifest.json', encoding='utf-8'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as o:
+            o.write('# Ultron independent source discovery\n\n')
+            o.write(f"Searches: {len(d['searches'])}; New URLs: {len(d['fresh_candidates'])}\n\n")
+            for c in d['fresh_candidates'][:50]:
+              o.write(f"- {c['title']}: {c['url']}\n")
+          PY
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ultron-index-discovery
+          path: out/ultron-index-discovery/manifest.json
+          if-no-files-found: warn
+          retention-days: 7
