@@ -21,6 +21,8 @@ LIMIT = 6 * 1024 * 1024
 URLS = [
     ("zong-book", "https://m.zongcaiwenxue.org/38603.html"),
     ("zong-chapter-200", "https://m.zongcaiwenxue.org/38603/10120435.html"),
+    ("zong-http-book", "http://m.zongcaiwenxue.org/38603.html"),
+    ("zong-http-chapter-200", "http://m.zongcaiwenxue.org/38603/10120435.html"),
     ("ixdzs8-direct-zip", "https://down7.ixdzs8.com/319824.zip"),
 ]
 session = requests.Session()
@@ -88,6 +90,52 @@ def inspect_zip(content):
                 "bytes": len(raw),
             }
         result["text_checks"] = matches
+        for m in selected[:5]:
+            if m.file_size > 3 * 1024 * 1024:
+                continue
+            full_text = decode_bytes(z.read(m))
+            head = list(chapter.finditer(full_text))
+            section_lengths = []
+            section_samples = {}
+            parsed_numbers = []
+            for j, match in enumerate(head):
+                raw_num = match.group(1)
+                next_offset = head[j + 1].start() if j + 1 < len(head) else len(full_text)
+                section = full_text[match.end():next_offset]
+                body_count = len(hanzi.findall(section))
+                section_lengths.append(body_count)
+                num = int(raw_num) if raw_num.isdecimal() else None
+                if num is None:
+                    digits = {'零':0,'〇':0,'一':1,'二':2,'两':2,'三':3,'四':4,
+                              '五':5,'六':6,'七':7,'八':8,'九':9}
+                    total = cur = 0
+                    for x in raw_num:
+                        if x in digits:
+                            cur = digits[x]
+                        elif x in '十百千':
+                            total += (cur or 1) * {'十':10,'百':100,'千':1000}[x]
+                            cur = 0
+                    num = total + cur
+                parsed_numbers.append(num)
+                if num in (1, 2, 63, 64, 65, 90, 119, 120, 121, 160, 190, 201):
+                    section_samples[str(num)] = body_count
+            lengths = sorted(section_lengths)
+            result["section_length_audit"] = {
+                "numbered_sections": len(section_lengths),
+                "unique_numbers": len(set(parsed_numbers)),
+                "duplicate_numbers": sorted(k for k in set(parsed_numbers) if parsed_numbers.count(k) > 1),
+                "missing_numbers_1_201": sorted(set(range(1, 202)) - set(parsed_numbers)),
+                "body_hanzi_sum": sum(section_lengths),
+                "min_hanzi": min(lengths, default=0),
+                "p10_hanzi": lengths[int(len(lengths)*.1)] if lengths else 0,
+                "median_hanzi": lengths[len(lengths)//2] if lengths else 0,
+                "p90_hanzi": lengths[int(len(lengths)*.9)] if lengths else 0,
+                "max_hanzi": max(lengths, default=0),
+                "under_400_hanzi": sum(v < 400 for v in lengths),
+                "under_800_hanzi": sum(v < 800 for v in lengths),
+                "over_1500_hanzi": sum(v > 1500 for v in lengths),
+                "samples": section_samples,
+            }
     return result
 
 for name, url in URLS:
