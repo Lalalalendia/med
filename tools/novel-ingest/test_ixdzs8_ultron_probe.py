@@ -9,6 +9,7 @@ from ixdzs8_ultron_probe import BOOK_URL, approved_page, cn_number, parse_catalo
 class Response:
     status_code = 200
     headers = {'Content-Type': 'text/html; charset=utf-8'}
+    encoding = 'utf-8'
 
     def __init__(self, text):
         self.text = text
@@ -51,8 +52,8 @@ class TestMirror(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'browser_challenge'):
             chapter_body('<h1>正在验证浏览器</h1>', 120)
         with self.assertRaisesRegex(ValueError, 'no_verified_chapter_body'):
-            chapter_body('<title>我在漫威当奥创</title><article>太短</article>', 120)
-        count, digest = chapter_body('<title>我在漫威当奥创</title><article>' +
+            chapter_body('<title>我在漫威当奥创 第120章</title><article>太短</article>', 120)
+        count, digest = chapter_body('<title>我在漫威当奥创 第120章</title><article>' +
                                      '奥创展开攻击。' * 120 + '</article>', 120)
         self.assertGreater(count, 500)
         self.assertEqual(len(digest), 64)
