@@ -202,5 +202,84 @@ for name, url in URLS:
         row["error"] = f"{type(exc).__name__}: {str(exc)[:240]}"
     report["checks"].append(row)
 
+
+# Verify the complete 5-page indexed catalog instead of assuming an SEO page has bodies.
+from urllib.parse import urljoin, urlsplit
+def number_value(raw):
+    if raw.isdecimal():
+        return int(raw)
+    digits = {'零':0,'〇':0,'一':1,'二':2,'两':2,'三':3,'四':4,
+              '五':5,'六':6,'七':7,'八':8,'九':9}
+    total = cur = 0
+    for x in raw:
+        if x in digits:
+            cur = digits[x]
+        elif x in '十百千':
+            total += (cur or 1) * {'十':10,'百':100,'千':1000}[x]
+            cur = 0
+        else:
+            return None
+    return total + cur
+zong = {"site": "http://m.zongcaiwenxue.org/38603/", "catalog_pages": [], "chapters_checked": []}
+chapters_by_no = {}
+for pg in range(1, 6):
+    address = zong["site"] if pg == 1 else f"http://m.zongcaiwenxue.org/38603_{pg}/"
+    info = {"page": pg, "url": address}
+    try:
+        response, html_bytes, error = get_limited(address)
+        info["http_status"] = response.status_code
+        if error or response.status_code != 200:
+            info["problem"] = error or f"http_{response.status_code}"
+        else:
+            html = decode_bytes(html_bytes, response.encoding if response.encoding != 'ISO-8859-1' else None)
+            soup = BeautifulSoup(html, "html.parser")
+            links = 0
+            for a in soup.select("a[href]"):
+                label = a.get_text(" ", strip=True)
+                m = chapter.search(label)
+                if not m:
+                    continue
+                n = number_value(m.group(1))
+                if n is None or n < 1 or n > 500:
+                    continue
+                u = urljoin(address, a["href"])
+                parts = urlsplit(u)
+                if parts.scheme != 'http' or parts.hostname != 'm.zongcaiwenxue.org' or not re.fullmatch(r'/38603/\d+\.html', parts.path):
+                    continue
+                # Later catalog rows override any legacy latest-chapter link.
+                chapters_by_no[n] = {"chapter": n, "title": label[:100], "url": u}
+                links += 1
+            info["links_parsed"] = links
+    except Exception as exc:
+        info["problem"] = f"{type(exc).__name__}: {str(exc)[:180]}"
+    zong["catalog_pages"].append(info)
+zong["numbered_chapters"] = len(chapters_by_no)
+zong["missing_numbers_1_201"] = sorted(set(range(1, 202)) - set(chapters_by_no))
+for n in (1, 63, 64, 120, 190, 200, 201):
+    rec = {"chapter": n, "status": "missing_from_catalog"}
+    ch = chapters_by_no.get(n)
+    if ch:
+        rec["url"] = ch["url"]
+        try:
+            response, html_bytes, error = get_limited(ch["url"])
+            rec["http_status"] = response.status_code
+            rec["location"] = response.headers.get("Location")
+            if error or response.status_code != 200:
+                rec["status"] = error or f"http_{response.status_code}"
+            else:
+                html = decode_bytes(html_bytes, response.encoding if response.encoding != 'ISO-8859-1' else None)
+                soup = BeautifulSoup(html, "html.parser")
+                title = soup.title.get_text(" ", strip=True) if soup.title else ""
+                rec["title_match"] = "我在漫威当奥创" in title and ch["title"].split(" ",1)[0] in title
+                parent = soup.select_one(".content")
+                rec["content_hanzi"] = len(hanzi.findall(parent.get_text(" ", strip=True))) if parent else 0
+                rec["status"] = ("body_verified" if rec["content_hanzi"] >= 400 and rec["title_match"]
+                                 else "body_not_verified")
+        except Exception as exc:
+            rec["status"] = "fetch_failed"
+            rec["error"] = f"{type(exc).__name__}: {str(exc)[:180]}"
+    zong["chapters_checked"].append(rec)
+report["zong_catalog_audit"] = zong
+
 (OUT / "manifest.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(json.dumps(report, ensure_ascii=False, indent=2))
