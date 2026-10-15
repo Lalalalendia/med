@@ -33,7 +33,7 @@ SOURCES = [
     {
         "key": "three-laws",
         "title": "Three Laws of Magic / Fa Shi San Ding Lu",
-        "index": "https://www.novel543.com/0502266680/dir",
+        "index": "https://www.novel543.com/0502266680/",
         "chapter_pattern": r"^/0502266680/[0-9]+_[0-9]+\.html$",
         "expected": 204,
         "numbering": "site-records",
