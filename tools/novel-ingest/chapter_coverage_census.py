@@ -33,7 +33,7 @@ SOURCES = [
     {
         "key": "three-laws",
         "title": "Three Laws of Magic / Fa Shi San Ding Lu",
-        "index": "https://www.novel543.com/0502266680/",
+        "index": "https://www.novel543.com/0502266680/dir",
         "chapter_pattern": r"^/0502266680/[0-9]+_[0-9]+\.html$",
         "expected": 204,
         "numbering": "site-records",
@@ -95,7 +95,10 @@ def parse_index(cfg: dict, html: str) -> dict:
             seen[url] = {"url": url, "title": title, "number": ordinal}
     rows = list(seen.values())
     numbers = [x["number"] for x in rows if x["number"] is not None]
-    duplicates = sorted({n for n in numbers if numbers.count(n) > 1})
+    counts = {}
+    for number in numbers:
+        counts[number] = counts.get(number, 0) + 1
+    duplicates = sorted(n for n, count in counts.items() if count > 1)
     missing = sorted(set(range(1, cfg["expected"] + 1)) - set(numbers)) if cfg["numbering"] == "han-main" else []
     out_of_range = sorted({n for n in numbers if n < 1 or n > cfg["expected"]})
     return {
@@ -107,6 +110,16 @@ def parse_index(cfg: dict, html: str) -> dict:
         "out_of_range": out_of_range,
         "catalog_complete": len(rows) >= cfg["expected"] and not missing and not duplicates and not out_of_range,
     }
+
+
+def evenly_spaced_sample(rows: list[dict], limit: int) -> list[dict]:
+    """Sample beginning, middle and end; 0 means all pages."""
+    if limit <= 0 or limit >= len(rows):
+        return rows
+    if limit == 1:
+        return [rows[0]]
+    ids = sorted({round(i * (len(rows) - 1) / (limit - 1)) for i in range(limit)})
+    return [rows[i] for i in ids]
 
 
 def body_signature(html: str) -> dict:
@@ -143,10 +156,18 @@ class PoliteClient:
         if base not in self.robots:
             try:
                 resp = self.session.get(base + "/robots.txt", timeout=(8, 20), allow_redirects=True)
-                if resp.status_code != 200 or urlparse(resp.url).netloc != parsed.netloc:
-                    raise RuntimeError(f"robots.txt unavailable: HTTP {resp.status_code}")
+                if urlparse(resp.url).netloc != parsed.netloc:
+                    raise RuntimeError("robots.txt cross-host redirect")
                 robot = RobotFileParser()
-                robot.parse(resp.text.splitlines())
+                if resp.status_code in (404, 410):
+                    # RFC 9309: 404/410 robots.txt means no robots rules.
+                    robot.parse(["User-agent: *", "Allow: /"])
+                elif resp.status_code == 200:
+                    if "<html" in resp.text[:1000].lower():
+                        raise RuntimeError("robots.txt returned HTML")
+                    robot.parse(resp.text.splitlines())
+                else:
+                    raise RuntimeError(f"robots.txt unavailable: HTTP {resp.status_code}")
                 self.robots[base] = robot
             except requests.RequestException as exc:
                 raise RuntimeError("robots.txt unavailable: " + type(exc).__name__) from exc
@@ -179,6 +200,8 @@ class PoliteClient:
             raise RuntimeError("Stop source: non-HTML content")
         if any(s in resp.text[:16000].lower() for s in BLOCK_MARKERS):
             raise RuntimeError("Stop source: anti-bot or access denial")
+        if not resp.encoding or resp.encoding.lower() in ("iso-8859-1", "latin-1"):
+            resp.encoding = resp.apparent_encoding or "utf-8"
         return resp.text
 
 
@@ -239,7 +262,7 @@ def census(cfg: dict, client: PoliteClient, out: Path, report: dict, limit: int)
         return
     if not result["catalog_complete"]:
         result["message"] = "Incomplete index or contradictory numbering; body validation is partial"
-    scan = rows if limit <= 0 else rows[:limit]
+    scan = evenly_spaced_sample(rows, limit)
     seen_hash = {}
     duplicates = []
     for seq, item in enumerate(scan, start=1):
@@ -292,6 +315,13 @@ def self_test():
     fake = '<div id="content">' + '\u4e2d\u6587' * 150 + '</div>'
     assert body_signature(fake)["status"] == "body_verified"
     assert body_signature("<html><h1>Login</h1></html>")["status"] == "body_unverified"
+    assert [x["number"] for x in evenly_spaced_sample([{"number": i} for i in range(1, 11)], 3)] == [1, 5, 10]
+    law = SOURCES[1]
+    test_html = '<a href="/0502266680/8001_1.html">第一章_一切開始</a>'
+    parsed_law = parse_index(law, test_html)
+    assert parsed_law["catalog_count"] == 1
+    assert parsed_law["chapters"][0]["url"].endswith("/0502266680/8001_1.html")
+    assert parsed_law["catalog_complete"] is False
     print("Self-tests OK")
 
 
