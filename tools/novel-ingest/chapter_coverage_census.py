@@ -66,6 +66,7 @@ SOURCES = [
 BLOCK_MARKERS = (
     "checking your browser", "verify you are human", "captcha",
     "attention required", "access denied", "just a moment",
+    "正在验证浏览器", "正在驗證瀏覽器", "verify your browser",
 )
 CONTENT_SELECTORS = (
     "#content", "#chaptercontent", "#chapter-content", "#article",
@@ -183,6 +184,11 @@ def body_signature(html: str) -> dict:
     }
 
 
+def looks_like_access_interstitial(html: str) -> bool:
+    """Recognize access challenges in both English and Chinese encodings."""
+    return any(marker in html[:16000].lower() for marker in BLOCK_MARKERS)
+
+
 class PoliteClient:
     def __init__(self, delay: float):
         self.delay = delay
@@ -239,11 +245,12 @@ class PoliteClient:
             raise RuntimeError(f"Stop source: HTTP {resp.status_code}")
         if "html" not in resp.headers.get("Content-Type", "").lower():
             raise RuntimeError("Stop source: non-HTML content")
-        if any(s in resp.text[:16000].lower() for s in BLOCK_MARKERS):
-            raise RuntimeError("Stop source: anti-bot or access denial")
         if not resp.encoding or resp.encoding.lower() in ("iso-8859-1", "latin-1"):
             resp.encoding = resp.apparent_encoding or "utf-8"
-        return resp.text
+        html = resp.text
+        if looks_like_access_interstitial(html):
+            raise RuntimeError("Stop source: anti-bot or access denial")
+        return html
 
 
 def save_report(out: Path, report: dict):
@@ -360,6 +367,9 @@ def self_test():
     fake = '<div id="content">' + '\u4e2d\u6587' * 150 + '</div>'
     assert body_signature(fake)["status"] == "body_verified"
     assert body_signature("<html><h1>Login</h1></html>")["status"] == "body_unverified"
+    assert looks_like_access_interstitial("<title>正在验证浏览器</title>")
+    assert looks_like_access_interstitial("<title>正在驗證瀏覽器</title>")
+    assert not looks_like_access_interstitial("<title>小说 正文 第一章</title>")
     assert [x["number"] for x in evenly_spaced_sample([{"number": i} for i in range(1, 11)], 3)] == [1, 5, 10]
     law = SOURCES[1]
     test_html = '<a href="/0502266680/8001_1.html">第一章_一切開始</a>'
