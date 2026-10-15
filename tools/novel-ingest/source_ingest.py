@@ -381,16 +381,19 @@ def run_ingest(
             if ordinal < end:
                 time.sleep(delay)
 
-    known_hashes: dict[str, int] = {}
-    for row in rows:
-        if row.get("status") != "ok":
-            continue
-        prior = known_hashes.get(row["sha256"])
-        if prior is not None:
-            row["status"] = "duplicate_body"
-            row["error"] = f"Exact duplicate of chapter {prior}"
-        else:
-            known_hashes[row["sha256"]] = row["ordinal"]
+    # Preserve the established RoyalRoad/WebNovel batch semantics:
+    # Chinese full-book export adds a stricter exact-duplicate gate only there.
+    if source == "uukanshu":
+        known_hashes: dict[str, int] = {}
+        for row in rows:
+            if row.get("status") != "ok":
+                continue
+            prior = known_hashes.get(row["sha256"])
+            if prior is not None:
+                row["status"] = "duplicate_body"
+                row["error"] = f"Exact duplicate of chapter {prior}"
+            else:
+                known_hashes[row["sha256"]] = row["ordinal"]
 
     successful = [row for row in rows if row["status"] == "ok"]
     failures = [row for row in rows if row["status"] != "ok"]
