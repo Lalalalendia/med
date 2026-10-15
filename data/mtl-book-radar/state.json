@@ -1,0 +1,88 @@
+{
+  "events": [],
+  "schema": 2,
+  "sites": {
+    "fanmtl": {
+      "cursor": null,
+      "holes": [],
+      "last_success": null,
+      "seen": {}
+    },
+    "mtl-novel": {
+      "cursor": null,
+      "holes": [],
+      "last_success": null,
+      "seen": {}
+    },
+    "ranobes": {
+      "cursor": null,
+      "holes": [],
+      "last_success": null,
+      "seen": {}
+    },
+    "tomatomtl": {
+      "cursor": null,
+      "holes": [],
+      "last_success": null,
+      "seen": {}
+    },
+    "wtr-lab": {
+      "cursor": 107234,
+      "holes": [],
+      "initialized": true,
+      "last_success": "2026-10-15T10:37:06+00:00",
+      "seen": {
+        "107125": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "Anime Crossover: I'm Really Not the Dragon King's Cellmate",
+          "url": "https://wtr-lab.com/en/novel/107125/anime-crossover-im-really-not-the-dragon-kings-cellmate"
+        },
+        "107146": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "Pirates: The Marine Headquarters Was Destroyed at the Start",
+          "url": "https://wtr-lab.com/en/novel/107146/pirates-the-marine-headquarters-was-destroyed-at-the-start"
+        },
+        "107165": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "Element World: The Unscrupulous Merchant Tricks Klee at the Start",
+          "url": "https://wtr-lab.com/en/novel/107165/element-world-the-unscrupulous-merchant-tricks-klee-at-the-start"
+        },
+        "107188": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "Quick Transmigration: I'm a Working Person in Three Thousand Worlds",
+          "url": "https://wtr-lab.com/en/novel/107188/quick-transmigration-im-a-working-person-in-three-thousand-worlds"
+        },
+        "107209": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "All Gods: I'm Really a Farmer",
+          "url": "https://wtr-lab.com/en/novel/107209/all-gods-im-really-a-farmer"
+        },
+        "107210": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "Transcend the Martial Arts World and Activate a Hundredfold Cultivation Return",
+          "url": "https://wtr-lab.com/en/novel/107210/transcend-the-martial-arts-world-and-activate-a-hundredfold-cultivation-return"
+        },
+        "107214": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "A Reward for Winning Over the Empress?",
+          "url": "https://wtr-lab.com/en/novel/107214/a-reward-for-winning-over-the-empress"
+        },
+        "107221": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "Battle Through the Heavens: Xiao Xuan is Resurrected at the Start, and He Brutally Beats Up Gu Yuan",
+          "url": "https://wtr-lab.com/en/novel/107221/battle-through-the-heavens-xiao-xuan-is-resurrected-at-the-start-and-he-brutally-beats-up-gu-yuan"
+        },
+        "107225": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "Train Survival: After Seeing Their Talents, They Became More Proactive",
+          "url": "https://wtr-lab.com/en/novel/107225/train-survival-after-seeing-their-talents-they-became-more-proactive"
+        },
+        "107234": {
+          "first_seen_utc": "2026-10-15T10:37:06+00:00",
+          "title": "Am I the Only One Among All Mankind Who Dreams?",
+          "url": "https://wtr-lab.com/en/novel/107234/am-i-the-only-one-among-all-mankind-who-dreams"
+        }
+      }
+    }
+  }
+}
