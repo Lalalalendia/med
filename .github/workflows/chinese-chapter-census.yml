@@ -1,6 +1,10 @@
 name: Chinese chapter metadata census
 
 on:
+  pull_request:
+    paths:
+      - 'tools/novel-ingest/chapter_coverage_census.py'
+      - '.github/workflows/chinese-chapter-census.yml'
   workflow_dispatch:
     inputs:
       book:
@@ -33,6 +37,7 @@ jobs:
       - name: Verify parser with local fixtures
         run: python tools/novel-ingest/chapter_coverage_census.py --self-test
       - name: Audit public metadata only
+        if: github.event_name == 'workflow_dispatch'
         run: |
           python tools/novel-ingest/chapter_coverage_census.py \
             --book "${{ inputs.book }}" \
