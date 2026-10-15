@@ -14,6 +14,7 @@ TRIALS = [
     ("ranobes", "https://ranobes.net/novels/"),
     ("mtl-novel", "https://mtl-novel.com/"),
     ("mtl-novel", "https://mtl-novel.com/novel/"),
+    ("readnovelmtl", "https://readnovelmtl.com/novel"),
 ]
 client = HttpClient()
 rows = []
