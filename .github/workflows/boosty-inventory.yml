@@ -1,0 +1,77 @@
+name: Boosty public inventory
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/boosty-inventory.yml'
+      - 'tools/boosty-inventory/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/boosty-inventory.yml'
+      - 'tools/boosty-inventory/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: boosty-public-inventory
+  cancel-in-progress: false
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test public inventory (2 pages on PR)
+        if: github.event_name == 'pull_request'
+        run: python tools/boosty-inventory/inventory.py --preview --max-pages 2 --page-size 30
+      - name: Full anonymous public inventory
+        if: github.event_name != 'pull_request'
+        run: python tools/boosty-inventory/inventory.py --max-pages 120 --page-size 30 --delay 1.1
+      - name: Show results
+        if: always()
+        run: |
+          if test -f out/boosty-inventory/report.md; then
+            cat out/boosty-inventory/report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload CSV and audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boosty-public-inventory
+          path: out/boosty-inventory
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Save complete inventory to separate branch
+        if: github.event_name != 'pull_request' && success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          obj=json.load(open('out/boosty-inventory/summary.json',encoding='utf-8'))
+          assert obj['completed'] and not obj['preview'], 'Refusing partial dataset'
+          PY
+          if git ls-remote --exit-code --heads origin boosty-inventory-data >/dev/null 2>&1; then
+            git fetch --depth=1 origin refs/heads/boosty-inventory-data:refs/remotes/origin/boosty-inventory-data
+            git switch --create boosty-inventory-data --track origin/boosty-inventory-data
+          else
+            git switch --create boosty-inventory-data
+          fi
+          mkdir -p data/boosty-inventory
+          cp out/boosty-inventory/*.csv data/boosty-inventory/
+          cp out/boosty-inventory/report.md out/boosty-inventory/summary.json data/boosty-inventory/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f data/boosty-inventory
+          if git diff --cached --quiet; then
+            echo 'Inventory unchanged'
+          else
+            git commit -m 'data: update public Boosty inventory and Notion comparison'
+            git push origin HEAD:refs/heads/boosty-inventory-data
+          fi
