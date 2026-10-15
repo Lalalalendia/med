@@ -109,7 +109,7 @@ class WatchTests(unittest.TestCase):
         self.assertEqual(later["attempted_ids"], 0)
 
     def test_bootstrap_does_not_spam_old_books(self):
-        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}")
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         page = catalog(site, [("/en/novel/107037/a", "Old A")])
         store = {}
         r = run_site(site, store, FakeClient({site["catalog_url"]: [page]}))
@@ -118,7 +118,7 @@ class WatchTests(unittest.TestCase):
         self.assertEqual(store["wtr-lab"]["cursor"], 107037)
 
     def test_new_numeric_gap_retained_and_deduplicated(self):
-        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}")
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         store = {}
         first = catalog(site, [("/en/novel/107037/a", "Book A")])
         run_site(site, store, FakeClient({site["catalog_url"]: [first]}))
@@ -132,14 +132,14 @@ class WatchTests(unittest.TestCase):
         self.assertIn(107038, store["wtr-lab"]["holes"])
 
     def test_wrong_id_redirect_rejected(self):
-        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}")
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         from watch import verify_detail
         url = site["probe_url"].format(id=107039)
         client = FakeClient({url: [("ok", "https://wtr-lab.com/en/novel/111111/different", "<h1>Wrong novel</h1>")]})
         self.assertIsNone(verify_detail(client, site, 107039, url))
 
     def test_blocked_probe_does_not_advance_cursor(self):
-        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}")
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         store = {site["name"]: {"seen": {"107037": {}}, "cursor": 107037, "holes": [], "initialized": True}}
         page = catalog(site, [("/en/novel/107039/c", "Book C")])
         r = run_site(site, store, FakeClient({site["catalog_url"]: [page],
@@ -172,7 +172,7 @@ class WatchTests(unittest.TestCase):
 
     def test_h1_required_for_detail_validation(self):
         from watch import verify_detail
-        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}")
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         url = site["probe_url"].format(id=107040)
         self.assertIsNone(verify_detail(FakeClient({url: [("ok", url, "<div>Empty</div>")]}), site, 107040, url))
 
