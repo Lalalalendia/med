@@ -37,10 +37,19 @@
     },
     {
       "name": "mtl-novel",
-      "enabled": false,
-      "catalog_url": "https://mtl-novel.com/",
+      "enabled": true,
+      "catalog_url": "https://mtl-novel.com/novel/",
       "book_path_regex": "/novel/(?P<id>[^/]+)/?",
-      "delay_seconds": 4
+      "delay_seconds": 4,
+      "note": "Live catalogue preflight 2026-10-15: /novel/ returns 10 novels, robots permits; first scan is baseline."
+    },
+    {
+      "name": "readnovelmtl",
+      "enabled": false,
+      "catalog_url": "https://readnovelmtl.com/novel",
+      "book_path_regex": "/novel/(?P<id>[^/]+)/?",
+      "delay_seconds": 4,
+      "note": "Preflight only. Verify robots before activation."
     }
   ]
 }
