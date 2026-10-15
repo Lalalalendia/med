@@ -89,6 +89,42 @@
       "site": "wtr-lab",
       "title": "Ancestral Tradition: The Founding of a Millennial Family Through the Feast at Hongmen",
       "url": "https://wtr-lab.com/en/novel/107256/ancestral-tradition-the-founding-of-a-millennial-family-through-the-feast-at-hongmen"
+    },
+    {
+      "first_seen_utc": "2026-10-15T11:05:12+00:00",
+      "id": "107213",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "After Stockpiling Supplies; I Transmigrated Into an Apocalyptic Dream World and Took Husbands",
+      "url": "https://wtr-lab.com/en/novel/107213/after-stockpiling-supplies-i-transmigrated-into-an-apocalyptic-dream-world-and-took-husbands"
+    },
+    {
+      "first_seen_utc": "2026-10-15T11:05:12+00:00",
+      "id": "107231",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Hong Kong Cinema Universe: I Refuse to Be an Undercover Cop from the Start",
+      "url": "https://wtr-lab.com/en/novel/107231/hong-kong-cinema-universe-i-refuse-to-be-an-undercover-cop-from-the-start"
+    },
+    {
+      "first_seen_utc": "2026-10-15T11:05:12+00:00",
+      "id": "107271",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Star Train World: The Rumor About Akivili Has Come True",
+      "url": "https://wtr-lab.com/en/novel/107271/star-train-world-the-rumor-about-akivili-has-come-true"
+    },
+    {
+      "first_seen_utc": "2026-10-15T11:05:12+00:00",
+      "id": "107264",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Collapse World: A Life of Decline Starting from the Pre-civilization Era",
+      "url": "https://wtr-lab.com/en/novel/107264/collapse-world-a-life-of-decline-starting-from-the-pre-civilization-era"
     }
   ],
   "schema": 2,
@@ -103,7 +139,7 @@
       "cursor": null,
       "holes": [],
       "initialized": true,
-      "last_success": "2026-10-15T10:59:13+00:00",
+      "last_success": "2026-10-15T11:05:13+00:00",
       "seen": {
         "anime-crossover-survival-on-a-desert-island-surrounded-by-heroines": {
           "first_seen_utc": "2026-10-15T10:59:13+00:00",
@@ -210,7 +246,7 @@
         107264
       ],
       "initialized": true,
-      "last_success": "2026-10-15T10:59:13+00:00",
+      "last_success": "2026-10-15T11:05:12+00:00",
       "seen": {
         "105996": {
           "first_seen_utc": "2026-10-15T10:57:36+00:00",
@@ -277,6 +313,11 @@
           "title": "Transcend the Martial Arts World and Activate a Hundredfold Cultivation Return",
           "url": "https://wtr-lab.com/en/novel/107210/transcend-the-martial-arts-world-and-activate-a-hundredfold-cultivation-return"
         },
+        "107213": {
+          "first_seen_utc": "2026-10-15T11:05:12+00:00",
+          "title": "After Stockpiling Supplies; I Transmigrated Into an Apocalyptic Dream World and Took Husbands",
+          "url": "https://wtr-lab.com/en/novel/107213/after-stockpiling-supplies-i-transmigrated-into-an-apocalyptic-dream-world-and-took-husbands"
+        },
         "107214": {
           "first_seen_utc": "2026-10-15T10:37:06+00:00",
           "title": "A Reward for Winning Over the Empress?",
@@ -291,6 +332,11 @@
           "first_seen_utc": "2026-10-15T10:37:06+00:00",
           "title": "Train Survival: After Seeing Their Talents, They Became More Proactive",
           "url": "https://wtr-lab.com/en/novel/107225/train-survival-after-seeing-their-talents-they-became-more-proactive"
+        },
+        "107231": {
+          "first_seen_utc": "2026-10-15T11:05:12+00:00",
+          "title": "Hong Kong Cinema Universe: I Refuse to Be an Undercover Cop from the Start",
+          "url": "https://wtr-lab.com/en/novel/107231/hong-kong-cinema-universe-i-refuse-to-be-an-undercover-cop-from-the-start"
         },
         "107234": {
           "first_seen_utc": "2026-10-15T10:37:06+00:00",
@@ -307,10 +353,20 @@
           "title": "Ancestral Tradition: The Founding of a Millennial Family Through the Feast at Hongmen",
           "url": "https://wtr-lab.com/en/novel/107256/ancestral-tradition-the-founding-of-a-millennial-family-through-the-feast-at-hongmen"
         },
+        "107264": {
+          "first_seen_utc": "2026-10-15T11:05:12+00:00",
+          "title": "Collapse World: A Life of Decline Starting from the Pre-civilization Era",
+          "url": "https://wtr-lab.com/en/novel/107264/collapse-world-a-life-of-decline-starting-from-the-pre-civilization-era"
+        },
         "107269": {
           "first_seen_utc": "2026-10-15T10:57:36+00:00",
           "title": "Soul Land: The Lunar Jade Rabbit and the Golden Dragon King – This Isn't Lunar?",
           "url": "https://wtr-lab.com/en/novel/107269/soul-land-the-lunar-jade-rabbit-and-the-golden-dragon-king-this-isnt-lunar"
+        },
+        "107271": {
+          "first_seen_utc": "2026-10-15T11:05:12+00:00",
+          "title": "Star Train World: The Rumor About Akivili Has Come True",
+          "url": "https://wtr-lab.com/en/novel/107271/star-train-world-the-rumor-about-akivili-has-come-true"
         }
       }
     }
