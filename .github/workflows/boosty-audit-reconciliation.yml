@@ -1,0 +1,53 @@
+name: Boosty inventory reconciliation audit
+on:
+  pull_request:
+    paths:
+      - 'tools/boosty-inventory/audit_reconciliation.py'
+      - '.github/workflows/boosty-audit-reconciliation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch full previous inventory from immutable data branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin refs/heads/boosty-inventory-data
+          mkdir -p out/boosty-audit
+          for name in all_posts.csv not_recorded_even_in_toc.csv already_recorded_toc.csv; do
+            git show "FETCH_HEAD:data/boosty-inventory/$name" > "out/boosty-audit/$name"
+          done
+          python - <<'PY'
+          import csv
+          for name,expect in [('all_posts.csv',2729),('not_recorded_even_in_toc.csv',386),('already_recorded_toc.csv',85)]:
+              with open('out/boosty-audit/'+name,encoding='utf-8-sig',newline='') as f:
+                  n=sum(1 for _ in csv.DictReader(f))
+              print(name,n)
+              assert n==expect,(name,n,expect)
+          PY
+      - name: Reconcile chapter number and known titles
+        run: python tools/boosty-inventory/audit_reconciliation.py
+      - name: Append report to GitHub summary
+        if: always()
+        run: |
+          if test -f out/boosty-audit/audit_report.md; then
+            cat out/boosty-audit/audit_report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload summary and CSV files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boosty-audit-reconciliation
+          path: out/boosty-audit/
+          retention-days: 30
+          if-no-files-found: warn
