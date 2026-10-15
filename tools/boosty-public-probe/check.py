@@ -23,6 +23,8 @@ SAMPLES = [
     ("homepage", PAGE),
     ("public_toc_2025", f"{PAGE}/posts/b8fe24bd-cdba-494a-ae16-d88fbe997fe2"),
     ("public_toc_june_2025", f"{PAGE}/posts/b6267002-e797-4ab2-ba6e-d6a75cead2c4"),
+    ("post_link_from_naruto_toc", f"{PAGE}/posts/3f5094e1-6e74-45a1-abf3-0c2f63fb9925"),
+    ("post_link_from_horror_toc", f"{PAGE}/posts/0cd521ac-c8bb-4c0f-8293-fbe8cb7f060b"),
 ]
 UA = "BookPlacementAudit/1.0 (+https://github.com/Lalalalendia/med)"
 MAX_BODY = 2_000_000
