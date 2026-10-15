@@ -1,6 +1,6 @@
 # MTL book radar — discovery by ID and new-book lists
 
-**Scope:** WTR-LAB is active. TomatoMTL is disabled after a live robots.txt restriction; FanMTL, Ranobes and MTL-Novel remain disabled pending verification. This is a **metadata-only** discovery tool: it stores book ID, title, URL and time first observed. It never downloads chapters, bypasses access limits, or publishes translations.
+**Scope:** WTR-LAB and MTL-Novel are active. TomatoMTL is disabled by robots; FanMTL returns 403 and Ranobes 503 on the GitHub runner. ReadNovelMTL is a preflight candidate, not active until robots and catalogue validation. This is a **metadata-only** discovery tool: it stores book ID, title, URL and time first observed. It never downloads chapters, bypasses access limits, or publishes translations.
 
 The legacy Rulate/Royal Road configuration is **not** used. The numeric-ID behavior of each MTL site must be validated by a live pilot. The WTR-LAB site explicitly documents `/novel/[novel_id]`, and its homepage has numeric IDs. The other sites use different patterns. TomatoMTL uses Fanqie IDs of roughly 19 digits: **never increment these IDs by 1**. WTR-LAB IDs can have gaps and additions out of order. Only WTR-LAB enables bounded numerical probing, and only between the last observed frontier and a higher ID found on the latest catalogue page.
 
@@ -49,3 +49,7 @@ Do not confuse `tomatomtl.com/recommended-novels` with a newest-books feed. It i
 ## First live scan — 2026-10-15
 
 [Run #38721520577](https://github.com/Lalalalendia/med/actions/runs/38721520577): WTR-LAB successfully established a baseline of 10 cards; TomatoMTL explicitly disallowed `/recommended-novels` in robots.txt. State and the report were saved to the dedicated branch. Tomato was therefore disabled rather than repeatedly requesting a forbidden route.
+
+## Second live preflight — 2026-10-15
+
+[PR #58](https://github.com/Lalalalendia/med/pull/58): live read-only GitHub checks returned FanMTL 403 on both homepage and new-book list, Ranobes 503 on catalogue, MTL-Novel homepage 28 links (mixed sections) and `/novel/` catalogue **10 valid book cards**. The scheduled reader therefore uses `/novel/` and enables only MTL-Novel. ReadNovelMTL is being checked as an additional MTL alternative.
