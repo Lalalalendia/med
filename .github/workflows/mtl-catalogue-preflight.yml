@@ -1,0 +1,36 @@
+name: MTL catalogue preflight
+on:
+  pull_request:
+    paths:
+      - 'tools/mtl-book-radar/**'
+      - '.github/workflows/mtl-catalogue-preflight.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r tools/mtl-book-radar/requirements.txt
+      - name: Probe public catalogue metadata; honour robots and blocks
+        run: python tools/mtl-book-radar/probe_sources.py
+      - name: Add table to summary
+        if: always()
+        run: |
+          if [ -f out/mtl-site-probe/report.md ]; then
+            cat out/mtl-site-probe/report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Save report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mtl-site-preflight
+          path: out/mtl-site-probe
+          if-no-files-found: warn
