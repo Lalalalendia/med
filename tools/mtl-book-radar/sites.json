@@ -1,0 +1,46 @@
+{
+  "sites": [
+    {
+      "name": "wtr-lab",
+      "enabled": true,
+      "catalog_url": "https://wtr-lab.com/en/novel-list",
+      "book_path_regex": "/en/novel/(?P<id>\\d+)(?:/[^?]*)?",
+      "probe_url": "https://wtr-lab.com/en/novel/{id}",
+      "probe_limit": 30,
+      "retry_limit": 5,
+      "max_holes": 5000,
+      "delay_seconds": 3
+    },
+    {
+      "name": "tomatomtl",
+      "enabled": true,
+      "catalog_url": "https://tomatomtl.com/recommended-novels",
+      "book_path_regex": "/book/(?P<id>\\d{16,20})/?",
+      "embedded_urls": true,
+      "verify_catalog": true,
+      "delay_seconds": 4,
+      "note": "Weekly-vote catalog, not a publication-date feed; produces first-seen-on-list candidates only."
+    },
+    {
+      "name": "fanmtl",
+      "enabled": false,
+      "catalog_url": "https://www.fanmtl.com/",
+      "book_path_regex": "/novel/(?P<id>[^/]+)\\.html",
+      "delay_seconds": 4
+    },
+    {
+      "name": "ranobes",
+      "enabled": false,
+      "catalog_url": "https://ranobes.net/novels/",
+      "book_path_regex": "/novels/(?P<id>\\d+)-[^/]+\\.html",
+      "delay_seconds": 4
+    },
+    {
+      "name": "mtl-novel",
+      "enabled": false,
+      "catalog_url": "https://mtl-novel.com/",
+      "book_path_regex": "/novel/(?P<id>[^/]+)/?",
+      "delay_seconds": 4
+    }
+  ]
+}
