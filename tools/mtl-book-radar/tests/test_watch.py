@@ -129,7 +129,8 @@ class WatchTests(unittest.TestCase):
         self.assertEqual(store["wtr-lab"]["cursor"], 107037)
 
     def test_empty_catalog_fails_closed(self):
-        site = SITES["tomatomtl"]
+        site = dict(SITES["tomatomtl"])
+        site["enabled"] = True
         r = run_site(site, {}, FakeClient({site["catalog_url"]: [("ok", site["catalog_url"], "<p>Requires JS</p>")]}))
         self.assertEqual(r["status"], "error")
         self.assertIn("NO_BOOK_LINKS", r["warnings"][0])
