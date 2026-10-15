@@ -38,6 +38,30 @@ SOURCES = [
         "expected": 204,
         "numbering": "site-records",
     },
+    {
+        "key": "never-decrypt-uukanshu",
+        "title": "Never Decrypt / UU alternative catalog",
+        "index": "https://uukanshu.cc/book/4618/",
+        "chapter_pattern": r"^/book/4618/[0-9]+\.html$",
+        "expected": 184,
+        "numbering": "han-main",
+    },
+    {
+        "key": "three-laws-homepage",
+        "title": "Three Laws / novel543 homepage (partial index)",
+        "index": "https://www.novel543.com/0502266680/",
+        "chapter_pattern": r"^/0502266680/[0-9]+_[0-9]+\.html$",
+        "expected": 204,
+        "numbering": "site-records",
+    },
+    {
+        "key": "three-laws-ixdzs",
+        "title": "Three Laws / IXDZS alternative catalog",
+        "index": "https://ixdzs8.com/read/255129/",
+        "chapter_pattern": r"^/read/255129/(?:[0-9]+|p[0-9]+)\.html$",
+        "expected": 204,
+        "numbering": "site-records",
+    },
 ]
 BLOCK_MARKERS = (
     "checking your browser", "verify you are human", "captcha",
