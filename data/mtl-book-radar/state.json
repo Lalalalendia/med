@@ -1,5 +1,96 @@
 {
-  "events": [],
+  "events": [
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "107269",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Soul Land: The Lunar Jade Rabbit and the Golden Dragon King – This Isn't Lunar?",
+      "url": "https://wtr-lab.com/en/novel/107269/soul-land-the-lunar-jade-rabbit-and-the-golden-dragon-king-this-isnt-lunar"
+    },
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "107154",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Courtyard House: The Director of the Subdistrict Office at the Beginning",
+      "url": "https://wtr-lab.com/en/novel/107154/courtyard-house-the-director-of-the-subdistrict-office-at-the-beginning"
+    },
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "107113",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Konoha: Little Daoist Tiantian, Unworthy Sword Immortal",
+      "url": "https://wtr-lab.com/en/novel/107113/konoha-little-daoist-tiantian-unworthy-sword-immortal"
+    },
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "107238",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Extraordinary Person: Possesses Extraordinary Comprehension; Joins the Chat Group",
+      "url": "https://wtr-lab.com/en/novel/107238/extraordinary-person-possesses-extraordinary-comprehension-joins-the-chat-group"
+    },
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "106028",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Dragon King: I am the Supreme",
+      "url": "https://wtr-lab.com/en/novel/106028/dragon-king-i-am-the-supreme"
+    },
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "106117",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Dragon King Hall: Peak War God",
+      "url": "https://wtr-lab.com/en/novel/106117/dragon-king-hall-peak-war-god"
+    },
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "106289",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Dragon King Doctor Son-in-law: Enduring Humiliation",
+      "url": "https://wtr-lab.com/en/novel/106289/dragon-king-doctor-son-in-law-enduring-humiliation"
+    },
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "105996",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Evil King Chases His Wife: Trash Miss and the Fallen Immortal",
+      "url": "https://wtr-lab.com/en/novel/105996/evil-king-chases-his-wife-trash-miss-and-the-fallen-immortal"
+    },
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "107168",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "After Failing My Tribulation, I Became Someone Else’s Cheat Code",
+      "url": "https://wtr-lab.com/en/novel/107168/after-failing-my-tribulation-i-became-someone-elses-cheat-code"
+    },
+    {
+      "first_seen_utc": "2026-10-15T10:57:36+00:00",
+      "id": "107256",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Ancestral Tradition: The Founding of a Millennial Family Through the Feast at Hongmen",
+      "url": "https://wtr-lab.com/en/novel/107256/ancestral-tradition-the-founding-of-a-millennial-family-through-the-feast-at-hongmen"
+    }
+  ],
   "schema": 2,
   "sites": {
     "fanmtl": {
@@ -11,10 +102,68 @@
     "mtl-novel": {
       "cursor": null,
       "holes": [],
+      "initialized": true,
+      "last_success": "2026-10-15T10:59:13+00:00",
+      "seen": {
+        "anime-crossover-survival-on-a-desert-island-surrounded-by-heroines": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "Anime Crossover: Survival on a Desert Island, Surrounded by Heroines",
+          "url": "https://mtl-novel.com/novel/anime-crossover-survival-on-a-desert-island-surrounded-by-heroines/"
+        },
+        "beast-taming-invincible-starting-from-dual-mythical-talents": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "Beast Taming: Invincible Starting from Dual Mythical Talents",
+          "url": "https://mtl-novel.com/novel/beast-taming-invincible-starting-from-dual-mythical-talents/"
+        },
+        "collapse-departure-and-restart": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "Collapse: Departure and Restart",
+          "url": "https://mtl-novel.com/novel/collapse-departure-and-restart/"
+        },
+        "i-am-a-ghost-slaying-all-enemies-across-the-heavens": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "I am a Ghost, Slaying All Enemies Across the Heavens!",
+          "url": "https://mtl-novel.com/novel/i-am-a-ghost-slaying-all-enemies-across-the-heavens/"
+        },
+        "i-otsutsuki-fell-to-earth-and-was-picked-up-by-hanabi": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "I, Otsutsuki, Fell to Earth and Was Picked Up by Hanabi",
+          "url": "https://mtl-novel.com/novel/i-otsutsuki-fell-to-earth-and-was-picked-up-by-hanabi/"
+        },
+        "my-wife-is-a-big-star": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "My wife is a big star",
+          "url": "https://mtl-novel.com/novel/my-wife-is-a-big-star/"
+        },
+        "naruto-the-hyuga-main-familys-genius-underachiever": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "Naruto: The Hyūga Main Family’s Genius Underachiever",
+          "url": "https://mtl-novel.com/novel/naruto-the-hyuga-main-familys-genius-underachiever/"
+        },
+        "pokemon-a-journey-that-begins-with-herding-cows": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "Pokémon: A Journey That Begins with Herding Cows",
+          "url": "https://mtl-novel.com/novel/pokemon-a-journey-that-begins-with-herding-cows/"
+        },
+        "rebirth-begins-with-financial-freedom": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "Rebirth Begins with Financial Freedom",
+          "url": "https://mtl-novel.com/novel/rebirth-begins-with-financial-freedom/"
+        },
+        "villain-he-starts-by-seducing-his-master-and-his-junior-sister-is-terrified-and-cries": {
+          "first_seen_utc": "2026-10-15T10:59:13+00:00",
+          "title": "Villain: He Starts by Seducing His Master, and His Junior Sister is Terrified and Cries",
+          "url": "https://mtl-novel.com/novel/villain-he-starts-by-seducing-his-master-and-his-junior-sister-is-terrified-and-cries/"
+        }
+      }
+    },
+    "ranobes": {
+      "cursor": null,
+      "holes": [],
       "last_success": null,
       "seen": {}
     },
-    "ranobes": {
+    "readnovelmtl": {
       "cursor": null,
       "holes": [],
       "last_success": null,
@@ -27,11 +176,67 @@
       "seen": {}
     },
     "wtr-lab": {
-      "cursor": 107234,
-      "holes": [],
+      "cursor": 107264,
+      "holes": [
+        107235,
+        107236,
+        107237,
+        107238,
+        107239,
+        107240,
+        107241,
+        107242,
+        107243,
+        107244,
+        107245,
+        107246,
+        107247,
+        107248,
+        107249,
+        107250,
+        107251,
+        107252,
+        107253,
+        107254,
+        107255,
+        107256,
+        107257,
+        107258,
+        107259,
+        107260,
+        107261,
+        107262,
+        107263,
+        107264
+      ],
       "initialized": true,
-      "last_success": "2026-10-15T10:38:39+00:00",
+      "last_success": "2026-10-15T10:59:13+00:00",
       "seen": {
+        "105996": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "Evil King Chases His Wife: Trash Miss and the Fallen Immortal",
+          "url": "https://wtr-lab.com/en/novel/105996/evil-king-chases-his-wife-trash-miss-and-the-fallen-immortal"
+        },
+        "106028": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "Dragon King: I am the Supreme",
+          "url": "https://wtr-lab.com/en/novel/106028/dragon-king-i-am-the-supreme"
+        },
+        "106117": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "Dragon King Hall: Peak War God",
+          "url": "https://wtr-lab.com/en/novel/106117/dragon-king-hall-peak-war-god"
+        },
+        "106289": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "Dragon King Doctor Son-in-law: Enduring Humiliation",
+          "url": "https://wtr-lab.com/en/novel/106289/dragon-king-doctor-son-in-law-enduring-humiliation"
+        },
+        "107113": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "Konoha: Little Daoist Tiantian, Unworthy Sword Immortal",
+          "url": "https://wtr-lab.com/en/novel/107113/konoha-little-daoist-tiantian-unworthy-sword-immortal"
+        },
         "107125": {
           "first_seen_utc": "2026-10-15T10:37:06+00:00",
           "title": "Anime Crossover: I'm Really Not the Dragon King's Cellmate",
@@ -42,10 +247,20 @@
           "title": "Pirates: The Marine Headquarters Was Destroyed at the Start",
           "url": "https://wtr-lab.com/en/novel/107146/pirates-the-marine-headquarters-was-destroyed-at-the-start"
         },
+        "107154": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "Courtyard House: The Director of the Subdistrict Office at the Beginning",
+          "url": "https://wtr-lab.com/en/novel/107154/courtyard-house-the-director-of-the-subdistrict-office-at-the-beginning"
+        },
         "107165": {
           "first_seen_utc": "2026-10-15T10:37:06+00:00",
           "title": "Element World: The Unscrupulous Merchant Tricks Klee at the Start",
           "url": "https://wtr-lab.com/en/novel/107165/element-world-the-unscrupulous-merchant-tricks-klee-at-the-start"
+        },
+        "107168": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "After Failing My Tribulation, I Became Someone Else’s Cheat Code",
+          "url": "https://wtr-lab.com/en/novel/107168/after-failing-my-tribulation-i-became-someone-elses-cheat-code"
         },
         "107188": {
           "first_seen_utc": "2026-10-15T10:37:06+00:00",
@@ -81,6 +296,21 @@
           "first_seen_utc": "2026-10-15T10:37:06+00:00",
           "title": "Am I the Only One Among All Mankind Who Dreams?",
           "url": "https://wtr-lab.com/en/novel/107234/am-i-the-only-one-among-all-mankind-who-dreams"
+        },
+        "107238": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "Extraordinary Person: Possesses Extraordinary Comprehension; Joins the Chat Group",
+          "url": "https://wtr-lab.com/en/novel/107238/extraordinary-person-possesses-extraordinary-comprehension-joins-the-chat-group"
+        },
+        "107256": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "Ancestral Tradition: The Founding of a Millennial Family Through the Feast at Hongmen",
+          "url": "https://wtr-lab.com/en/novel/107256/ancestral-tradition-the-founding-of-a-millennial-family-through-the-feast-at-hongmen"
+        },
+        "107269": {
+          "first_seen_utc": "2026-10-15T10:57:36+00:00",
+          "title": "Soul Land: The Lunar Jade Rabbit and the Golden Dragon King – This Isn't Lunar?",
+          "url": "https://wtr-lab.com/en/novel/107269/soul-land-the-lunar-jade-rabbit-and-the-golden-dragon-king-this-isnt-lunar"
         }
       }
     }
