@@ -350,6 +350,8 @@ def run_ingest(
         catalog_error = exc.status
         error = str(exc)
 
+    if robot is not None:
+        delay = max(delay, float(robot.crawl_delay(USER_AGENT) or 0))
     lookup = {item.ordinal: item for item in catalog}
     numbers = set(lookup)
     missing_in_catalog = [n for n in range(1, max(numbers) + 1) if n not in numbers] if numbers else []
