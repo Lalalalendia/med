@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from urllib.parse import urlparse
 
-from watch import HttpClient, parse_catalog
+from watch import HttpClient, parse_catalog, book_match, parse_detail_title
 
 CONFIG = json.loads(Path(__file__).with_name("sites.json").read_text(encoding="utf-8"))
 BY_NAME = {item["name"]: item for item in CONFIG["sites"]}
@@ -46,3 +46,22 @@ for row in rows:
 out = Path("out/mtl-site-probe/report.md")
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+# Validate WTR numeric lookup against one *known* book on the public catalogue.
+# A missing short route must not be treated as a genuinely missing novel.
+WTR_KNOWN_ID = "107269"
+WTR_ROUTES = [
+    "https://wtr-lab.com/en/novel/107269",
+    "https://wtr-lab.com/novel/107269",
+    "https://wtr-lab.com/en/novel/107269/soul-land-the-lunar-jade-rabbit-and-the-golden-dragon-king-this-isnt-lunar",
+]
+for url in WTR_ROUTES:
+    item = {"route": url, "status": "error", "final_url": "", "title": "", "book_id": None}
+    try:
+        status, final_url, html = client.get(url, BY_NAME["wtr-lab"]["delay_seconds"])
+        item.update(status=status, final_url=final_url,
+                    book_id=book_match(BY_NAME["wtr-lab"], final_url),
+                    title=parse_detail_title(BY_NAME["wtr-lab"], html) if status == "ok" else "")
+    except Exception as exc:
+        item["error"] = f"{type(exc).__name__}: {exc}"
+    print(json.dumps({"wtr_lookup_check": item}, ensure_ascii=False))

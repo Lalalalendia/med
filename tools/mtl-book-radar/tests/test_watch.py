@@ -98,8 +98,18 @@ class WatchTests(unittest.TestCase):
         self.assertFalse(other["enabled"])
         self.assertEqual(list(parse_catalog(other, '<a href="/novel/a-story-yj4qa?idx=0">A</a>')), ["a-story-yj4qa"])
 
-    def test_bootstrap_does_not_spam_old_books(self):
+    def test_production_wtr_does_not_probe_404_short_paths(self):
         site = SITES["wtr-lab"]
+        self.assertNotIn("probe_url", site)
+        store = {}
+        page = catalog(site, [("/en/novel/107269/full-slug", "A Novel")])
+        run_site(site, store, FakeClient({site["catalog_url"]: [page]}))
+        later = run_site(site, store, FakeClient({site["catalog_url"]: [page]}))
+        self.assertEqual(later["status"], "ok")
+        self.assertEqual(later["attempted_ids"], 0)
+
+    def test_bootstrap_does_not_spam_old_books(self):
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         page = catalog(site, [("/en/novel/107037/a", "Old A")])
         store = {}
         r = run_site(site, store, FakeClient({site["catalog_url"]: [page]}))
@@ -108,7 +118,7 @@ class WatchTests(unittest.TestCase):
         self.assertEqual(store["wtr-lab"]["cursor"], 107037)
 
     def test_new_numeric_gap_retained_and_deduplicated(self):
-        site = SITES["wtr-lab"]
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         store = {}
         first = catalog(site, [("/en/novel/107037/a", "Book A")])
         run_site(site, store, FakeClient({site["catalog_url"]: [first]}))
@@ -122,14 +132,14 @@ class WatchTests(unittest.TestCase):
         self.assertIn(107038, store["wtr-lab"]["holes"])
 
     def test_wrong_id_redirect_rejected(self):
-        site = SITES["wtr-lab"]
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         from watch import verify_detail
         url = site["probe_url"].format(id=107039)
         client = FakeClient({url: [("ok", "https://wtr-lab.com/en/novel/111111/different", "<h1>Wrong novel</h1>")]})
         self.assertIsNone(verify_detail(client, site, 107039, url))
 
     def test_blocked_probe_does_not_advance_cursor(self):
-        site = SITES["wtr-lab"]
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         store = {site["name"]: {"seen": {"107037": {}}, "cursor": 107037, "holes": [], "initialized": True}}
         page = catalog(site, [("/en/novel/107039/c", "Book C")])
         r = run_site(site, store, FakeClient({site["catalog_url"]: [page],
@@ -162,7 +172,7 @@ class WatchTests(unittest.TestCase):
 
     def test_h1_required_for_detail_validation(self):
         from watch import verify_detail
-        site = SITES["wtr-lab"]
+        site = dict(SITES["wtr-lab"], probe_url="https://wtr-lab.com/en/novel/{id}", probe_limit=30)
         url = site["probe_url"].format(id=107040)
         self.assertIsNone(verify_detail(FakeClient({url: [("ok", url, "<div>Empty</div>")]}), site, 107040, url))
 
