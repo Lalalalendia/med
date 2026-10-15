@@ -9,7 +9,7 @@ on:
       source:
         required: true
         type: choice
-        options: [royalroad, webnovel]
+        options: [royalroad, webnovel, uukanshu]
       book_url:
         required: true
         type: string
@@ -30,6 +30,11 @@ on:
         required: true
         type: boolean
         default: false
+      delay_seconds:
+        description: Request spacing (minimum 0.5 seconds)
+        required: true
+        type: number
+        default: 3
       rulate_url:
         description: Optional related Rulate URL
         required: false
@@ -74,6 +79,55 @@ jobs:
             --book-key aura-farming --start 1 --end 5 \
             --rulate-url https://tl.rulate.ru/book/150719 \
             --out-dir out/novel-source
+      - name: UU Kanshu index smoke test (no chapter texts)
+        id: chinese_catalog
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/source_ingest.py \
+            --source uukanshu \
+            --book-url https://uukanshu.cc/book/4618/ \
+            --book-key never-decrypt --start 1 --end 1 \
+            --catalog-only --out-dir out/uu-catalog
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("out/uu-catalog/manifest.json")
+          if not p.exists():
+              raise SystemExit("UU catalog receipt absent")
+          d = json.loads(p.read_text(encoding="utf-8"))
+          assert d["status"] == "CATALOG_ONLY", d
+          assert d["catalog_count"] == 184 and d["catalog_gaps"] == [], (
+              d["catalog_count"], d["catalog_gaps"]
+          )
+          print("UU 184/184 catalog entries, no missing ordinals; no chapter text downloaded")
+          PY
+      - name: UU Kanshu chapter-body smoke test (no text artifact)
+        id: chinese_body
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/source_ingest.py \
+            --source uukanshu \
+            --book-url https://uukanshu.cc/book/4618/ \
+            --book-key never-decrypt --start 1 --end 1 \
+            --delay 3 --out-dir out/uu-body-smoke
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("out/uu-body-smoke/manifest.json")
+          d = json.loads(p.read_text(encoding="utf-8"))
+          assert d["status"] == "PASS", d["status"]
+          assert d["ok_count"] == 1 and d["chapters"][0]["chars"] >= 400
+          print("UU Chinese chapter body parsed; chars:", d["chapters"][0]["chars"])
+          PY
+      - name: Discard UU smoke chapter text
+        if: always()
+        run: rm -rf out/uu-body-smoke
+      - name: Report UU catalog result (metadata only)
+        if: always()
+        run: |
+          if test -f out/uu-catalog/summary.md; then
+            cat out/uu-catalog/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Report verified chapter receipts (no story text)
         if: always()
         run: |
@@ -117,13 +171,14 @@ jobs:
           START: ${{ inputs.start }}
           END: ${{ inputs.end }}
           CATALOG_ONLY: ${{ inputs.catalog_only }}
+          DELAY_SECONDS: ${{ inputs.delay_seconds }}
           RULATE_URL: ${{ inputs.rulate_url }}
           NOTION_BOOK_URL: ${{ inputs.notion_book_url }}
         run: |
           set -euo pipefail
           extra=()
           if [ "$CATALOG_ONLY" = "true" ]; then extra+=(--catalog-only); fi
-          python tools/novel-ingest/source_ingest.py --source "$SOURCE" --book-url "$BOOK_URL" --book-key "$BOOK_KEY" --start "$START" --end "$END" --rulate-url "$RULATE_URL" --notion-book-url "$NOTION_BOOK_URL" --out-dir out/novel-source "${extra[@]}"
+          python tools/novel-ingest/source_ingest.py --source "$SOURCE" --book-url "$BOOK_URL" --book-key "$BOOK_KEY" --start "$START" --end "$END" --rulate-url "$RULATE_URL" --notion-book-url "$NOTION_BOOK_URL" --delay "$DELAY_SECONDS" --out-dir out/novel-source "${extra[@]}"
       - name: Job summary
         if: always()
         run: |
