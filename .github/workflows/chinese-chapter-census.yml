@@ -1,11 +1,6 @@
 name: Chinese chapter metadata census
 
 on:
-  push:
-    branches: [audit/chapter-text-coverage-20261015]
-    paths:
-      - 'tools/novel-ingest/chapter_coverage_census.py'
-      - '.github/workflows/chinese-chapter-census.yml'
   pull_request:
     paths:
       - 'tools/novel-ingest/chapter_coverage_census.py'
@@ -19,7 +14,10 @@ on:
           - all
           - never-decrypt
           - three-laws
-        default: all
+          - never-decrypt-uukanshu
+          - three-laws-ixdzs
+          - three-laws-homepage
+        default: never-decrypt-uukanshu
       limit:
         description: 'Chapter bodies per book (0 means full)'
         default: '0'
@@ -48,7 +46,7 @@ jobs:
           python tools/novel-ingest/chapter_coverage_census.py \
             --book "${{ inputs.book || 'all' }}" \
             --limit "${{ inputs.limit || '3' }}" \
-            --delay 2 \
+            --delay 3 \
             --out out/chapter-census
       - name: Publish status summary
         if: always()
@@ -65,43 +63,3 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-  full-public-audit:
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install parser dependencies
-        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Check parser fixtures
-        run: python tools/novel-ingest/chapter_coverage_census.py --self-test
-      - name: Diagnose the accessible Three Laws index
-        run: |
-          python tools/novel-ingest/chapter_coverage_census.py \
-            --book three-laws-ixdzs --limit 3 --delay 3 \
-            --out out/chapter-census-three-laws
-      - name: Audit 184 Never Decrypt chapter pages
-        run: |
-          python tools/novel-ingest/chapter_coverage_census.py \
-            --book never-decrypt-uukanshu --limit 0 --delay 3 \
-            --out out/chapter-census-never
-      - name: Show reports
-        if: always()
-        run: |
-          for report in out/chapter-census-*/summary.md; do
-            if test -f "$report"; then
-              cat "$report" >> "$GITHUB_STEP_SUMMARY"
-              cat "$report"
-            fi
-          done
-      - name: Archive audit receipts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: chapter-census-full-receipts
-          path: out/chapter-census-*/
-          if-no-files-found: warn
-          retention-days: 14
