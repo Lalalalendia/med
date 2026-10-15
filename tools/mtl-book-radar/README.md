@@ -1,6 +1,6 @@
 # MTL book radar — discovery by ID and new-book lists
 
-**Scope:** WTR-LAB and TomatoMTL are active during the first pilot; FanMTL, Ranobes and MTL-Novel are configured but initially disabled until tested. This is a **metadata-only** discovery tool: it stores book ID, title, URL and time first observed. It never downloads chapters, bypasses access limits, or publishes translations.
+**Scope:** WTR-LAB is active. TomatoMTL is disabled after a live robots.txt restriction; FanMTL, Ranobes and MTL-Novel remain disabled pending verification. This is a **metadata-only** discovery tool: it stores book ID, title, URL and time first observed. It never downloads chapters, bypasses access limits, or publishes translations.
 
 The legacy Rulate/Royal Road configuration is **not** used. The numeric-ID behavior of each MTL site must be validated by a live pilot. The WTR-LAB site explicitly documents `/novel/[novel_id]`, and its homepage has numeric IDs. The other sites use different patterns. TomatoMTL uses Fanqie IDs of roughly 19 digits: **never increment these IDs by 1**. WTR-LAB IDs can have gaps and additions out of order. Only WTR-LAB enables bounded numerical probing, and only between the last observed frontier and a higher ID found on the latest catalogue page.
 
@@ -45,3 +45,7 @@ Place the Python files in `tools/mtl-book-radar/` and `.github/workflows/mtl-boo
 Do not confuse `tomatomtl.com/recommended-novels` with a newest-books feed. It is a weekly user vote; entries count only as newly **observed** on that list, not as new uploads or original book releases. A preferred future improvement is a verified public chronological source on TomatoMTL.
 
 **Crash consistency:** state.json is canonical and holds discovery history (`schema=2`). The discoveries.jsonl report is recreated atomically from that state, preventing lost events after interrupted file writes. Existing version-1 states are upgraded using their adjacent discoveries.jsonl.
+
+## First live scan — 2026-10-15
+
+[Run #38721520577](https://github.com/Lalalalendia/med/actions/runs/38721520577): WTR-LAB successfully established a baseline of 10 cards; TomatoMTL explicitly disallowed `/recommended-novels` in robots.txt. State and the report were saved to the dedicated branch. Tomato was therefore disabled rather than repeatedly requesting a forbidden route.
