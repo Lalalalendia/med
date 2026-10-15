@@ -79,6 +79,34 @@ jobs:
             --book-key aura-farming --start 1 --end 5 \
             --rulate-url https://tl.rulate.ru/book/150719 \
             --out-dir out/novel-source
+      - name: UU Kanshu index smoke test (no chapter texts)
+        id: chinese_catalog
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/source_ingest.py \
+            --source uukanshu \
+            --book-url https://uukanshu.cc/book/4618/ \
+            --book-key never-decrypt --start 1 --end 1 \
+            --catalog-only --out-dir out/uu-catalog
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("out/uu-catalog/manifest.json")
+          if not p.exists():
+              raise SystemExit("UU catalog receipt absent")
+          d = json.loads(p.read_text(encoding="utf-8"))
+          assert d["status"] == "CATALOG_ONLY", d
+          assert d["catalog_count"] == 184 and d["catalog_gaps"] == [], (
+              d["catalog_count"], d["catalog_gaps"]
+          )
+          print("UU 184/184 catalog entries, no missing ordinals; no chapter text downloaded")
+          PY
+      - name: Report UU catalog result (metadata only)
+        if: always()
+        run: |
+          if test -f out/uu-catalog/summary.md; then
+            cat out/uu-catalog/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Report verified chapter receipts (no story text)
         if: always()
         run: |
