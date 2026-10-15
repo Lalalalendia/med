@@ -1,0 +1,36 @@
+name: Boosty Ranobemen public access probe
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/boosty-ranobemen-probe.yml'
+      - 'tools/boosty-public-probe/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Inspect robots and public Boosty pages
+        run: python tools/boosty-public-probe/check.py
+      - name: Publish readable result
+        if: always()
+        run: |
+          if [ -f out/boosty-public-probe/report.md ]; then
+            cat out/boosty-public-probe/report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Retain diagnosis
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boosty-ranobemen-public-probe
+          path: out/boosty-public-probe
+          retention-days: 14
+          if-no-files-found: warn
