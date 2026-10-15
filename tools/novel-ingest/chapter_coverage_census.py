@@ -163,7 +163,24 @@ def body_signature(html: str) -> dict:
                     "sha256": hashlib.sha256(norm.encode("utf-8")).hexdigest(),
                     "selector": selector,
                 }
-    return {"status": "body_unverified", "reason": "no trustworthy content container with >=180 CJK characters"}
+    page_title = soup.title.get_text(" ", strip=True)[:100] if soup.title else ""
+    total_cjk = len(re.findall(r"[\u4e00-\u9fff]", soup.get_text(" ", strip=True)))
+    candidates = []
+    for node in soup.select("main,article,section,div"):
+        identity = node.get("id") or (".".join(node.get("class", [])[:3]))
+        if not identity:
+            continue
+        count = len(re.findall(r"[\u4e00-\u9fff]", node.get_text(" ", strip=True)))
+        if count > 50:
+            candidates.append({"node": node.name, "identity": str(identity)[:80], "cjk": count})
+    candidates.sort(key=lambda x: x["cjk"], reverse=True)
+    return {
+        "status": "body_unverified",
+        "reason": "no trustworthy content container with >=180 CJK characters",
+        "page_title": page_title,
+        "cjk_in_document": total_cjk,
+        "candidate_nodes": candidates[:5],
+    }
 
 
 class PoliteClient:
@@ -257,7 +274,11 @@ def save_report(out: Path, report: dict):
         lines.append(f"- Duplicate ordinals: {x.get('duplicate_numbers', [])}")
         lines.append(f"- Exact duplicate verified bodies: {x.get('duplicate_bodies', [])}")
         for row in other:
-            lines.append(f"- UNVERIFIED: {row['url']} ({row.get('reason', row['status'])})")
+            lines.append(
+                f"- UNVERIFIED: {row['url']} ({row.get('reason', row['status'])}); "
+                f"title={row.get('page_title', '')!r}, doc_cjk={row.get('cjk_in_document', 'n/a')}, "
+                f"candidate_nodes={row.get('candidate_nodes', [])}"
+            )
         lines.append("")
     (out / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
