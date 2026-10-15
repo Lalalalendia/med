@@ -89,6 +89,15 @@ class WatchTests(unittest.TestCase):
         self.assertEqual(book_match(SITES["ranobes"], "https://ranobes.net/novels/1207130-story.html"), "1207130")
         self.assertEqual(book_match(SITES["mtl-novel"], "https://mtl-novel.com/novel/a-book/"), "a-book")
 
+    def test_catalogue_mtl_novel_and_readnovelmtl(self):
+        novel = SITES["mtl-novel"]
+        self.assertTrue(novel["enabled"])
+        self.assertTrue(novel["catalog_url"].endswith("/novel/"))
+        self.assertEqual(list(parse_catalog(novel, '<a href="/novel/a-story/">A Story</a><a href="/chapter/1">Chapter</a>')), ["a-story"])
+        other = SITES["readnovelmtl"]
+        self.assertFalse(other["enabled"])
+        self.assertEqual(list(parse_catalog(other, '<a href="/novel/a-story-yj4qa?idx=0">A</a>')), ["a-story-yj4qa"])
+
     def test_bootstrap_does_not_spam_old_books(self):
         site = SITES["wtr-lab"]
         page = catalog(site, [("/en/novel/107037/a", "Old A")])
