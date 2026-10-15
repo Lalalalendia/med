@@ -5,11 +5,11 @@
       "enabled": true,
       "catalog_url": "https://wtr-lab.com/en/novel-list",
       "book_path_regex": "/en/novel/(?P<id>\\d+)(?:/[^?]*)?",
-      "probe_url": "https://wtr-lab.com/en/novel/{id}",
-      "probe_limit": 30,
+      "probe_limit": 0,
       "retry_limit": 5,
       "max_holes": 5000,
-      "delay_seconds": 3
+      "delay_seconds": 3,
+      "note": "Catalog-only until a working ID-to-slug resolver is verified. Live #38724358386: both /en/novel/107269 and /novel/107269 returned 404, while full /en/novel/107269/<slug> works."
     },
     {
       "name": "tomatomtl",
