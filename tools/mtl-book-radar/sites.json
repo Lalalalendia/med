@@ -13,13 +13,13 @@
     },
     {
       "name": "tomatomtl",
-      "enabled": true,
+      "enabled": false,
       "catalog_url": "https://tomatomtl.com/recommended-novels",
       "book_path_regex": "/book/(?P<id>\\d{16,20})/?",
       "embedded_urls": true,
       "verify_catalog": true,
       "delay_seconds": 4,
-      "note": "Weekly-vote catalog, not a publication-date feed; produces first-seen-on-list candidates only."
+      "note": "Disabled after live GitHub Actions #38721520577: robots.txt disallows /recommended-novels. Do not scrape this route."
     },
     {
       "name": "fanmtl",
