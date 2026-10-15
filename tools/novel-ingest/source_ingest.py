@@ -15,6 +15,7 @@ import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit
+from urllib.robotparser import RobotFileParser
 
 import requests
 from bs4 import BeautifulSoup
@@ -22,6 +23,7 @@ from bs4 import BeautifulSoup
 HOSTS = {
     "royalroad": frozenset({"www.royalroad.com", "royalroad.com"}),
     "webnovel": frozenset({"www.webnovel.com", "webnovel.com"}),
+    "uukanshu": frozenset({"uukanshu.cc"}),
 }
 USER_AGENT = "NovelSourceIngest/1.0 (public chapter pages; no authentication)"
 NUMBERED_TITLE = re.compile(r"^\s*(?:chapter\s*)?(\d{1,5})\s*(?:[-:.\u2013\u2014]\s*|\s+)(\S.*?)\s*$", re.I)
@@ -30,6 +32,7 @@ BLOCK_PATTERNS = (
     "captcha", "access denied", "enable javascript and cookies",
     "chapter is locked", "unlock this chapter", "purchase this chapter",
     "login to read", "log in to read",
+    "正在验证浏览器", "正在驗證瀏覽器",
 )
 
 
@@ -55,6 +58,8 @@ def source_book_id(url: str, source: str) -> str:
     p = urlsplit(validate_url(url, source))
     if source == "royalroad":
         match = re.match(r"^/fiction/(\d+)(?:/|$)", p.path)
+    elif source == "uukanshu":
+        match = re.match(r"^/book/(\d+)(?:/|$)", p.path)
     else:
         match = re.match(r"^/book/(?:[^/]*_)?(\d{6,})(?:/|$)", p.path)
     if not match:
@@ -66,6 +71,8 @@ def chapter_identity(url: str, source: str, expected_book_id: str) -> str | None
     p = urlsplit(validate_url(url, source))
     if source == "royalroad":
         m = re.match(r"^/fiction/(\d+)/(?:[^/]+/)?chapter/(\d+)(?:/|$)", p.path)
+    elif source == "uukanshu":
+        m = re.match(r"^/book/(\d+)/(\d+)\.html$", p.path)
     else:
         m = re.match(r"^/book/(?:[^/]*_)?(\d{6,})/[^/]+_(\d{8,})(?:/|$)", p.path)
     if not m or m.group(1) != expected_book_id:
@@ -190,8 +197,97 @@ class WebNovelAdapter(PublicHtmlAdapter):
     content_selectors = ("#chapterContent", ".cha-content", ".chapter-content")
 
 
+CHINESE_CHAPTER_TITLE = re.compile(
+    r"^\s*第\s*([零〇一二三四五六七八九十百千\d]+)\s*章\s*(.*?)\s*$"
+)
+CHINESE_DIGITS = {ch: i for i, ch in enumerate("零一二三四五六七八九")}
+CHINESE_DIGITS["〇"] = 0
+CHINESE_UNITS = {"十": 10, "百": 100, "千": 1000}
+
+
+def parse_chinese_chapter_number(value: str) -> int | None:
+    if value.isdecimal():
+        return int(value)
+    total = 0
+    digit = 0
+    for char in value:
+        if char in CHINESE_DIGITS:
+            digit = CHINESE_DIGITS[char]
+        elif char in CHINESE_UNITS:
+            total += (digit or 1) * CHINESE_UNITS[char]
+            digit = 0
+        else:
+            return None
+    return total + digit
+
+
+def robots_for_public_source(session: requests.Session, source: str, url: str) -> RobotFileParser | None:
+    """Fail closed if the new Chinese source disallows automated fetching."""
+    if source != "uukanshu":
+        return None
+    try:
+        response = session.get("https://uukanshu.cc/robots.txt", timeout=20, allow_redirects=False)
+    except requests.RequestException as exc:
+        raise IngestError("blocked", f"robots.txt unavailable: {type(exc).__name__}") from exc
+    robot = RobotFileParser()
+    if response.status_code in (404, 410):
+        robot.parse(["User-agent: *", "Allow: /"])
+    elif response.status_code == 200 and "<html" not in response.text[:800].lower():
+        robot.parse(response.text.splitlines())
+    else:
+        raise IngestError("blocked", f"robots.txt unavailable: HTTP {response.status_code}")
+    if not robot.can_fetch(USER_AGENT, url):
+        raise IngestError("blocked", "robots.txt disallows source catalog")
+    return robot
+
+
+class UUKanshuAdapter(PublicHtmlAdapter):
+    """Catalog identity derives from Chinese chapter labels, not link position."""
+    content_selectors = ("div.content", "#content", ".content")
+
+    def parse_catalog(self, html: str) -> list[Chapter]:
+        soup = BeautifulSoup(html, "html.parser")
+        found: dict[int, Chapter] = {}
+        for link in soup.select("a[href]"):
+            url = urljoin(self.book_url, link["href"])
+            try:
+                source_id = chapter_identity(url, self.source, self.book_id)
+            except ValueError:
+                continue
+            if not source_id:
+                continue
+            label = re.sub(r"\s+", " ", link.get_text(" ", strip=True))
+            match = CHINESE_CHAPTER_TITLE.match(label)
+            if not match:
+                continue
+            ordinal = parse_chinese_chapter_number(match.group(1))
+            if ordinal is None or ordinal < 1:
+                continue
+            title = match.group(2).strip() or f"第{ordinal}章"
+            item = Chapter(ordinal, title, url, source_id)
+            prior = found.get(ordinal)
+            if prior and prior.source_id != source_id:
+                raise IngestError(
+                    "catalog_conflict",
+                    f"Chapter {ordinal} has conflicting source IDs {prior.source_id}/{source_id}",
+                )
+            if prior is None or len(item.title) > len(prior.title):
+                found[ordinal] = item
+        return [found[n] for n in sorted(found)]
+
+    def parse_body(self, html: str) -> str:
+        if any(marker in html[:12000] for marker in ("正在验证浏览器", "正在驗證瀏覽器")):
+            raise IngestError("blocked", "Chinese browser verification challenge")
+        body = super().parse_body(html)
+        cjk_chars = len(re.findall(r"[\u3400-\u9fff]", body))
+        if cjk_chars < 180:
+            raise IngestError("too_short", f"Only {cjk_chars} Chinese characters")
+        return body
+
+
 def make_adapter(source: str, book_url: str) -> PublicHtmlAdapter:
-    classes = {"royalroad": RoyalRoadAdapter, "webnovel": WebNovelAdapter}
+    classes = {"royalroad": RoyalRoadAdapter, "webnovel": WebNovelAdapter,
+               "uukanshu": UUKanshuAdapter}
     if source not in classes:
         raise ValueError(f"Unknown source: {source}")
     return classes[source](source, book_url)
@@ -212,6 +308,8 @@ def download_html(session: requests.Session, url: str, source: str) -> str:
         raise IngestError("http_error", f"HTTP {response.status_code}")
     if "html" not in response.headers.get("content-type", "").lower():
         raise IngestError("invalid_response", "Expected HTML response")
+    if source == "uukanshu" and hasattr(response, "apparent_encoding"):
+        response.encoding = response.apparent_encoding or response.encoding or "utf-8"
     return response.text
 
 
@@ -221,8 +319,9 @@ def run_ingest(
     book_key: str = "untitled", rulate_url: str = "", notion_book_url: str = "",
     session: requests.Session | None = None,
 ) -> dict:
-    if start < 1 or end < start or end - start + 1 > 30:
-        raise ValueError("Invalid range (1..30 chapters per run)")
+    range_limit = 200 if source == "uukanshu" else 30
+    if start < 1 or end < start or end - start + 1 > range_limit:
+        raise ValueError(f"Invalid range (1..{range_limit} chapters per run)")
     if delay < 0.5 or min_chars < 100:
         raise ValueError("Delay must be >= 0.5s and min_chars >= 100")
     if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{0,63}", book_key):
@@ -240,7 +339,9 @@ def run_ingest(
     error: str | None = None
     catalog_error: str | None = None
 
+    robot = None
     try:
+        robot = robots_for_public_source(session, source, adapter.book_url)
         html = download_html(session, adapter.book_url, source)
         catalog = adapter.parse_catalog(html)
         if not catalog:
@@ -260,6 +361,8 @@ def run_ingest(
                 continue
             item = asdict(chapter)
             try:
+                if robot and not robot.can_fetch(USER_AGENT, chapter.url):
+                    raise IngestError("blocked", "robots.txt disallows this chapter")
                 html = download_html(session, chapter.url, source)
                 body = adapter.parse_body(html)
                 chars = len(re.sub(r"\s+", "", body))
@@ -277,6 +380,17 @@ def run_ingest(
             rows.append(item)
             if ordinal < end:
                 time.sleep(delay)
+
+    known_hashes: dict[str, int] = {}
+    for row in rows:
+        if row.get("status") != "ok":
+            continue
+        prior = known_hashes.get(row["sha256"])
+        if prior is not None:
+            row["status"] = "duplicate_body"
+            row["error"] = f"Exact duplicate of chapter {prior}"
+        else:
+            known_hashes[row["sha256"]] = row["ordinal"]
 
     successful = [row for row in rows if row["status"] == "ok"]
     failures = [row for row in rows if row["status"] != "ok"]
@@ -304,7 +418,8 @@ def run_ingest(
     handoff = {
         "schema_version": 1, "book_key": book_key,
         "notion_book_url": notion_book_url or None,
-        "rulate_url": rulate_url or None, "source_language": "en",
+        "rulate_url": rulate_url or None,
+        "source_language": "zh" if source == "uukanshu" else "en",
         "source": source, "source_book_url": adapter.book_url,
         "ingest_status": status, "notion_sync": "not_performed",
         "ready_for_review": status == "PASS",
@@ -334,6 +449,16 @@ def run_ingest(
             f"- {row['ordinal']}: {row['status']} {row.get('error', '')}" for row in failures
         ]
     (out_dir / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    # A combined TXT is created only for a complete, unique, gapless corpus.
+    if (source == "uukanshu" and status == "PASS" and not missing_in_catalog
+            and start == 1 and end == len(catalog)):
+        pieces = []
+        for row in sorted(successful, key=lambda x: x["ordinal"]):
+            body = (out_dir / row["raw_file"]).read_text(encoding="utf-8").strip()
+            pieces.append(f"第{row['ordinal']}章 {row['title']}\n\n{body}")
+        (out_dir / "combined.txt").write_text(
+            "\n\n".join(pieces) + "\n", encoding="utf-8"
+        )
     return manifest
 
 
