@@ -2,7 +2,7 @@
 
 **Scope:** WTR-LAB and MTL-Novel are active. TomatoMTL is disabled by robots; FanMTL returns 403 and Ranobes 503 on the GitHub runner. ReadNovelMTL is a preflight candidate, not active until robots and catalogue validation. This is a **metadata-only** discovery tool: it stores book ID, title, URL and time first observed. It never downloads chapters, bypasses access limits, or publishes translations.
 
-The legacy Rulate/Royal Road configuration is **not** used. The numeric-ID behavior of each MTL site must be validated by a live pilot. The WTR-LAB site explicitly documents `/novel/[novel_id]`, and its homepage has numeric IDs. The other sites use different patterns. TomatoMTL uses Fanqie IDs of roughly 19 digits: **never increment these IDs by 1**. WTR-LAB IDs can have gaps and additions out of order. Only WTR-LAB enables bounded numerical probing, and only between the last observed frontier and a higher ID found on the latest catalogue page.
+The legacy Rulate/Royal Road configuration is **not** used. The numeric-ID behavior of each MTL site must be validated by a live pilot. The WTR-LAB site explicitly documents `/novel/[novel_id]`, and its homepage has numeric IDs. The other sites use different patterns. TomatoMTL uses Fanqie IDs of roughly 19 digits: **never increment these IDs by 1**. WTR-LAB IDs can have gaps and additions out of order. Numeric probing is **disabled** in production: the documented ID-only URLs currently return 404, even for known published book IDs. Use the verified catalogue listing until an ID-to-slug mapping or sitemap path is validated.
 
 ## Install
 
@@ -17,7 +17,7 @@ For a local server, run `mkdir -p logs` before installing `cron.example` into `c
 
 ## Source strategies
 
-- **WTR-LAB**: `/en/novel/<ID>/<slug>`, newest listing `/en/novel-list`. A site changelog documents the ID-only form `/novel/<ID>`; live testing of redirects is still required. The site publishes `https://wtr-lab.com/novels/index.xml` as a sitemap in robots.txt; prefer incorporating the sitemap after verifying its format in a live pilot. This initial script only uses the public catalog + bounded numeric gap checks, not forbidden `/api` routes.
+- **WTR-LAB**: `/en/novel/<ID>/<slug>` in the newest listing `/en/novel-list`. **Live verified 2026-10-15:** both `/novel/107269` and `/en/novel/107269` return 404 for a known book; the full slug route works. Disable numeric-only probes until a verified resolver exists. The publicly advertised sitemap `https://wtr-lab.com/novels/index.xml` is a promising next adapter, pending read-only verification. No `/api` requests.
 - **TomatoMTL**: `/book/<long Fanqie ID>`, data is retrieved from Fanqie in real time (per site's own explanation). The user-voted list may be browser-rendered, so the script stops with `NO_BOOK_LINKS` if its HTML lacks discoverable IDs; no undocumented API, browser challenge bypass, or pretend-success.
 - **FanMTL**: `/novel/<mixed code or slug>.html`; newest books on homepage. This is a listing watcher, **not** numeric scanning.
 - **Ranobes**: `/novels/<number>-<slug>.html`, but the original title may change and some content requires login; the catalog lists MTL/AI MTL items. This is a listing watcher, not direct ID guessing.
@@ -53,3 +53,7 @@ Do not confuse `tomatomtl.com/recommended-novels` with a newest-books feed. It i
 ## Second live preflight — 2026-10-15
 
 [PR #58](https://github.com/Lalalalendia/med/pull/58): live read-only GitHub checks returned FanMTL 403 on both homepage and new-book list, Ranobes 503 on catalogue, MTL-Novel homepage 28 links (mixed sections) and `/novel/` catalogue **10 valid book cards**. The scheduled reader therefore uses `/novel/` and enables only MTL-Novel. ReadNovelMTL is being checked as an additional MTL alternative.
+
+## WTR short-ID regression discovered — 2026-10-15
+
+[GitHub preflight #38724358386](https://github.com/Lalalalendia/med/actions/runs/38724358386) tested known novel `107269`: both short forms returned **404**, while the full `/en/novel/107269/<slug>` produced the correct title. The first production scan wasted 30 numbered probes. The production config now suppresses numeric probes rather than creating false hole records; it still catches newly seen books via the public listing. The numeric scanner remains covered by isolated tests for a future site with a proven ID-only route.
