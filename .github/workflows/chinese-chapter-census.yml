@@ -30,6 +30,7 @@ permissions:
 
 jobs:
   census:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -61,5 +62,46 @@ jobs:
         with:
           name: chapter-coverage-census
           path: out/chapter-census/
+          if-no-files-found: warn
+          retention-days: 14
+
+  full-public-audit:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parser dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Check parser fixtures
+        run: python tools/novel-ingest/chapter_coverage_census.py --self-test
+      - name: Diagnose the accessible Three Laws index
+        run: |
+          python tools/novel-ingest/chapter_coverage_census.py \
+            --book three-laws-ixdzs --limit 3 --delay 3 \
+            --out out/chapter-census-three-laws
+      - name: Audit 184 Never Decrypt chapter pages
+        run: |
+          python tools/novel-ingest/chapter_coverage_census.py \
+            --book never-decrypt-uukanshu --limit 0 --delay 3 \
+            --out out/chapter-census-never
+      - name: Show reports
+        if: always()
+        run: |
+          for report in out/chapter-census-*/summary.md; do
+            if test -f "$report"; then
+              cat "$report" >> "$GITHUB_STEP_SUMMARY"
+              cat "$report"
+            fi
+          done
+      - name: Archive audit receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chapter-census-full-receipts
+          path: out/chapter-census-*/
           if-no-files-found: warn
           retention-days: 14
