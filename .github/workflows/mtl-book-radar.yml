@@ -1,0 +1,123 @@
+name: MTL book radar
+
+on:
+  schedule:
+    - cron: '37 2 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/mtl-book-radar/**'
+      - '.github/workflows/mtl-book-radar.yml'
+  pull_request:
+    paths:
+      - 'tools/mtl-book-radar/**'
+      - '.github/workflows/mtl-book-radar.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mtl-book-radar-scan
+  cancel-in-progress: false
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/mtl-book-radar/requirements.txt
+      - name: Run unit tests
+        run: python -m unittest discover -s tools/mtl-book-radar/tests -v
+      - name: Restore persistent state
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/mtl-radar"
+          if git ls-remote --exit-code --heads origin mtl-book-radar-state >/dev/null 2>&1; then
+            git fetch --no-tags --depth=1 origin refs/heads/mtl-book-radar-state:refs/remotes/origin/mtl-book-radar-state
+            for basename in state.json discoveries.jsonl; do
+              git show "origin/mtl-book-radar-state:data/mtl-book-radar/$basename" > "$RUNNER_TEMP/mtl-radar/$basename" || rm -f "$RUNNER_TEMP/mtl-radar/$basename"
+            done
+          fi
+      - name: Scan MTL sites (metadata only)
+        if: github.event_name != 'pull_request'
+        id: scan
+        continue-on-error: true
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python tools/mtl-book-radar/watch.py \
+            --config tools/mtl-book-radar/sites.json \
+            --state "$RUNNER_TEMP/mtl-radar/state.json" \
+            --events "$RUNNER_TEMP/mtl-radar/discoveries.jsonl" \
+            --report "$RUNNER_TEMP/mtl-radar/report.md"
+      - name: Show scan summary
+        if: always() && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          if test -f "$RUNNER_TEMP/mtl-radar/report.md"; then
+            cat "$RUNNER_TEMP/mtl-radar/report.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Scan report was not generated.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Save audit artifacts
+        if: always() && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mtl-book-radar-${{ github.run_number }}
+          path: |
+            ${{ runner.temp }}/mtl-radar/report.md
+            ${{ runner.temp }}/mtl-radar/state.json
+            ${{ runner.temp }}/mtl-radar/discoveries.jsonl
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Persist state to dedicated branch
+        if: always() && github.event_name != 'pull_request' && steps.scan.outcome != 'skipped'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! test -s "$RUNNER_TEMP/mtl-radar/state.json"; then
+            echo 'No state file; refusing empty persistence'
+            exit 1
+          fi
+          if git show-ref --quiet refs/remotes/origin/mtl-book-radar-state; then
+            git switch --create mtl-book-radar-state --track origin/mtl-book-radar-state
+          else
+            git switch --create mtl-book-radar-state
+          fi
+          mkdir -p data/mtl-book-radar
+          cp "$RUNNER_TEMP/mtl-radar/state.json" data/mtl-book-radar/state.json
+          if test -f "$RUNNER_TEMP/mtl-radar/discoveries.jsonl"; then
+            cp "$RUNNER_TEMP/mtl-radar/discoveries.jsonl" data/mtl-book-radar/discoveries.jsonl
+          fi
+          if test -f "$RUNNER_TEMP/mtl-radar/report.md"; then
+            cp "$RUNNER_TEMP/mtl-radar/report.md" data/mtl-book-radar/latest.md
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f data/mtl-book-radar/state.json data/mtl-book-radar/latest.md
+          if test -f data/mtl-book-radar/discoveries.jsonl; then
+            git add -f data/mtl-book-radar/discoveries.jsonl
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: persist MTL book radar observations'
+            git push origin HEAD:refs/heads/mtl-book-radar-state
+          else
+            echo 'No changes to persist'
+          fi
+      - name: Alert on failed site checks
+        if: github.event_name != 'pull_request' && steps.scan.outcome == 'failure'
+        run: |
+          echo 'One or more MTL sites were blocked or failed. Review the report artifact.'
+          exit 1

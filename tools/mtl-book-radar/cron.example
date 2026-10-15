@@ -1,0 +1,3 @@
+# Once daily at 02:37 server-local time. Replace /opt/mtl-book-radar with install path.
+# flock prevents overlapping runs; the state directory must persist across runs.
+37 2 * * * cd /opt/mtl-book-radar && /usr/bin/flock -n /tmp/mtl-book-radar.lock /opt/mtl-book-radar/.venv/bin/python watch.py --config sites.json --state state/mtl-book-watch.json --events state/mtl-discoveries.jsonl --report reports/mtl-book-watch.md >> logs/cron.log 2>&1
