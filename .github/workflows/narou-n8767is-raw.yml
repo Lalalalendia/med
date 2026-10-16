@@ -1,0 +1,47 @@
+name: Narou N8767IS complete RAW 268
+on:
+  push:
+    branches: [research/narou-n8767is-268-raw]
+    paths:
+      - 'tools/novel-ingest/narou_ingest.py'
+      - 'tools/novel-ingest/test_narou_ingest.py'
+      - '.github/workflows/narou-n8767is-raw.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Run offline parser and pagination tests
+        run: python -m unittest discover -s tools/novel-ingest -p test_narou_ingest.py -v
+      - name: Collect Narou 268 episodes
+        id: ingest
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/narou_ingest.py \
+            --ncode n8767is --expected 268 --delay 1.5 \
+            --out-dir out/narou-n8767is
+      - name: Report completeness
+        if: always()
+        run: |
+          if test -f out/narou-n8767is/summary.md; then
+            cat out/narou-n8767is/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload full RAW and manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-n8767is-raw-001-268
+          path: out/narou-n8767is/**
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Reject incomplete collection
+        if: steps.ingest.outcome != 'success'
+        run: exit 1
