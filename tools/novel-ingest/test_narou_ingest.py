@@ -143,6 +143,46 @@ class NarouTests(unittest.TestCase):
             self.assertEqual(result["status"], "PARTIAL")
             self.assertEqual(result["chapters"][0]["status"], "too_short")
 
+    def test_paginated_268_episode_catalog(self):
+        ncode = "n8767is"
+        base = f"https://ncode.syosetu.com/{ncode}/"
+        def html_page(start, end, links=False):
+            index = "".join(
+                f'<a class="p-eplist__subtitle" href="/{ncode}/{i}/">Episode {i}</a>'
+                for i in range(start, end + 1)
+            )
+            paging = '<a href="?p=2">2</a><a href="?p=3">3</a>' if links else ""
+            return "<html><body>" + index + paging + "</body></html>"
+
+        first = html_page(1, 100, True)
+        self.assertEqual(narou.paginated_catalog_urls(first, ncode, 268),
+                         [base + "?p=2", base + "?p=3"])
+        class PagedSession:
+            headers = {}
+            def get(self, url, **kwargs):
+                if url == base:
+                    return Response(first)
+                if url == base + "?p=2":
+                    return Response(html_page(101, 200))
+                if url == base + "?p=3":
+                    return Response(html_page(201, 268))
+                return Response(chapter())
+        with tempfile.TemporaryDirectory() as tmp, patch.object(narou.time, "sleep"):
+            result = narou.collect(ncode=ncode, expected=268, out_dir=Path(tmp)/"raw",
+                                   session=PagedSession())
+            self.assertEqual(result["status"], "PASS")
+            self.assertEqual(result["catalog_count"], 268)
+            self.assertEqual(result["catalog_gaps"], [])
+            self.assertEqual(result["ok"], 268)
+
+    def test_rejects_unsafe_catalog_pagination(self):
+        with self.assertRaises(narou.FetchError):
+            narou.safe_narou_url(
+                "https://ncode.syosetu.com/n8767is/?p=2&bad=1", "n8767is", True
+            )
+        with self.assertRaises(narou.FetchError):
+            narou.paginated_catalog_urls('<a href="?p=99999">9</a>', "n8767is", 268)
+
     def test_stale_dir_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "existing"

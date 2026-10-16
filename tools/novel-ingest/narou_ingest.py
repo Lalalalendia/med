@@ -43,11 +43,18 @@ def safe_narou_url(url: str, ncode: str, allow_catalog: bool = False) -> str:
     parsed = urlsplit(url)
     base = f"/{ncode}/"
     if (parsed.scheme != "https" or parsed.hostname != HOST or parsed.port not in (None, 443)
-            or parsed.username or parsed.password or parsed.query or parsed.fragment):
+            or parsed.username or parsed.password or parsed.fragment):
         raise FetchError("unsafe_url", f"Unexpected URL: {url}")
     path = parsed.path
     if allow_catalog and path in (base, base[:-1]):
-        return f"https://{HOST}{base}"
+        if not parsed.query:
+            return f"https://{HOST}{base}"
+        if re.fullmatch(r"p=[1-9]\d*", parsed.query):
+            page = int(parsed.query[2:])
+            return f"https://{HOST}{base}" + (f"?p={page}" if page > 1 else "")
+        raise FetchError("unsafe_url", f"Unexpected catalog query: {url}")
+    if parsed.query:
+        raise FetchError("unsafe_url", f"Unexpected chapter query: {url}")
     match = re.fullmatch(re.escape(base) + r"([1-9]\d*)/?", path, re.I)
     if not match:
         raise FetchError("unsafe_url", f"Unexpected chapter URL: {url}")
@@ -104,6 +111,28 @@ def extract_catalog(html: str, ncode: str) -> list[dict]:
     return [found[k] for k in sorted(found)]
 
 
+def paginated_catalog_urls(html: str, ncode: str, expected: int) -> list[str]:
+    """Follow Narou's index pagination (100 entries per page) without arbitrary URLs."""
+    soup = BeautifulSoup(html, "html.parser")
+    last_page = 1
+    base = f"https://{HOST}/{ncode}/"
+    for anchor in soup.select("a[href]"):
+        candidate = urljoin(base, anchor.get("href", ""))
+        try:
+            clean = safe_narou_url(candidate, ncode, allow_catalog=True)
+        except FetchError:
+            continue
+        if clean.startswith(base + "?p="):
+            last_page = max(last_page, int(clean.split("?p=", 1)[1]))
+    # Do not allow a malformed or hostile page to fan out to an unbounded crawl.
+    max_reasonable = max(1, (expected + 99) // 100) + 2
+    if last_page > max_reasonable:
+        raise FetchError("catalog_invalid", f"Unexpected index pagination: {last_page}")
+    if last_page == 1 and expected > 100:
+        raise FetchError("catalog_invalid", "Pagination links absent for a book >100 episodes")
+    return [base + f"?p={page}" for page in range(2, last_page + 1)]
+
+
 def extract_body(html: str) -> str:
     soup = BeautifulSoup(html, "html.parser")
     selectors = (
@@ -149,13 +178,23 @@ def collect(*, ncode: str, expected: int, out_dir: Path, delay: float = 1.5,
     session = session or requests.Session()
     session.headers.update({"User-Agent": USER_AGENT, "Accept-Language": "ja,en;q=0.5"})
     index_url = f"https://{HOST}/{ncode}/"
+    catalog = []
+    catalog_error = None
     try:
-        catalog = extract_catalog(get_html(session, index_url, ncode, catalog=True), ncode)
+        first_html = get_html(session, index_url, ncode, catalog=True)
+        catalog = extract_catalog(first_html, ncode)
+        pages = paginated_catalog_urls(first_html, ncode, expected)
+        merged = {entry["ordinal"]: entry for entry in catalog}
+        for page_url in pages:
+            time.sleep(delay)
+            for entry in extract_catalog(get_html(session, page_url, ncode, catalog=True), ncode):
+                previous = merged.get(entry["ordinal"])
+                if previous is not None and previous != entry:
+                    raise FetchError("catalog_conflict", f"Different catalog entry {entry['ordinal']}")
+                merged[entry["ordinal"]] = entry
+        catalog = [merged[k] for k in sorted(merged)]
     except FetchError as exc:
-        catalog = []
         catalog_error = f"{exc.status}: {exc}"
-    else:
-        catalog_error = None
 
     found = {chapter["ordinal"]: chapter for chapter in catalog}
     gaps = [n for n in range(1, expected + 1) if n not in found]
@@ -196,7 +235,7 @@ def collect(*, ncode: str, expected: int, out_dir: Path, delay: float = 1.5,
     }
     (out_dir / "manifest.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     summary = [
-        "# Narou N3988KA / verified RAW receipts", "",
+        f"# Narou {ncode.upper()} / verified RAW receipts", "",
         f"- Source: {index_url}", f"- Catalog: {len(catalog)} / expected {expected}",
         f"- Verified bodies: {ok}/{expected}", f"- Missing entries: {gaps}",
         f"- Extra entries: {extras}", f"- Status: **{status}**",
