@@ -1,0 +1,57 @@
+name: Authorized public chapter TXT export
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_index:
+        description: 'Public index URL for a source you have rights to copy'
+        type: string
+        required: true
+      start:
+        description: 'First chapter number'
+        required: true
+        type: string
+        default: '635'
+      end:
+        description: 'Last chapter number (50 maximum)'
+        required: true
+        type: string
+        default: '684'
+      rights_confirmed:
+        description: 'I hold rights or permission to reproduce these chapter texts'
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    if: inputs.rights_confirmed == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install requirements
+        run: python -m pip install requests beautifulsoup4 playwright
+      - name: Export and validate chapter texts
+        env:
+          SOURCE: ${{ inputs.source_index }}
+          START: ${{ inputs.start }}
+          END: ${{ inputs.end }}
+        run: |
+          python tools/novel-ingest/authorized_chapter_export.py \
+            --index "$SOURCE" --start "$START" --end "$END" \
+            --authorized --out out/authorized-book --delay 2.0
+      - name: Upload authorized source archive
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: authorized-chapters-${{ inputs.start }}-${{ inputs.end }}
+          path: out/authorized-book/
+          if-no-files-found: error
+          retention-days: 1
