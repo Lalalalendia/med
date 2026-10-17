@@ -1,0 +1,90 @@
+name: Authorized chapter export via commit request
+
+on:
+  push:
+    branches:
+      - feature/authorized-chapter-text-export
+    paths:
+      - '.github/authorized-chapter-export-request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: authorized-chapter-export-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate-request:
+    runs-on: ubuntu-latest
+    outputs:
+      execute: ${{ steps.gate.outputs.execute }}
+      source: ${{ steps.gate.outputs.source }}
+      start: ${{ steps.gate.outputs.start }}
+      end: ${{ steps.gate.outputs.end }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check requested range and reproduction-rights attestation
+        id: gate
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from urllib.parse import urlparse
+
+          request = json.loads(Path('.github/authorized-chapter-export-request.json').read_text(encoding='utf-8'))
+          enabled = request.get('requested') is True
+          confirmed = request.get('rights_confirmed') is True
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+              if not enabled or not confirmed:
+                  print('Export not enabled. Explicit permission and request are required.')
+                  out.write('execute=false\n')
+              else:
+                  start, end = request['start'], request['end']
+                  source = request['source_index']
+                  parsed = urlparse(source)
+                  if not isinstance(start, int) or isinstance(start, bool):
+                      raise SystemExit('Invalid start')
+                  if not isinstance(end, int) or isinstance(end, bool):
+                      raise SystemExit('Invalid end')
+                  if not (1 <= start <= end <= 1456 and end - start < 50):
+                      raise SystemExit('Request must select 1-50 chapters')
+                  if parsed.scheme != 'https' or not parsed.hostname or parsed.username:
+                      raise SystemExit('Public HTTPS URL required')
+                  if parsed.hostname.lower() in ('localhost', '127.0.0.1'):
+                      raise SystemExit('Loopback source is not permitted')
+                  out.write('execute=true\n')
+                  out.write(f'source={source}\nstart={start}\nend={end}\n')
+                  print(f'Rights confirmed in request; approved batch: {start}-{end}')
+          PY
+
+  export:
+    needs: validate-request
+    if: needs.validate-request.outputs.execute == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install exporter dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 playwright
+      - name: Export permissioned book text
+        env:
+          SOURCE: ${{ needs.validate-request.outputs.source }}
+          START: ${{ needs.validate-request.outputs.start }}
+          END: ${{ needs.validate-request.outputs.end }}
+        run: |
+          python tools/novel-ingest/authorized_chapter_export.py \
+            --index "$SOURCE" --start "$START" --end "$END" \
+            --authorized --out out/authorized-book --delay 2
+      - name: Upload permissioned TXT archive
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: authorized-text-${{ needs.validate-request.outputs.start }}-${{ needs.validate-request.outputs.end }}
+          path: out/authorized-book/
+          retention-days: 1
+          if-no-files-found: error
