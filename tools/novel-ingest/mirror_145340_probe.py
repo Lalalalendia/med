@@ -57,6 +57,10 @@ TIMEOUT = (7, 15)
 def chapter_number(title: str) -> int | None:
     match = TITLE_RE.search(title.strip())
     if match is None:
+        # The source itself labels chapter 1155 as "第1155 看哥们表演就完事了！":
+        # no 章 character. Retain such numbered records rather than invent gaps.
+        match = re.match(r"^第\\s*([0-9０-９]{1,4})\\s+(?=\\S)", title.strip())
+    if match is None:
         return None
     raw = match.group(1)
     if raw.isdecimal():
@@ -257,6 +261,7 @@ def self_test() -> None:
     assert [entry["number"] for entry in entries] == [634, 635, 636], entries
     assert len(parse_catalog(html, "https://bad.example/")) == 3
     assert chapter_number("第1456章 我们回家了") == 1456
+    assert chapter_number("第1155 看哥们表演就完事了！") == 1155
     assert chapter_content('<div id="content">' + "白渊看到厉鬼。" * 110 + "</div>")["body_status"] == "candidate_body"
     assert chapter_content("<h1>Just a moment...</h1>")["body_status"] == "challenge"
     print("SELF_TEST_OK")
