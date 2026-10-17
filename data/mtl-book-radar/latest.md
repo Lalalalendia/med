@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-16T03:05:12+00:00
+Run: 2026-10-17T03:04:14+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-10-16T03:05:12+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `107350` [An Extraordinary Life in a Certain Scientific Railgun](https://wtr-lab.com/en/novel/107350/an-extraordinary-life-in-a-certain-scientific-railgun) — catalog
-- **wtr-lab** `107167` [Martial Breaks the Nine Heavens](https://wtr-lab.com/en/novel/107167/martial-breaks-the-nine-heavens) — catalog
-- **wtr-lab** `107294` [The Stars: From Human to God](https://wtr-lab.com/en/novel/107294/the-stars-from-human-to-god) — catalog
-- **wtr-lab** `107354` [Dimensional Apocalypse: Perfect Fusion](https://wtr-lab.com/en/novel/107354/dimensional-apocalypse-perfect-fusion) — catalog
-- **wtr-lab** `107335` [Transmigrated Into a Book: The Immortal Sect’s Holy Maiden Gets Bound to Her Archenemy, the Demoness](https://wtr-lab.com/en/novel/107335/transmigrated-into-a-book-the-immortal-sects-holy-maiden-gets-bound-to-her-archenemy-the-demoness) — catalog
-- **wtr-lab** `107159` [Locke: In Pocket Monsters, the Decisive Stone is White and Bells](https://wtr-lab.com/en/novel/107159/locke-in-pocket-monsters-the-decisive-stone-is-white-and-bells) — catalog
-- **wtr-lab** `107158` [Interstellar Transmigration: Miao Miao's Cultivation Path](https://wtr-lab.com/en/novel/107158/interstellar-transmigration-miao-miaos-cultivation-path) — catalog
-- **wtr-lab** `107356` [Crossing the Interstellar World: Blending the Five Flavors](https://wtr-lab.com/en/novel/107356/crossing-the-interstellar-world-blending-the-five-flavors) — catalog
-- **wtr-lab** `107338` [Xuanhuan: I Steal Lifespans by Killing, Reaping Billions of Lives](https://wtr-lab.com/en/novel/107338/xuanhuan-i-steal-lifespans-by-killing-reaping-billions-of-lives) — catalog
-- **wtr-lab** `107201` [Omega Transmigrates to a Beast World and is Subjected to Madness and Forced Love](https://wtr-lab.com/en/novel/107201/omega-transmigrates-to-a-beast-world-and-is-subjected-to-madness-and-forced-love) — catalog
-- **mtl-novel** `starry-sky-railway-stop-getting-all-close-to-me` [Starry Sky Railway: Stop Getting All Close to Me!](https://mtl-novel.com/novel/starry-sky-railway-stop-getting-all-close-to-me/) — catalog
-- **mtl-novel** `dual-navigation-no-comparison-no-harm` [Dual Navigation: No Comparison, No Harm](https://mtl-novel.com/novel/dual-navigation-no-comparison-no-harm/) — catalog
-- **mtl-novel** `double-yandere-imprisoned-in-the-heart-at-first-glance` [Double Yandere, Imprisoned in the Heart at First Glance](https://mtl-novel.com/novel/double-yandere-imprisoned-in-the-heart-at-first-glance/) — catalog
-- **mtl-novel** `from-the-transformation-of-a-young-girl-a-journey-of-slaying-demons-and-collecting-powers-in-the-tang-dynasty` [From the Transformation of a Young Girl: A Journey of Slaying Demons and Collecting Powers in the Tang Dynasty](https://mtl-novel.com/novel/from-the-transformation-of-a-young-girl-a-journey-of-slaying-demons-and-collecting-powers-in-the-tang-dynasty/) — catalog
-- **mtl-novel** `under-one-person-magnetic-field-madness` [Under One Person: Magnetic Field Madness](https://mtl-novel.com/novel/under-one-person-magnetic-field-madness/) — catalog
-- **mtl-novel** `the-dark-lord-of-the-steam-world` [The Dark Lord of the Steam World](https://mtl-novel.com/novel/the-dark-lord-of-the-steam-world/) — catalog
-- **mtl-novel** `i-have-no-money-for-scientific-research-so-i-am-forced-to-be-a-star` [I Have No Money for Scientific Research, So I am Forced to Be a Star](https://mtl-novel.com/novel/i-have-no-money-for-scientific-research-so-i-am-forced-to-be-a-star/) — catalog
-- **mtl-novel** `reborn-as-a-dad-in-the-tang-dynasty` [Reborn As a Dad in the Tang Dynasty](https://mtl-novel.com/novel/reborn-as-a-dad-in-the-tang-dynasty/) — catalog
-- **mtl-novel** `global-raft-survival-i-started-by-robbing-a-ghost-ship` [Global Raft Survival: I Started by Robbing a Ghost Ship](https://mtl-novel.com/novel/global-raft-survival-i-started-by-robbing-a-ghost-ship/) — catalog
-- **mtl-novel** `fantasy-the-holy-son-of-hehuan-the-female-lead-comes-to-beg-for-medicine-at-the-beginning` [Fantasy: The Holy Son of Hehuan, the Female Lead Comes to Beg for Medicine at the Beginning](https://mtl-novel.com/novel/fantasy-the-holy-son-of-hehuan-the-female-lead-comes-to-beg-for-medicine-at-the-beginning/) — catalog
+- **wtr-lab** `107184` [Dream of the God of Mercy](https://wtr-lab.com/en/novel/107184/dream-of-the-god-of-mercy) — catalog
+- **wtr-lab** `107404` [Nine Profound Heavenly Emperor](https://wtr-lab.com/en/novel/107404/nine-profound-heavenly-emperor) — catalog
+- **wtr-lab** `106323` [Strange Tales from a Chinese Studio](https://wtr-lab.com/en/novel/106323/strange-tales-from-a-chinese-studio) — catalog
+- **wtr-lab** `107598` [Dragon King Divine Doctor](https://wtr-lab.com/en/novel/107598/dragon-king-divine-doctor) — catalog
+- **wtr-lab** `107547` [I Have a Shop in the Primordial World](https://wtr-lab.com/en/novel/107547/i-have-a-shop-in-the-primordial-world) — catalog
+- **wtr-lab** `107619` [I, from Primordial to Journey to the West, Just Hide](https://wtr-lab.com/en/novel/107619/i-from-primordial-to-journey-to-the-west-just-hide) — catalog
+- **wtr-lab** `107648` [My Date with a Zombie: Sign in to Obtain the Bloodline of the Ancestral Zombie, with God-tier Comprehension](https://wtr-lab.com/en/novel/107648/my-date-with-a-zombie-sign-in-to-obtain-the-bloodline-of-the-ancestral-zombie-with-god-tier-comprehension) — catalog
+- **wtr-lab** `107552` [Primordial: I Open a Bookstore in Chaoge](https://wtr-lab.com/en/novel/107552/primordial-i-open-a-bookstore-in-chaoge) — catalog
+- **wtr-lab** `107573` [Opening a Restaurant in the Primordial World, Even Nuwa Was Craving to Tears](https://wtr-lab.com/en/novel/107573/opening-a-restaurant-in-the-primordial-world-even-nuwa-was-craving-to-tears) — catalog
+- **wtr-lab** `107581` [Gossiping Everyday: My Divination Never Fails!](https://wtr-lab.com/en/novel/107581/gossiping-everyday-my-divination-never-fails) — catalog
+- **mtl-novel** `the-system-of-top-scientists` [The System of Top Scientists](https://mtl-novel.com/novel/the-system-of-top-scientists/) — catalog
+- **mtl-novel** `douluo-continent-genshin-impact-system-invincible-from-the-start-of-gacha-pulls` [Douluo Continent: Genshin Impact System, Invincible from the Start of Gacha Pulls](https://mtl-novel.com/novel/douluo-continent-genshin-impact-system-invincible-from-the-start-of-gacha-pulls/) — catalog
+- **mtl-novel** `i-became-a-system-starting-by-making-guo-jing-marry-huazhen` [I Became a System: Starting by Making Guo Jing Marry Huazhen](https://mtl-novel.com/novel/i-became-a-system-starting-by-making-guo-jing-marry-huazhen/) — catalog
+- **mtl-novel** `naruto-a-spin-on-the-fruit-machine-reveals-the-ceiling-of-the-ninja-world` [Naruto: A Spin on the Fruit Machine Reveals the Ceiling of the Ninja World](https://mtl-novel.com/novel/naruto-a-spin-on-the-fruit-machine-reveals-the-ceiling-of-the-ninja-world/) — catalog
+- **mtl-novel** `one-eyed-mangekyou-sharingan` [One-eyed Mangekyou Sharingan](https://mtl-novel.com/novel/one-eyed-mangekyou-sharingan/) — catalog
+- **mtl-novel** `how-can-a-survival-game-in-another-world-backed-by-the-motherland-possibly-end-in-defeat` [How Can a Survival Game in Another World, Backed by the Motherland, Possibly End in Defeat?](https://mtl-novel.com/novel/how-can-a-survival-game-in-another-world-backed-by-the-motherland-possibly-end-in-defeat/) — catalog
+- **mtl-novel** `live-stream-madaras-bizarre-adventure-in-the-world-of-re-zero` [Live Stream: Madara’s Bizarre Adventure in the World of Re: Zero](https://mtl-novel.com/novel/live-stream-madaras-bizarre-adventure-in-the-world-of-re-zero/) — catalog
+- **mtl-novel** `entertainment-your-emperor-is-back` [Entertainment: Your Emperor is Back](https://mtl-novel.com/novel/entertainment-your-emperor-is-back/) — catalog
+- **mtl-novel** `douluo-continent-the-seed-of-tang-san-martial-soul-blue-silver-emperor` [Douluo Continent: The Seed of Tang San, Martial Soul Blue Silver Emperor](https://mtl-novel.com/novel/douluo-continent-the-seed-of-tang-san-martial-soul-blue-silver-emperor/) — catalog
+- **mtl-novel** `clash-royale-i-already-said-i-dont-use-magic` [Clash Royale: I Already Said I Don’t Use Magic](https://mtl-novel.com/novel/clash-royale-i-already-said-i-dont-use-magic/) — catalog
