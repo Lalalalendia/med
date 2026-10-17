@@ -30,8 +30,9 @@ def load_exporter():
 class FakeResponse:
     status_code = 200
 
-    def __init__(self, text=""):
+    def __init__(self, text="", url="https://synthetic.example/chapters/"):
         self.text = text
+        self.url = url
 
     def raise_for_status(self):
         return None
