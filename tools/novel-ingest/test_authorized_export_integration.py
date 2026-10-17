@@ -29,6 +29,7 @@ def load_exporter():
 
 class FakeResponse:
     status_code = 200
+    status = 200
 
     def __init__(self, text="", url="https://synthetic.example/chapters/"):
         self.text = text
