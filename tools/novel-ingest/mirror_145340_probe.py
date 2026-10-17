@@ -193,6 +193,7 @@ def audit_site(name: str, base: str, delay: float) -> dict:
         "min_number": min(seen) if seen else None,
         "max_number": max(seen) if seen else None,
         "missing_634_636": [n for n in SAMPLES if n not in seen],
+        "missing_numbers_635_to_1456": [n for n in range(635, 1457) if n not in seen],
         "duplicate_numbers": {str(n): c for n, c in seen.items() if c > 1} if len(seen) < 5000 else {},
     }
     if not result["identity_fingerprint"]:
@@ -221,6 +222,11 @@ def audit_site(name: str, base: str, delay: float) -> dict:
         time.sleep(delay)
         chapter_response, request_info = request(session, url)
         row = {"url": url, "title": chapter["title"], **request_info}
+        if chapter_response is not None:
+            page_soup = BeautifulSoup(chapter_response.text, "html.parser")
+            row["html_title"] = (page_soup.title.get_text(" ", strip=True)[:130]
+                                 if page_soup.title else "")
+            row["html_tags"] = [tag.name for tag in page_soup.find_all(True, limit=12)]
         if chapter_response is None:
             row["state"] = "network_error"
         elif chapter_response.status_code in (403, 429, 503):
@@ -230,6 +236,12 @@ def audit_site(name: str, base: str, delay: float) -> dict:
             break
         elif chapter_response.status_code != 200:
             row["state"] = "http_error"
+        elif "/user/verify" in chapter_response.url or "/verify.html" in chapter_response.url:
+            row["body_status"] = "verification_redirect"
+            row["state"] = "verification_redirect"
+        elif len(chapter_response.content) < 800:
+            row["body_status"] = "html_stub_without_chapter"
+            row["state"] = "html_stub_without_chapter"
         else:
             row.update(chapter_content(chapter_response.text))
             row["state"] = row["body_status"]
