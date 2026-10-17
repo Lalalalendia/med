@@ -1,0 +1,50 @@
+name: IXDZS 635-684 source availability census
+
+on:
+  push:
+    branches:
+      - probe/ixdzs-635-684-census
+    paths:
+      - 'tools/novel-ingest/ixdzs_50_chapter_census.py'
+      - '.github/workflows/ixdzs-635-684-census.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ixdzs-635-684-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parsing and browser clients
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 playwright
+      - name: Parser self-test
+        run: python tools/novel-ingest/ixdzs_50_chapter_census.py --self-test
+      - name: Audit public chapters 635–684 and create metadata manifest
+        run: |
+          python tools/novel-ingest/ixdzs_50_chapter_census.py \
+            --start 635 --end 684 --delay 2.0 --max-failures 5 \
+            --out out/ixdzs-635-684
+      - name: Publish summary
+        if: always()
+        run: |
+          if test -f out/ixdzs-635-684/summary.md; then
+            cat out/ixdzs-635-684/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload 50-chapter metadata manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-635-684-metadata
+          path: out/ixdzs-635-684/
+          if-no-files-found: warn
+          retention-days: 14
