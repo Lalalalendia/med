@@ -59,7 +59,7 @@ def chapter_number(title: str) -> int | None:
     if match is None:
         # The source itself labels chapter 1155 as "第1155 看哥们表演就完事了！":
         # no 章 character. Retain such numbered records rather than invent gaps.
-        match = re.match(r"^第\\s*([0-9０-９]{1,4})\\s+(?=\\S)", title.strip())
+        match = re.match(r"^第\s*([0-9０-９]{1,4})\s+(?=\S)", title.strip())
     if match is None:
         return None
     raw = match.group(1)
