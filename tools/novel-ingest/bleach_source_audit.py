@@ -257,10 +257,9 @@ def number_entries(entries: list[Entry]) -> list[Entry]:
 
 
 EDITORIAL_SUFFIX = re.compile(
-    r"[（(]\\s*(?:(?:\\d+|[一二三四五六七八九十百千]+)字(?:大章)?|"
-    r"二合一|大结局)\\s*[）)]\\s*$"
+    r"[（(]\s*(?:(?:\d+|[一二三四五六七八九十百千万]+)字(?:大章)?|"
+    r"二合一|大结局)\s*[）)]\s*$"
 )
-
 
 def comparison_key(title: str) -> str:
     title = CHAPTER_PREFIX.sub("", title)
@@ -293,6 +292,11 @@ def compare_indices(publisher: list[Entry], mirror: list[Entry],
                               "mirror_positions": [j1 + 1, j2],
                               "publisher_titles": [e.title for e in publisher[i1:min(i2, i1 + 3)]],
                               "mirror_titles": [e.title for e in mirror[j1:min(j2, j1 + 3)]]})
+    publisher_stories = [comparison_key(e.title) for e in publisher if not e.auxiliary]
+    mirror_stories = [comparison_key(e.title) for e in mirror if not e.auxiliary]
+    outcome.update(story_sequences_identical=publisher_stories == mirror_stories,
+                   extra_auxiliary_entries=sum(e.auxiliary for e in mirror) -
+                                           sum(e.auxiliary for e in publisher))
     outcome.update(status="compared", shared_title_positions=shared,
                    unmatched_blocks=len(discrepancies),
                    publisher_auxiliary=sum(e.auxiliary for e in publisher),
@@ -305,21 +309,23 @@ def compare_indices(publisher: list[Entry], mirror: list[Entry],
 
 
 def sample_entries(entries: list[Entry], mode: str) -> list[Entry]:
-    if not entries:
+    # Sample story chapters only. A 100-character author afterword is not a
+    # 100-character story chapter and must never count as an incomplete chapter.
+    story = [e for e in entries if not e.auxiliary]
+    if not story:
         return []
-    n = len(entries)
+    n = len(story)
     if mode == "pilot":
         at = [0, n // 2, n - 1]
     else:
-        at = [0, 1, n // 5, n // 2, (4 * n) // 5, n - 3, n - 2, n - 1]
-        finale = next((i for i in range(n - 1, -1, -1) if "大结局" in entries[i].title), None)
-        if finale is not None:
-            at.append(finale)
-        epilogue = next((i for i in range(n - 1, -1, -1) if "完本感言" in entries[i].title), None)
-        if epilogue is not None:
-            at.append(epilogue)
-    return [entries[i] for i in dict.fromkeys(i for i in at if 0 <= i < n)]
-
+        # For this book the first 136 catalogue positions are marked free by
+        # the publisher. Probe either side of the boundary and several later
+        # volumes to identify where mirror bodies become mere previews.
+        at = [0, 1, n // 6, n // 5, n // 5 + 3, n // 5 + 7,
+              n // 5 + 8, n // 5 + 9, n // 5 + 10, n // 5 + 11,
+              n // 5 + 15, n // 5 + 20, n // 3, n // 2,
+              (4 * n) // 5, n - 40, n - 3, n - 2, n - 1]
+    return [story[i] for i in sorted(set(i for i in at if 0 <= i < n))]
 
 def inspect_body(html: str, entry: Entry) -> dict:
     soup = BeautifulSoup(html, "html.parser")
@@ -567,8 +573,25 @@ def run(mode: str, delay: float, *, skip_browser: bool = False,
     }
     selected = sample_entries(mirror_entries, mode)
     report["samples_requested"] = len(selected)
-    report["samples"] = [] if skip_browser else browser_audit(selected, transport)
+    report["samples"] = [] if skip_browser else browser_audit(
+        selected, transport, max_failures=(len(selected) if mode == "full" else 3))
+    # Preserve publisher volume/access metadata in chapter receipts. Never
+    # claim that readable mirror text is licensed or equivalent to VIP source.
+    if pr.get("complete") and mr.get("complete"):
+        p_keys = [comparison_key(e.title) for e in pub_entries]
+        m_keys = [comparison_key(e.title) for e in mirror_entries]
+        for match in difflib.SequenceMatcher(None, p_keys, m_keys, autojunk=False).get_matching_blocks():
+            for offset in range(match.size):
+                item_pos = match.b + offset + 1
+                sample = next((x for x in report["samples"] if x.get("position") == item_pos), None)
+                if sample is not None:
+                    volume = pub_entries[match.a + offset].volume
+                    sample["publisher_volume"] = volume
+                    sample["publisher_access"] = ("vip" if "VIP" in volume else
+                                                   "free" if "免费" in volume else "unknown")
     report["sampled_readable"] = sum(x.get("state") == "readable" for x in report["samples"])
+    report["samples_inspected"] = len(report["samples"])
+    report["sampled_short"] = sum(x.get("state") == "too_short" for x in report["samples"])
     if skip_browser:
         report["status"] = "catalog_only"
     elif mr.get("status") in ("blocked_or_partial", "duplicate_url", "conflicting_total", "too_many_pages"):
@@ -595,7 +618,9 @@ def save(report: dict, out: Path) -> None:
              f"- Publisher: {report['publisher'].get('entries_found', 0)} entries, "
              f"state={report['publisher']['status']}",
              f"- Index comparison: {report['comparison']['status']}",
-             f"- Sampled chapter bodies readable: {report['sampled_readable']}/{report['samples_requested']}",
+             f"- Story sequences identical: {report['comparison'].get('story_sequences_identical', 'not verified')}",
+             f"- Additional mirror administrative entries: {report['comparison'].get('extra_auxiliary_entries', 'not verified')}",
+             f"- Sampled chapters verified: {report['sampled_readable']}/{report['samples_requested']} requested ({report['samples_inspected']} inspected; {report['sampled_short']} short)",
              "- A discovered link or book completion label does **not** establish full RAW availability.",
              ""]
     for item in report["samples"]:
