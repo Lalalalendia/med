@@ -156,9 +156,9 @@ def publisher_dom_diagnostics(html: str) -> dict:
     """Retain layout statistics only; do not store HTML or chapter prose."""
     soup = BeautifulSoup(html, "html.parser")
     page_text = soup.get_text(" ", strip=True)
-    m = re.search(r"目录\\s*[·・]?\\s*共\\s*(\\d{1,4})\\s*章", page_text)
+    m = re.search(r"目录\s*[·・]?\s*共\s*(\d{1,4})\s*章", page_text)
     if not m:
-        m = re.search(r"共\\s*(\\d{1,4})\\s*章", page_text)
+        m = re.search(r"共\s*(\d{1,4})\s*章", page_text)
     per_tag = {}
     for name in ("a", "li", "span", "p", "div"):
         count = 0
