@@ -48,7 +48,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
         run: |
           mode="${REQUESTED_MODE:-pilot}"
-          if [ "$EVENT_NAME" = "push" ]; then mode="full"; fi
+          if [ "$EVENT_NAME" = "push" ] || [ "$EVENT_NAME" = "pull_request" ]; then mode="full"; fi
           python tools/novel-ingest/bleach_source_audit.py --mode "$mode" --delay 2 --out out/bleach-source-audit
       - name: Report results
         if: always()
