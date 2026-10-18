@@ -17,6 +17,21 @@ def listing(rows, count=665):
 
 
 class TestBleachMetadata(unittest.TestCase):
+    def test_publisher_metadata_without_anchor_selectors(self):
+        items = "".join(f'<li>第{i}章 测试章节{i}</li>' for i in range(1, 651))
+        html = f'<title>{m.BOOK_TITLE}</title><p>目录 共 650 章</p><ul>{items}</ul>'
+        diag = m.publisher_dom_diagnostics(html)
+        self.assertEqual(diag["declared_chapter_count"], 650)
+        chapters = m.parse_publisher_page(html)
+        self.assertEqual(len(chapters), 650)
+        self.assertEqual(chapters[0].title, "第1章 测试章节1")
+        self.assertEqual(chapters[-1].title, "第650章 测试章节650")
+
+    def test_publisher_does_not_claim_incomplete_count(self):
+        html = f'<title>{m.BOOK_TITLE}</title><p>目录 共 650 章</p><li>第1章 开始</li>'
+        found = m.parse_publisher_page(html)
+        self.assertEqual(len(found), 1)
+
     def test_latest_chapter_header_not_counted(self):
         html = (f"<title>{m.BOOK_TITLE}</title>"
                 '<div><a href="/65504/13197648.html">完本感言</a></div>'
