@@ -166,6 +166,14 @@ def publisher_dom_diagnostics(html: str) -> dict:
             if CHAPTER_PREFIX.match(text_title(node.get_text(" ", strip=True))):
                 count += 1
         per_tag[name] = count
+    unusual_titles = []
+    all_catalog_links = 0
+    for container in soup.select(".volume"):
+        for a in container.select("a[href]"):
+            all_catalog_links += 1
+            label = text_title(a.get_text(" ", strip=True))
+            if label and not CHAPTER_PREFIX.match(label):
+                unusual_titles.append(label[:100])
     path_counts = {}
     for a in soup.find_all("a", href=True):
         label = text_title(a.get_text(" ", strip=True))
@@ -183,7 +191,10 @@ def publisher_dom_diagnostics(html: str) -> dict:
             "chapter_tag_counts": per_tag,
             "chapter_link_prefixes": path_counts,
             "recognized_container_counts": {css: len(soup.select(css)) for css in selectors},
-            "html_bytes": len(html.encode("utf-8"))}
+            "html_bytes": len(html.encode("utf-8")),
+            "volume_link_count": all_catalog_links,
+            "unparsed_volume_link_count": len(unusual_titles),
+            "unparsed_volume_link_titles": unusual_titles[:35]}
 
 
 def parse_publisher_page(html: str) -> list[Entry]:
