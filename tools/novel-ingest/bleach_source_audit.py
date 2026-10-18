@@ -136,7 +136,7 @@ def parse_mirror_page(html: str, *, page: int) -> tuple[list[Entry], int | None]
     # Require the catalog's '共 665 章' marker and parse anchors after it.
     # This also keeps the actual epilogue entry on the last catalog page.
     marker = soup.find(string=lambda s: s is not None and
-                       bool(re.search(r"共\\s*\\d{1,4}\\s*章", str(s))))
+                       bool(re.search(r"共\s*\d{1,4}\s*章", str(s))))
     if marker is None:
         raise AuditError("catalog_marker_missing", "Chapter-list total marker is absent")
     entries: list[Entry] = []
