@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-17T03:04:14+00:00
+Run: 2026-10-18T03:03:49+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-10-17T03:04:14+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `107184` [Dream of the God of Mercy](https://wtr-lab.com/en/novel/107184/dream-of-the-god-of-mercy) — catalog
-- **wtr-lab** `107404` [Nine Profound Heavenly Emperor](https://wtr-lab.com/en/novel/107404/nine-profound-heavenly-emperor) — catalog
-- **wtr-lab** `106323` [Strange Tales from a Chinese Studio](https://wtr-lab.com/en/novel/106323/strange-tales-from-a-chinese-studio) — catalog
-- **wtr-lab** `107598` [Dragon King Divine Doctor](https://wtr-lab.com/en/novel/107598/dragon-king-divine-doctor) — catalog
-- **wtr-lab** `107547` [I Have a Shop in the Primordial World](https://wtr-lab.com/en/novel/107547/i-have-a-shop-in-the-primordial-world) — catalog
-- **wtr-lab** `107619` [I, from Primordial to Journey to the West, Just Hide](https://wtr-lab.com/en/novel/107619/i-from-primordial-to-journey-to-the-west-just-hide) — catalog
-- **wtr-lab** `107648` [My Date with a Zombie: Sign in to Obtain the Bloodline of the Ancestral Zombie, with God-tier Comprehension](https://wtr-lab.com/en/novel/107648/my-date-with-a-zombie-sign-in-to-obtain-the-bloodline-of-the-ancestral-zombie-with-god-tier-comprehension) — catalog
-- **wtr-lab** `107552` [Primordial: I Open a Bookstore in Chaoge](https://wtr-lab.com/en/novel/107552/primordial-i-open-a-bookstore-in-chaoge) — catalog
-- **wtr-lab** `107573` [Opening a Restaurant in the Primordial World, Even Nuwa Was Craving to Tears](https://wtr-lab.com/en/novel/107573/opening-a-restaurant-in-the-primordial-world-even-nuwa-was-craving-to-tears) — catalog
-- **wtr-lab** `107581` [Gossiping Everyday: My Divination Never Fails!](https://wtr-lab.com/en/novel/107581/gossiping-everyday-my-divination-never-fails) — catalog
-- **mtl-novel** `the-system-of-top-scientists` [The System of Top Scientists](https://mtl-novel.com/novel/the-system-of-top-scientists/) — catalog
-- **mtl-novel** `douluo-continent-genshin-impact-system-invincible-from-the-start-of-gacha-pulls` [Douluo Continent: Genshin Impact System, Invincible from the Start of Gacha Pulls](https://mtl-novel.com/novel/douluo-continent-genshin-impact-system-invincible-from-the-start-of-gacha-pulls/) — catalog
-- **mtl-novel** `i-became-a-system-starting-by-making-guo-jing-marry-huazhen` [I Became a System: Starting by Making Guo Jing Marry Huazhen](https://mtl-novel.com/novel/i-became-a-system-starting-by-making-guo-jing-marry-huazhen/) — catalog
-- **mtl-novel** `naruto-a-spin-on-the-fruit-machine-reveals-the-ceiling-of-the-ninja-world` [Naruto: A Spin on the Fruit Machine Reveals the Ceiling of the Ninja World](https://mtl-novel.com/novel/naruto-a-spin-on-the-fruit-machine-reveals-the-ceiling-of-the-ninja-world/) — catalog
-- **mtl-novel** `one-eyed-mangekyou-sharingan` [One-eyed Mangekyou Sharingan](https://mtl-novel.com/novel/one-eyed-mangekyou-sharingan/) — catalog
-- **mtl-novel** `how-can-a-survival-game-in-another-world-backed-by-the-motherland-possibly-end-in-defeat` [How Can a Survival Game in Another World, Backed by the Motherland, Possibly End in Defeat?](https://mtl-novel.com/novel/how-can-a-survival-game-in-another-world-backed-by-the-motherland-possibly-end-in-defeat/) — catalog
-- **mtl-novel** `live-stream-madaras-bizarre-adventure-in-the-world-of-re-zero` [Live Stream: Madara’s Bizarre Adventure in the World of Re: Zero](https://mtl-novel.com/novel/live-stream-madaras-bizarre-adventure-in-the-world-of-re-zero/) — catalog
-- **mtl-novel** `entertainment-your-emperor-is-back` [Entertainment: Your Emperor is Back](https://mtl-novel.com/novel/entertainment-your-emperor-is-back/) — catalog
-- **mtl-novel** `douluo-continent-the-seed-of-tang-san-martial-soul-blue-silver-emperor` [Douluo Continent: The Seed of Tang San, Martial Soul Blue Silver Emperor](https://mtl-novel.com/novel/douluo-continent-the-seed-of-tang-san-martial-soul-blue-silver-emperor/) — catalog
-- **mtl-novel** `clash-royale-i-already-said-i-dont-use-magic` [Clash Royale: I Already Said I Don’t Use Magic](https://mtl-novel.com/novel/clash-royale-i-already-said-i-dont-use-magic/) — catalog
+- **wtr-lab** `108037` [Kamen Rider: Heisei Rider Chronicle](https://wtr-lab.com/en/novel/108037/kamen-rider-heisei-rider-chronicle) — catalog
+- **wtr-lab** `108236` [Dashing Youth: My Sword Sweeps the Mortal World, My Talismans Subdue the Immortals Above](https://wtr-lab.com/en/novel/108236/dashing-youth-my-sword-sweeps-the-mortal-world-my-talismans-subdue-the-immortals-above) — catalog
+- **wtr-lab** `108246` [Dashing Youth: The Concubine’s Son Destined for the Throne, Standing Firmly Behind Yueyao](https://wtr-lab.com/en/novel/108246/dashing-youth-the-concubines-son-destined-for-the-throne-standing-firmly-behind-yueyao) — catalog
+- **wtr-lab** `107219` [Power-wielding Minister in *dream of the Red Chamber*: Claiming All the Beauties, I Call a Deer a Horse](https://wtr-lab.com/en/novel/107219/power-wielding-minister-in-dream-of-the-red-chamber-claiming-all-the-beauties-i-call-a-deer-a-horse) — catalog
+- **wtr-lab** `108249` [The Aloof Sword Immortal and Her Little Sea Siren](https://wtr-lab.com/en/novel/108249/the-aloof-sword-immortal-and-her-little-sea-siren) — catalog
+- **wtr-lab** `108247` [Dashing Youth: Eternal Life Through the Ages](https://wtr-lab.com/en/novel/108247/dashing-youth-eternal-life-through-the-ages) — catalog
+- **wtr-lab** `108103` [It All Starts in a Dark Room, with a Yandere and Arrogant Tycoon Forcing Love on You!](https://wtr-lab.com/en/novel/108103/it-all-starts-in-a-dark-room-with-a-yandere-and-arrogant-tycoon-forcing-love-on-you) — catalog
+- **wtr-lab** `107258` [Me! Huo Linfei: A 7-day Speedrun Starting from Godlike Status](https://wtr-lab.com/en/novel/107258/me-huo-linfei-a-7-day-speedrun-starting-from-godlike-status) — catalog
+- **wtr-lab** `108066` [A Dream Through a Thousand Years](https://wtr-lab.com/en/novel/108066/a-dream-through-a-thousand-years) — catalog
+- **wtr-lab** `108001` [In "dream of the Red Chamber," Was the Great-grandfather a Prince with a Different Surname During the Ming Dynasty?](https://wtr-lab.com/en/novel/108001/in-dream-of-the-red-chamber-was-the-great-grandfather-a-prince-with-a-different-surname-during-the-ming-dynasty) — catalog
+- **mtl-novel** `hokage-somethings-not-right-with-this-hyuga` [Hokage: Something’s Not Right with This Hyuga!](https://mtl-novel.com/novel/hokage-somethings-not-right-with-this-hyuga/) — catalog
+- **mtl-novel** `living-in-the-city-i-start-by-signing-in-at-a-top-tier-club` [Living in the City, I Start by Signing in at a Top-tier Club](https://mtl-novel.com/novel/living-in-the-city-i-start-by-signing-in-at-a-top-tier-club/) — catalog
+- **mtl-novel** `forests-dont-support-idle-goblins` [Forests Don’t Support Idle Goblins](https://mtl-novel.com/novel/forests-dont-support-idle-goblins/) — catalog
+- **mtl-novel** `re-zero-starting-as-the-dragon-god-he-scared-shaula-to-tears` [Re: Zero: Starting As the Dragon God, He Scared Shaula to Tears](https://mtl-novel.com/novel/re-zero-starting-as-the-dragon-god-he-scared-shaula-to-tears/) — catalog
+- **mtl-novel** `villain-simulation-max-out-your-top-talents-at-the-start` [Villain Simulation: Max Out Your Top Talents at the Start](https://mtl-novel.com/novel/villain-simulation-max-out-your-top-talents-at-the-start/) — catalog
+- **mtl-novel** `i-a-useless-prince-started-with-the-xiang-yu-template` [I, a Useless Prince, Started with the Xiang Yu Template](https://mtl-novel.com/novel/i-a-useless-prince-started-with-the-xiang-yu-template/) — catalog
+- **mtl-novel** `cultivating-immortality-farming-will-lead-to-longevity-and-a-carefree-life` [Cultivating Immortality: Farming Will Lead to Longevity and a Carefree Life](https://mtl-novel.com/novel/cultivating-immortality-farming-will-lead-to-longevity-and-a-carefree-life/) — catalog
+- **mtl-novel** `be-a-unmarried-nanny-but-her-baby-language-is-full-level` [Be a Unmarried Nanny? But Her Baby Language is Full Level!](https://mtl-novel.com/novel/be-a-unmarried-nanny-but-her-baby-language-is-full-level/) — catalog
+- **mtl-novel** `it-seems-the-life-of-humans-isnt-always-better-than-cats-and-dogs` [It Seems the Life of Humans Isn’t Always Better Than Cats and Dogs](https://mtl-novel.com/novel/it-seems-the-life-of-humans-isnt-always-better-than-cats-and-dogs/) — catalog
+- **mtl-novel** `football-i-started-out-as-a-rich-man-its-not-too-much-to-say-that-i-dominate-the-five-major-leagues` [Football: I Started Out As a Rich Man. It’s Not Too Much to Say That I Dominate the Five Major Leagues.](https://mtl-novel.com/novel/football-i-started-out-as-a-rich-man-its-not-too-much-to-say-that-i-dominate-the-five-major-leagues/) — catalog
