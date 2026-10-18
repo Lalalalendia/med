@@ -37,7 +37,11 @@ USER_AGENT = "MedBleachMetadataAudit/1.0 (+https://github.com/Lalalalendia/med)"
 MIRROR_CHAPTER = re.compile(r"^/65504/(\d{4,16})\.html$")
 MIRROR_PAGE = re.compile(r"^/65504_(\d{1,2})/$")
 CHAPTER_PREFIX = re.compile(r"^\s*第\s*([零〇一二三四五六七八九十百千万\d]+)\s*(?:章|回|节|節|篇)\s*[:：.、\-— ]*", re.I)
-AUXILIARY = re.compile(r"完本感言|上架感言|作者的话|请假条|新书(?:通知|发布|预告|《)|^关于本书$|后记$")
+AUXILIARY = re.compile(
+    r"完本感言|上架感言|卷末感言|作者的话|请假|请个假|告个假|"
+    r"新书(?:通知|发布|预告|《)|^关于本书$|后记$|一点心里话|"
+    r"不能更新|今天休息|中招了|有点卡文"
+)
 CHALLENGE = ("正在验证浏览器", "正在驗證瀏覽器", "安全验证", "人机验证",
              "just a moment", "captcha", "verify you are human", "access denied",
              "login to read", "unlock this chapter", "purchase this chapter")
@@ -116,9 +120,9 @@ def entry_from_link(source: str, href: str, label: str, base: str,
     if not name or len(name) > 200:
         return None
     match = CHAPTER_PREFIX.match(name)
-    auxiliary = bool(AUXILIARY.search(name)) and not ("番外" in name and match)
-    if not match and not auxiliary:
-        return None
+    # Mirror page count includes unnumbered author notices and interludes.
+    # Only same-book chapter-shaped URLs after the catalog marker are accepted.
+    auxiliary = not bool(match) or bool(AUXILIARY.search(name))
     return Entry(source, url, name, volume, match.group(1) if match else None,
                  auxiliary, page)
 
@@ -204,31 +208,32 @@ def parse_publisher_page(html: str) -> list[Entry]:
         raise AuditError("wrong_book", "Publisher page does not identify the Bleach novel")
     containers = soup.select(".volume, .volume-item, .volume-list, #chapterList, .chapter-list, .catalog-list")
     result: list[Entry] = []
-    seen: set[tuple[str, str]] = set()
     for container in containers:
         if any(container in candidate.descendants for candidate in containers if candidate is not container):
             continue
         header = container.select_one("h2, h3, h4, .volume-title")
         volume = text_title(header.get_text(" ", strip=True)) if header else ""
-        for a in container.select("a[href]"):
-            entry = entry_from_link("publisher", a["href"], a.get_text(" ", strip=True),
-                                    PUBLISHER_INDEX, volume=volume)
-            if entry:
-                key = (entry.volume, entry.title)
-                if key not in seen:
-                    seen.add(key)
-                    result.append(entry)
-    if len(result) == EXPECTED_PUBLISHER_INDEX_COUNT:
+        # Publisher catalog links may point to a separate Yuewen subdomain.
+        # Only record the text of links inside the verified book's volume
+        # containers; do not follow or guess chapter URLs.
+        for link in container.select("a[href]"):
+            title = text_title(link.get_text(" ", strip=True))
+            if not title or len(title) > 200:
+                continue
+            match = CHAPTER_PREFIX.match(title)
+            result.append(Entry("publisher", "", title, volume,
+                                match.group(1) if match else None,
+                                not bool(match) or bool(AUXILIARY.search(title))))
+    if result:
         return result
 
-    # The publisher sometimes renders bookquery catalog entries as <li> or
-    # <span> without known CSS selectors. Compare their *metadata*, not guessed
-    # chapter URLs. Accept only a complete set tied to this verified book page.
+    # Metadata-only fallback for publishers rendering list items without
+    # the known volume selectors. It still never fetches chapter links and
+    # never fabricates an exact 650-cardinality when markup is incomplete.
     diag = publisher_dom_diagnostics(html)
     if diag["declared_chapter_count"] != EXPECTED_PUBLISHER_INDEX_COUNT:
-        return result
-
-    candidates: list[list[Entry]] = [result]
+        return []
+    candidates: list[list[Entry]] = []
     for tag in ("a", "li", "span", "p"):
         items: list[Entry] = []
         for node in soup.find_all(tag):
@@ -239,18 +244,32 @@ def parse_publisher_page(html: str) -> list[Entry]:
                 continue
             if len(title) > 180:
                 continue
-            # Collect only chapter-title metadata, never follow publisher links.
             items.append(Entry("publisher", "", title, "",
                                match.group(1) if match else None, is_aux))
         candidates.append(items)
-    # Prefer exact catalog cardinality, otherwise retain the largest partial
-    # candidate and explicitly mark it incomplete via discover_publisher().
     exact = next((c for c in candidates if len(c) == EXPECTED_PUBLISHER_INDEX_COUNT), None)
-    return exact if exact is not None else max(candidates, key=len)
+    return exact if exact is not None else max(candidates, key=len, default=[])
+
 
 def number_entries(entries: list[Entry]) -> list[Entry]:
     return [Entry(e.source, e.url, e.title, e.volume, e.chapter_number,
                   e.auxiliary, e.page, i) for i, e in enumerate(entries, 1)]
+
+
+EDITORIAL_SUFFIX = re.compile(
+    r"[（(]\\s*(?:(?:\\d+|[一二三四五六七八九十百千]+)字(?:大章)?|"
+    r"二合一|大结局)\\s*[）)]\\s*$"
+)
+
+
+def comparison_key(title: str) -> str:
+    title = CHAPTER_PREFIX.sub("", title)
+    while True:
+        reduced = EDITORIAL_SUFFIX.sub("", title)
+        if reduced == title:
+            break
+        title = reduced
+    return title_key(title)
 
 
 def compare_indices(publisher: list[Entry], mirror: list[Entry],
@@ -261,8 +280,8 @@ def compare_indices(publisher: list[Entry], mirror: list[Entry],
                "status": "unavailable_or_partial"}
     if not (publisher_complete and mirror_complete and publisher and mirror):
         return outcome
-    a = [title_key(e.title) for e in publisher]
-    b = [title_key(e.title) for e in mirror]
+    a = [comparison_key(e.title) for e in publisher]
+    b = [comparison_key(e.title) for e in mirror]
     ops = difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes()
     shared = sum(i2 - i1 for kind, i1, i2, _, _ in ops if kind == "equal")
     discrepancies = []
@@ -276,10 +295,12 @@ def compare_indices(publisher: list[Entry], mirror: list[Entry],
                               "mirror_titles": [e.title for e in mirror[j1:min(j2, j1 + 3)]]})
     outcome.update(status="compared", shared_title_positions=shared,
                    unmatched_blocks=len(discrepancies),
-                   mismatches=discrepancies[:40],
-                   mismatches_truncated=len(discrepancies) > 40,
                    publisher_auxiliary=sum(e.auxiliary for e in publisher),
-                   mirror_auxiliary=sum(e.auxiliary for e in mirror))
+                   mirror_auxiliary=sum(e.auxiliary for e in mirror),
+                   publisher_story=sum(not e.auxiliary for e in publisher),
+                   mirror_story=sum(not e.auxiliary for e in mirror),
+                   mismatches=discrepancies[:40],
+                   mismatches_truncated=len(discrepancies) > 40)
     return outcome
 
 
