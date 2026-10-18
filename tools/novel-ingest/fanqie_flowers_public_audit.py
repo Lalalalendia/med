@@ -36,7 +36,7 @@ BOOK_RE = re.compile(r"^/page/\d{12,23}/?$")
 WORD_COUNT_RE = re.compile(r"(?:本章字数|章节字数)\s*[:：]\s*(\d{2,6})\s*字")
 CHAPTER_RE = re.compile(r"第\s*(\d{1,4})\s*章")
 FINAL_RE = re.compile(r"第\s*364\s*章.*(?:大结局|完结|终章)")
-MAX_TOTAL_PUBLIC_PAGES = 9
+MAX_TOTAL_PUBLIC_PAGES = 20
 MIN_REQUEST_INTERVAL = 2.0
 
 # Only counts/sha256 are returned. This javascript never returns the prose
@@ -47,6 +47,18 @@ JS_STATS = r"""async () => {
   for (const element of document.querySelectorAll('a[href],link[rel=canonical],meta[property="og:url"]')) {
     const v = element.getAttribute('href') || element.getAttribute('content') || '';
     if (v) urls.add(v);
+  }
+  // Chapter labels and URLs are index metadata, never prose. Keep this list
+  // in memory only; audit() drops it before writing the public artifact.
+  const catalogChapterLinks = [];
+  for (const el of document.querySelectorAll('a[href]')) {
+    const href = el.getAttribute('href') || '';
+    let link;
+    try { link = new URL(href, location.href); } catch (_) { continue; }
+    if (link.protocol !== 'https:' || link.hostname !== 'fanqienovel.com' ||
+        !/^\/reader\/\d{12,23}\/?$/.test(link.pathname)) continue;
+    const label = (el.textContent || '').replace(/\s+/g, ' ').trim();
+    catalogChapterLinks.push({ url: link.href, label: label.slice(0, 125) });
   }
   const selectors = [
     '.muye-reader-content', '.reader-content', '.chapter-content',
@@ -119,7 +131,8 @@ JS_STATS = r"""async () => {
     sha256: sha,
     font_family: firstFont.slice(0,170),
     custom_font_face_count: registeredFonts.length,
-    discovered_hrefs: Array.from(urls).slice(0,200)
+    discovered_hrefs: Array.from(urls).slice(0,500),
+    catalog_chapter_links: catalogChapterLinks.slice(0,500)
   };
 }"""
 
@@ -241,6 +254,7 @@ def sanitized_probe(page, ctl: RestrictedBrowser, url: str, kind: str) -> dict:
                     data = newer
         links = data.pop("discovered_hrefs", [])
         metadata_urls = data.pop("metadata_book_urls", [])
+        raw_catalog = data.pop("catalog_chapter_links", [])
         item.update(data)
         total_letters = data.get("cjk_chars", 0) + data.get("private_use_chars", 0)
         declared = data.get("declared_chars") or 0
@@ -257,6 +271,22 @@ def sanitized_probe(page, ctl: RestrictedBrowser, url: str, kind: str) -> dict:
                              data.get("book_identity_found") and data.get("book_author_found")
                              else "unverified_catalog")
             item["reader_url_candidates"] = discovered_urls(links, parent=url, kind="reader")[:400]
+            checked_catalog = []
+            seen = set()
+            for link in raw_catalog:
+                if not isinstance(link, dict):
+                    continue
+                chapter_url = discovered_urls([str(link.get("url", ""))],
+                                              parent=url, kind="reader")
+                if not chapter_url or chapter_url[0] in seen:
+                    continue
+                seen.add(chapter_url[0])
+                checked_catalog.append({"url": chapter_url[0],
+                                        "label": str(link.get("label", ""))[:125]})
+            item["reader_catalog"] = checked_catalog
+            item["reader_catalog_link_count"] = len(checked_catalog)
+            item["reader_catalog_numbered_count"] = sum(
+                bool(CHAPTER_RE.search(e["label"])) for e in checked_catalog)
     except AuditError as exc:
         item["state"] = exc.code
         item["details"] = exc.detail[:180]
@@ -268,14 +298,40 @@ def sanitized_probe(page, ctl: RestrictedBrowser, url: str, kind: str) -> dict:
 
 
 def choose_chapters(catalog: dict) -> list[tuple[str, str]]:
-    """Never invent chapter IDs or infer book identity from a keyword page."""
+    """Select public chapter links around the unknown access boundary.
+
+    IDs are taken only from the validated canonical book's visible catalog.
+    Chapter numbers are based on displayed titles, never inferred from IDs.
+    """
     if catalog.get("state") != "catalog_identity_found":
         return []
+    entries = catalog.get("reader_catalog", [])
+    by_number: dict[int, str] = {}
+    for e in entries:
+        if not isinstance(e, dict):
+            continue
+        chapter = CHAPTER_RE.search(str(e.get("label", "")))
+        if not chapter:
+            continue
+        number = int(chapter.group(1))
+        if number not in by_number:
+            by_number[number] = str(e.get("url", ""))
+
+    # Chapter 6 was visibly long, whereas chapter 48 was visibly short.
+    # Probe the interval without assuming paywall behavior or bypassing it.
+    targets = [7, 8, 9, 10, 12, 16, 20, 24, 30, 36, 42, 47]
+    selected = [(f"chapter_{n}", by_number[n]) for n in targets if n in by_number]
+    if selected:
+        return selected[:12]
+
+    # When CSS hides chapter labels, use verified catalog positions, which
+    # are identified as positions (not as invented chapter numbers).
     links = catalog.get("reader_url_candidates", [])
-    if len(links) < 3:
+    if len(links) < 20:
         return []
-    positions = [0, len(links) // 3, (2 * len(links)) // 3, len(links)-1]
-    return [(f"catalog_position_{i+1}", links[i]) for i in dict.fromkeys(positions)][:4]
+    indexes = [7, 9, 13, 17, 25, 33, 41, 48]
+    return [(f"catalog_position_{i+1}", links[i])
+            for i in indexes if i < len(links)]
 
 
 def audit(interval: float) -> dict:
@@ -345,8 +401,9 @@ def audit(interval: float) -> dict:
                     print(f"sample {key}: {receipt['state']}", flush=True)
                     if receipt["state"] in ("robots_unavailable", "robots_disallow", "blocked"):
                         break
-            # Avoid retaining huge URL catalogs in the public metadata artifact.
+            # Avoid retaining all chapter URLs/labels in metadata artifacts.
             report["canonical_book"].pop("reader_url_candidates", None)
+            report["canonical_book"].pop("reader_catalog", None)
         finally:
             context.close()
             browser.close()
