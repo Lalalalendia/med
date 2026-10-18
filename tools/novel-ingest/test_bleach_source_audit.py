@@ -17,6 +17,17 @@ def listing(rows, count=665):
 
 
 class TestBleachMetadata(unittest.TestCase):
+    def test_latest_chapter_header_not_counted(self):
+        html = (f"<title>{m.BOOK_TITLE}</title>"
+                '<div><a href="/65504/13197648.html">完本感言</a></div>'
+                '<p>共 665 章</p>'
+                '<div><a href="/65504/8439742.html">第101章 战前会议</a>'
+                '<a href="/65504/8439749.html">第102章 殉葬与复仇</a></div>')
+        entries, total = m.parse_mirror_page(html, page=3)
+        self.assertEqual(total, 665)
+        self.assertEqual(len(entries), 2)
+        self.assertEqual(entries[0].title, "第101章 战前会议")
+
     def test_volume_number_reuse_and_afterword(self):
         entries, n = m.parse_mirror_page(listing([
             (8439742, "第101章 战前会议"),
