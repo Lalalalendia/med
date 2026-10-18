@@ -152,20 +152,51 @@ def parse_mirror_page(html: str, *, page: int) -> tuple[list[Entry], int | None]
     return entries, claimed_total
 
 
+def publisher_dom_diagnostics(html: str) -> dict:
+    """Retain layout statistics only; do not store HTML or chapter prose."""
+    soup = BeautifulSoup(html, "html.parser")
+    page_text = soup.get_text(" ", strip=True)
+    m = re.search(r"目录\\s*[·・]?\\s*共\\s*(\\d{1,4})\\s*章", page_text)
+    if not m:
+        m = re.search(r"共\\s*(\\d{1,4})\\s*章", page_text)
+    per_tag = {}
+    for name in ("a", "li", "span", "p", "div"):
+        count = 0
+        for node in soup.find_all(name):
+            if CHAPTER_PREFIX.match(text_title(node.get_text(" ", strip=True))):
+                count += 1
+        per_tag[name] = count
+    path_counts = {}
+    for a in soup.find_all("a", href=True):
+        label = text_title(a.get_text(" ", strip=True))
+        if not CHAPTER_PREFIX.match(label):
+            continue
+        parsed = urlsplit(urljoin(PUBLISHER_INDEX, a["href"]))
+        if parsed.scheme != "https" or parsed.hostname != PUBLISHER_HOST:
+            key = "external"
+        else:
+            key = "/" + parsed.path.lstrip("/").split("/", 1)[0]
+        path_counts[key] = path_counts.get(key, 0) + 1
+    selectors = (".volume", ".volume-item", ".volume-list",
+                 "#chapterList", ".chapter-list", ".catalog-list")
+    return {"declared_chapter_count": int(m.group(1)) if m else None,
+            "chapter_tag_counts": per_tag,
+            "chapter_link_prefixes": path_counts,
+            "recognized_container_counts": {css: len(soup.select(css)) for css in selectors},
+            "html_bytes": len(html.encode("utf-8"))}
+
+
 def parse_publisher_page(html: str) -> list[Entry]:
     soup = BeautifulSoup(html, "html.parser")
     full = soup.get_text(" ", strip=True)
     if BOOK_TITLE not in full and (not soup.title or BOOK_TITLE not in soup.title.get_text(" ", strip=True)):
         raise AuditError("wrong_book", "Publisher page does not identify the Bleach novel")
-    # Restrict to explicit chapter/volume containers, not ads or recommendations.
     containers = soup.select(".volume, .volume-item, .volume-list, #chapterList, .chapter-list, .catalog-list")
-    if not containers:
-        return []
     result: list[Entry] = []
     seen: set[tuple[str, str]] = set()
     for container in containers:
         if any(container in candidate.descendants for candidate in containers if candidate is not container):
-            continue  # Ignore overlapping nested selectors to avoid double counting.
+            continue
         header = container.select_one("h2, h3, h4, .volume-title")
         volume = text_title(header.get_text(" ", strip=True)) if header else ""
         for a in container.select("a[href]"):
@@ -176,8 +207,35 @@ def parse_publisher_page(html: str) -> list[Entry]:
                 if key not in seen:
                     seen.add(key)
                     result.append(entry)
-    return result
+    if len(result) == EXPECTED_PUBLISHER_INDEX_COUNT:
+        return result
 
+    # The publisher sometimes renders bookquery catalog entries as <li> or
+    # <span> without known CSS selectors. Compare their *metadata*, not guessed
+    # chapter URLs. Accept only a complete set tied to this verified book page.
+    diag = publisher_dom_diagnostics(html)
+    if diag["declared_chapter_count"] != EXPECTED_PUBLISHER_INDEX_COUNT:
+        return result
+
+    candidates: list[list[Entry]] = [result]
+    for tag in ("a", "li", "span", "p"):
+        items: list[Entry] = []
+        for node in soup.find_all(tag):
+            title = text_title(node.get_text(" ", strip=True))
+            match = CHAPTER_PREFIX.match(title)
+            is_aux = bool(AUXILIARY.search(title))
+            if not match and not is_aux:
+                continue
+            if len(title) > 180:
+                continue
+            # Collect only chapter-title metadata, never follow publisher links.
+            items.append(Entry("publisher", "", title, "",
+                               match.group(1) if match else None, is_aux))
+        candidates.append(items)
+    # Prefer exact catalog cardinality, otherwise retain the largest partial
+    # candidate and explicitly mark it incomplete via discover_publisher().
+    exact = next((c for c in candidates if len(c) == EXPECTED_PUBLISHER_INDEX_COUNT), None)
+    return exact if exact is not None else max(candidates, key=len)
 
 def number_entries(entries: list[Entry]) -> list[Entry]:
     return [Entry(e.source, e.url, e.title, e.volume, e.chapter_number,
@@ -386,13 +444,16 @@ def discover_publisher(transport: PublicSession) -> tuple[list[Entry], dict]:
     try:
         html = transport.html(PUBLISHER_INDEX, PUBLISHER_HOST)
         entries = number_entries(parse_publisher_page(html))
+        diagnostics = publisher_dom_diagnostics(html)
     except AuditError as exc:
         return [], {"status": exc.code, "details": str(exc)[:160], "complete": False}
     # The publisher may paginate or dynamically load chapter list. Never
     # claim complete with a partial embedded DOM even when titles are present.
-    complete = len(entries) == EXPECTED_PUBLISHER_INDEX_COUNT
+    complete = (len(entries) == EXPECTED_PUBLISHER_INDEX_COUNT and
+                diagnostics["declared_chapter_count"] == EXPECTED_PUBLISHER_INDEX_COUNT)
     return entries, {"status": "complete" if complete else "partial_or_dynamic",
-                     "entries_found": len(entries), "complete": complete}
+                     "entries_found": len(entries), "complete": complete,
+                     "dom_diagnostics": diagnostics}
 
 
 def browser_audit(entries: list[Entry], transport: PublicSession,
