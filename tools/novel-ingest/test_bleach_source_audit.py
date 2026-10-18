@@ -71,6 +71,27 @@ class TestBleachMetadata(unittest.TestCase):
         self.assertEqual(len(rows), 2)
         self.assertTrue(rows[-1].auxiliary)
 
+    def test_editorial_suffixes_normalized(self):
+        pairs = [
+            ("第7章 贵族礼节（6700字大章）", "第7章 贵族礼节"),
+            ("第54章 借刀杀人者，终被杀！（六千字大章）", "第54章 借刀杀人者，终被杀！"),
+            ("第105章 卯之花的期待（二合一）", "第105章 卯之花的期待"),
+            ("第117章 新的火光(大结局)(9000字)", "第117章 新的火光"),
+        ]
+        for a, b in pairs:
+            with self.subTest(title=a):
+                self.assertEqual(m.comparison_key(a), m.comparison_key(b))
+
+    def test_full_samples_skip_notes_and_target_vip_boundary(self):
+        chapters = [m.Entry("mirror", "", f"第{i}章 剧情", auxiliary=False)
+                    for i in range(1, 632)]
+        notes = [m.Entry("mirror", "", "请假", auxiliary=True) for _ in range(34)]
+        chosen = m.sample_entries(m.number_entries(chapters + notes), "full")
+        self.assertTrue(chosen)
+        self.assertTrue(all(not e.auxiliary for e in chosen))
+        self.assertTrue(any(120 <= e.position <= 150 for e in chosen))
+        self.assertEqual(len({e.position for e in chosen}), len(chosen))
+
     def test_latest_chapter_header_not_counted(self):
         html = (f"<title>{m.BOOK_TITLE}</title>"
                 '<div><a href="/65504/13197648.html">完本感言</a></div>'
