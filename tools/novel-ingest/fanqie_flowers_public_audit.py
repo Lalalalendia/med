@@ -77,6 +77,30 @@ JS_STATS = r"""async () => {
   document.fonts.forEach(face => {
     if (face.status === 'loaded') registeredFonts.push(face.family);
   });
+  // Inspect metadata IDs in the public page state, never prose, fonts or secrets.
+  const state = window.__INITIAL_STATE__;
+  const pending = state && typeof state === 'object' ? [{ node: state, depth: 0 }] : [];
+  const walked = new Set(), foundBookIds = new Set();
+  let walkedNodes = 0;
+  while (pending.length && walkedNodes++ < 250) {
+    const { node, depth } = pending.shift();
+    if (!node || typeof node !== 'object' || Array.isArray(node) || walked.has(node)) continue;
+    walked.add(node);
+    for (const key of Object.keys(node).slice(0, 80)) {
+      if (/^(?:bookId|book_id|bookID)$/.test(key)) {
+        const value = node[key];
+        if (typeof value === 'string' && /^\d{12,23}$/.test(value)) {
+          foundBookIds.add(value);
+        }
+      } else if (depth < 4 && !/(?:content|text|body|html|token|cookie|user|auth|password|secret|config|payload|font)/i.test(key)) {
+        const value = node[key];
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+          pending.push({ node: value, depth: depth + 1 });
+        }
+      }
+    }
+  }
+  const authorMatched = (document.body?.innerText || '').slice(0,2500).includes("晋西北面点师");
   const heading = document.querySelector('h1, h2, .chapter-title');
   const titles = [document.title, heading?.innerText || ''].filter(Boolean);
   const textOfHead = document.body?.innerText.slice(0,1200) || '';
@@ -85,7 +109,10 @@ JS_STATS = r"""async () => {
     page_title: document.title.slice(0,170),
     heading: (heading?.innerText || '').slice(0,170),
     book_identity_found: titles.some(t => t.includes(bookTitle)),
+    book_author_found: authorMatched,
     declared_chars: declared ? Number(declared[1]) : null,
+    initial_state_present: Boolean(state && typeof state === 'object'),
+    metadata_book_urls: Array.from(foundBookIds).slice(0, 6).map(id => 'https://fanqienovel.com/page/' + id),
     selected_css: chosen?.selector || null,
     text_chars: str.length,
     cjk_chars: cjk, private_use_chars: pua, ascii_chars: ascii,
@@ -194,14 +221,41 @@ def sanitized_probe(page, ctl: RestrictedBrowser, url: str, kind: str) -> dict:
             return item
         page.wait_for_timeout(900)
         data = page.evaluate(JS_STATS)
+        trace = [{"observed_chars": data.get("text_chars", 0),
+                  "observed_cjk": data.get("cjk_chars", 0),
+                  "observed_pua": data.get("private_use_chars", 0)}]
+        # Reader text may load asynchronously; inspect metadata after waiting
+        # before diagnosing a short visible chapter as an excerpt.
+        if kind == "reader":
+            for _ in range(2):
+                declared = data.get("declared_chars") or 0
+                present = data.get("cjk_chars", 0) + data.get("private_use_chars", 0)
+                if not declared or present >= declared * 0.65:
+                    break
+                page.wait_for_timeout(2500)
+                newer = page.evaluate(JS_STATS)
+                trace.append({"observed_chars": newer.get("text_chars", 0),
+                              "observed_cjk": newer.get("cjk_chars", 0),
+                              "observed_pua": newer.get("private_use_chars", 0)})
+                if newer.get("text_chars", 0) > data.get("text_chars", 0):
+                    data = newer
         links = data.pop("discovered_hrefs", [])
+        metadata_urls = data.pop("metadata_book_urls", [])
         item.update(data)
+        total_letters = data.get("cjk_chars", 0) + data.get("private_use_chars", 0)
+        declared = data.get("declared_chars") or 0
         if kind == "reader":
             item["state"] = classify_chapter(data)
-            item["book_url_candidates"] = discovered_urls(links, parent=url, kind="book")[:10]
+            item["body_coverage_ratio"] = round(total_letters / declared, 3) if declared else None
+            item["possible_excerpt"] = bool(declared and total_letters < declared * 0.45)
+            item["body_growth_observations"] = trace
+            item["book_url_candidates"] = discovered_urls(
+                links + metadata_urls, parent=url, kind="book")[:10]
             item["reader_url_candidates_count"] = len(discovered_urls(links, parent=url, kind="reader"))
         else:
-            item["state"] = "catalog_identity_found" if data.get("book_identity_found") else "unverified_catalog"
+            item["state"] = ("catalog_identity_found" if
+                             data.get("book_identity_found") and data.get("book_author_found")
+                             else "unverified_catalog")
             item["reader_url_candidates"] = discovered_urls(links, parent=url, kind="reader")[:400]
     except AuditError as exc:
         item["state"] = exc.code
@@ -316,7 +370,9 @@ def write_report(report: dict, out: Path) -> None:
     for sample in report["known_reader_samples"] + report["extra_samples"]:
         lines.append(f"- {sample['url']}: **{sample['state']}**, " +
                      f"declared={sample.get('declared_chars')}, CJK={sample.get('cjk_chars')}, " +
-                     f"PUA={sample.get('private_use_chars')}, CSS={sample.get('selected_css')}")
+                     f"PUA={sample.get('private_use_chars')}, "
+                     f"coverage={sample.get('body_coverage_ratio')}, "
+                     f"excerpt={sample.get('possible_excerpt')}, CSS={sample.get('selected_css')}")
     (out / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
