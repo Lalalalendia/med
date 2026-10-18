@@ -1,0 +1,32 @@
+name: Atarax source host availability
+on:
+  push:
+    branches: ['research/atarax-source-registry-20261018']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests
+      - name: Check 61 representative source URLs
+        run: python tools/novel-ingest/atarax_host_audit.py --limit 61
+      - name: Summary
+        if: always()
+        run: |
+          if test -f out/atarax-source-host-audit/summary.md; then
+            cat out/atarax-source-host-audit/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: atarax-hosts-${{ github.run_id }}
+          path: out/atarax-source-host-audit/
+          retention-days: 7
+          if-no-files-found: warn
