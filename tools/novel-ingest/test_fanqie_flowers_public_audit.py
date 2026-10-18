@@ -95,6 +95,23 @@ class TestFanqieFlowersAudit(unittest.TestCase):
         catalog["state"] = "catalog_identity_found"
         self.assertGreaterEqual(len(m.choose_chapters(catalog)), 1)
 
+    def test_boundary_selection_uses_only_catalog_chapter_numbers(self):
+        entries = [{"url": f"https://fanqienovel.com/reader/{7610000000000000000+i}",
+                    "label": f"第{i}章 试验"} for i in range(1, 50)]
+        actual = m.choose_chapters({"state":"catalog_identity_found",
+                                    "reader_catalog":entries})
+        numbers = [int(key.split("_")[1]) for key, _ in actual]
+        self.assertIn(7, numbers)
+        self.assertIn(47, numbers)
+        self.assertNotIn(48, numbers)
+        self.assertEqual(len(numbers), len(set(numbers)))
+
+    def test_boundary_selection_never_invents_missing_chapters(self):
+        entries = [{"url":"https://fanqienovel.com/reader/7614146817650868761",
+                    "label":"第3章 花圃被毁"}]
+        self.assertEqual(m.choose_chapters({"state":"catalog_identity_found",
+                                            "reader_catalog":entries}), [])
+
     def test_audit_cannot_store_chapter_prose_by_default(self):
         self.assertNotIn("localStorage", m.JS_STATS)
         self.assertNotIn("screenshot", m.JS_STATS)
