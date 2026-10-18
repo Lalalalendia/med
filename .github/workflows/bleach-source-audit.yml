@@ -45,8 +45,10 @@ jobs:
       - name: Audit public chapters without storing prose
         env:
           REQUESTED_MODE: ${{ inputs.mode }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           mode="${REQUESTED_MODE:-pilot}"
+          if [ "$EVENT_NAME" = "push" ]; then mode="full"; fi
           python tools/novel-ingest/bleach_source_audit.py --mode "$mode" --delay 2 --out out/bleach-source-audit
       - name: Report results
         if: always()
