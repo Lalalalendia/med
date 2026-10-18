@@ -131,10 +131,20 @@ def parse_mirror_page(html: str, *, page: int) -> tuple[list[Entry], int | None]
     blob = soup.get_text(" ", strip=True)
     m = re.search(r"共\s*(\d{1,4})\s*章", blob)
     claimed_total = int(m.group(1)) if m else None
+    # Every mirror page includes an extra global "latest chapter" link in
+    # its header. It is NOT one of this page's fifty catalog positions.
+    # Require the catalog's '共 665 章' marker and parse anchors after it.
+    # This also keeps the actual epilogue entry on the last catalog page.
+    marker = soup.find(string=lambda s: s is not None and
+                       bool(re.search(r"共\\s*\\d{1,4}\\s*章", str(s))))
+    if marker is None:
+        raise AuditError("catalog_marker_missing", "Chapter-list total marker is absent")
     entries: list[Entry] = []
     seen: set[str] = set()
-    for a in soup.select("a[href]"):
-        entry = entry_from_link("mirror", a["href"], a.get_text(" ", strip=True),
+    for node in marker.next_elements:
+        if getattr(node, "name", None) != "a" or not node.get("href"):
+            continue
+        entry = entry_from_link("mirror", node["href"], node.get_text(" ", strip=True),
                                 f"https://{MIRROR_HOST}/{MIRROR_ID}_{page}/", page=page)
         if entry is not None and entry.url not in seen:
             seen.add(entry.url)
