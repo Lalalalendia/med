@@ -93,6 +93,13 @@ class TestFanqieFlowersAudit(unittest.TestCase):
         }
         self.assertEqual(m.choose_chapters(catalog), [])
         catalog["state"] = "catalog_identity_found"
+        # A verified book alone is insufficient: arbitrary reader links without
+        # numbered catalog labels must not be interpreted as chapters 7-47.
+        self.assertEqual(m.choose_chapters(catalog), [])
+        catalog["reader_catalog"] = [
+            {"url": u, "label": f"第{i}章 实例"} for i, (_, u) in
+            zip((7, 8, 9), m.SEEDS)
+        ]
         self.assertGreaterEqual(len(m.choose_chapters(catalog)), 1)
 
     def test_boundary_selection_uses_only_catalog_chapter_numbers(self):
