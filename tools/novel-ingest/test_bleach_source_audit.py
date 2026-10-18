@@ -32,6 +32,45 @@ class TestBleachMetadata(unittest.TestCase):
         found = m.parse_publisher_page(html)
         self.assertEqual(len(found), 1)
 
+    def test_canonical_650_vs_665_administrative_records(self):
+        # All 650 publisher volume entries include 19 unnumbered notes.
+        # The mirror contains those plus fifteen other catalog positions.
+        chapters = [(f"第{i}章 故事{i}", False) for i in range(1, 632)]
+        notes = [(f"请假第{i}次", True) for i in range(1, 20)]
+        pub = m.number_entries([
+            m.Entry("publisher", "", title, "卷一", auxiliary=aux)
+            for title, aux in chapters + notes
+        ])
+        mirrored = chapters + notes + [(f"番外 {i}", True) for i in range(15)]
+        mir = m.number_entries([
+            m.Entry("mirror", f"https://m.fanqiexsw.com/65504/{100000+i}.html",
+                    title, auxiliary=aux)
+            for i, (title, aux) in enumerate(mirrored)
+        ])
+        comp = m.compare_indices(pub, mir, publisher_complete=True, mirror_complete=True)
+        self.assertEqual(comp["status"], "compared")
+        self.assertEqual(comp["shared_title_positions"], 650)
+        self.assertEqual(comp["publisher_auxiliary"], 19)
+        self.assertEqual(comp["mirror_auxiliary"], 34)
+        self.assertEqual(comp["publisher_story"], comp["mirror_story"])
+
+    def test_publisher_retains_unnumbered_volume_announcements(self):
+        html = (f"<title>{m.BOOK_TITLE}</title>"
+                '<div class="volume"><h2>卷一</h2>'
+                '<a href="https://readnovel.com/other">第1章 开始</a>'
+                '<a href="https://readnovel.com/other2">请假一天</a></div>')
+        rows = m.parse_publisher_page(html)
+        self.assertEqual([x.title for x in rows], ["第1章 开始", "请假一天"])
+        self.assertTrue(rows[-1].auxiliary)
+
+    def test_mirror_accepts_only_pinned_unnumbered_entries(self):
+        html = (f"<title>{m.BOOK_TITLE}</title><p>共 665 章</p>"
+                '<a href="/65504/8439742.html">第101章 战前会议</a>'
+                '<a href="/65504/8439743.html">请假一天</a>')
+        rows, _ = m.parse_mirror_page(html, page=3)
+        self.assertEqual(len(rows), 2)
+        self.assertTrue(rows[-1].auxiliary)
+
     def test_latest_chapter_header_not_counted(self):
         html = (f"<title>{m.BOOK_TITLE}</title>"
                 '<div><a href="/65504/13197648.html">完本感言</a></div>'
