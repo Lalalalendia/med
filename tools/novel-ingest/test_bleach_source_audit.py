@@ -170,7 +170,7 @@ class TestBleachMetadata(unittest.TestCase):
              m.Entry("mirror", "https://m.fanqiexsw.com/65504/20001.html", "完本感言", auxiliary=True)])
         positions = [e.position for e in m.sample_entries(entries, "full")]
         self.assertIn(20, positions)
-        self.assertIn(21, positions)
+        self.assertNotIn(21, positions)  # afterword, not story body
         self.assertEqual(len(positions), len(set(positions)))
 
     def test_robots_fail_closed(self):
