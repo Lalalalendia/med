@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-18T03:03:49+00:00
+Run: 2026-10-19T03:07:18+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-10-18T03:03:49+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `108037` [Kamen Rider: Heisei Rider Chronicle](https://wtr-lab.com/en/novel/108037/kamen-rider-heisei-rider-chronicle) — catalog
-- **wtr-lab** `108236` [Dashing Youth: My Sword Sweeps the Mortal World, My Talismans Subdue the Immortals Above](https://wtr-lab.com/en/novel/108236/dashing-youth-my-sword-sweeps-the-mortal-world-my-talismans-subdue-the-immortals-above) — catalog
-- **wtr-lab** `108246` [Dashing Youth: The Concubine’s Son Destined for the Throne, Standing Firmly Behind Yueyao](https://wtr-lab.com/en/novel/108246/dashing-youth-the-concubines-son-destined-for-the-throne-standing-firmly-behind-yueyao) — catalog
-- **wtr-lab** `107219` [Power-wielding Minister in *dream of the Red Chamber*: Claiming All the Beauties, I Call a Deer a Horse](https://wtr-lab.com/en/novel/107219/power-wielding-minister-in-dream-of-the-red-chamber-claiming-all-the-beauties-i-call-a-deer-a-horse) — catalog
-- **wtr-lab** `108249` [The Aloof Sword Immortal and Her Little Sea Siren](https://wtr-lab.com/en/novel/108249/the-aloof-sword-immortal-and-her-little-sea-siren) — catalog
-- **wtr-lab** `108247` [Dashing Youth: Eternal Life Through the Ages](https://wtr-lab.com/en/novel/108247/dashing-youth-eternal-life-through-the-ages) — catalog
-- **wtr-lab** `108103` [It All Starts in a Dark Room, with a Yandere and Arrogant Tycoon Forcing Love on You!](https://wtr-lab.com/en/novel/108103/it-all-starts-in-a-dark-room-with-a-yandere-and-arrogant-tycoon-forcing-love-on-you) — catalog
-- **wtr-lab** `107258` [Me! Huo Linfei: A 7-day Speedrun Starting from Godlike Status](https://wtr-lab.com/en/novel/107258/me-huo-linfei-a-7-day-speedrun-starting-from-godlike-status) — catalog
-- **wtr-lab** `108066` [A Dream Through a Thousand Years](https://wtr-lab.com/en/novel/108066/a-dream-through-a-thousand-years) — catalog
-- **wtr-lab** `108001` [In "dream of the Red Chamber," Was the Great-grandfather a Prince with a Different Surname During the Ming Dynasty?](https://wtr-lab.com/en/novel/108001/in-dream-of-the-red-chamber-was-the-great-grandfather-a-prince-with-a-different-surname-during-the-ming-dynasty) — catalog
-- **mtl-novel** `hokage-somethings-not-right-with-this-hyuga` [Hokage: Something’s Not Right with This Hyuga!](https://mtl-novel.com/novel/hokage-somethings-not-right-with-this-hyuga/) — catalog
-- **mtl-novel** `living-in-the-city-i-start-by-signing-in-at-a-top-tier-club` [Living in the City, I Start by Signing in at a Top-tier Club](https://mtl-novel.com/novel/living-in-the-city-i-start-by-signing-in-at-a-top-tier-club/) — catalog
-- **mtl-novel** `forests-dont-support-idle-goblins` [Forests Don’t Support Idle Goblins](https://mtl-novel.com/novel/forests-dont-support-idle-goblins/) — catalog
-- **mtl-novel** `re-zero-starting-as-the-dragon-god-he-scared-shaula-to-tears` [Re: Zero: Starting As the Dragon God, He Scared Shaula to Tears](https://mtl-novel.com/novel/re-zero-starting-as-the-dragon-god-he-scared-shaula-to-tears/) — catalog
-- **mtl-novel** `villain-simulation-max-out-your-top-talents-at-the-start` [Villain Simulation: Max Out Your Top Talents at the Start](https://mtl-novel.com/novel/villain-simulation-max-out-your-top-talents-at-the-start/) — catalog
-- **mtl-novel** `i-a-useless-prince-started-with-the-xiang-yu-template` [I, a Useless Prince, Started with the Xiang Yu Template](https://mtl-novel.com/novel/i-a-useless-prince-started-with-the-xiang-yu-template/) — catalog
-- **mtl-novel** `cultivating-immortality-farming-will-lead-to-longevity-and-a-carefree-life` [Cultivating Immortality: Farming Will Lead to Longevity and a Carefree Life](https://mtl-novel.com/novel/cultivating-immortality-farming-will-lead-to-longevity-and-a-carefree-life/) — catalog
-- **mtl-novel** `be-a-unmarried-nanny-but-her-baby-language-is-full-level` [Be a Unmarried Nanny? But Her Baby Language is Full Level!](https://mtl-novel.com/novel/be-a-unmarried-nanny-but-her-baby-language-is-full-level/) — catalog
-- **mtl-novel** `it-seems-the-life-of-humans-isnt-always-better-than-cats-and-dogs` [It Seems the Life of Humans Isn’t Always Better Than Cats and Dogs](https://mtl-novel.com/novel/it-seems-the-life-of-humans-isnt-always-better-than-cats-and-dogs/) — catalog
-- **mtl-novel** `football-i-started-out-as-a-rich-man-its-not-too-much-to-say-that-i-dominate-the-five-major-leagues` [Football: I Started Out As a Rich Man. It’s Not Too Much to Say That I Dominate the Five Major Leagues.](https://mtl-novel.com/novel/football-i-started-out-as-a-rich-man-its-not-too-much-to-say-that-i-dominate-the-five-major-leagues/) — catalog
+- **wtr-lab** `108211` [The Sensual Siren System: She Rewrites Her Fate by Winning Over Big Shots](https://wtr-lab.com/en/novel/108211/the-sensual-siren-system-she-rewrites-her-fate-by-winning-over-big-shots) — catalog
+- **wtr-lab** `107224` [Starting from Tianlong, Wudu Tianxia](https://wtr-lab.com/en/novel/107224/starting-from-tianlong-wudu-tianxia) — catalog
+- **wtr-lab** `108287` [Farming? No, I'm Cultivating Immortality](https://wtr-lab.com/en/novel/108287/farming-no-im-cultivating-immortality) — catalog
+- **wtr-lab** `108109` [Make Me a Concubine? Eight Thousand Imperial Guards Escort Me Back to the Palace](https://wtr-lab.com/en/novel/108109/make-me-a-concubine-eight-thousand-imperial-guards-escort-me-back-to-the-palace) — catalog
+- **wtr-lab** `108329` [Tell Me Why Lightning-type Can Heal](https://wtr-lab.com/en/novel/108329/tell-me-why-lightning-type-can-heal) — catalog
+- **wtr-lab** `108376` [Kamen Rider ZZZ: My Sister is a Magical Girl](https://wtr-lab.com/en/novel/108376/kamen-rider-zzz-my-sister-is-a-magical-girl) — catalog
+- **wtr-lab** `108418` [My Little Pony: Armor Heroes of Canterlot High School](https://wtr-lab.com/en/novel/108418/my-little-pony-armor-heroes-of-canterlot-high-school) — catalog
+- **wtr-lab** `108405` [I am Her Best Friend and Lover](https://wtr-lab.com/en/novel/108405/i-am-her-best-friend-and-lover) — catalog
+- **wtr-lab** `107517` [The Lazy Wife of a Wicked Man](https://wtr-lab.com/en/novel/107517/the-lazy-wife-of-a-wicked-man) — catalog
+- **wtr-lab** `108257` [Primordial: Myriad Realms Primordial Mall](https://wtr-lab.com/en/novel/108257/primordial-myriad-realms-primordial-mall) — catalog
+- **mtl-novel** `rebirth-in-the-1960s-starting-from-chinese-medicine` [Rebirth in the 1960s, starting from Chinese medicine](https://mtl-novel.com/novel/rebirth-in-the-1960s-starting-from-chinese-medicine/) — catalog
+- **mtl-novel** `three-copper-coins-for-my-bones-ill-buy-your-entire-family` [Three Copper Coins for My Bones? I’ll Buy Your Entire Family!](https://mtl-novel.com/novel/three-copper-coins-for-my-bones-ill-buy-your-entire-family/) — catalog
+- **mtl-novel** `shenhao-sign-in-system-starting-from-9-yuan-and-9-seconds-kill` [Shenhao Sign-in System: Starting From 9 Yuan and 9 Seconds Kill](https://mtl-novel.com/novel/shenhao-sign-in-system-starting-from-9-yuan-and-9-seconds-kill/) — catalog
+- **mtl-novel** `primordial-demon-ancestor-starting-by-saving-pangu-i-will-rule-the-great-dao` [Primordial Demon Ancestor: Starting by Saving Pangu, I Will Rule the Great Dao](https://mtl-novel.com/novel/primordial-demon-ancestor-starting-by-saving-pangu-i-will-rule-the-great-dao/) — catalog
+- **mtl-novel** `lol-i-am-lee-sang-hyeok-in-my-rebirth` [LOL: I am Lee Sang Hyeok in my rebirth!](https://mtl-novel.com/novel/lol-i-am-lee-sang-hyeok-in-my-rebirth/) — catalog
+- **mtl-novel** `becoming-a-martial-saint-through-sheer-grind-in-a-chaotic-world-of-martial-arts` [Becoming a Martial Saint Through Sheer Grind in a Chaotic World of Martial Arts](https://mtl-novel.com/novel/becoming-a-martial-saint-through-sheer-grind-in-a-chaotic-world-of-martial-arts/) — catalog
+- **mtl-novel** `sequence-highway-survival-awakening-traditional-chinese-medicine-sequence` [Sequence Highway Survival, Awakening Traditional Chinese Medicine Sequence](https://mtl-novel.com/novel/sequence-highway-survival-awakening-traditional-chinese-medicine-sequence/) — catalog
+- **mtl-novel** `godslayer-unable-to-sleep-i-yearn-for-death` [Godslayer: Unable to Sleep, I Yearn for Death](https://mtl-novel.com/novel/godslayer-unable-to-sleep-i-yearn-for-death/) — catalog
+- **mtl-novel** `rebirth-of-hong-kongs-financial-empire` [Rebirth of Hong Kong`s Financial Empire](https://mtl-novel.com/novel/rebirth-of-hong-kongs-financial-empire/) — catalog
+- **mtl-novel** `soul-land-this-soul-master-is-too-strange` [Soul Land: This soul master is too strange](https://mtl-novel.com/novel/soul-land-this-soul-master-is-too-strange/) — catalog
