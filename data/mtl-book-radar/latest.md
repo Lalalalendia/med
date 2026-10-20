@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-19T03:07:18+00:00
+Run: 2026-10-20T03:07:52+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-10-19T03:07:18+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `108211` [The Sensual Siren System: She Rewrites Her Fate by Winning Over Big Shots](https://wtr-lab.com/en/novel/108211/the-sensual-siren-system-she-rewrites-her-fate-by-winning-over-big-shots) — catalog
-- **wtr-lab** `107224` [Starting from Tianlong, Wudu Tianxia](https://wtr-lab.com/en/novel/107224/starting-from-tianlong-wudu-tianxia) — catalog
-- **wtr-lab** `108287` [Farming? No, I'm Cultivating Immortality](https://wtr-lab.com/en/novel/108287/farming-no-im-cultivating-immortality) — catalog
-- **wtr-lab** `108109` [Make Me a Concubine? Eight Thousand Imperial Guards Escort Me Back to the Palace](https://wtr-lab.com/en/novel/108109/make-me-a-concubine-eight-thousand-imperial-guards-escort-me-back-to-the-palace) — catalog
-- **wtr-lab** `108329` [Tell Me Why Lightning-type Can Heal](https://wtr-lab.com/en/novel/108329/tell-me-why-lightning-type-can-heal) — catalog
-- **wtr-lab** `108376` [Kamen Rider ZZZ: My Sister is a Magical Girl](https://wtr-lab.com/en/novel/108376/kamen-rider-zzz-my-sister-is-a-magical-girl) — catalog
-- **wtr-lab** `108418` [My Little Pony: Armor Heroes of Canterlot High School](https://wtr-lab.com/en/novel/108418/my-little-pony-armor-heroes-of-canterlot-high-school) — catalog
-- **wtr-lab** `108405` [I am Her Best Friend and Lover](https://wtr-lab.com/en/novel/108405/i-am-her-best-friend-and-lover) — catalog
-- **wtr-lab** `107517` [The Lazy Wife of a Wicked Man](https://wtr-lab.com/en/novel/107517/the-lazy-wife-of-a-wicked-man) — catalog
-- **wtr-lab** `108257` [Primordial: Myriad Realms Primordial Mall](https://wtr-lab.com/en/novel/108257/primordial-myriad-realms-primordial-mall) — catalog
-- **mtl-novel** `rebirth-in-the-1960s-starting-from-chinese-medicine` [Rebirth in the 1960s, starting from Chinese medicine](https://mtl-novel.com/novel/rebirth-in-the-1960s-starting-from-chinese-medicine/) — catalog
-- **mtl-novel** `three-copper-coins-for-my-bones-ill-buy-your-entire-family` [Three Copper Coins for My Bones? I’ll Buy Your Entire Family!](https://mtl-novel.com/novel/three-copper-coins-for-my-bones-ill-buy-your-entire-family/) — catalog
-- **mtl-novel** `shenhao-sign-in-system-starting-from-9-yuan-and-9-seconds-kill` [Shenhao Sign-in System: Starting From 9 Yuan and 9 Seconds Kill](https://mtl-novel.com/novel/shenhao-sign-in-system-starting-from-9-yuan-and-9-seconds-kill/) — catalog
-- **mtl-novel** `primordial-demon-ancestor-starting-by-saving-pangu-i-will-rule-the-great-dao` [Primordial Demon Ancestor: Starting by Saving Pangu, I Will Rule the Great Dao](https://mtl-novel.com/novel/primordial-demon-ancestor-starting-by-saving-pangu-i-will-rule-the-great-dao/) — catalog
-- **mtl-novel** `lol-i-am-lee-sang-hyeok-in-my-rebirth` [LOL: I am Lee Sang Hyeok in my rebirth!](https://mtl-novel.com/novel/lol-i-am-lee-sang-hyeok-in-my-rebirth/) — catalog
-- **mtl-novel** `becoming-a-martial-saint-through-sheer-grind-in-a-chaotic-world-of-martial-arts` [Becoming a Martial Saint Through Sheer Grind in a Chaotic World of Martial Arts](https://mtl-novel.com/novel/becoming-a-martial-saint-through-sheer-grind-in-a-chaotic-world-of-martial-arts/) — catalog
-- **mtl-novel** `sequence-highway-survival-awakening-traditional-chinese-medicine-sequence` [Sequence Highway Survival, Awakening Traditional Chinese Medicine Sequence](https://mtl-novel.com/novel/sequence-highway-survival-awakening-traditional-chinese-medicine-sequence/) — catalog
-- **mtl-novel** `godslayer-unable-to-sleep-i-yearn-for-death` [Godslayer: Unable to Sleep, I Yearn for Death](https://mtl-novel.com/novel/godslayer-unable-to-sleep-i-yearn-for-death/) — catalog
-- **mtl-novel** `rebirth-of-hong-kongs-financial-empire` [Rebirth of Hong Kong`s Financial Empire](https://mtl-novel.com/novel/rebirth-of-hong-kongs-financial-empire/) — catalog
-- **mtl-novel** `soul-land-this-soul-master-is-too-strange` [Soul Land: This soul master is too strange](https://mtl-novel.com/novel/soul-land-this-soul-master-is-too-strange/) — catalog
+- **wtr-lab** `108609` [An Ordinary Male Protagonist Transmigrates Into a Novel and Becomes a Heartthrob Despite Being Cannon Fodder](https://wtr-lab.com/en/novel/108609/an-ordinary-male-protagonist-transmigrates-into-a-novel-and-becomes-a-heartthrob-despite-being-cannon-fodder) — catalog
+- **wtr-lab** `108759` [I Backstabbed the Empresses in My Dreams, and Now They Want to Kill Me in Reality](https://wtr-lab.com/en/novel/108759/i-backstabbed-the-empresses-in-my-dreams-and-now-they-want-to-kill-me-in-reality) — catalog
+- **wtr-lab** `108703` [Live Fortune Telling: Unity of Three Religions Brings Joy](https://wtr-lab.com/en/novel/108703/live-fortune-telling-unity-of-three-religions-brings-joy) — catalog
+- **wtr-lab** `108860` [The First Warlord of the Eastern Han](https://wtr-lab.com/en/novel/108860/the-first-warlord-of-the-eastern-han) — catalog
+- **wtr-lab** `108856` [After the Xuanmen Boss Retired](https://wtr-lab.com/en/novel/108856/after-the-xuanmen-boss-retired) — catalog
+- **wtr-lab** `108722` [I Transmigrate Into Curse World to Make the Rotten World of Curse World Sweet](https://wtr-lab.com/en/novel/108722/i-transmigrate-into-curse-world-to-make-the-rotten-world-of-curse-world-sweet) — catalog
+- **wtr-lab** `108784` [Curse Back to Save the Love of Fathers](https://wtr-lab.com/en/novel/108784/curse-back-to-save-the-love-of-fathers) — catalog
+- **wtr-lab** `108852` [The Entire Sect Was Reborn](https://wtr-lab.com/en/novel/108852/the-entire-sect-was-reborn) — catalog
+- **wtr-lab** `108803` [Star Train World: Star Train World — I am the Leader of the Aeon Chat Group](https://wtr-lab.com/en/novel/108803/star-train-world-star-train-world-i-am-the-leader-of-the-aeon-chat-group) — catalog
+- **wtr-lab** `108796` [From Overworked Programmer to Countryside Resort Tycoon: My System Helps Me Build a Paradise, One Click at a Time!](https://wtr-lab.com/en/novel/108796/from-overworked-programmer-to-countryside-resort-tycoon-my-system-helps-me-build-a-paradise-one-click-at-a-time) — catalog
+- **mtl-novel** `sign-in-from-douluo-world` [Sign in from Douluo World](https://mtl-novel.com/novel/sign-in-from-douluo-world/) — catalog
+- **mtl-novel** `something-is-wrong-with-this-game-i-will-become-a-god` [Something is Wrong with This Game, I Will Become a God!](https://mtl-novel.com/novel/something-is-wrong-with-this-game-i-will-become-a-god/) — catalog
+- **mtl-novel** `douluo-peerless-i-awakened-the-ultimate-cellular-martial-soul-i-can-force-every-cell-in-tang-sans-body-to-die` [Douluo Peerless: I Awakened the Ultimate Cellular Martial Soul, I Can Force Every Cell in Tang San’s Body to Die](https://mtl-novel.com/novel/douluo-peerless-i-awakened-the-ultimate-cellular-martial-soul-i-can-force-every-cell-in-tang-sans-body-to-die/) — catalog
+- **mtl-novel** `alchemy-lord-starting-with-daily-intelligence` [Alchemy Lord: Starting with Daily Intelligence](https://mtl-novel.com/novel/alchemy-lord-starting-with-daily-intelligence/) — catalog
+- **mtl-novel** `national-ace-i-only-want-to-be-a-quiet-pilot` [National Ace: I Only Want to Be a Quiet Pilot](https://mtl-novel.com/novel/national-ace-i-only-want-to-be-a-quiet-pilot/) — catalog
+- **mtl-novel** `starting-with-a-simulator-i-led-my-family-to-achieve-immortality-and-ascend-to-heaven` [Starting with a Simulator, I Led My Family to Achieve Immortality and Ascend to Heaven](https://mtl-novel.com/novel/starting-with-a-simulator-i-led-my-family-to-achieve-immortality-and-ascend-to-heaven/) — catalog
+- **mtl-novel** `gao-wu-my-children-become-stronger-and-i-receive-tenfold-returns` [Gao Wu: My Children Become Stronger, and I Receive Tenfold Returns](https://mtl-novel.com/novel/gao-wu-my-children-become-stronger-and-i-receive-tenfold-returns/) — catalog
+- **mtl-novel** `princess-becomes-favored-concubine-gives-birth-to-a-prince-and-steals-her-sisters-throne` [Princess Becomes Favored Concubine, Gives Birth to a Prince and Steals Her Sister’s Throne](https://mtl-novel.com/novel/princess-becomes-favored-concubine-gives-birth-to-a-prince-and-steals-her-sisters-throne/) — catalog
+- **mtl-novel** `naruto-maxed-out-comprehension-starting-with-creating-your-own-ninjutsu` [Naruto: Maxed-out Comprehension, Starting with Creating Your Own Ninjutsu](https://mtl-novel.com/novel/naruto-maxed-out-comprehension-starting-with-creating-your-own-ninjutsu/) — catalog
+- **mtl-novel** `battle-through-the-heavens-breakthrough-gift-pack-starting-with-white-tiger-bloodline` [Battle Through the Heavens: Breakthrough Gift Pack, Starting with White Tiger Bloodline](https://mtl-novel.com/novel/battle-through-the-heavens-breakthrough-gift-pack-starting-with-white-tiger-bloodline/) — catalog
