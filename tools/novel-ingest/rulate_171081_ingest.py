@@ -165,7 +165,8 @@ def extract_body(html: str, *, min_chars: int = 250) -> str:
     return text
 
 
-def collect(index: Path, dest: Path, *, delay: float = 2.0, session=None) -> dict:
+def collect(index: Path, dest: Path, *, delay: float = 2.0, session=None,
+            html_dir: Path | None = None) -> dict:
     if not 1 <= delay <= 15:
         raise ValueError("Request delay out of bounds")
     if dest.exists() and any(dest.iterdir()):
@@ -173,24 +174,39 @@ def collect(index: Path, dest: Path, *, delay: float = 2.0, session=None) -> dic
     dest.mkdir(parents=True, exist_ok=True)
     entries = read_index(index)
     urls = [chapter_url(e["chapter_id"]) for e in entries]
-    own_session = session is None
-    session = session or requests.Session()
-    if hasattr(session, "headers"):
+    own_session = session is None and html_dir is None
+    session = (session or requests.Session()) if html_dir is None else None
+    if session is not None and hasattr(session, "headers"):
         session.headers.update({"User-Agent": USER_AGENT, "Accept-Language": "ru-RU,ru;q=0.9",
                                 "Accept": "text/html"})
     result = {"book_id": BOOK, "expected": len(entries), "collected": 0,
               "status": "INCOMPLETE", "notion_url":
               "https://app.notion.com/p/3fb32a84beec81d5a418d2aa68caf0d8",
-              "checked_at": datetime.now(timezone.utc).isoformat(), "chapters": []}
+              "checked_at": datetime.now(timezone.utc).isoformat(), "chapters": [],
+              "source_mode": "operator_saved_html_unverified" if html_dir else "public_https"}
     texts: list[tuple[str, str]] = []
     try:
-        delay = max(delay, robots_permit(session, urls))
+        if html_dir is None:
+            delay = max(delay, robots_permit(session, urls))
+        else:
+            expected = {f"{e['ordinal']:03}.html" for e in entries}
+            if (not html_dir.is_dir() or html_dir.is_symlink()
+                    or {p.name for p in html_dir.iterdir() if p.is_file()} != expected
+                    or any(p.is_symlink() for p in html_dir.iterdir())):
+                raise IngestError("local_input_invalid", "Expected exactly 001.html..040.html")
         hashes: set[str] = set()
         for item, url in zip(entries, urls):
             row = {"ordinal": item["ordinal"], "chapter_id": item["chapter_id"],
                    "title": item["title"], "url": url}
             try:
-                body = extract_body(fetch_page(session, url, item["chapter_id"]))
+                if html_dir is None:
+                    html = fetch_page(session, url, item["chapter_id"])
+                else:
+                    local = html_dir / f"{item['ordinal']:03}.html"
+                    if local.stat().st_size > MAX_BYTES:
+                        raise IngestError("oversize", "Local HTML exceeds budget")
+                    html = local.read_text(encoding="utf-8-sig")
+                body = extract_body(html)
                 sha = hashlib.sha256(body.encode("utf-8")).hexdigest()
                 if sha in hashes:
                     raise IngestError("duplicate_body", "Repeated chapter hash")
@@ -203,7 +219,7 @@ def collect(index: Path, dest: Path, *, delay: float = 2.0, session=None) -> dic
                 break  # Fail closed. Do not continue fetching on access failures.
             result["chapters"].append(row)
             result["collected"] += 1
-            if result["collected"] < len(entries):
+            if html_dir is None and result["collected"] < len(entries):
                 time.sleep(delay)
         if result["collected"] == len(entries):
             result["status"] = "PASS"
@@ -231,8 +247,9 @@ def main():
     parser.add_argument("--index", type=Path, default=Path("sources/rulate-171081/chapters.json"))
     parser.add_argument("--out-dir", type=Path, default=Path("out/rulate-171081"))
     parser.add_argument("--delay", type=float, default=2.0)
+    parser.add_argument("--html-dir", type=Path, help="40 authorized saved HTML pages, 001.html..040.html")
     args = parser.parse_args()
-    receipt = collect(args.index, args.out_dir, delay=args.delay)
+    receipt = collect(args.index, args.out_dir, delay=args.delay, html_dir=args.html_dir)
     print(json.dumps({"book_id": BOOK, "status": receipt["status"],
                       "collected": receipt["collected"], "expected": receipt["expected"],
                       "error": receipt.get("blocker") or next(

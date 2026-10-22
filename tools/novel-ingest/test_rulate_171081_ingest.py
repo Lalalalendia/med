@@ -158,6 +158,33 @@ class Rulate171081Tests(unittest.TestCase):
             self.assertEqual(r["chapters"][1]["status"], "duplicate_body")
             self.assertEqual(list(root.glob("*.zip*")), [])
 
+    def test_offline_authorized_saved_html_import(self):
+        import zipfile
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            input_dir = root / "source"
+            input_dir.mkdir()
+            for n in range(1, 41):
+                (input_dir / f"{n:03}.html").write_text(chapter_html(n), encoding="utf-8")
+            out = root / "out"
+            result = mod.collect(INDEX, out, html_dir=input_dir, delay=1)
+            self.assertEqual((result["status"], result["collected"]), ("PASS", 40))
+            self.assertEqual(result["source_mode"], "operator_saved_html_unverified")
+            with zipfile.ZipFile(out / "rulate-171081-ru-001-040.zip") as archive:
+                self.assertIn("chapters/040.txt", archive.namelist())
+
+    def test_offline_missing_html_fails_without_unsafe_partial_archive(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            input_dir = root / "source"
+            input_dir.mkdir()
+            (input_dir / "001.html").write_text(chapter_html(1), encoding="utf-8")
+            out = root / "out"
+            result = mod.collect(INDEX, out, html_dir=input_dir, delay=1)
+            self.assertEqual(result["status"], "INCOMPLETE")
+            self.assertEqual(result["blocker"]["status"], "local_input_invalid")
+            self.assertEqual(list(out.glob("*.zip*")), [])
+
     def test_robots_disallow_prevents_chapter_requests(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "out"
