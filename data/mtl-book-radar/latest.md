@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-21T03:09:14+00:00
+Run: 2026-10-22T03:09:08+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,13 +15,13 @@ Run: 2026-10-21T03:09:14+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `108353` [After Transmigrating Into a Villain, I Conquered the Yandere Demon Lord by Going Crazy](https://wtr-lab.com/en/novel/108353/after-transmigrating-into-a-villain-i-conquered-the-yandere-demon-lord-by-going-crazy) — catalog
-- **wtr-lab** `109004` [Quick Transmigration: Saving the Villain Through Happiness](https://wtr-lab.com/en/novel/109004/quick-transmigration-saving-the-villain-through-happiness) — catalog
-- **wtr-lab** `108787` [Outrageous! The "green Tea God" is Constantly Being Called a "phoenix Man" (a Man from a Poor Background Who Achieves Success Despite His Humble Origins)](https://wtr-lab.com/en/novel/108787/outrageous-the-green-tea-god-is-constantly-being-called-a-phoenix-man-a-man-from-a-poor-background-who-achieves-success-despite-his-humble-origins) — catalog
-- **wtr-lab** `108868` [Immortal Medical King](https://wtr-lab.com/en/novel/108868/immortal-medical-king) — catalog
-- **wtr-lab** `108755` [Senior Year Paranormal Events: I am the Protagonist Trapped in a Supernatural Game Reality](https://wtr-lab.com/en/novel/108755/senior-year-paranormal-events-i-am-the-protagonist-trapped-in-a-supernatural-game-reality) — catalog
-- **wtr-lab** `109090` [The Tennis World: The Undying Will Ongoing](https://wtr-lab.com/en/novel/109090/the-tennis-world-the-undying-will-ongoing) — catalog
-- **wtr-lab** `108967` [Cannon Fodder's Immortal Cultivation Chronicles](https://wtr-lab.com/en/novel/108967/cannon-fodders-immortal-cultivation-chronicles) — catalog
-- **wtr-lab** `109081` [The Necromancer in Collapse World Impact](https://wtr-lab.com/en/novel/109081/the-necromancer-in-collapse-world-impact) — catalog
-- **wtr-lab** `108932` [Age of Giants: Mythical Survival](https://wtr-lab.com/en/novel/108932/age-of-giants-mythical-survival) — catalog
-- **wtr-lab** `109074` [So, It Turns Out I’m the Villainous NPC](https://wtr-lab.com/en/novel/109074/so-it-turns-out-im-the-villainous-npc) — catalog
+- **wtr-lab** `109184` [Legend of the Condor Heroes: Proposing to Huang Rong at the Start, I Obtain the Nine Yang Divine Skill](https://wtr-lab.com/en/novel/109184/legend-of-the-condor-heroes-proposing-to-huang-rong-at-the-start-i-obtain-the-nine-yang-divine-skill) — catalog
+- **wtr-lab** `109327` [My Superstar Ex-wife Cornered Me on a Dating Show After Our Divorce](https://wtr-lab.com/en/novel/109327/my-superstar-ex-wife-cornered-me-on-a-dating-show-after-our-divorce) — catalog
+- **wtr-lab** `109144` [The Villainous Concubine-born Daughter is Not to Be Messed with](https://wtr-lab.com/en/novel/109144/the-villainous-concubine-born-daughter-is-not-to-be-messed-with) — catalog
+- **wtr-lab** `109252` [I’m Just Playing a Game, But You All Insist That I’m Containing Anomalies](https://wtr-lab.com/en/novel/109252/im-just-playing-a-game-but-you-all-insist-that-im-containing-anomalies) — catalog
+- **wtr-lab** `109269` [Horrific and Eerie Events: This Beautiful Female Celestial Master Plays Dirty!](https://wtr-lab.com/en/novel/109269/horrific-and-eerie-events-this-beautiful-female-celestial-master-plays-dirty) — catalog
+- **wtr-lab** `109118` [Ninja World: The Story of Two Uchiha](https://wtr-lab.com/en/novel/109118/ninja-world-the-story-of-two-uchiha) — catalog
+- **wtr-lab** `109341` [Female Dominance: I’m Just a Minor Male Character](https://wtr-lab.com/en/novel/109341/female-dominance-im-just-a-minor-male-character) — catalog
+- **wtr-lab** `109209` [The Prime Minister Dotes on His Adorable Little Farm Wife](https://wtr-lab.com/en/novel/109209/the-prime-minister-dotes-on-his-adorable-little-farm-wife) — catalog
+- **wtr-lab** `108577` [80s: You Marry Your White Moonlight, I Marry the Fourth Young Master of a Wealthy Family](https://wtr-lab.com/en/novel/108577/80-s-you-marry-your-white-moonlight-i-marry-the-fourth-young-master-of-a-wealthy-family) — catalog
+- **wtr-lab** `109254` [1980s: Snagging a Tough Guy As a Husband for Two Cents](https://wtr-lab.com/en/novel/109254/1980-s-snagging-a-tough-guy-as-a-husband-for-two-cents) — catalog

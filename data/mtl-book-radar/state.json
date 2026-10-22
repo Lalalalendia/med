@@ -1115,6 +1115,96 @@
       "site": "wtr-lab",
       "title": "So, It Turns Out I’m the Villainous NPC",
       "url": "https://wtr-lab.com/en/novel/109074/so-it-turns-out-im-the-villainous-npc"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "109184",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Legend of the Condor Heroes: Proposing to Huang Rong at the Start, I Obtain the Nine Yang Divine Skill",
+      "url": "https://wtr-lab.com/en/novel/109184/legend-of-the-condor-heroes-proposing-to-huang-rong-at-the-start-i-obtain-the-nine-yang-divine-skill"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "109327",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "My Superstar Ex-wife Cornered Me on a Dating Show After Our Divorce",
+      "url": "https://wtr-lab.com/en/novel/109327/my-superstar-ex-wife-cornered-me-on-a-dating-show-after-our-divorce"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "109144",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "The Villainous Concubine-born Daughter is Not to Be Messed with",
+      "url": "https://wtr-lab.com/en/novel/109144/the-villainous-concubine-born-daughter-is-not-to-be-messed-with"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "109252",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "I’m Just Playing a Game, But You All Insist That I’m Containing Anomalies",
+      "url": "https://wtr-lab.com/en/novel/109252/im-just-playing-a-game-but-you-all-insist-that-im-containing-anomalies"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "109269",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Horrific and Eerie Events: This Beautiful Female Celestial Master Plays Dirty!",
+      "url": "https://wtr-lab.com/en/novel/109269/horrific-and-eerie-events-this-beautiful-female-celestial-master-plays-dirty"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "109118",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Ninja World: The Story of Two Uchiha",
+      "url": "https://wtr-lab.com/en/novel/109118/ninja-world-the-story-of-two-uchiha"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "109341",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Female Dominance: I’m Just a Minor Male Character",
+      "url": "https://wtr-lab.com/en/novel/109341/female-dominance-im-just-a-minor-male-character"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "109209",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "The Prime Minister Dotes on His Adorable Little Farm Wife",
+      "url": "https://wtr-lab.com/en/novel/109209/the-prime-minister-dotes-on-his-adorable-little-farm-wife"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "108577",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "80s: You Marry Your White Moonlight, I Marry the Fourth Young Master of a Wealthy Family",
+      "url": "https://wtr-lab.com/en/novel/108577/80-s-you-marry-your-white-moonlight-i-marry-the-fourth-young-master-of-a-wealthy-family"
+    },
+    {
+      "first_seen_utc": "2026-10-22T03:09:07+00:00",
+      "id": "109254",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "1980s: Snagging a Tough Guy As a Husband for Two Cents",
+      "url": "https://wtr-lab.com/en/novel/109254/1980-s-snagging-a-tough-guy-as-a-husband-for-two-cents"
     }
   ],
   "schema": 2,
@@ -1486,7 +1576,7 @@
         107264
       ],
       "initialized": true,
-      "last_success": "2026-10-21T03:09:14+00:00",
+      "last_success": "2026-10-22T03:09:07+00:00",
       "seen": {
         "105996": {
           "first_seen_utc": "2026-10-15T10:57:36+00:00",
@@ -1813,6 +1903,11 @@
           "title": "My Little Pony: Armor Heroes of Canterlot High School",
           "url": "https://wtr-lab.com/en/novel/108418/my-little-pony-armor-heroes-of-canterlot-high-school"
         },
+        "108577": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "80s: You Marry Your White Moonlight, I Marry the Fourth Young Master of a Wealthy Family",
+          "url": "https://wtr-lab.com/en/novel/108577/80-s-you-marry-your-white-moonlight-i-marry-the-fourth-young-master-of-a-wealthy-family"
+        },
         "108609": {
           "first_seen_utc": "2026-10-20T03:07:50+00:00",
           "title": "An Ordinary Male Protagonist Transmigrates Into a Novel and Becomes a Heartthrob Despite Being Cannon Fodder",
@@ -1907,6 +2002,51 @@
           "first_seen_utc": "2026-10-21T03:09:14+00:00",
           "title": "The Tennis World: The Undying Will Ongoing",
           "url": "https://wtr-lab.com/en/novel/109090/the-tennis-world-the-undying-will-ongoing"
+        },
+        "109118": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "Ninja World: The Story of Two Uchiha",
+          "url": "https://wtr-lab.com/en/novel/109118/ninja-world-the-story-of-two-uchiha"
+        },
+        "109144": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "The Villainous Concubine-born Daughter is Not to Be Messed with",
+          "url": "https://wtr-lab.com/en/novel/109144/the-villainous-concubine-born-daughter-is-not-to-be-messed-with"
+        },
+        "109184": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "Legend of the Condor Heroes: Proposing to Huang Rong at the Start, I Obtain the Nine Yang Divine Skill",
+          "url": "https://wtr-lab.com/en/novel/109184/legend-of-the-condor-heroes-proposing-to-huang-rong-at-the-start-i-obtain-the-nine-yang-divine-skill"
+        },
+        "109209": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "The Prime Minister Dotes on His Adorable Little Farm Wife",
+          "url": "https://wtr-lab.com/en/novel/109209/the-prime-minister-dotes-on-his-adorable-little-farm-wife"
+        },
+        "109252": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "I’m Just Playing a Game, But You All Insist That I’m Containing Anomalies",
+          "url": "https://wtr-lab.com/en/novel/109252/im-just-playing-a-game-but-you-all-insist-that-im-containing-anomalies"
+        },
+        "109254": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "1980s: Snagging a Tough Guy As a Husband for Two Cents",
+          "url": "https://wtr-lab.com/en/novel/109254/1980-s-snagging-a-tough-guy-as-a-husband-for-two-cents"
+        },
+        "109269": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "Horrific and Eerie Events: This Beautiful Female Celestial Master Plays Dirty!",
+          "url": "https://wtr-lab.com/en/novel/109269/horrific-and-eerie-events-this-beautiful-female-celestial-master-plays-dirty"
+        },
+        "109327": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "My Superstar Ex-wife Cornered Me on a Dating Show After Our Divorce",
+          "url": "https://wtr-lab.com/en/novel/109327/my-superstar-ex-wife-cornered-me-on-a-dating-show-after-our-divorce"
+        },
+        "109341": {
+          "first_seen_utc": "2026-10-22T03:09:07+00:00",
+          "title": "Female Dominance: I’m Just a Minor Male Character",
+          "url": "https://wtr-lab.com/en/novel/109341/female-dominance-im-just-a-minor-male-character"
         }
       }
     }
