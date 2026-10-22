@@ -1,0 +1,98 @@
+name: Narou N8001HC complete Japanese source 166
+
+on:
+  push:
+    branches: [research/narou-n8001hc-source-166-20261023]
+    paths:
+      - '.github/workflows/narou-n8001hc-source-166.yml'
+      - 'tools/novel-ingest/n8001hc_package.py'
+      - 'tools/novel-ingest/test_n8001hc_package.py'
+      - 'sources/narou-n8001hc/README.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: narou-n8001hc-166-raw
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install existing Narou parser dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Regression tests for existing Narou parser, pagination and Unicode
+        run: python -m unittest discover -s tools/novel-ingest -p test_narou_ingest.py -v
+      - name: Regression tests for complete 166-chapter Japanese archive
+        run: python -m unittest discover -s tools/novel-ingest -p test_n8001hc_package.py -v
+      - name: Collect official Narou original, episodes 1 through 166
+        id: ingest
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/novel-ingest/narou_ingest.py \
+            --ncode n8001hc --expected 166 --min-chars 120 --delay 1.5 \
+            --out-dir out/narou-n8001hc
+      - name: Verify all source bodies against their SHA-256 receipts and package
+        id: package
+        if: steps.ingest.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/novel-ingest/n8001hc_package.py \
+            --source out/narou-n8001hc \
+            --output out/narou-n8001hc-japanese-original-001-166.zip
+      - name: Report source coverage only, never copyrighted chapter text
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("out/narou-n8001hc/manifest.json")
+          if not p.exists():
+              print("N8001HC_SOURCE_NO_MANIFEST")
+          else:
+              data=json.loads(p.read_text(encoding="utf-8"))
+              print("NCODE", data.get("ncode"), "SOURCE_STATUS", data.get("status"),
+                    "BODIES",data.get("ok"),"/",data.get("expected"),
+                    "CATALOG",data.get("catalog_count"))
+              print("MISSING", len(data.get("catalog_gaps",[])),
+                    "EXTRAS",len(data.get("catalog_extras",[])))
+              if data.get("catalog_error"):
+                  print("CATALOG_ERROR",str(data["catalog_error"])[:180])
+              bad=next((r for r in data["chapters"] if r["status"]!="ok"),None)
+              if bad:
+                  print("FIRST_BODY_ERROR",bad["ordinal"],bad["status"])
+          PY
+      - name: Upload metadata-only receipts even when source is incomplete
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-n8001hc-166-metadata
+          path: |
+            out/narou-n8001hc/manifest.json
+            out/narou-n8001hc/summary.md
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Upload the source ZIP only if exactly 166 chapters pass
+        if: steps.ingest.outcome == 'success' && steps.package.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-n8001hc-japanese-original-001-166
+          path: out/narou-n8001hc-japanese-original-001-166.zip
+          if-no-files-found: error
+          retention-days: 7
+      - name: Fail the workflow unless all 166 source chapters are verified
+        if: steps.ingest.outcome != 'success' || steps.package.outcome != 'success'
+        run: exit 1
