@@ -1,0 +1,68 @@
+name: Aura Farming — temporary Notion import source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aura-notion-stage.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/download-artifact@v4
+        with:
+          repository: Lalalalendia/med
+          run-id: 39863000116
+          name: aura-farming-raw-missing-026-095-097
+          github-token: ${{ github.token }}
+          path: stage
+      - name: Check source manifest, SHA-256, and 71 unique texts
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, re
+          root = pathlib.Path("stage")
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          wanted = set(range(26, 96)) | {97}
+          rows = manifest.get("chapters", [])
+          assert {r["ordinal"] for r in rows} == wanted
+          assert len(rows) == len(wanted) == 71
+          assert all(r["status"] == "ok" for r in rows)
+          assert len({r["sha256"] for r in rows}) == 71
+          for row in rows:
+              path = root / row["raw_file"]
+              assert path.parent == root / "raw"
+              assert re.fullmatch(r"\d{4}\.txt", path.name)
+              assert int(path.stem) == row["ordinal"]
+              data = path.read_bytes()
+              assert hashlib.sha256(data).hexdigest() == row["sha256"]
+              assert len("".join(data.decode("utf-8").split())) == row["chars"]
+          assert set(p.name for p in (root / "raw").glob("*.txt")) == {
+              f"{n:04d}.txt" for n in wanted
+          }
+          print(f"Verified {len(rows)} chapter bodies, source catalog {manifest['catalog_count']}")
+          PY
+      - name: Publish temporary raw paths for importing files into Notion
+        run: |
+          git config user.name 'aura-raw-transfer[bot]'
+          git config user.email 'aura-raw-transfer@users.noreply.github.com'
+          git switch --orphan notion-stage-aura-raw-20261023
+          mkdir -p raw
+          cp stage/raw/*.txt raw/
+          cp stage/manifest.json ./manifest.json
+          git add raw manifest.json
+          git commit -m 'stage: verified Aura Farming 71 chapters for Notion file import'
+          git push origin HEAD:refs/heads/notion-stage-aura-raw-20261023
+      - name: Transfer paths
+        run: |
+          echo '71 verified UTF-8 raw files temporarily staged for direct Notion upload.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'https://github.com/Lalalalendia/med/tree/notion-stage-aura-raw-20261023' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Delete staging ref once Notion has stored and verified all 71 TXT attachments.' >> "$GITHUB_STEP_SUMMARY"
