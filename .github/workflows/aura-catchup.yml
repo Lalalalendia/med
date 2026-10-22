@@ -65,7 +65,7 @@ jobs:
           repository: Lalalalendia/med
           run-id: 39863000116
           name: aura-farming-raw-missing-026-095-097
-          github-token: \${{ github.token }}
+          github-token: ${{ github.token }}
           path: out/prior
       - name: Validate all three files and prepare Notion import
         run: |
