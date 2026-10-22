@@ -75,7 +75,7 @@ class CatchupTests(unittest.TestCase):
     def test_mismatched_prior_chapter_rejected(self):
         self.previous["sha256"] = "changed"
         self.save()
-        with self.assertRaisesRegex(ValueError, "Prior chapter 89"):
+        with self.assertRaisesRegex(ValueError, "Chapter 89: SHA-256 mismatch"):
             self.verify()
 
     def test_incomplete_new_source_catalog_rejected(self):
