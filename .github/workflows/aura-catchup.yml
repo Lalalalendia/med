@@ -1,0 +1,98 @@
+name: Aura Farming 98-99 and chapter 89 repair
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aura-catchup.yml'
+      - 'tools/novel-ingest/aura_catchup.py'
+      - 'tools/novel-ingest/test_aura_catchup.py'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aura-catchup.yml'
+      - 'tools/novel-ingest/aura_catchup.py'
+      - 'tools/novel-ingest/test_aura_catchup.py'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: aura-catchup-20261023
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Validate extraction and source handoff offline
+        run: |
+          python -m unittest discover -s tools/novel-ingest -p test_source_ingest.py -v
+          python -m unittest discover -s tools/novel-ingest -p test_aura_catchup.py -v
+
+  collect_and_stage:
+    if: github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collect source chapters 98-99
+        run: |
+          python tools/novel-ingest/source_ingest.py \
+            --source royalroad \
+            --book-url https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming \
+            --book-key aura-farming --start 98 --end 99 --delay 3 \
+            --min-chars 400 \
+            --rulate-url https://tl.rulate.ru/book/150719 \
+            --notion-book-url https://app.notion.com/p/3f432a84beec8114b7b9cacaaa8e6b7d \
+            --out-dir out/latest
+      - name: Recover chapter 89 from the previously verified artifact
+        uses: actions/download-artifact@v4
+        with:
+          repository: Lalalalendia/med
+          run-id: 39863000116
+          name: aura-farming-raw-missing-026-095-097
+          github-token: \${{ github.token }}
+          path: out/prior
+      - name: Validate all three files and prepare Notion import
+        run: |
+          python tools/novel-ingest/aura_catchup.py \
+            --old out/prior --latest out/latest --out out/publish
+          cat out/latest/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain source texts and integrity receipts for auditing
+        uses: actions/upload-artifact@v4
+        with:
+          name: aura-farming-98-99-and-89-verified
+          path: |
+            out/latest/**
+            out/publish/**
+          if-no-files-found: error
+          retention-days: 30
+      - name: Stage three verified TXT files temporarily for Notion import
+        run: |
+          git config user.name 'aura-raw-transfer[bot]'
+          git config user.email 'aura-raw-transfer@users.noreply.github.com'
+          git switch --orphan notion-stage-aura-catchup-20261023
+          mkdir -p raw
+          cp out/publish/raw/*.txt raw/
+          cp out/publish/receipt.json receipt.json
+          git add raw receipt.json
+          git commit -m 'stage: verified Aura Farming chapters 89 98 99 for Notion'
+          git push origin HEAD:refs/heads/notion-stage-aura-catchup-20261023
+      - name: Import receipt
+        run: |
+          echo 'Verified chapters 89, 98, 99 staged temporarily for the approved Notion import.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Delete the temporary staging ref after all three Notion uploads are complete.' >> "$GITHUB_STEP_SUMMARY"
