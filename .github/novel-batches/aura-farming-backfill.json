@@ -1,0 +1,13 @@
+{
+  "book_key": "aura-farming",
+  "source": "royalroad",
+  "book_url": "https://www.royalroad.com/fiction/142007/my-hero-academia-aura-farming",
+  "rulate_url": "https://tl.rulate.ru/book/150719",
+  "notion_book_url": "https://app.notion.com/p/3f432a84beec8114b7b9cacaaa8e6b7d",
+  "catalog_min": 97,
+  "confirmed_raw_ranges": [[1, 25], [96, 96]],
+  "missing_raw_ranges": [[26, 95], [97, 97]],
+  "batch_size": 10,
+  "delay_seconds": 2.0,
+  "min_chars": 400
+}
