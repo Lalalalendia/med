@@ -1,0 +1,917 @@
+{
+  "schema_version": 1,
+  "source": "Notion Atarax — книги Rulate",
+  "database_url": "https://app.notion.com/p/67e171fe0d5f43c6b96219dbbd75cd07",
+  "captured_date": "2026-10-18",
+  "total_books": 280,
+  "total_source_links": 219,
+  "note": "Host-level availability only; not proof of full chapter texts or copying rights.",
+  "hosts": [
+    {
+      "host": "101kks.com",
+      "family": "101kks.com",
+      "primary": 46,
+      "additional": 0,
+      "book_ids": [
+        143974,
+        145339,
+        145341,
+        145875,
+        148620,
+        148621,
+        149121,
+        149360,
+        150269,
+        157078,
+        157957,
+        158935,
+        159109,
+        159280,
+        160350,
+        160360,
+        174841,
+        174843,
+        175849,
+        180641,
+        192476,
+        194367,
+        199361,
+        199615,
+        200360,
+        200363,
+        200365,
+        203056,
+        204330,
+        204341,
+        204345,
+        204598,
+        204604,
+        204607,
+        204609,
+        205775,
+        205779,
+        205780,
+        205819,
+        205821,
+        205823,
+        205827,
+        211775
+      ],
+      "example_urls": [
+        "https://101kks.com/book/13279/index.html",
+        "https://101kks.com/book/13902/index.html"
+      ]
+    },
+    {
+      "host": "ixdzs8.com",
+      "family": "ixdzs8.com",
+      "primary": 14,
+      "additional": 0,
+      "book_ids": [
+        57348,
+        125586,
+        143817,
+        144685,
+        153990,
+        155901,
+        158845,
+        160349,
+        170524,
+        170527,
+        170537,
+        214239,
+        222159,
+        222160
+      ],
+      "example_urls": [
+        "https://ixdzs8.com/read/343625/",
+        "https://ixdzs8.com/read/570704/"
+      ]
+    },
+    {
+      "host": "twbook.cc",
+      "family": "twbook.cc",
+      "primary": 14,
+      "additional": 0,
+      "book_ids": [
+        130139,
+        132678,
+        137482,
+        141340,
+        142102,
+        142105,
+        142106,
+        143976,
+        147018,
+        148353,
+        155494,
+        166851,
+        171093
+      ],
+      "example_urls": [
+        "https://www.twbook.cc/1904521307/dir",
+        "https://www.twbook.cc/240375110/"
+      ]
+    },
+    {
+      "host": "101kanshu.com",
+      "family": "101kanshu.com",
+      "primary": 12,
+      "additional": 0,
+      "book_ids": [
+        144105,
+        145938,
+        146082,
+        146088,
+        146089,
+        146090,
+        146393,
+        148619,
+        149362,
+        149811,
+        150047,
+        150057
+      ],
+      "example_urls": [
+        "https://101kanshu.com/book/11644/index.html",
+        "https://101kanshu.com/book/12481/index.html"
+      ]
+    },
+    {
+      "host": "twkan.com",
+      "family": "twkan.com",
+      "primary": 11,
+      "additional": 0,
+      "book_ids": [
+        145524,
+        147452,
+        148932,
+        148936,
+        149022,
+        149023,
+        149118,
+        149250,
+        150518,
+        150641,
+        166233
+      ],
+      "example_urls": [
+        "https://twkan.com/book/86305.html",
+        "https://twkan.com/book/85861.html"
+      ]
+    },
+    {
+      "host": "drxsw.com",
+      "family": "drxsw.com",
+      "primary": 9,
+      "additional": 1,
+      "book_ids": [
+        140080,
+        141302,
+        141690,
+        142932,
+        144687,
+        145340,
+        146205,
+        146644,
+        147658,
+        148473
+      ],
+      "example_urls": [
+        "https://www.drxsw.com/book/3369647/",
+        "https://www.drxsw.com/book/3842174/"
+      ]
+    },
+    {
+      "host": "timotxt.com",
+      "family": "timotxt.com",
+      "primary": 9,
+      "additional": 0,
+      "book_ids": [
+        225680,
+        225685,
+        225687,
+        225690,
+        225691,
+        229387,
+        229391,
+        230563,
+        233362
+      ],
+      "example_urls": [
+        "https://www.timotxt.com/2312587182",
+        "https://www.timotxt.com/2511556748/"
+      ]
+    },
+    {
+      "host": "wap.faloo.com",
+      "family": "faloo.com",
+      "primary": 9,
+      "additional": 0,
+      "book_ids": [
+        81695,
+        88259,
+        91069,
+        92407,
+        96364,
+        96478,
+        99414,
+        102259,
+        106524
+      ],
+      "example_urls": [
+        "https://wap.faloo.com/1239043.html",
+        "https://wap.faloo.com/1133090.html"
+      ]
+    },
+    {
+      "host": "69shuba.com",
+      "family": "69shuba.com",
+      "primary": 8,
+      "additional": 0,
+      "book_ids": [
+        100617,
+        128677,
+        150520,
+        156509,
+        156700,
+        157074,
+        157755,
+        199610
+      ],
+      "example_urls": [
+        "https://www.69shuba.com/book/52090.htm",
+        "https://www.69shuba.com/book/55381/"
+      ]
+    },
+    {
+      "host": "wap2.faloo.com",
+      "family": "faloo.com",
+      "primary": 6,
+      "additional": 0,
+      "book_ids": [
+        84197,
+        86683,
+        88560,
+        88754,
+        89438,
+        96366
+      ],
+      "example_urls": [
+        "https://wap2.faloo.com/1046066.html",
+        "https://wap2.faloo.com/1279003.html"
+      ]
+    },
+    {
+      "host": "fanqienovel.com",
+      "family": "fanqienovel.com",
+      "primary": 3,
+      "additional": 2,
+      "book_ids": [
+        100316,
+        140080,
+        145340,
+        221897
+      ],
+      "example_urls": [
+        "https://fanqienovel.com/page/7195400888423287823",
+        "https://fanqienovel.com/keyword/60210"
+      ]
+    },
+    {
+      "host": "ixdzs.tw",
+      "family": "ixdzs.tw",
+      "primary": 5,
+      "additional": 0,
+      "book_ids": [
+        142104,
+        144935,
+        149249,
+        235116,
+        238848
+      ],
+      "example_urls": [
+        "https://ixdzs.tw/read/594890/",
+        "https://ixdzs.tw/read/378235/"
+      ]
+    },
+    {
+      "host": "jpxs123.com",
+      "family": "jpxs123.com",
+      "primary": 5,
+      "additional": 0,
+      "book_ids": [
+        159544,
+        159694,
+        159710,
+        168086,
+        168087
+      ],
+      "example_urls": [
+        "https://jpxs123.com/tongren/11645.html",
+        "https://jpxs123.com/tongren/8871.html"
+      ]
+    },
+    {
+      "host": "b.faloo.com",
+      "family": "faloo.com",
+      "primary": 4,
+      "additional": 0,
+      "book_ids": [
+        90402,
+        90424,
+        92076,
+        94689
+      ],
+      "example_urls": [
+        "https://b.faloo.com/890392_7.html",
+        "https://b.faloo.com/1299559.html"
+      ]
+    },
+    {
+      "host": "boxnovel.com",
+      "family": "boxnovel.com",
+      "primary": 4,
+      "additional": 0,
+      "book_ids": [
+        4991,
+        54031,
+        65413,
+        73335
+      ],
+      "example_urls": [
+        "https://boxnovel.com/novel/throne-of-magical-arcana/",
+        "https://boxnovel.com/novel/magic-deity-godly-choices/"
+      ]
+    },
+    {
+      "host": "novgo.co",
+      "family": "novgo.co",
+      "primary": 3,
+      "additional": 0,
+      "book_ids": [
+        103091,
+        103458,
+        105036
+      ],
+      "example_urls": [
+        "https://novgo.co/novel/i-secretly-develop-myself-in-the-demon-world/",
+        "https://novgo.co/novel/the-path-of-survivor-begins-with-obtaining-titles/"
+      ]
+    },
+    {
+      "host": "biquge.tw",
+      "family": "biquge.tw",
+      "primary": 2,
+      "additional": 0,
+      "book_ids": [
+        139346,
+        144688
+      ],
+      "example_urls": [
+        "https://www.biquge.tw/book/1287610/",
+        "https://www.biquge.tw/book/1304223/"
+      ]
+    },
+    {
+      "host": "bronovel.com",
+      "family": "bronovel.com",
+      "primary": 2,
+      "additional": 0,
+      "book_ids": [
+        78947,
+        83302
+      ],
+      "example_urls": [
+        "https://bronovel.com/novel/disciple-cashback-system-i-got-exposed-by-my-disciple/disciple-cashback-system-i-got-exposed-by-my-disciple/",
+        "https://bronovel.com/novel/reincarnated-as-a-demonic-dragon-i-formed-a-pact-with-a-beautiful-female-lord/"
+      ]
+    },
+    {
+      "host": "disk.yandex.ru",
+      "family": "disk.yandex.ru",
+      "primary": 0,
+      "additional": 2,
+      "book_ids": [
+        84539,
+        159109
+      ],
+      "example_urls": [
+        "https://disk.yandex.ru/d/J0sSfVlvYNd1-w",
+        "https://disk.yandex.ru/d/ssF8tYL8ChJhDw"
+      ]
+    },
+    {
+      "host": "ffxs8.com",
+      "family": "ffxs8.com",
+      "primary": 2,
+      "additional": 0,
+      "book_ids": [
+        171094
+      ],
+      "example_urls": [
+        "https://ffxs8.com/trxs/19867.html"
+      ]
+    },
+    {
+      "host": "greatlyname.com",
+      "family": "greatlyname.com",
+      "primary": 2,
+      "additional": 0,
+      "book_ids": [
+        172007
+      ],
+      "example_urls": [
+        "https://www.greatlyname.com/shu/623322.html"
+      ]
+    },
+    {
+      "host": "qidiy.com",
+      "family": "qidiy.com",
+      "primary": 2,
+      "additional": 0,
+      "book_ids": [
+        147021,
+        203758
+      ],
+      "example_urls": [
+        "https://www.qidiy.com/book/111082/55384107/2.html",
+        "https://www.qidiy.com/book/110839/"
+      ]
+    },
+    {
+      "host": "quanben5.com",
+      "family": "quanben5.com",
+      "primary": 2,
+      "additional": 0,
+      "book_ids": [
+        92274,
+        131631
+      ],
+      "example_urls": [
+        "https://quanben5.com/n/renzaihaizei_chadianbaoluwobiluojiehuanqiang/xiaoshuo.html",
+        "https://quanben5.com/n/manweiyoujianjiuguan/xiaoshuo.html"
+      ]
+    },
+    {
+      "host": "ttks.tw",
+      "family": "ttks.tw",
+      "primary": 1,
+      "additional": 1,
+      "book_ids": [
+        147018,
+        147453
+      ],
+      "example_urls": [
+        "https://ttks.tw/novel/chapters/guoyunqiushengwokaoqiandaowanbeifanhailongguo/index.html",
+        "https://ttks.tw/novel/chapters/zaotongguanlenicailawojinguaitan/index.html"
+      ]
+    },
+    {
+      "host": "webnovel.com",
+      "family": "webnovel.com",
+      "primary": 1,
+      "additional": 1,
+      "book_ids": [
+        76344,
+        82611
+      ],
+      "example_urls": [
+        "https://www.webnovel.com/book/marvel-simulates-spider-ability-stunned-gwen_24021260505301805",
+        "https://www.webnovel.com/book/24233205406226805/catalog"
+      ]
+    },
+    {
+      "host": "123dua.com",
+      "family": "123dua.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        128722
+      ],
+      "example_urls": [
+        "https://www.123dua.com/dudu-36/10968825/"
+      ]
+    },
+    {
+      "host": "20xs.org",
+      "family": "20xs.org",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        99035
+      ],
+      "example_urls": [
+        "https://www.20xs.org/273994/"
+      ]
+    },
+    {
+      "host": "27k.net",
+      "family": "27k.net",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        160357
+      ],
+      "example_urls": [
+        "https://27k.net/read/208868/"
+      ]
+    },
+    {
+      "host": "4ksw.com",
+      "family": "4ksw.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        84539
+      ],
+      "example_urls": [
+        "http://4ksw.com/24/24224/0.html"
+      ]
+    },
+    {
+      "host": "69shu.com",
+      "family": "69shu.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        80376
+      ],
+      "example_urls": [
+        "https://www.69shu.com/39148/"
+      ]
+    },
+    {
+      "host": "82zg.com",
+      "family": "82zg.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        82119
+      ],
+      "example_urls": [
+        "https://www.82zg.com/book/41215/"
+      ]
+    },
+    {
+      "host": "84kanshu.com",
+      "family": "84kanshu.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        158123
+      ],
+      "example_urls": [
+        "https://www.84kanshu.com/book/95335809/"
+      ]
+    },
+    {
+      "host": "biququ.com",
+      "family": "biququ.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        73965
+      ],
+      "example_urls": [
+        "https://www.biququ.com/html/97249/"
+      ]
+    },
+    {
+      "host": "cuoceng.com",
+      "family": "cuoceng.com",
+      "primary": 0,
+      "additional": 1,
+      "book_ids": [
+        146392
+      ],
+      "example_urls": [
+        "https://www.cuoceng.com/book/chapter/b217e29b-9e28-4b36-a62c-094ea6ed231b.html"
+      ]
+    },
+    {
+      "host": "ddxsmf.com",
+      "family": "ddxsmf.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        166884
+      ],
+      "example_urls": [
+        "https://www.ddxsmf.com/52776/"
+      ]
+    },
+    {
+      "host": "erciyan.com",
+      "family": "erciyan.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        155495
+      ],
+      "example_urls": [
+        "https://www.erciyan.com/book/95230985/"
+      ]
+    },
+    {
+      "host": "fanmtl.com",
+      "family": "fanmtl.com",
+      "primary": 0,
+      "additional": 1,
+      "book_ids": [
+        88259
+      ],
+      "example_urls": [
+        "https://www.fanmtl.com/novel/sacred-land-is-going-bankrupt-and-i-invent-the-cell-phone.html"
+      ]
+    },
+    {
+      "host": "ixunshu.net",
+      "family": "ixunshu.net",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        141299
+      ],
+      "example_urls": [
+        "https://ixunshu.net/xs/18351050"
+      ]
+    },
+    {
+      "host": "m.00sw.cc",
+      "family": "00sw.cc",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        124952
+      ],
+      "example_urls": [
+        "https://m.00sw.cc/novel/169256/"
+      ]
+    },
+    {
+      "host": "m.xshbook.com",
+      "family": "xshbook.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        143516
+      ],
+      "example_urls": [
+        "https://m.xshbook.com/94816/94816414/"
+      ]
+    },
+    {
+      "host": "mtlnation.com",
+      "family": "mtlnation.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        100113
+      ],
+      "example_urls": [
+        "https://mtlnation.com/novel/american-comics-knowing-everything-starting-with-investing-in-gwen"
+      ]
+    },
+    {
+      "host": "nana00.com",
+      "family": "nana00.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        235117
+      ],
+      "example_urls": [
+        "https://www.nana00.com/xs54956/"
+      ]
+    },
+    {
+      "host": "novel543.com",
+      "family": "novel543.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        254466
+      ],
+      "example_urls": [
+        "https://www.novel543.com/0526644164/dir"
+      ]
+    },
+    {
+      "host": "novlove.com",
+      "family": "novlove.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        82611
+      ],
+      "example_urls": [
+        "https://novlove.com/novel/global-lord-100-drop-rate/"
+      ]
+    },
+    {
+      "host": "pinellianovel.com",
+      "family": "pinellianovel.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        171549
+      ],
+      "example_urls": [
+        "https://www.pinellianovel.com/books/EfGntNu.html"
+      ]
+    },
+    {
+      "host": "quanben-xiaoshuo.com",
+      "family": "quanben-xiaoshuo.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        173138
+      ],
+      "example_urls": [
+        "https://quanben-xiaoshuo.com/n/rangniqiusheng-nijingzaifengkuangmoshi/xiaoshuo.html"
+      ]
+    },
+    {
+      "host": "ranobes.net",
+      "family": "ranobes.net",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        79793
+      ],
+      "example_urls": [
+        "https://ranobes.net/novels/1205761-immortal-in-the-magic-world.html"
+      ]
+    },
+    {
+      "host": "reader-hub.com",
+      "family": "reader-hub.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        119612
+      ],
+      "example_urls": [
+        "https://reader-hub.com/novel/american-comics-killing-the-king-of-gods-cutting-hu-wanda-gwen"
+      ]
+    },
+    {
+      "host": "readnovel.com",
+      "family": "readnovel.com",
+      "primary": 0,
+      "additional": 1,
+      "book_ids": [
+        170524
+      ],
+      "example_urls": [
+        "https://www.readnovel.com/book/19548486708844804"
+      ]
+    },
+    {
+      "host": "shengxuxu.net",
+      "family": "shengxuxu.net",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        172123
+      ],
+      "example_urls": [
+        "http://www.shengxuxu.net/240504/"
+      ]
+    },
+    {
+      "host": "sudugu.org",
+      "family": "sudugu.org",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        154188
+      ],
+      "example_urls": [
+        "https://www.sudugu.org/2322/"
+      ]
+    },
+    {
+      "host": "tongrenxsw.com",
+      "family": "tongrenxsw.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        142209
+      ],
+      "example_urls": [
+        "https://www.tongrenxsw.com/chapter/FG0AGF.html"
+      ]
+    },
+    {
+      "host": "trxs.cc",
+      "family": "trxs.cc",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        156062
+      ],
+      "example_urls": [
+        "https://www.trxs.cc/tongren/10705.html"
+      ]
+    },
+    {
+      "host": "uuread.tw",
+      "family": "uuread.tw",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        95778
+      ],
+      "example_urls": [
+        "https://www.uuread.tw/55726"
+      ]
+    },
+    {
+      "host": "wtr-lab.com",
+      "family": "wtr-lab.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        146392
+      ],
+      "example_urls": [
+        "https://wtr-lab.com/en/novel/14313/just-became-an-evil-god-and-got-summoned-by-the-saintess?tab=toc"
+      ]
+    },
+    {
+      "host": "wxsck.com",
+      "family": "wxsck.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        147940
+      ],
+      "example_urls": [
+        "https://wxsck.com/book/21721/"
+      ]
+    },
+    {
+      "host": "xqishuta.net",
+      "family": "xqishuta.net",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        158121
+      ],
+      "example_urls": [
+        "http://www.xqishuta.net/du/149/149783/"
+      ]
+    },
+    {
+      "host": "xs8.cn",
+      "family": "xs8.cn",
+      "primary": 0,
+      "additional": 1,
+      "book_ids": [
+        148621
+      ],
+      "example_urls": [
+        "https://www.xs8.cn/bookquery/fobpgthvlwhv"
+      ]
+    },
+    {
+      "host": "xszj.org",
+      "family": "xszj.org",
+      "primary": 0,
+      "additional": 1,
+      "book_ids": [
+        100316
+      ],
+      "example_urls": [
+        "https://xszj.org/b/352919"
+      ]
+    },
+    {
+      "host": "xxbiqudu.com",
+      "family": "xxbiqudu.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        108959
+      ],
+      "example_urls": [
+        "https://www.xxbiqudu.com/151_151621/"
+      ]
+    },
+    {
+      "host": "yxshufang.com",
+      "family": "yxshufang.com",
+      "primary": 1,
+      "additional": 0,
+      "book_ids": [
+        154350
+      ],
+      "example_urls": [
+        "https://www.yxshufang.com/book/W1IY.html"
+      ]
+    }
+  ]
+}
