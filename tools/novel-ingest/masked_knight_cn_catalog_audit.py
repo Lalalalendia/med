@@ -21,6 +21,7 @@ from chapter_coverage_census import PoliteClient, parse_han_number
 SOURCES = {
     "hetushu": "https://www.hetushu.com/book/123/index.html",
     "hetubook": "https://www.hetubook.com/book/123/index.html",
+    "piaotia": "https://www.piaotia.com/html/0/387/index.html",
     "85novel": "https://www.85novel.com/book/801674.html",
     "quanben18": "https://www.quanben18.com/bianlianwushi/",
     "legaoxs": "https://www.legaoxs.com/bianlianwushi/",
