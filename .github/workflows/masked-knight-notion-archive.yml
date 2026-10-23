@@ -61,7 +61,12 @@ jobs:
       - name: Upload full original and 330 chapter files for Notion
         uses: actions/upload-artifact@v4
         with:
-          name: masked-knight-notion-source-CN-001-330
-          path: out/masked-knight-cn-330/**
+          name: masked-knight-notion-CN-001-330-chapters-without-duplicate-original
+          path: |
+            out/masked-knight-cn-330/chapters/**
+            out/masked-knight-cn-330/combined_cn.txt
+            out/masked-knight-cn-330/manifest.json
+            out/masked-knight-cn-330/README.md
+            out/masked-knight-cn-330/qa/**
           if-no-files-found: error
           retention-days: 7
