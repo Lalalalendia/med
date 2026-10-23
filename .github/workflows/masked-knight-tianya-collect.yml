@@ -6,6 +6,8 @@ on:
       - audit/masked-knight-availability-20261024
     paths:
       - '.github/workflows/masked-knight-tianya-collect.yml'
+      - 'tools/novel-ingest/masked_knight_tianyabooks_collect.py'
+      - 'tools/novel-ingest/test_masked_knight_tianyabooks_collect.py'
 
 permissions:
   contents: read
