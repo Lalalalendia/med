@@ -1,0 +1,43 @@
+name: Masked Knight 85novel full chapter index probe
+
+on:
+  pull_request:
+    paths:
+      - 'tools/novel-ingest/masked_knight_85novel_catalog.py'
+      - 'tools/novel-ingest/test_masked_knight_85novel_catalog.py'
+      - '.github/workflows/masked-knight-85novel-catalog.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  public-index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Offline tests
+        run: python -m unittest discover -s tools/novel-ingest -p test_masked_knight_85novel_catalog.py -v
+      - name: Fetch public metadata-only chapter index
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/masked_knight_85novel_catalog.py \
+            --out out/masked-knight-85novel --delay 2
+      - name: Summarize audit
+        if: always()
+        run: |
+          if test -f out/masked-knight-85novel/summary.md; then
+            cat out/masked-knight-85novel/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload chapter URLs and coverage only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-85novel-catalog-urls
+          path: out/masked-knight-85novel/**
+          if-no-files-found: warn
+          retention-days: 14
