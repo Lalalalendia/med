@@ -1,0 +1,82 @@
+name: Masked Knight Tianyabooks Chinese chapter collection
+
+on:
+  push:
+    branches:
+      - audit/masked-knight-availability-20261024
+    paths:
+      - '.github/workflows/masked-knight-tianya-collect.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Validate book-specific permission
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path(".github/masked-knight-cn-request.json").read_text())
+          if x.get("rights_confirmed") is not True or x.get("book_key")!="masked-knight":
+              raise SystemExit("No book-specific permission")
+          PY
+      - name: Offline index, extraction and anti-spoofing tests
+        run: python -m unittest discover -s tools/novel-ingest -p test_masked_knight_tianyabooks_collect.py -v
+      - name: Fetch seven representative chapter numbers (including splits)
+        run: |
+          python tools/novel-ingest/masked_knight_tianyabooks_collect.py \
+            --rights-confirmed --sample-only --delay 2 \
+            --out out/masked-knight-tianya-smoke
+      - name: Publish preflight report
+        if: always()
+        run: |
+          if test -f out/masked-knight-tianya-smoke/summary.md; then
+            cat out/masked-knight-tianya-smoke/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload sample source texts for examination
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-tianyabooks-smoke
+          path: out/masked-knight-tianya-smoke/**
+          if-no-files-found: warn
+          retention-days: 7
+
+  all_available:
+    needs: smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Acquire all available Chinese story bodies
+        run: |
+          python tools/novel-ingest/masked_knight_tianyabooks_collect.py \
+            --rights-confirmed --delay 2 \
+            --out out/masked-knight-cn-tianyabooks
+      - name: Publish actual coverage, not inflated chapter count
+        if: always()
+        run: |
+          if test -f out/masked-knight-cn-tianyabooks/summary.md; then
+            cat out/masked-knight-cn-tianyabooks/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload all retrieved Chinese text, even if partial
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-cn-tianyabooks-authorized-partial
+          path: out/masked-knight-cn-tianyabooks/**
+          if-no-files-found: warn
+          retention-days: 7
