@@ -1,0 +1,51 @@
+name: Fanqie Flowers public metadata audit
+on:
+  push:
+    branches: ['research/bleach-flowers-source-20261018']
+  pull_request:
+    paths:
+      - 'tools/novel-ingest/fanqie_flowers_public_audit.py'
+      - 'tools/novel-ingest/test_fanqie_flowers_public_audit.py'
+      - '.github/workflows/fanqie-flowers-public-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests
+      - run: python -m unittest discover -s tools/novel-ingest -p test_fanqie_flowers_public_audit.py -v
+  metadata:
+    needs: unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests playwright
+      - name: Collect metadata, never chapter prose
+        run: python tools/novel-ingest/fanqie_flowers_public_audit.py --delay 2
+      - name: Publish summary
+        if: always()
+        run: |
+          if test -f out/bleach-flowers-public-audit/summary.md; then
+            cat out/bleach-flowers-public-audit/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Archive metadata only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fanqie-flowers-public-metadata-${{ github.run_id }}
+          path: |
+            out/bleach-flowers-public-audit/manifest.json
+            out/bleach-flowers-public-audit/summary.md
+          retention-days: 7
+          if-no-files-found: warn
