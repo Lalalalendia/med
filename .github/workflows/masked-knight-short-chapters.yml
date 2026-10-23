@@ -1,0 +1,62 @@
+name: Masked Knight six short chapters QA
+
+on:
+  pull_request:
+    paths:
+      - 'tools/novel-ingest/masked_knight_short_chapters_probe.py'
+      - '.github/workflows/masked-knight-short-chapters.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Verify rights confirmation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path(".github/masked-knight-export-request.json").read_text())
+          if not (x.get("requested") is True and x.get("rights_confirmed") is True
+                  and x.get("book_key")=="masked-knight"):
+              raise SystemExit("Explicit book-specific permissions missing")
+          PY
+      - name: Save six borderline chapter bodies for editorial QA
+        id: probe
+        continue-on-error: true
+        run: python tools/novel-ingest/masked_knight_short_chapters_probe.py
+      - name: Summary of text signatures
+        if: always()
+        run: |
+          if test -f out/masked-knight-short-chapters/manifest.json; then
+            python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          m=json.loads(Path("out/masked-knight-short-chapters/manifest.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as o:
+              o.write("# Six short chapter bodies (manual QA required)\n\n")
+              for r in m["chapters"]:
+                  o.write(f"- {r['ordinal']}: {r['status']}, "
+                          f"chars={r.get('characters')}, "
+                          f"words={r.get('words')}, "
+                          f"access-marker={r.get('access_or_ui_marker')}, "
+                          f"verdict={r.get('verdict')}\n")
+          PY
+          fi
+      - name: Upload six diagnostic short TXT files (temporary)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-six-short-source-qa
+          path: out/masked-knight-short-chapters/**
+          if-no-files-found: warn
+          retention-days: 7
