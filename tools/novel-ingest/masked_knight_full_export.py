@@ -22,6 +22,9 @@ from source_ingest import USER_AGENT, run_ingest, validate_url
 BOOK_URL = "https://www.webnovel.com/book/6831835502000105/catalog"
 TOTAL = 338
 BATCH = 30
+# Public Webnovel HTML switches to teaser-length text after chapter 73.
+# This conservative floor rejects snippets; manual review is still required.
+MIN_FULL_CHARS = 3000
 
 
 def check_robots(session: requests.Session, urls: list[str]) -> None:
@@ -69,7 +72,7 @@ def assemble(manifests: list[dict], out: Path, *,
                 continue
             data = body_file.read_bytes()
             digest = hashlib.sha256(data).hexdigest()
-            if digest != entry.get("sha256") or len(data) < 400:
+            if digest != entry.get("sha256") or len(data) < MIN_FULL_CHARS:
                 failures.append(
                     {"ordinal": n, "status": "checksum_or_size_mismatch"})
                 continue
@@ -95,6 +98,8 @@ def assemble(manifests: list[dict], out: Path, *,
         "verified_chapters": len(collected), "missing": missing,
         "failures": failures, "status": status,
         "rights_confirmed_for_export": True,
+        "minimum_nospace_chars": MIN_FULL_CHARS,
+        "quality_caveat": "Size is necessary, not proof of completeness. Compare against independent sources.",
         "chapters": [
             {k: v for k, v in row.items() if k != "_file"}
             for _, row in sorted(collected.items())
@@ -151,7 +156,8 @@ def collect(out: Path, delay: float) -> dict:
             part = run_ingest(
                 source="webnovel", book_url=BOOK_URL,
                 start=start, end=end, out_dir=target, delay=delay,
-                session=session, book_key="masked-knight")
+                session=session, book_key="masked-knight",
+                min_chars=MIN_FULL_CHARS)
             if (part["catalog_count"] != TOTAL or part["catalog_gaps"]
                     or [(x["ordinal"], x["source_id"]) for x in part["catalog"]]
                     != [(x["ordinal"], x["source_id"]) for x in catalog]):

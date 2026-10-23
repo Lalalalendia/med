@@ -28,7 +28,7 @@ class MaskedKnightExportTests(unittest.TestCase):
         raw.mkdir(parents=True)
         chapters = []
         for n in range(1, count + 1):
-            body = (f"chapter {n} " + str(n) * 800 + "\n").encode()
+            body = (f"chapter {n} " + str(n) * 4500 + "\n").encode()
             (raw / f"{n:04d}.txt").write_bytes(body)
             sha = hashlib.sha256(body).hexdigest()
             if corrupt == n:
