@@ -1,0 +1,44 @@
+name: Masked Knight additional Chinese source audit
+
+on:
+  pull_request:
+    paths:
+      - 'tools/novel-ingest/masked_knight_extra_source_audit.py'
+      - 'tools/novel-ingest/test_masked_knight_extra_source_audit.py'
+      - '.github/workflows/masked-knight-extra-source-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Parser and security tests (offline)
+        run: python -m unittest discover -s tools/novel-ingest -p test_masked_knight_extra_source_audit.py -v
+      - name: Check new Chinese sources via ordinary public pages
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/masked_knight_extra_source_audit.py \
+            --delay 2 --out out/masked-knight-new-source-audit
+      - name: Report checked URLs, index and body lengths only
+        if: always()
+        run: |
+          if test -f out/masked-knight-new-source-audit/summary.md; then
+            cat out/masked-knight-new-source-audit/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload metadata and failures, never texts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-extra-chinese-sources-metadata
+          path: out/masked-knight-new-source-audit/**
+          if-no-files-found: warn
+          retention-days: 14
