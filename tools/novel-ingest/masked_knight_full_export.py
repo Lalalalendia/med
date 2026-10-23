@@ -103,17 +103,18 @@ def assemble(manifests: list[dict], out: Path, *,
     (out / "manifest.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8")
+    # Retain every checksum-verified chapter even if a later chapter is short
+    # or blocked. The temporary batch directory is deleted after assembly.
+    chapter_dir = out / "chapters"
+    chapter_dir.mkdir(exist_ok=True)
+    for n, row in sorted(collected.items()):
+        data = Path(row["_file"]).read_text(encoding="utf-8")
+        text = f"Chapter {n}: {row['title']}\n\n{data.rstrip()}\n"
+        (chapter_dir / f"{n:04d}.txt").write_text(text, encoding="utf-8")
     if status == "PASS":
-        chapter_dir = out / "chapters"
-        chapter_dir.mkdir(exist_ok=True)
         with (out / "combined.txt").open("w", encoding="utf-8") as combined:
             for n in range(1, expected + 1):
-                row = collected[n]
-                data = Path(row["_file"]).read_text(encoding="utf-8")
-                text = f"Chapter {n}: {row['title']}\n\n{data.rstrip()}\n"
-                (chapter_dir / f"{n:04d}.txt").write_text(
-                    text, encoding="utf-8")
-                combined.write(text + "\n")
+                combined.write((chapter_dir / f"{n:04d}.txt").read_text(encoding="utf-8") + "\n")
     return result
 
 

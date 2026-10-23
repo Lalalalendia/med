@@ -68,6 +68,8 @@ class MaskedKnightExportTests(unittest.TestCase):
             self.assertEqual(result["status"], "PARTIAL")
             self.assertEqual(result["missing"], [2])
             self.assertFalse((root / "out" / "combined.txt").exists())
+            self.assertEqual(
+                len(list((root / "out" / "chapters").glob("*.txt"))), 2)
 
     def test_missing_chapter_rejects_combined_text(self):
         with tempfile.TemporaryDirectory() as p:

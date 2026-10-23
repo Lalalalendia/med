@@ -86,11 +86,13 @@ jobs:
           path: out/masked-knight-export/**
           if-no-files-found: error
           retention-days: 7
-      - name: Upload metadata on partial or blocked run
+      - name: Upload verified chapters and receipts on partial or blocked run
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: masked-knight-partial-receipts
-          path: out/masked-knight-export/manifest.json
+          name: masked-knight-partial-verified-texts
+          path: |
+            out/masked-knight-export/manifest.json
+            out/masked-knight-export/chapters/**
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 7
