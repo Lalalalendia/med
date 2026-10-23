@@ -1,0 +1,72 @@
+name: Masked Knight Notion full CN RAW 330 archive
+
+on:
+  push:
+    branches:
+      - audit/masked-knight-availability-20261024
+    paths:
+      - '.github/workflows/masked-knight-notion-archive.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check user permission for this exact book
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path(".github/masked-knight-cn-request.json").read_text())
+          if r.get("book_key")!="masked-knight" or r.get("rights_confirmed") is not True:
+              raise SystemExit("Book-specific rights confirmation unavailable")
+          PY
+      - name: Download exact public full Chinese original
+        run: |
+          set -euo pipefail
+          mkdir -p source out/masked-knight-cn-330
+          curl --fail --location --silent --show-error --retry 2 \
+            --connect-timeout 15 --max-time 240 \
+            'https://huggingface.co/datasets/lainka0o0/chinese-novel-nonH-collect/resolve/main/D/096.%E5%8F%98%E8%84%B8%E6%AD%A6%E5%A3%AB.txt' \
+            --output source/096_bianlianwushi.txt
+          echo 'da745ca09bb35b35e168eaf74d888133fe0d7e22c2a486ef4dd8f2cd0a5c371e  source/096_bianlianwushi.txt' | sha256sum --check
+      - name: Produce 330 exact numbered CN texts with hashes and QA flags
+        run: |
+          python tools/novel-ingest/masked_knight_notion_archive.py \
+            source/096_bianlianwushi.txt out/masked-knight-cn-330
+      - name: Verify every exported chapter before artifact
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+          out=Path('out/masked-knight-cn-330')
+          data=json.loads((out/'manifest.json').read_text())
+          assert data['chapter_count']==330
+          assert data['missing_ordinals']==[]
+          assert len(data['chapters'])==330
+          for ch in data['chapters']:
+              p=out/'chapters'/f"{ch['ordinal']:03d}.txt"
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==ch['sha256']
+          assert hashlib.sha256((out/'combined_cn.txt').read_bytes()).hexdigest()==data['combined_sha256']
+          assert hashlib.sha256((out/'source/original_full.txt').read_bytes()).hexdigest()==data['original_sha256']
+          print("PASS 330/330 numbering, all SHA-256, original and combined verified")
+          PY
+      - name: Upload full original and 330 chapter files for Notion
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-notion-CN-001-330-chapters-without-duplicate-original
+          path: |
+            out/masked-knight-cn-330/chapters/**
+            out/masked-knight-cn-330/combined_cn.txt
+            out/masked-knight-cn-330/manifest.json
+            out/masked-knight-cn-330/README.md
+            out/masked-knight-cn-330/qa/**
+          if-no-files-found: error
+          retention-days: 7

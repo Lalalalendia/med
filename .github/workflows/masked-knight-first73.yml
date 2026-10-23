@@ -1,0 +1,62 @@
+name: Masked Knight authorized first 73 long English chapters
+
+on:
+  push:
+    branches:
+      - audit/masked-knight-availability-20261024
+    paths:
+      - '.github/workflows/masked-knight-first73.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Check existing rights confirmation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path(".github/masked-knight-export-request.json").read_text())
+          if x.get("rights_confirmed") is not True or x.get("book_key")!="masked-knight":
+              raise SystemExit("Missing book-specific rights confirmation")
+          PY
+      - name: Check offline export integrity
+        run: python -m unittest discover -s tools/novel-ingest -p test_masked_knight_full_export.py -v
+      - name: Fetch and archive verified public 1-73 only
+        id: ingest
+        run: |
+          python tools/novel-ingest/masked_knight_opening_73.py \
+            --rights-confirmed --delay 2 \
+            --out-dir out/masked-knight-en-001-073
+      - name: Publish subset-only status
+        if: always()
+        run: |
+          if test -f out/masked-knight-en-001-073/manifest.json; then
+            python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          x=json.loads(Path('out/masked-knight-en-001-073/manifest.json').read_text())
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as h:
+              h.write(f"Subset: 1-73, status {x['status']}, verified "
+                      f"{x['verified_chapters']}/73.\n\n"
+                      "**This is not the full 338-chapter book.**\n")
+          PY
+          fi
+      - name: Archive authorized subset and receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-en-first-73-only
+          path: out/masked-knight-en-001-073/**
+          if-no-files-found: warn
+          retention-days: 7

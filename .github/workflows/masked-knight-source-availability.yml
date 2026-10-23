@@ -1,0 +1,121 @@
+name: Masked Knight source availability (metadata only)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/masked-knight-source-availability.yml'
+      - 'tools/novel-ingest/source_ingest.py'
+      - 'tools/novel-ingest/chapter_coverage_census.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Regression tests (offline)
+        run: |
+          python tools/novel-ingest/chapter_coverage_census.py --self-test
+          python -m unittest discover -s tools/novel-ingest -p test_source_ingest.py -v
+      - name: Probe Hetushu Chinese catalog and three spaced bodies
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'tools/novel-ingest')
+          import chapter_coverage_census as c
+          cfg = {
+              'key': 'masked-knight-hetushu',
+              'title': 'Masked Knight / Bian Lian Wu Shi',
+              'index': 'https://www.hetushu.com/book/123/index.html',
+              'chapter_pattern': r'^/book/123/[0-9]+\.html$',
+              'expected': 330,
+              'numbering': 'han-main',
+          }
+          out = Path('out/masked-knight/chinese')
+          report = {'started_utc': dt.datetime.now(dt.timezone.utc).isoformat(),
+                    'books': [], 'policy': 'robots fail-closed; metadata only; max 3 bodies'}
+          c.census(cfg, c.PoliteClient(3.0), out, report, limit=3)
+          print((out / 'summary.md').read_text(encoding='utf-8'))
+          PY
+      - name: Probe publisher catalog reachability (no story bodies)
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'tools/novel-ingest')
+          import chapter_coverage_census as c
+          url = 'https://www.hongxiu.com/book/22139906000354502'
+          out = Path('out/masked-knight/publisher')
+          out.mkdir(parents=True, exist_ok=True)
+          result = {'url': url, 'expected_catalog_entries': 425,
+                    'body_text_downloaded': False, 'status': 'unverified'}
+          try:
+              page = c.PoliteClient(3.0).get(url)
+              result.update(status='catalog_reachable', html_chars=len(page),
+                            has_title=('\u53d8\u8138\u6b66\u58eb' in page),
+                            has_vip_marker=('VIP' in page))
+          except Exception as exc:
+              result.update(status='blocked_or_unavailable', reason=str(exc)[:240])
+          (out / 'manifest.json').write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
+          print(json.dumps(result, ensure_ascii=False))
+          PY
+      - name: Probe WebNovel English catalog (338 expected)
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/source_ingest.py \
+            --source webnovel \
+            --book-url https://www.webnovel.com/book/6831835502000105/catalog \
+            --book-key masked-knight \
+            --start 1 --end 1 --catalog-only --out-dir out/masked-knight/english-catalog
+      - name: Probe WebNovel chapter 1
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/source_ingest.py \
+            --source webnovel \
+            --book-url https://www.webnovel.com/book/6831835502000105/catalog \
+            --book-key masked-knight \
+            --start 1 --end 1 --out-dir out/masked-knight/english-first
+      - name: Probe WebNovel chapter 338
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/source_ingest.py \
+            --source webnovel \
+            --book-url https://www.webnovel.com/book/6831835502000105/catalog \
+            --book-key masked-knight \
+            --start 338 --end 338 --out-dir out/masked-knight/english-last
+      - name: Delete any temporary prose; retain metadata only
+        if: always()
+        run: |
+          find out/masked-knight -type d -name raw -prune -exec rm -rf -- '{}' + 2>/dev/null || true
+          for f in out/masked-knight/*/summary.md; do
+            if test -f "$f"; then cat "$f" >> "$GITHUB_STEP_SUMMARY"; fi
+          done
+          if test -f out/masked-knight/publisher/manifest.json; then
+            echo 'Publisher preflight:' >> "$GITHUB_STEP_SUMMARY"
+            cat out/masked-knight/publisher/manifest.json >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload evidence receipts (no book texts)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-source-availability
+          path: |
+            out/masked-knight/*/manifest.json
+            out/masked-knight/*/summary.md
+            out/masked-knight/*/handoff.json
+          if-no-files-found: warn
+          retention-days: 14

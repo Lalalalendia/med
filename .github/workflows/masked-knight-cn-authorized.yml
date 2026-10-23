@@ -1,0 +1,78 @@
+name: Masked Knight Chinese 330 authorized collection
+
+on:
+  push:
+    branches:
+      - audit/masked-knight-availability-20261024
+    paths:
+      - '.github/masked-knight-cn-request.json'
+      - '.github/workflows/masked-knight-cn-authorized.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check user-confirmed book-specific rights and exact target
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          cfg=json.loads(Path(".github/masked-knight-cn-request.json").read_text())
+          expected={"book_key":"masked-knight","source_language":"zh",
+                    "requested":True,"rights_confirmed":True,
+                    "expected_story_chapters":330}
+          for k,v in expected.items():
+              if cfg.get(k)!=v:
+                  raise SystemExit("Unauthorized CN export: invalid "+k)
+          if not str(cfg.get("rights_basis","")).strip():
+              raise SystemExit("Missing rights confirmation source")
+          delay=cfg.get("delay_seconds")
+          if type(delay) not in (float,int) or not 1.5<=delay<=10:
+              raise SystemExit("Invalid delay")
+          Path("out").mkdir(exist_ok=True)
+          Path("out/cn-request-delay.txt").write_text(str(delay))
+          PY
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Offline parser and identity tests
+        run: python -m unittest discover -s tools/novel-ingest -p test_masked_knight_cn_export.py -v
+      - name: Collect public chapters 1 through 330, stopping at restrictions
+        id: ingest
+        run: |
+          python tools/novel-ingest/masked_knight_cn_export.py \
+            --rights-confirmed --delay "$(cat out/cn-request-delay.txt)" \
+            --out out/masked-knight-cn-authorized
+      - name: Report coverage
+        if: always()
+        run: |
+          if test -f out/masked-knight-cn-authorized/manifest.json; then
+            python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          m=json.loads(Path("out/masked-knight-cn-authorized/manifest.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as h:
+              h.write("# Masked Knight Chinese source status\n\n")
+              h.write(f"Status: {m['status']}\n\n")
+              h.write(f"Verified: {m['verified']}/{m['expected']}\n\n")
+              h.write(f"Sources: {m['source_checks']}\n\n")
+              h.write(f"Missing count: {len(m['missing'])}\n")
+          PY
+          else
+            echo "No manifest: read earlier error" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload verified texts or partial receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-chinese-330-authorized
+          path: out/masked-knight-cn-authorized/**
+          if-no-files-found: warn
+          retention-days: 7

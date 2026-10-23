@@ -1,0 +1,64 @@
+name: Masked Knight full Chinese TXT from Hugging Face
+
+on:
+  push:
+    branches:
+      - audit/masked-knight-availability-20261024
+    paths:
+      - '.github/workflows/masked-knight-hf-source.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check permission confirmation for this book
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          req = json.loads(Path(".github/masked-knight-cn-request.json").read_text())
+          if not (req.get("rights_confirmed") is True
+                  and req.get("requested") is True
+                  and req.get("book_key") == "masked-knight"):
+              raise SystemExit("No book-specific copying permission")
+          PY
+      - name: Fetch exact novel TXT, verify published SHA256
+        run: |
+          set -euo pipefail
+          mkdir -p out/masked-knight-cn-hf
+          curl --fail --location --silent --show-error \
+            --retry 2 --connect-timeout 15 --max-time 240 \
+            --output out/masked-knight-cn-hf/096_bianlianwushi.txt \
+            'https://huggingface.co/datasets/lainka0o0/chinese-novel-nonH-collect/resolve/main/D/096.%E5%8F%98%E8%84%B8%E6%AD%A6%E5%A3%AB.txt'
+          echo 'da745ca09bb35b35e168eaf74d888133fe0d7e22c2a486ef4dd8f2cd0a5c371e  out/masked-knight-cn-hf/096_bianlianwushi.txt' \
+            | sha256sum --check --status
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          f=Path("out/masked-knight-cn-hf/096_bianlianwushi.txt")
+          b=f.read_bytes()
+          d={"source":"huggingface/lainka0o0/chinese-novel-nonH-collect",
+             "book":"变脸武士","status":"SHA256_MATCH_NOT_YET_CHAPTER_QA",
+             "size_bytes":len(b),"sha256":hashlib.sha256(b).hexdigest(),
+             "text_decoding_tested":False,"chapters_segmented":False,
+             "rights_confirmed":True}
+          Path("out/masked-knight-cn-hf/receipt.json").write_text(
+              json.dumps(d,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps(d,ensure_ascii=False))
+          PY
+      - name: Archive source TXT and verified receipt
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-authorized-complete-Chinese-TXT-unsegmented
+          path: out/masked-knight-cn-hf/**
+          if-no-files-found: error
+          retention-days: 7

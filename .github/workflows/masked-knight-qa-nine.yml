@@ -1,0 +1,42 @@
+name: Masked Knight nine chapter QA source comparison
+
+on:
+  push:
+    branches:
+      - audit/masked-knight-availability-20261024
+    paths:
+      - '.github/workflows/masked-knight-qa-nine.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  nine-samples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Book-specific permission
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path(".github/masked-knight-cn-request.json").read_text())
+          if x.get("book_key") != "masked-knight" or x.get("rights_confirmed") is not True:
+              raise SystemExit("User permission unavailable")
+          PY
+      - name: Fetch exactly nine public CN source chapters with robot compliance
+        run: |
+          python tools/novel-ingest/masked_knight_qa9_reference.py
+      - name: Upload only temporary reference texts and checksums
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-nine-cn-reference-chapters
+          path: out/masked-knight-cn-nine-reference/**
+          if-no-files-found: warn
+          retention-days: 7
