@@ -1,0 +1,68 @@
+name: Bleach source metadata audit
+on:
+  push:
+    branches: ['feature/bleach-source-audit-20261018']
+    paths:
+      - 'tools/novel-ingest/bleach_source_audit.py'
+      - 'tools/novel-ingest/test_bleach_source_audit.py'
+      - '.github/workflows/bleach-source-audit.yml'
+  pull_request:
+    paths:
+      - 'tools/novel-ingest/bleach_source_audit.py'
+      - 'tools/novel-ingest/test_bleach_source_audit.py'
+      - '.github/workflows/bleach-source-audit.yml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        required: true
+        type: choice
+        options: [pilot, full]
+        default: pilot
+permissions:
+  contents: read
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - run: python -m unittest discover -s tools/novel-ingest -p test_bleach_source_audit.py -v
+  public-metadata-pilot:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event_name == 'pull_request'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 playwright
+      - name: Audit public chapters without storing prose
+        env:
+          REQUESTED_MODE: ${{ inputs.mode }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          mode="${REQUESTED_MODE:-pilot}"
+          if [ "$EVENT_NAME" = "push" ] || [ "$EVENT_NAME" = "pull_request" ]; then mode="full"; fi
+          python tools/novel-ingest/bleach_source_audit.py --mode "$mode" --delay 2 --out out/bleach-source-audit
+      - name: Report results
+        if: always()
+        run: |
+          if test -f out/bleach-source-audit/summary.md; then
+            cat out/bleach-source-audit/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Archive metadata only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bleach-source-metadata-${{ github.run_id }}
+          path: |
+            out/bleach-source-audit/manifest.json
+            out/bleach-source-audit/summary.md
+          retention-days: 7
+          if-no-files-found: warn
