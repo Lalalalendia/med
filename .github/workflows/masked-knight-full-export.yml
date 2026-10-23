@@ -1,0 +1,72 @@
+name: Masked Knight full text export (rights gated)
+
+on:
+  pull_request:
+    paths:
+      - 'tools/novel-ingest/masked_knight_full_export.py'
+      - 'tools/novel-ingest/test_masked_knight_full_export.py'
+      - '.github/workflows/masked-knight-full-export.yml'
+  workflow_dispatch:
+    inputs:
+      rights_confirmed:
+        description: 'I have permission to reproduce and store the complete Masked Knight text'
+        required: true
+        type: boolean
+        default: false
+      delay_seconds:
+        description: 'Minimum delay between requests; 3 recommended'
+        required: true
+        type: number
+        default: 3
+
+permissions:
+  contents: read
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Rights gate and assembly regressions
+        run: python -m unittest discover -s tools/novel-ingest -p test_masked_knight_full_export.py -v
+
+  export:
+    if: github.event_name == 'workflow_dispatch' && inputs.rights_confirmed == true
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Fetch and verify 338 public chapters
+        env:
+          DELAY: ${{ inputs.delay_seconds }}
+        run: |
+          python tools/novel-ingest/masked_knight_full_export.py \
+            --rights-confirmed \
+            --delay "$DELAY" \
+            --out-dir out/masked-knight-export
+      - name: Upload complete TXT only on fully verified 338/338
+        uses: actions/upload-artifact@v4
+        with:
+          name: masked-knight-authorized-338-fulltext
+          path: out/masked-knight-export/**
+          if-no-files-found: error
+          retention-days: 7
+
+  gate:
+    if: github.event_name == 'workflow_dispatch' && inputs.rights_confirmed != true
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo 'Full-text export skipped: book-specific rights confirmation was not provided.' \
+            >> "$GITHUB_STEP_SUMMARY"
