@@ -38,6 +38,22 @@ class ExtraSourceTests(unittest.TestCase):
             '<a href="https://elsewhere.test/books/102/">变脸武士</a>',
             "https://www.isyd.net/class/4/400.html"))
 
+    def test_missing_neighbor_url(self):
+        rows = [
+            {"ordinal": 240, "url": "https://www.tianyabooks.com/net/bianlianwushi/60407.html"},
+            {"ordinal": 242, "url": "https://www.tianyabooks.com/net/bianlianwushi/60409.html"},
+        ]
+        self.assertEqual(audit.neighbor_chapter_urls(
+            rows, 241, r"^/net/bianlianwushi/[0-9]+\.html$"),
+            ["https://www.tianyabooks.com/net/bianlianwushi/60408.html"])
+
+    def test_dom_candidates_without_prose(self):
+        body = '<td class="story">' + ("江湖魔法黑暗的骑士继续旅行。" * 90) + "</td>"
+        candidates = audit.text_containers("<table><tr>" + body + "</tr></table>")
+        self.assertEqual(candidates[0]["tag"], "td")
+        self.assertGreater(candidates[0]["cjk"], 700)
+        self.assertNotIn("江湖", str(candidates))
+
     def test_body_not_claimed_complete_on_short(self):
         h = "<title>变脸武士 第两百章</title><h1>第两百章</h1>"
         h += '<div id="content">' + ("罗迪在附近看到了火焰和远方的军队。" * 25) + "</div>"

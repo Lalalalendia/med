@@ -87,6 +87,48 @@ def same_site_index(index: str, html: str, pattern: str) -> dict:
             "chapters": [found[n] for n in sorted(found)]}
 
 
+
+def text_containers(html: str) -> list[dict]:
+    """Report plausible DOM paths only; never publish or store story prose."""
+    soup = BeautifulSoup(html, "html.parser")
+    candidates = []
+    for node in soup.select("main,article,section,div,td"):
+        text = node.get_text(" ", strip=True)
+        cjk = len(re.findall(r"[\u3400-\u9fff]", text))
+        if cjk < 700:
+            continue
+        candidates.append({
+            "tag": node.name,
+            "id": str(node.get("id", ""))[:50],
+            "class": " ".join(node.get("class", [])[:3])[:60],
+            "cjk": cjk,
+            "paragraph_nodes": len(node.select("p")),
+            "child_elements": len(node.find_all(recursive=False)),
+        })
+    return sorted(candidates, key=lambda x: -x["cjk"])[:8]
+
+
+def neighbor_chapter_urls(rows: list[dict], missing: int,
+                          pattern: str) -> list[str]:
+    """Bounded gap check using only known adjacent same-host numeric chapter URLs."""
+    before = next((r for r in rows if r["ordinal"] == missing - 1), None)
+    after = next((r for r in rows if r["ordinal"] == missing + 1), None)
+    if not before or not after:
+        return []
+    a, b = urlsplit(before["url"]), urlsplit(after["url"])
+    if a.scheme != "https" or b.scheme != "https" or a.netloc != b.netloc:
+        return []
+    if not (re.fullmatch(pattern, a.path) and re.fullmatch(pattern, b.path)):
+        return []
+    ma, mb = re.search(r"/(\d+)\.html$", a.path), re.search(r"/(\d+)\.html$", b.path)
+    if not ma or not mb:
+        return []
+    lo, hi = int(ma.group(1)), int(mb.group(1))
+    if not 1 < hi - lo <= 5:
+        return []
+    return [before["url"][: -len(ma.group(1)) - 5] + str(i) + ".html"
+            for i in range(lo + 1, hi)]
+
 def find_isyd_detail(index_html: str, index: str) -> str | None:
     """Discover the novel's own catalog from the listed, titled entry."""
     soup = BeautifulSoup(index_html, "html.parser")
@@ -116,7 +158,8 @@ def page_metadata(html: str, ordinal: int) -> dict:
     cjk = signature.get("cjk_characters", 0)
     if signature.get("status") != "body_verified":
         return {"status": "body_unverified", "heading": title[:100],
-                "cjk_document": signature.get("cjk_in_document", 0)}
+                "cjk_document": signature.get("cjk_in_document", 0),
+                "dom_candidates": text_containers(html)}
     return {"status": "plausible_full_body" if cjk >= 1500 else "short_body_review",
             "heading": title[:100], "characters": chars, "cjk": cjk,
             "sha256": signature.get("sha256"),
@@ -154,6 +197,20 @@ def audit(out: Path, delay: float = 2.0) -> dict:
             count = same_site_index(index_url, index_html, source["chapter_path"])
             rows = count.pop("chapters")
             row.update(count)
+            row["chapter_index"] = rows
+            row["gap_neighbor_probes"] = []
+            if source["source"] == "tianyabooks" and 241 in count["missing"]:
+                for gap_url in neighbor_chapter_urls(
+                        rows, 241, source["chapter_path"]):
+                    try:
+                        gap_html = client.get(gap_url)
+                        metadata = page_metadata(gap_html, 241)
+                        row["gap_neighbor_probes"].append(
+                            {"url": gap_url, **metadata})
+                    except Exception as exc:
+                        row["gap_neighbor_probes"].append(
+                            {"url": gap_url, "status": "unavailable",
+                             "reason": str(exc)[:180]})
             probes = dict(source["sample_urls"])
             for desired in (1, 200, 330):
                 match = next((ch for ch in rows if ch["ordinal"] == desired), None)
@@ -196,6 +253,10 @@ def audit(out: Path, delay: float = 2.0) -> dict:
             text.append(f"- {src['source']}: {src['reason']}")
         if src.get("discovered_catalog"):
             text.append(f"- {src['source']} catalog: {src['discovered_catalog']}")
+        if src.get("gap_neighbor_probes"):
+            text.append(f"- {src['source']} possible chapter 241 URLs: {src['gap_neighbor_probes']}")
+        elif src["source"] == "tianyabooks":
+            text.append("- tianyabooks chapter 241: no bounded numeric gap URL candidate.")
     (out / "summary.md").write_text("\n".join(text) + "\n", encoding="utf-8")
     return result
 
