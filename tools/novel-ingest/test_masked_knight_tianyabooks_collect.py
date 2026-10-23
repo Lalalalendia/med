@@ -31,7 +31,7 @@ class TianyaCollectionTests(unittest.TestCase):
         self.assertNotIn("下一章",obj["text"])
 
     def test_short_unverified(self):
-        html='<h1>第两百章</h1><div id="main">'+'少年朝前走。'*30+'</div>'
+        html='<h1>第两百章</h1><div id="main">'+'少年朝前走。'*60+'</div>'
         self.assertEqual(mod.parse_story(html,200)["status"],"needs_review")
 
     def test_wrong_heading(self):
