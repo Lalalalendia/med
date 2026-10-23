@@ -1205,6 +1205,96 @@
       "site": "wtr-lab",
       "title": "1980s: Snagging a Tough Guy As a Husband for Two Cents",
       "url": "https://wtr-lab.com/en/novel/109254/1980-s-snagging-a-tough-guy-as-a-husband-for-two-cents"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "108630",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "The Grand Secretary’s Foolish Son",
+      "url": "https://wtr-lab.com/en/novel/108630/the-grand-secretarys-foolish-son"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "109574",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Official Title: Holy Son of the Zhao Family! Leading Zhao Lichun to Victory!",
+      "url": "https://wtr-lab.com/en/novel/109574/official-title-holy-son-of-the-zhao-family-leading-zhao-lichun-to-victory"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "109631",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Twin System: The Yandere War God Protects Me As I Ascend to Godhood in the Apocalypse",
+      "url": "https://wtr-lab.com/en/novel/109631/twin-system-the-yandere-war-god-protects-me-as-i-ascend-to-godhood-in-the-apocalypse"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "109416",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Lord Game, But I am the Creator",
+      "url": "https://wtr-lab.com/en/novel/109416/lord-game-but-i-am-the-creator"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "109412",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Transmigration, My Tamed Beast is a Vampire",
+      "url": "https://wtr-lab.com/en/novel/109412/transmigration-my-tamed-beast-is-a-vampire"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "109380",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "When I Transform Into an Imaginary Friend, I'm Always Called \"mom\"",
+      "url": "https://wtr-lab.com/en/novel/109380/when-i-transform-into-an-imaginary-friend-im-always-called-mom"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "108846",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "The Jianghu of the Great Song Dynasty: Starting at Liangshan, Martial Arts Lead to Immortality!",
+      "url": "https://wtr-lab.com/en/novel/108846/the-jianghu-of-the-great-song-dynasty-starting-at-liangshan-martial-arts-lead-to-immortality"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "108937",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "I Have Come to See Bai Yujing",
+      "url": "https://wtr-lab.com/en/novel/108937/i-have-come-to-see-bai-yujing"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "109139",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "The Path to Becoming Emperor Begins with the Handing Over of the Young Emperor to a Regent",
+      "url": "https://wtr-lab.com/en/novel/109139/the-path-to-becoming-emperor-begins-with-the-handing-over-of-the-young-emperor-to-a-regent"
+    },
+    {
+      "first_seen_utc": "2026-10-23T03:09:17+00:00",
+      "id": "109204",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Rebirth 87: Starting with Getting Drunk to Make a Comeback",
+      "url": "https://wtr-lab.com/en/novel/109204/rebirth-87-starting-with-getting-drunk-to-make-a-comeback"
     }
   ],
   "schema": 2,
@@ -1576,7 +1666,7 @@
         107264
       ],
       "initialized": true,
-      "last_success": "2026-10-22T03:09:07+00:00",
+      "last_success": "2026-10-23T03:09:17+00:00",
       "seen": {
         "105996": {
           "first_seen_utc": "2026-10-15T10:57:36+00:00",
@@ -1913,6 +2003,11 @@
           "title": "An Ordinary Male Protagonist Transmigrates Into a Novel and Becomes a Heartthrob Despite Being Cannon Fodder",
           "url": "https://wtr-lab.com/en/novel/108609/an-ordinary-male-protagonist-transmigrates-into-a-novel-and-becomes-a-heartthrob-despite-being-cannon-fodder"
         },
+        "108630": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "The Grand Secretary’s Foolish Son",
+          "url": "https://wtr-lab.com/en/novel/108630/the-grand-secretarys-foolish-son"
+        },
         "108703": {
           "first_seen_utc": "2026-10-20T03:07:50+00:00",
           "title": "Live Fortune Telling: Unity of Three Religions Brings Joy",
@@ -1953,6 +2048,11 @@
           "title": "Star Train World: Star Train World — I am the Leader of the Aeon Chat Group",
           "url": "https://wtr-lab.com/en/novel/108803/star-train-world-star-train-world-i-am-the-leader-of-the-aeon-chat-group"
         },
+        "108846": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "The Jianghu of the Great Song Dynasty: Starting at Liangshan, Martial Arts Lead to Immortality!",
+          "url": "https://wtr-lab.com/en/novel/108846/the-jianghu-of-the-great-song-dynasty-starting-at-liangshan-martial-arts-lead-to-immortality"
+        },
         "108852": {
           "first_seen_utc": "2026-10-20T03:07:50+00:00",
           "title": "The Entire Sect Was Reborn",
@@ -1977,6 +2077,11 @@
           "first_seen_utc": "2026-10-21T03:09:14+00:00",
           "title": "Age of Giants: Mythical Survival",
           "url": "https://wtr-lab.com/en/novel/108932/age-of-giants-mythical-survival"
+        },
+        "108937": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "I Have Come to See Bai Yujing",
+          "url": "https://wtr-lab.com/en/novel/108937/i-have-come-to-see-bai-yujing"
         },
         "108967": {
           "first_seen_utc": "2026-10-21T03:09:14+00:00",
@@ -2008,6 +2113,11 @@
           "title": "Ninja World: The Story of Two Uchiha",
           "url": "https://wtr-lab.com/en/novel/109118/ninja-world-the-story-of-two-uchiha"
         },
+        "109139": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "The Path to Becoming Emperor Begins with the Handing Over of the Young Emperor to a Regent",
+          "url": "https://wtr-lab.com/en/novel/109139/the-path-to-becoming-emperor-begins-with-the-handing-over-of-the-young-emperor-to-a-regent"
+        },
         "109144": {
           "first_seen_utc": "2026-10-22T03:09:07+00:00",
           "title": "The Villainous Concubine-born Daughter is Not to Be Messed with",
@@ -2017,6 +2127,11 @@
           "first_seen_utc": "2026-10-22T03:09:07+00:00",
           "title": "Legend of the Condor Heroes: Proposing to Huang Rong at the Start, I Obtain the Nine Yang Divine Skill",
           "url": "https://wtr-lab.com/en/novel/109184/legend-of-the-condor-heroes-proposing-to-huang-rong-at-the-start-i-obtain-the-nine-yang-divine-skill"
+        },
+        "109204": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "Rebirth 87: Starting with Getting Drunk to Make a Comeback",
+          "url": "https://wtr-lab.com/en/novel/109204/rebirth-87-starting-with-getting-drunk-to-make-a-comeback"
         },
         "109209": {
           "first_seen_utc": "2026-10-22T03:09:07+00:00",
@@ -2047,6 +2162,31 @@
           "first_seen_utc": "2026-10-22T03:09:07+00:00",
           "title": "Female Dominance: I’m Just a Minor Male Character",
           "url": "https://wtr-lab.com/en/novel/109341/female-dominance-im-just-a-minor-male-character"
+        },
+        "109380": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "When I Transform Into an Imaginary Friend, I'm Always Called \"mom\"",
+          "url": "https://wtr-lab.com/en/novel/109380/when-i-transform-into-an-imaginary-friend-im-always-called-mom"
+        },
+        "109412": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "Transmigration, My Tamed Beast is a Vampire",
+          "url": "https://wtr-lab.com/en/novel/109412/transmigration-my-tamed-beast-is-a-vampire"
+        },
+        "109416": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "Lord Game, But I am the Creator",
+          "url": "https://wtr-lab.com/en/novel/109416/lord-game-but-i-am-the-creator"
+        },
+        "109574": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "Official Title: Holy Son of the Zhao Family! Leading Zhao Lichun to Victory!",
+          "url": "https://wtr-lab.com/en/novel/109574/official-title-holy-son-of-the-zhao-family-leading-zhao-lichun-to-victory"
+        },
+        "109631": {
+          "first_seen_utc": "2026-10-23T03:09:17+00:00",
+          "title": "Twin System: The Yandere War God Protects Me As I Ascend to Godhood in the Apocalypse",
+          "url": "https://wtr-lab.com/en/novel/109631/twin-system-the-yandere-war-god-protects-me-as-i-ascend-to-godhood-in-the-apocalypse"
         }
       }
     }

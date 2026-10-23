@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-22T03:09:08+00:00
+Run: 2026-10-23T03:09:17+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,13 +15,13 @@ Run: 2026-10-22T03:09:08+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `109184` [Legend of the Condor Heroes: Proposing to Huang Rong at the Start, I Obtain the Nine Yang Divine Skill](https://wtr-lab.com/en/novel/109184/legend-of-the-condor-heroes-proposing-to-huang-rong-at-the-start-i-obtain-the-nine-yang-divine-skill) — catalog
-- **wtr-lab** `109327` [My Superstar Ex-wife Cornered Me on a Dating Show After Our Divorce](https://wtr-lab.com/en/novel/109327/my-superstar-ex-wife-cornered-me-on-a-dating-show-after-our-divorce) — catalog
-- **wtr-lab** `109144` [The Villainous Concubine-born Daughter is Not to Be Messed with](https://wtr-lab.com/en/novel/109144/the-villainous-concubine-born-daughter-is-not-to-be-messed-with) — catalog
-- **wtr-lab** `109252` [I’m Just Playing a Game, But You All Insist That I’m Containing Anomalies](https://wtr-lab.com/en/novel/109252/im-just-playing-a-game-but-you-all-insist-that-im-containing-anomalies) — catalog
-- **wtr-lab** `109269` [Horrific and Eerie Events: This Beautiful Female Celestial Master Plays Dirty!](https://wtr-lab.com/en/novel/109269/horrific-and-eerie-events-this-beautiful-female-celestial-master-plays-dirty) — catalog
-- **wtr-lab** `109118` [Ninja World: The Story of Two Uchiha](https://wtr-lab.com/en/novel/109118/ninja-world-the-story-of-two-uchiha) — catalog
-- **wtr-lab** `109341` [Female Dominance: I’m Just a Minor Male Character](https://wtr-lab.com/en/novel/109341/female-dominance-im-just-a-minor-male-character) — catalog
-- **wtr-lab** `109209` [The Prime Minister Dotes on His Adorable Little Farm Wife](https://wtr-lab.com/en/novel/109209/the-prime-minister-dotes-on-his-adorable-little-farm-wife) — catalog
-- **wtr-lab** `108577` [80s: You Marry Your White Moonlight, I Marry the Fourth Young Master of a Wealthy Family](https://wtr-lab.com/en/novel/108577/80-s-you-marry-your-white-moonlight-i-marry-the-fourth-young-master-of-a-wealthy-family) — catalog
-- **wtr-lab** `109254` [1980s: Snagging a Tough Guy As a Husband for Two Cents](https://wtr-lab.com/en/novel/109254/1980-s-snagging-a-tough-guy-as-a-husband-for-two-cents) — catalog
+- **wtr-lab** `108630` [The Grand Secretary’s Foolish Son](https://wtr-lab.com/en/novel/108630/the-grand-secretarys-foolish-son) — catalog
+- **wtr-lab** `109574` [Official Title: Holy Son of the Zhao Family! Leading Zhao Lichun to Victory!](https://wtr-lab.com/en/novel/109574/official-title-holy-son-of-the-zhao-family-leading-zhao-lichun-to-victory) — catalog
+- **wtr-lab** `109631` [Twin System: The Yandere War God Protects Me As I Ascend to Godhood in the Apocalypse](https://wtr-lab.com/en/novel/109631/twin-system-the-yandere-war-god-protects-me-as-i-ascend-to-godhood-in-the-apocalypse) — catalog
+- **wtr-lab** `109416` [Lord Game, But I am the Creator](https://wtr-lab.com/en/novel/109416/lord-game-but-i-am-the-creator) — catalog
+- **wtr-lab** `109412` [Transmigration, My Tamed Beast is a Vampire](https://wtr-lab.com/en/novel/109412/transmigration-my-tamed-beast-is-a-vampire) — catalog
+- **wtr-lab** `109380` [When I Transform Into an Imaginary Friend, I'm Always Called "mom"](https://wtr-lab.com/en/novel/109380/when-i-transform-into-an-imaginary-friend-im-always-called-mom) — catalog
+- **wtr-lab** `108846` [The Jianghu of the Great Song Dynasty: Starting at Liangshan, Martial Arts Lead to Immortality!](https://wtr-lab.com/en/novel/108846/the-jianghu-of-the-great-song-dynasty-starting-at-liangshan-martial-arts-lead-to-immortality) — catalog
+- **wtr-lab** `108937` [I Have Come to See Bai Yujing](https://wtr-lab.com/en/novel/108937/i-have-come-to-see-bai-yujing) — catalog
+- **wtr-lab** `109139` [The Path to Becoming Emperor Begins with the Handing Over of the Young Emperor to a Regent](https://wtr-lab.com/en/novel/109139/the-path-to-becoming-emperor-begins-with-the-handing-over-of-the-young-emperor-to-a-regent) — catalog
+- **wtr-lab** `109204` [Rebirth 87: Starting with Getting Drunk to Make a Comeback](https://wtr-lab.com/en/novel/109204/rebirth-87-starting-with-getting-drunk-to-make-a-comeback) — catalog
