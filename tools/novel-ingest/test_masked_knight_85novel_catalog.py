@@ -17,6 +17,8 @@ class CatalogTests(unittest.TestCase):
     def test_token(self):
         h = '''<div x-data="Login(801674, 'ABCDEFGHIJKLMNOP')"></div>'''
         self.assertEqual(m.token_from_page(h), "ABCDEFGHIJKLMNOP")
+        h2 = '''<div x-data="Login(801674, 'token+%{ok}')"></div>'''
+        self.assertEqual(m.token_from_page(h2), "token+%{ok}")
         with self.assertRaises(ValueError):
             m.token_from_page("<p>no token</p>")
 

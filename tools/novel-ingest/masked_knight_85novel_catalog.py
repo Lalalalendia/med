@@ -51,7 +51,10 @@ def token_from_page(page: str) -> str:
     if not match:
         raise ValueError("Public chapter-list token not present in page")
     token = match.group(1)
-    if not re.fullmatch(r"[A-Za-z0-9_.+=:/-]{12,256}", token):
+    # The public page token is opaque and URL-encoded before use. Its exact
+    # character class and length are not an authentication guarantee.
+    if (not 1 <= len(token) <= 512
+            or any(ord(ch) < 32 or ord(ch) == 127 for ch in token)):
         raise ValueError("Malformed page token")
     return token
 
@@ -163,8 +166,10 @@ def run(delay: float, out: Path) -> dict:
             raise RuntimeError("Book identity mismatch")
         blocks = parse_slices(page)
         if not blocks:
-            report["note"] = "No slice controls; fallback to first 200 only"
-            blocks = [(1, 200)]
+            # Publisher's separate catalog contains 425 positions including
+            # auxiliaries. Probe only a bounded set of public reader pages.
+            report["note"] = "No slice controls; bounded fallback through position 600"
+            blocks = [(1, 200), (201, 400), (401, 600)]
         report["slices"] = [list(block) for block in blocks]
         token = token_from_page(page)  # never print or store it
         items = []
