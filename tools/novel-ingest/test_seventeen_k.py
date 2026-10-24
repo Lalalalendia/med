@@ -151,7 +151,8 @@ class ExportTests(unittest.TestCase):
             with patch.object(exporter, "fetch_html", side_effect=fetch), \
                  patch.object(exporter, "parse_catalog", return_value=rows), \
                  patch.object(exporter, "parse_chapter",
-                              return_value="汉字内容。" * 80), \
+                              side_effect=lambda _html, chapter:
+                                  "汉字内容。" * 80 + "章节编号" + chapter.chapter_id), \
                  patch.object(exporter.time, "sleep", return_value=None):
                 data = exporter.export("803991", out, 1, 0, 1, 3)
             self.assertEqual(data["status"], "PARTIAL")
