@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-23T03:09:17+00:00
+Run: 2026-10-24T03:06:25+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,13 +15,13 @@ Run: 2026-10-23T03:09:17+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `108630` [The Grand Secretary’s Foolish Son](https://wtr-lab.com/en/novel/108630/the-grand-secretarys-foolish-son) — catalog
-- **wtr-lab** `109574` [Official Title: Holy Son of the Zhao Family! Leading Zhao Lichun to Victory!](https://wtr-lab.com/en/novel/109574/official-title-holy-son-of-the-zhao-family-leading-zhao-lichun-to-victory) — catalog
-- **wtr-lab** `109631` [Twin System: The Yandere War God Protects Me As I Ascend to Godhood in the Apocalypse](https://wtr-lab.com/en/novel/109631/twin-system-the-yandere-war-god-protects-me-as-i-ascend-to-godhood-in-the-apocalypse) — catalog
-- **wtr-lab** `109416` [Lord Game, But I am the Creator](https://wtr-lab.com/en/novel/109416/lord-game-but-i-am-the-creator) — catalog
-- **wtr-lab** `109412` [Transmigration, My Tamed Beast is a Vampire](https://wtr-lab.com/en/novel/109412/transmigration-my-tamed-beast-is-a-vampire) — catalog
-- **wtr-lab** `109380` [When I Transform Into an Imaginary Friend, I'm Always Called "mom"](https://wtr-lab.com/en/novel/109380/when-i-transform-into-an-imaginary-friend-im-always-called-mom) — catalog
-- **wtr-lab** `108846` [The Jianghu of the Great Song Dynasty: Starting at Liangshan, Martial Arts Lead to Immortality!](https://wtr-lab.com/en/novel/108846/the-jianghu-of-the-great-song-dynasty-starting-at-liangshan-martial-arts-lead-to-immortality) — catalog
-- **wtr-lab** `108937` [I Have Come to See Bai Yujing](https://wtr-lab.com/en/novel/108937/i-have-come-to-see-bai-yujing) — catalog
-- **wtr-lab** `109139` [The Path to Becoming Emperor Begins with the Handing Over of the Young Emperor to a Regent](https://wtr-lab.com/en/novel/109139/the-path-to-becoming-emperor-begins-with-the-handing-over-of-the-young-emperor-to-a-regent) — catalog
-- **wtr-lab** `109204` [Rebirth 87: Starting with Getting Drunk to Make a Comeback](https://wtr-lab.com/en/novel/109204/rebirth-87-starting-with-getting-drunk-to-make-a-comeback) — catalog
+- **wtr-lab** `110003` [Grand Blue, My Pab Fall Chronicles](https://wtr-lab.com/en/novel/110003/grand-blue-my-pab-fall-chronicles) — catalog
+- **wtr-lab** `109995` [Magic School: Starting from Stealing Authority](https://wtr-lab.com/en/novel/109995/magic-school-starting-from-stealing-authority) — catalog
+- **wtr-lab** `108709` [I'm Involved in Shady Business, and I Have Financial Freedom](https://wtr-lab.com/en/novel/108709/im-involved-in-shady-business-and-i-have-financial-freedom) — catalog
+- **wtr-lab** `109933` [Military Academy League: The Charismatic Commander Dominates the Entire Competition](https://wtr-lab.com/en/novel/109933/military-academy-league-the-charismatic-commander-dominates-the-entire-competition) — catalog
+- **wtr-lab** `106852` [The Latecomer](https://wtr-lab.com/en/novel/106852/the-latecomer) — catalog
+- **wtr-lab** `109955` [Martial God of the Galaxy](https://wtr-lab.com/en/novel/109955/martial-god-of-the-galaxy) — catalog
+- **wtr-lab** `109733` [The Everyday and Not-so-ordinary Aspects of the Peninsula](https://wtr-lab.com/en/novel/109733/the-everyday-and-not-so-ordinary-aspects-of-the-peninsula) — catalog
+- **wtr-lab** `109881` [Flash Marriage and Deep Love: The Billionaire Young Lady is Addicted to Me](https://wtr-lab.com/en/novel/109881/flash-marriage-and-deep-love-the-billionaire-young-lady-is-addicted-to-me) — catalog
+- **wtr-lab** `109918` [I Just Happened to Take in a Runaway Heiress](https://wtr-lab.com/en/novel/109918/i-just-happened-to-take-in-a-runaway-heiress) — catalog
+- **wtr-lab** `109965` [My System of Adding Points for Cultivating Immortals](https://wtr-lab.com/en/novel/109965/my-system-of-adding-points-for-cultivating-immortals) — catalog
