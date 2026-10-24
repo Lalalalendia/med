@@ -1,0 +1,99 @@
+name: 17K original source export
+
+on:
+  pull_request:
+    paths:
+      - 'tools/novel-ingest/seventeen_k_*.py'
+      - 'tools/novel-ingest/test_seventeen_k.py'
+      - '.github/workflows/seventeen-k-original.yml'
+  push:
+    paths:
+      - 'tools/novel-ingest/seventeen_k_*.py'
+      - 'tools/novel-ingest/test_seventeen_k.py'
+      - '.github/workflows/seventeen-k-original.yml'
+  workflow_dispatch:
+    inputs:
+      start:
+        description: 'First 17K catalog ordinal (1 for full)'
+        type: number
+        required: true
+        default: 1
+      end:
+        description: 'Last 17K catalog ordinal (0 = all remaining)'
+        type: number
+        required: true
+        default: 0
+      delay:
+        description: 'Seconds between requests (>= 1.0)'
+        type: number
+        required: true
+        default: 1.5
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - run: python -m unittest discover -s tools/novel-ingest -p 'test_seventeen_k.py' -v
+
+  live-pilot:
+    if: github.event_name == 'pull_request'
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Public 17K chapters 6-7 (prologue and chapter one)
+        run: python tools/novel-ingest/seventeen_k_export.py --book-id 803991 --start 6 --end 7 --min-catalog 670 --delay 1.5 --out-dir out/17k
+      - name: Pilot receipt
+        if: always()
+        run: |
+          if [ -f out/17k/summary.md ]; then cat out/17k/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 17k-803991-original-pilot
+          path: out/17k/**
+          if-no-files-found: warn
+          retention-days: 7
+
+  export:
+    if: github.event_name == 'workflow_dispatch'
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Export checked 17K Chinese originals
+        env:
+          FIRST: ${{ inputs.start }}
+          LAST: ${{ inputs.end }}
+          DELAY: ${{ inputs.delay }}
+        run: python tools/novel-ingest/seventeen_k_export.py --book-id 803991 --start "$FIRST" --end "$LAST" --delay "$DELAY" --min-catalog 670 --out-dir out/17k
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f out/17k/summary.md ]; then cat out/17k/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 17k-803991-original-${{ inputs.start }}-${{ inputs.end }}
+          path: out/17k/**
+          if-no-files-found: warn
+          retention-days: 7
