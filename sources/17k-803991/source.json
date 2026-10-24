@@ -1,0 +1,57 @@
+{
+  "book_id": "803991",
+  "title_zh": "剑影传说",
+  "title_en": "The Sword and The Shadow",
+  "title_ru": "Меч и Тень",
+  "author_zh": "故乡月",
+  "original_language": "zh-CN",
+  "source_book_url": "https://www.17k.com/book/803991.html",
+  "source_catalog_url": "https://www.17k.com/list/803991.html",
+  "related_rulate_url": "https://tl.rulate.ru/book/12896",
+  "expected_chapters_reported": 670,
+  "download_status": "partial_source_locked",
+  "translation_requested": false,
+  "comparison_requested": false,
+  "export_implementation": {
+    "adapter": "tools/novel-ingest/seventeen_k_adapter.py",
+    "runner": "tools/novel-ingest/seventeen_k_export.py",
+    "workflow": ".github/workflows/seventeen-k-original.yml",
+    "default_run": "--book-id 803991 --start 1 --end 0 --min-catalog 670 --out-dir out/17k",
+    "output": "GitHub Actions artifact, never committed raw text"
+  },
+  "last_source_run": {
+    "date_utc": "2026-10-24",
+    "workflow_url": "https://github.com/Lalalalendia/med/actions/runs/40103006127",
+    "artifact_url": "https://github.com/Lalalalendia/med/actions/runs/40103006127/artifacts/12564637424",
+    "status": "PARTIAL",
+    "catalog_entries": 676,
+    "story_chapters": 670,
+    "downloaded_story_chapters": 664,
+    "downloaded_author_notes": 6,
+    "missing_story_chapters": 6,
+    "all_downloaded_sha256_validated": true,
+    "artifact_retention_note": "Original run used 7-day retention; download promptly",
+    "locked_original_ids": [
+      "17903971",
+      "19089985",
+      "19139449",
+      "19139459",
+      "19139520",
+      "19139531"
+    ],
+    "locked_catalog_ordinals": [
+      356,
+      519,
+      533,
+      534,
+      538,
+      539
+    ],
+    "cause": "Publisher's official catalog labels each missing chapter as locked; not an HTML parser defect"
+  },
+  "next_steps": [
+    "Keep verified original texts and receipts in artifact, not public Git",
+    "Do not classify inaccessible publisher chapters as retrieved",
+    "Obtain six missing chapters using authorised access or supplied licensed copies before declaring 670/670"
+  ]
+}
