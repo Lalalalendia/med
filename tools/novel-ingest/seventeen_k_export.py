@@ -72,6 +72,7 @@ def export(book_id: str, out_dir: Path, start: int, end: int, delay: float,
               "no_translation_or_comparison": True}
     known = {}
     had_live = False
+    consecutive_source_failures = 0
     for offset, chapter in enumerate(target):
         name = f"raw/{chapter.ordinal:04d}-{chapter.chapter_id}.txt"
         path = out_dir / name
@@ -106,6 +107,20 @@ def export(book_id: str, out_dir: Path, start: int, end: int, delay: float,
             else:
                 known[body_sha] = chapter.ordinal
         result["chapters"].append(row)
+        if row.get("status") in ("blocked", "missing_body", "invalid_response", "invalid_body"):
+            consecutive_source_failures += 1
+        else:
+            consecutive_source_failures = 0
+        if consecutive_source_failures >= 3:
+            result["aborted_early_reason"] = "Three consecutive source or extraction failures"
+            for skipped in target[offset + 1:]:
+                missing = asdict(skipped)
+                missing.update(status="skipped_after_source_failure",
+                               error="Aborted after three consecutive failures")
+                result["chapters"].append(missing)
+            store_json(manifest, result)
+            print(f"STOP: {result['aborted_early_reason']}", flush=True)
+            break
         store_json(manifest, result)
         print(f"{offset+1}/{len(target)} {chapter.ordinal} {row['status']}", flush=True)
     failed = [r for r in result["chapters"] if r.get("status") != "ok"]

@@ -66,6 +66,7 @@ def parse_catalog(html: str, book_id: str) -> list[Chapter]:
     for volume in volumes:
         header = volume.find("dt")
         volume_name = header.get_text(" ", strip=True) if header else "Unlabelled"
+        first_entry = len(result)
         for a in volume.select("dd a[href]"):
             url = urljoin(catalog_url(book_id), a["href"])
             try:
@@ -83,6 +84,10 @@ def parse_catalog(html: str, book_id: str) -> list[Chapter]:
                        or "请假" in title or "断更" in title or "减更" in title)
             result.append(Chapter(len(result) + 1, chapter_id, title,
                                   volume_name, url, "note" if is_note else "story"))
+        declared = re.search(r"已更新\s*(\d+)\s*章", volume_name)
+        if declared and len(result) - first_entry != int(declared.group(1)):
+            raise SourceError("catalog_incomplete",
+                              f"{volume_name}: found {len(result) - first_entry} chapter links")
     if not result:
         raise SourceError("catalog_missing", "No matching 17K chapter links")
     return result

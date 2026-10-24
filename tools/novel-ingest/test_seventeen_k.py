@@ -53,6 +53,13 @@ class AdapterTests(unittest.TestCase):
         with self.assertRaises(adapter.SourceError):
             adapter.parse_chapter("<div class='readAreaBox'><div class='p'>错</div></div>", row)
 
+    def test_volume_declared_chapter_count_must_match(self):
+        html = catalog_fixture().replace("<dt>第一卷 卑微怯懦中的勇气</dt>",
+                                         "<dt>第一卷 已更新3章</dt>")
+        with self.assertRaises(adapter.SourceError) as cm:
+            adapter.parse_catalog(html, "803991")
+        self.assertEqual(cm.exception.status, "catalog_incomplete")
+
     def test_catalog_without_volumes_not_accepted(self):
         with self.assertRaises(adapter.SourceError):
             adapter.parse_catalog("<a href='/chapter/803991/1.html'>Hi</a>", "803991")
@@ -95,6 +102,25 @@ class ExportTests(unittest.TestCase):
                     resumed = exporter.export("803991", out, 1, 0, 1, 3, resume=True)
             self.assertEqual(resumed["status"], "PASS")
             self.assertTrue(all(r.get("resumed") for r in resumed["chapters"]))
+
+    def test_stop_after_three_source_failures(self):
+        chapters = [adapter.Chapter(i, str(30000+i), f"第{i}章",
+                                    "第一卷", f"https://www.17k.com/chapter/803991/{30000+i}.html",
+                                    "story") for i in range(1, 7)]
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.object(exporter, "fetch_html", return_value="html"), \
+                 patch.object(exporter, "parse_catalog", return_value=chapters), \
+                 patch.object(exporter, "parse_chapter",
+                              side_effect=adapter.SourceError("blocked", "HTTP 403")), \
+                 patch.object(exporter.time, "sleep", return_value=None) as sleep:
+                result = exporter.export("803991", Path(tmp) / "book",
+                                         1, 0, 1, 6)
+            self.assertEqual(result["status"], "PARTIAL")
+            self.assertEqual(result["failed_count"], 6)
+            self.assertEqual([r["status"] for r in result["chapters"][-3:]],
+                             ["blocked", "skipped_after_source_failure",
+                              "skipped_after_source_failure"] if False
+                             else ["skipped_after_source_failure"] * 3)
 
     def test_partial_export_has_no_combined_file(self):
         with tempfile.TemporaryDirectory() as tmp:
