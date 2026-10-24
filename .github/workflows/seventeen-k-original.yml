@@ -45,7 +45,7 @@ jobs:
       - run: python -m unittest discover -s tools/novel-ingest -p 'test_seventeen_k.py' -v
 
   live-pilot:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/source/17k-803991-catalog' && contains(github.event.head_commit.message, '[17k-full]'))
     needs: tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -70,8 +70,8 @@ jobs:
           retention-days: 7
 
   export:
-    if: github.event_name == 'workflow_dispatch'
-    needs: tests
+    if: always() && ((github.event_name == 'workflow_dispatch' && needs.tests.result == 'success') || (github.event_name == 'push' && github.ref == 'refs/heads/source/17k-803991-catalog' && contains(github.event.head_commit.message, '[17k-full]') && needs.tests.result == 'success' && needs.live-pilot.result == 'success'))
+    needs: [tests, live-pilot]
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -82,9 +82,9 @@ jobs:
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
       - name: Export checked 17K Chinese originals
         env:
-          FIRST: ${{ inputs.start }}
-          LAST: ${{ inputs.end }}
-          DELAY: ${{ inputs.delay }}
+          FIRST: ${{ inputs.start || 1 }}
+          LAST: ${{ inputs.end || 0 }}
+          DELAY: ${{ inputs.delay || 1.5 }}
         run: python tools/novel-ingest/seventeen_k_export.py --book-id 803991 --start "$FIRST" --end "$LAST" --delay "$DELAY" --min-catalog 670 --out-dir out/17k
       - name: Summary
         if: always()
@@ -93,7 +93,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: 17k-803991-original-${{ inputs.start }}-${{ inputs.end }}
+          name: 17k-803991-original-${{ inputs.start || 1 }}-${{ inputs.end || 0 }}
           path: out/17k/**
           if-no-files-found: warn
           retention-days: 7
