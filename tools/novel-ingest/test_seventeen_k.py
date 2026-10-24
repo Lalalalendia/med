@@ -34,6 +34,15 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual(rows[1].ordinal, 2)
         self.assertEqual(rows[1].title, "序章 风起云涌")
 
+    def test_official_locked_chapter_detection(self):
+        locked = adapter.Chapter(
+            356, "17903971", "【锁】 该章节已被锁定", "第四卷",
+            "https://www.17k.com/chapter/803991/17903971.html", "story")
+        self.assertTrue(adapter.source_locked(locked))
+        self.assertFalse(adapter.source_locked(
+            adapter.Chapter(1, "123", "第1章", "第一卷",
+                            "https://www.17k.com/chapter/803991/123.html", "story")))
+
     def test_rejects_foreign_and_non_https_urls(self):
         for url in ("http://www.17k.com/chapter/803991/10.html",
                     "https://evil.example/chapter/803991/10.html",
@@ -112,15 +121,51 @@ class ExportTests(unittest.TestCase):
                  patch.object(exporter, "parse_catalog", return_value=chapters), \
                  patch.object(exporter, "parse_chapter",
                               side_effect=adapter.SourceError("blocked", "HTTP 403")), \
-                 patch.object(exporter.time, "sleep", return_value=None) as sleep:
+                 patch.object(exporter.time, "sleep", return_value=None):
                 result = exporter.export("803991", Path(tmp) / "book",
                                          1, 0, 1, 6)
             self.assertEqual(result["status"], "PARTIAL")
             self.assertEqual(result["failed_count"], 6)
             self.assertEqual([r["status"] for r in result["chapters"][-3:]],
-                             ["blocked", "skipped_after_source_failure",
-                              "skipped_after_source_failure"] if False
-                             else ["skipped_after_source_failure"] * 3)
+                             ["skipped_after_source_failure"] * 3)
+
+    def test_locked_chapter_never_requested_and_partial_text_has_gap(self):
+        rows = [
+            adapter.Chapter(1, "110", "第1章", "第一卷",
+                            "https://www.17k.com/chapter/803991/110.html", "story"),
+            adapter.Chapter(2, "111", "【锁】 该章节已被锁定", "第一卷",
+                            "https://www.17k.com/chapter/803991/111.html", "story"),
+            adapter.Chapter(3, "112", "第3章", "第一卷",
+                            "https://www.17k.com/chapter/803991/112.html", "story"),
+        ]
+        seen = []
+
+        def fetch(_session, url, _book_id, **_kwargs):
+            seen.append(url)
+            if "111.html" in url:
+                raise AssertionError("Officially locked chapter was requested")
+            return "valid html"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "locked"
+            with patch.object(exporter, "fetch_html", side_effect=fetch), \
+                 patch.object(exporter, "parse_catalog", return_value=rows), \
+                 patch.object(exporter, "parse_chapter",
+                              return_value="汉字内容。" * 80), \
+                 patch.object(exporter.time, "sleep", return_value=None):
+                data = exporter.export("803991", out, 1, 0, 1, 3)
+            self.assertEqual(data["status"], "PARTIAL")
+            self.assertEqual(data["source_locked_count"], 1)
+            self.assertEqual(data["story_saved_count"], 2)
+            self.assertEqual(data["story_count"], 3)
+            self.assertEqual(data["notes_saved_count"], 0)
+            self.assertEqual(data["chapters"][1]["status"], "source_locked")
+            self.assertEqual(len(seen), 3)  # catalog + two readable chapters
+            self.assertFalse((out / "raw/0002-111.txt").exists())
+            self.assertFalse((out / "combined-original.txt").exists())
+            text = (out / "combined-readable-original.txt").read_text("utf-8")
+            self.assertIn("ORIGINAL SOURCE UNAVAILABLE: source_locked", text)
+            self.assertIn("chapter id 111", text)
 
     def test_partial_export_has_no_combined_file(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -129,6 +174,7 @@ class ExportTests(unittest.TestCase):
             self.assertEqual(result["status"], "PARTIAL")
             self.assertEqual(result["failed_count"], 1)
             self.assertFalse((out / "combined-original.txt").exists())
+            self.assertTrue((out / "combined-readable-original.txt").exists())
             self.assertTrue((out / "manifest.json").exists())
 
 

@@ -37,6 +37,12 @@ class Chapter:
     kind: str
 
 
+def source_locked(chapter: Chapter) -> bool:
+    """17K explicitly labels unavailable story chapter links in its catalog."""
+    return (chapter.kind == "story" and chapter.title.startswith("【锁】")
+            and "已被锁定" in chapter.title)
+
+
 def safe_url(url: str, book_id: str, *, allow_catalog: bool = False) -> str:
     p = urlsplit(url)
     if (p.scheme != "https" or p.hostname != HOST or p.username

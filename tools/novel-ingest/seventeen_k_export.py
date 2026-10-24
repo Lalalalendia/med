@@ -14,7 +14,7 @@ from pathlib import Path
 import requests
 
 from seventeen_k_adapter import (SourceError, catalog_url, fetch_html,
-                                 parse_catalog, parse_chapter)
+                                 parse_catalog, parse_chapter, source_locked)
 
 
 def sha(data: str) -> str:
@@ -84,21 +84,26 @@ def export(book_id: str, out_dir: Path, start: int, end: int, delay: float,
                     prev.get("source_id") == chapter.chapter_id):
                 row.update(prev, resumed=True)
         if row.get("status") != "ok":
-            if had_live:
-                time.sleep(delay)
-            had_live = True
-            try:
-                body = parse_chapter(fetch_html(session, chapter.url, book_id), chapter) + "\n"
-                body_sha = sha(body)
-                if body_sha in known:
-                    raise SourceError("duplicate_body",
-                                      f"Duplicate of entry {known[body_sha]}")
-                path.write_text(body, encoding="utf-8")
-                row.update(status="ok", source_id=chapter.chapter_id,
-                           raw_file=name, chars=len(re.sub(r"\s", "", body)),
-                           sha256=body_sha)
-            except (SourceError, OSError) as exc:
-                row.update(status=getattr(exc, "status", "write_error"), error=str(exc))
+            if source_locked(chapter):
+                # Respect explicit publisher catalog locks; never request a
+                # locked chapter, and do not treat it as an extraction defect.
+                row.update(status="source_locked", error="17K catalog labels chapter locked")
+            else:
+                if had_live:
+                    time.sleep(delay)
+                had_live = True
+                try:
+                    body = parse_chapter(fetch_html(session, chapter.url, book_id), chapter) + "\n"
+                    body_sha = sha(body)
+                    if body_sha in known:
+                        raise SourceError("duplicate_body",
+                                          f"Duplicate of entry {known[body_sha]}")
+                    path.write_text(body, encoding="utf-8")
+                    row.update(status="ok", source_id=chapter.chapter_id,
+                               raw_file=name, chars=len(re.sub(r"\s", "", body)),
+                               sha256=body_sha)
+                except (SourceError, OSError) as exc:
+                    row.update(status=getattr(exc, "status", "write_error"), error=str(exc))
         if row.get("status") == "ok":
             body_sha = row["sha256"]
             if body_sha in known:
@@ -126,18 +131,40 @@ def export(book_id: str, out_dir: Path, start: int, end: int, delay: float,
     failed = [r for r in result["chapters"] if r.get("status") != "ok"]
     result["saved_count"] = len(target) - len(failed)
     result["failed_count"] = len(failed)
+    result["story_count"] = sum(row["kind"] == "story" for row in result["chapters"])
+    result["story_saved_count"] = sum(
+        row["kind"] == "story" and row["status"] == "ok" for row in result["chapters"])
+    result["notes_saved_count"] = sum(
+        row["kind"] == "note" and row["status"] == "ok" for row in result["chapters"])
+    result["source_locked_count"] = sum(
+        row["status"] == "source_locked" for row in result["chapters"])
     result["status"] = "PARTIAL" if failed else "PASS"
     result["full_catalog_export"] = start == 1 and last == len(catalog)
-    if result["status"] == "PASS" and result["full_catalog_export"]:
-        with (out_dir / "combined-original.txt").open("w", encoding="utf-8") as file:
+    if result["full_catalog_export"]:
+        # A partial combined text stays visibly partial. Skipped/locked
+        # chapters are explicit placeholders, never silently omitted.
+        combined_name = ("combined-original.txt" if result["status"] == "PASS"
+                         else "combined-readable-original.txt")
+        with (out_dir / combined_name).open("w", encoding="utf-8") as file:
             for row in result["chapters"]:
-                file.write(f"{row['volume']} - {row['title']}\n\n")
-                file.write((out_dir / row["raw_file"]).read_text(encoding="utf-8"))
+                if row["kind"] == "note":
+                    continue
+                file.write(f"{row['volume']} - {row['title']}\n")
+                file.write(f"Source: {row['url']}\n\n")
+                if row["status"] == "ok":
+                    file.write((out_dir / row["raw_file"]).read_text(encoding="utf-8"))
+                else:
+                    file.write(
+                        f"[ORIGINAL SOURCE UNAVAILABLE: {row['status']} - "
+                        f"chapter id {row['chapter_id']}; NO REPLACEMENT TEXT]\n")
                 file.write("\n")
+        result["combined_file"] = combined_name
     store_json(manifest, result)
     lines = [f"# 17K original: {book_id}", "", f"Source: {url}",
              f"Catalog: {len(catalog)}", f"Range: {start}-{last}",
              f"Saved: {result['saved_count']}/{len(target)}",
+             f"Story chapters: {result['story_saved_count']}/{result['story_count']}",
+             f"Officially locked: {result['source_locked_count']}",
              f"Status: {result['status']}", "Original Chinese only."]
     lines += [f"- {r['ordinal']}: {r['status']} {r.get('error', '')}" for r in failed]
     (out_dir / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
