@@ -1,0 +1,16 @@
+{
+  "book_id": "803991",
+  "title_zh": "剑影传说",
+  "title_en": "The Sword and The Shadow",
+  "title_ru": "Меч и Тень",
+  "author_zh": "故乡月",
+  "original_language": "zh-CN",
+  "source_book_url": "https://www.17k.com/book/803991.html",
+  "source_catalog_url": "https://www.17k.com/list/803991.html",
+  "related_rulate_url": "https://tl.rulate.ru/book/12896",
+  "expected_chapters_reported": 670,
+  "download_status": "not_started",
+  "reason": "17K is not supported by the existing med novel-source-ingest adapters; remote chapter retrieval has not been verified",
+  "translation_requested": false,
+  "comparison_requested": false
+}
