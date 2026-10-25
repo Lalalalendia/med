@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-24T03:06:25+00:00
+Run: 2026-10-25T03:07:18+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,13 +15,13 @@ Run: 2026-10-24T03:06:25+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `110003` [Grand Blue, My Pab Fall Chronicles](https://wtr-lab.com/en/novel/110003/grand-blue-my-pab-fall-chronicles) — catalog
-- **wtr-lab** `109995` [Magic School: Starting from Stealing Authority](https://wtr-lab.com/en/novel/109995/magic-school-starting-from-stealing-authority) — catalog
-- **wtr-lab** `108709` [I'm Involved in Shady Business, and I Have Financial Freedom](https://wtr-lab.com/en/novel/108709/im-involved-in-shady-business-and-i-have-financial-freedom) — catalog
-- **wtr-lab** `109933` [Military Academy League: The Charismatic Commander Dominates the Entire Competition](https://wtr-lab.com/en/novel/109933/military-academy-league-the-charismatic-commander-dominates-the-entire-competition) — catalog
-- **wtr-lab** `106852` [The Latecomer](https://wtr-lab.com/en/novel/106852/the-latecomer) — catalog
-- **wtr-lab** `109955` [Martial God of the Galaxy](https://wtr-lab.com/en/novel/109955/martial-god-of-the-galaxy) — catalog
-- **wtr-lab** `109733` [The Everyday and Not-so-ordinary Aspects of the Peninsula](https://wtr-lab.com/en/novel/109733/the-everyday-and-not-so-ordinary-aspects-of-the-peninsula) — catalog
-- **wtr-lab** `109881` [Flash Marriage and Deep Love: The Billionaire Young Lady is Addicted to Me](https://wtr-lab.com/en/novel/109881/flash-marriage-and-deep-love-the-billionaire-young-lady-is-addicted-to-me) — catalog
-- **wtr-lab** `109918` [I Just Happened to Take in a Runaway Heiress](https://wtr-lab.com/en/novel/109918/i-just-happened-to-take-in-a-runaway-heiress) — catalog
-- **wtr-lab** `109965` [My System of Adding Points for Cultivating Immortals](https://wtr-lab.com/en/novel/109965/my-system-of-adding-points-for-cultivating-immortals) — catalog
+- **wtr-lab** `109974` [Ten-thousand-year Dragon Son-in-law: Xu Changsheng & Zhou Kui](https://wtr-lab.com/en/novel/109974/ten-thousand-year-dragon-son-in-law-xu-changsheng-zhou-kui) — catalog
+- **wtr-lab** `109977` [Live-in Dragon Son-in-law: Ye Chen & Liu Shihua](https://wtr-lab.com/en/novel/109977/live-in-dragon-son-in-law-ye-chen-liu-shihua) — catalog
+- **wtr-lab** `110087` [The Courtyard House: Intercepting Yu Li at the Outset Infuriates the Yan Family](https://wtr-lab.com/en/novel/110087/the-courtyard-house-intercepting-yu-li-at-the-outset-infuriates-the-yan-family) — catalog
+- **wtr-lab** `110175` [The Soft 1980s Darling and the Rugged Older Man](https://wtr-lab.com/en/novel/110175/the-soft-1980-s-darling-and-the-rugged-older-man) — catalog
+- **wtr-lab** `110244` [The Blessed Adopted Daughter of the Farming Household](https://wtr-lab.com/en/novel/110244/the-blessed-adopted-daughter-of-the-farming-household) — catalog
+- **wtr-lab** `109909` [I Was Married of to a Disabled Hero: My In-laws Dote on Me](https://wtr-lab.com/en/novel/109909/i-was-married-of-to-a-disabled-hero-my-in-laws-dote-on-me) — catalog
+- **wtr-lab** `110248` [Weird? Go Tell Kamen Rider Zzz](https://wtr-lab.com/en/novel/110248/weird-go-tell-kamen-rider-zzz) — catalog
+- **wtr-lab** `110205` [Master Wakes from Long Sleep to Find All His Disciples are Emperors](https://wtr-lab.com/en/novel/110205/master-wakes-from-long-sleep-to-find-all-his-disciples-are-emperors) — catalog
+- **wtr-lab** `109904` [Unwelcoming Night](https://wtr-lab.com/en/novel/109904/unwelcoming-night) — catalog
+- **wtr-lab** `109702` [My Little Pony: Yes! Princess](https://wtr-lab.com/en/novel/109702/my-little-pony-yes-princess) — catalog

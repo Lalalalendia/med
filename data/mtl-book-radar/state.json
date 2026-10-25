@@ -1385,6 +1385,96 @@
       "site": "wtr-lab",
       "title": "My System of Adding Points for Cultivating Immortals",
       "url": "https://wtr-lab.com/en/novel/109965/my-system-of-adding-points-for-cultivating-immortals"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "109974",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Ten-thousand-year Dragon Son-in-law: Xu Changsheng & Zhou Kui",
+      "url": "https://wtr-lab.com/en/novel/109974/ten-thousand-year-dragon-son-in-law-xu-changsheng-zhou-kui"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "109977",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Live-in Dragon Son-in-law: Ye Chen & Liu Shihua",
+      "url": "https://wtr-lab.com/en/novel/109977/live-in-dragon-son-in-law-ye-chen-liu-shihua"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "110087",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "The Courtyard House: Intercepting Yu Li at the Outset Infuriates the Yan Family",
+      "url": "https://wtr-lab.com/en/novel/110087/the-courtyard-house-intercepting-yu-li-at-the-outset-infuriates-the-yan-family"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "110175",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "The Soft 1980s Darling and the Rugged Older Man",
+      "url": "https://wtr-lab.com/en/novel/110175/the-soft-1980-s-darling-and-the-rugged-older-man"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "110244",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "The Blessed Adopted Daughter of the Farming Household",
+      "url": "https://wtr-lab.com/en/novel/110244/the-blessed-adopted-daughter-of-the-farming-household"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "109909",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "I Was Married of to a Disabled Hero: My In-laws Dote on Me",
+      "url": "https://wtr-lab.com/en/novel/109909/i-was-married-of-to-a-disabled-hero-my-in-laws-dote-on-me"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "110248",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Weird? Go Tell Kamen Rider Zzz",
+      "url": "https://wtr-lab.com/en/novel/110248/weird-go-tell-kamen-rider-zzz"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "110205",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Master Wakes from Long Sleep to Find All His Disciples are Emperors",
+      "url": "https://wtr-lab.com/en/novel/110205/master-wakes-from-long-sleep-to-find-all-his-disciples-are-emperors"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "109904",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "Unwelcoming Night",
+      "url": "https://wtr-lab.com/en/novel/109904/unwelcoming-night"
+    },
+    {
+      "first_seen_utc": "2026-10-25T03:07:16+00:00",
+      "id": "109702",
+      "meaning": "first observed here; not necessarily newly authored",
+      "method": "catalog",
+      "site": "wtr-lab",
+      "title": "My Little Pony: Yes! Princess",
+      "url": "https://wtr-lab.com/en/novel/109702/my-little-pony-yes-princess"
     }
   ],
   "schema": 2,
@@ -1756,7 +1846,7 @@
         107264
       ],
       "initialized": true,
-      "last_success": "2026-10-24T03:06:25+00:00",
+      "last_success": "2026-10-25T03:07:16+00:00",
       "seen": {
         "105996": {
           "first_seen_utc": "2026-10-15T10:57:36+00:00",
@@ -2288,6 +2378,11 @@
           "title": "Twin System: The Yandere War God Protects Me As I Ascend to Godhood in the Apocalypse",
           "url": "https://wtr-lab.com/en/novel/109631/twin-system-the-yandere-war-god-protects-me-as-i-ascend-to-godhood-in-the-apocalypse"
         },
+        "109702": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "My Little Pony: Yes! Princess",
+          "url": "https://wtr-lab.com/en/novel/109702/my-little-pony-yes-princess"
+        },
         "109733": {
           "first_seen_utc": "2026-10-24T03:06:25+00:00",
           "title": "The Everyday and Not-so-ordinary Aspects of the Peninsula",
@@ -2297,6 +2392,16 @@
           "first_seen_utc": "2026-10-24T03:06:25+00:00",
           "title": "Flash Marriage and Deep Love: The Billionaire Young Lady is Addicted to Me",
           "url": "https://wtr-lab.com/en/novel/109881/flash-marriage-and-deep-love-the-billionaire-young-lady-is-addicted-to-me"
+        },
+        "109904": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "Unwelcoming Night",
+          "url": "https://wtr-lab.com/en/novel/109904/unwelcoming-night"
+        },
+        "109909": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "I Was Married of to a Disabled Hero: My In-laws Dote on Me",
+          "url": "https://wtr-lab.com/en/novel/109909/i-was-married-of-to-a-disabled-hero-my-in-laws-dote-on-me"
         },
         "109918": {
           "first_seen_utc": "2026-10-24T03:06:25+00:00",
@@ -2318,6 +2423,16 @@
           "title": "My System of Adding Points for Cultivating Immortals",
           "url": "https://wtr-lab.com/en/novel/109965/my-system-of-adding-points-for-cultivating-immortals"
         },
+        "109974": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "Ten-thousand-year Dragon Son-in-law: Xu Changsheng & Zhou Kui",
+          "url": "https://wtr-lab.com/en/novel/109974/ten-thousand-year-dragon-son-in-law-xu-changsheng-zhou-kui"
+        },
+        "109977": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "Live-in Dragon Son-in-law: Ye Chen & Liu Shihua",
+          "url": "https://wtr-lab.com/en/novel/109977/live-in-dragon-son-in-law-ye-chen-liu-shihua"
+        },
         "109995": {
           "first_seen_utc": "2026-10-24T03:06:25+00:00",
           "title": "Magic School: Starting from Stealing Authority",
@@ -2327,6 +2442,31 @@
           "first_seen_utc": "2026-10-24T03:06:25+00:00",
           "title": "Grand Blue, My Pab Fall Chronicles",
           "url": "https://wtr-lab.com/en/novel/110003/grand-blue-my-pab-fall-chronicles"
+        },
+        "110087": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "The Courtyard House: Intercepting Yu Li at the Outset Infuriates the Yan Family",
+          "url": "https://wtr-lab.com/en/novel/110087/the-courtyard-house-intercepting-yu-li-at-the-outset-infuriates-the-yan-family"
+        },
+        "110175": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "The Soft 1980s Darling and the Rugged Older Man",
+          "url": "https://wtr-lab.com/en/novel/110175/the-soft-1980-s-darling-and-the-rugged-older-man"
+        },
+        "110205": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "Master Wakes from Long Sleep to Find All His Disciples are Emperors",
+          "url": "https://wtr-lab.com/en/novel/110205/master-wakes-from-long-sleep-to-find-all-his-disciples-are-emperors"
+        },
+        "110244": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "The Blessed Adopted Daughter of the Farming Household",
+          "url": "https://wtr-lab.com/en/novel/110244/the-blessed-adopted-daughter-of-the-farming-household"
+        },
+        "110248": {
+          "first_seen_utc": "2026-10-25T03:07:16+00:00",
+          "title": "Weird? Go Tell Kamen Rider Zzz",
+          "url": "https://wtr-lab.com/en/novel/110248/weird-go-tell-kamen-rider-zzz"
         }
       }
     }
