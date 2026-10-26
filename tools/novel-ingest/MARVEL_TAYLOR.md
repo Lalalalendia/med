@@ -1,35 +1,44 @@
-# Marvel Taylor Chinese RAW
+# 漫威，谁把他救出来的？！ — Chinese RAW collection
 
-Book: 漫威，谁把他救出来的？！, author 雨夜下刀不带伞.
-Primary publicly readable source: https://www.novel543.com/0511558316/
-Witness sources supplied by the owner (not yet independently matched):
-https://cn.zhys.tw/book/2268838.html and https://m.abbshu.net/book/309042/.
+- Chinese title: 漫威，谁把他救出来的？！
+- Author: 雨夜下刀不带伞
+- Primary collection source: https://cn.zhys.tw/book/2268838.html (318 catalog links)
+- Comparison witnesses: https://www.twbook.cc/1901458316/dir , https://www.novel543.com/0511558316/dir , https://m.abbshu.net/book/309042/
+- Notion source record: https://app.notion.com/p/3da32a84beec81349a03f8d56814e4ea
 
-The late Novel543 catalog repeats printed chapter numbers. Always use the stable
-source URL ID from 8096_<ID>.html to order entries; printed author numbers are
-preserved as metadata. Long chapters can continue at 8096_<ID>_<PART>.html.
+## Source findings, 26 October 2026
 
-From the repo root:
+A live GitHub Actions mirror probe found:
 
-    python -m pip install requests beautifulsoup4
-    python tools/novel-ingest/marvel_taylor_collect.py --catalog-only --out-dir out/taylor-catalog
-    python tools/novel-ingest/marvel_taylor_collect.py --start 1 --end 318 --delay 3 --out-dir out/taylor-full
+| Site | Access | Suitability |
+| --- | --- | --- |
+| ZHYS | Public book catalog and sample chapter readable; robots permits | **Selected**: complete 318-entry catalog |
+| Twbook | Public /dir catalog and chapter readable; robots permits | Korean Hangul glyph substitutions in prose; use separate deobfuscation/QC before using |
+| Novel543 | robots.txt disallows the book /dir | Do not crawl with this collector |
+| ABBSHU | robots.txt HTTP 403; permission not established | Not used by automated collector |
 
-With a cancelled local run, use the exact same arguments plus --resume. A
-resume validates per-file SHA-256, and refuses a changed catalog. The workflow
-Marvel Taylor - verified Chinese RAW also has manual catalog, pilot (five
-chapters), and full modes. An initial feature-branch push launches a full run.
+The source catalog contains distinct entries with repeated *printed chapter numbers* near the end. Use catalog ordinal 1–318 as identity, preserving printed labels separately. Do not deduplicate by chapter title or printed number.
 
-Output: raw/*.txt, combined.txt (only verified unique bodies), manifest.json,
-summary.md. A catalog gap, missing/short body, duplicate, incomplete multipart
-page, blocked request, or count mismatch makes the result PARTIAL / BLOCKED,
-never PASS. No login, paywall, or anti-bot bypass is implemented. The source
-robots.txt is checked and crawl spacing is enforced. No raw book text is
-committed to the public repo.
+## Current pipeline
 
-Note: GitHub Actions artifacts in a public repo may be accessible to others.
-Keep only content you are authorized to distribute and retrieve the temporary
-artifact promptly; it expires after one day.
+Run `Marvel Taylor - verified Chinese RAW` in GitHub Actions. On the feature branch it launches four parallel ZHYS shard jobs (1–80, 81–160, 161–240, 241–318) and a strict merger. Each shard produces individual TXT chapter files, a catalog snapshot and checksums. Only if the shard manifests cover all ordinals, all 318 files validate SHA-256, catalogs are identical, and bodies are not duplicated does the merger emit:
 
-This collector does not validate the Chinese text against the official author
-edition, perform Russian translation, or update Notion/Rulate.
+- `raw/0001.txt` … `raw/0318.txt`
+- `combined.txt` containing the 318 verified entries
+- `manifest.json` with per-chapter source URL, printed number, length and SHA-256
+- `summary.md`
+
+GitHub Action artifacts are retained for seven days. These artifacts may be accessible to other users of a public repository; do not store anything outside the authorized corpus.
+
+For local runs:
+
+```bash
+python -m pip install requests beautifulsoup4
+python tools/novel-ingest/marvel_taylor_zhys.py --out-dir out/marvel-taylor-a --start 1 --end 80 --expected 318 --delay 1.25
+```
+
+The script honors robots.txt, does not bypass logins/anti-bot restrictions, and flags missing/short/obfuscated chapter bodies as failures rather than pretending success. The independent source probe remains at `tools/novel-ingest/marvel_taylor_mirror_probe.py`.
+
+Earlier Novel543-only collector and tests are retained as diagnostic scaffolding; current primary collection uses ZHYS instead.
+
+**Scope boundaries:** raw Chinese only. No Russian translation, Notion synchronization or Rulate publication is implied by a successful source artifact. Use the verified artifact only after the merge reports PASS.
