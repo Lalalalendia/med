@@ -28,7 +28,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: marvel-taylor-${ github.workflow }-${ github.ref }
+  group: marvel-taylor-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -58,9 +58,9 @@ jobs:
         continue-on-error: true
         shell: bash
         env:
-          EVENT_NAME: ${ github.event_name }
-          REQUESTED_MODE: ${ inputs.mode }
-          REQUESTED_DELAY: ${ inputs.delay_seconds }
+          EVENT_NAME: ${{ github.event_name }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+          REQUESTED_DELAY: ${{ inputs.delay_seconds }}
         run: |
           set -euo pipefail
           mode=full
@@ -90,7 +90,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: marvel-taylor-zh-raw-${ github.run_number }
+          name: marvel-taylor-zh-raw-${{ github.run_number }}
           path: out/marvel-taylor/
           if-no-files-found: warn
           retention-days: 1
