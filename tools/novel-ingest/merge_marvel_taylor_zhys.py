@@ -81,7 +81,23 @@ def merge(input_dir: Path, output_dir: Path, expected: int = 318) -> dict:
                 or content_lines[1] != book_title):
             raise ValueError(f"Chapter {n}: unexpected chapter heading or book label")
         chapter_title = content_lines[0].strip()
-        story = "\n".join(content_lines[2:]).strip()
+        prose_lines = content_lines[2:]
+        site_footer = {
+            "分享", "猜你喜欢", "🎉", "本书已读至最新章节",
+            "新章节更新后将第一时间为您推送", "追到这儿，说两句读后感？",
+        }
+        if not prose_lines or prose_lines[-1] != "猜你喜欢":
+            raise ValueError(f"Chapter {n}: missing expected site-footer boundary")
+        while prose_lines and prose_lines[-1] in site_footer:
+            prose_lines.pop()
+        if n == 1:
+            if prose_lines and prose_lines[0] == "无":
+                prose_lines.pop(0)
+            if prose_lines and prose_lines[-1] == "无":
+                prose_lines.pop()
+        story = "\n".join(prose_lines).strip()
+        if not story or any(x in site_footer for x in prose_lines[-4:]):
+            raise ValueError(f"Chapter {n}: site footer not fully removed")
         if len(re.findall(r"[\u3400-\u9fff]", story)) < 180:
             raise ValueError(f"Chapter {n}: too little story text")
         if re.search(r"[\uac00-\ud7a3]", story):

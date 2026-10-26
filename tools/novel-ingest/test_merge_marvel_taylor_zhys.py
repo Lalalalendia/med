@@ -24,8 +24,11 @@ class MergeTest(unittest.TestCase):
             folder = root / ("shard-" + str(i))
             (folder/"raw").mkdir(parents=True)
             story = ("这是一本真正的中文故事，其情节正在慢慢展开。" * 21) + str(i)
+            prefix = ("无\n" if i == 1 else "")
+            suffix = ("无\n" if i == 1 else "")
             original = ("Entry "+str(99+i)+"\n\n"+"第"+str(i)+"章 开始\n"
-                        +"漫威，谁把他救出来的？！\n"+story+"\n")
+                        +"漫威，谁把他救出来的？！\n"+prefix+story+"\n"
+                        +suffix+"分享\n猜你喜欢\n")
             source_file=folder/"raw"/f"{i:04d}.txt"
             source_file.write_text(original,encoding="utf-8")
             manifest={
@@ -51,6 +54,9 @@ class MergeTest(unittest.TestCase):
             self.assertTrue(data.startswith("第1章 开始\n\n"))
             self.assertNotIn("Entry",data)
             self.assertNotIn("漫威，谁把他救出来的",data)
+            self.assertNotIn("猜你喜欢",data)
+            self.assertNotIn("分享",data)
+            self.assertTrue(data.splitlines()[2].startswith("这是"))
             self.assertEqual(m.sha(data),result["chapters"][0]["sha256"])
 
     def test_detects_tampered_raw(self):
