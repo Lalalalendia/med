@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+"""Join independently verified ZHYS chapter artifacts into one complete corpus."""
+from __future__ import annotations
+import argparse
+import hashlib
+import json
+import shutil
+from pathlib import Path
+
+
+def sha(value):
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def merge(input_dir: Path, output_dir: Path, expected: int = 318) -> dict:
+    manifests = sorted(input_dir.glob("*/manifest.json"))
+    if len(manifests) != 4:
+        raise ValueError(f"Expected four shard manifests, found {len(manifests)}")
+    if output_dir.exists() and any(output_dir.iterdir()):
+        raise ValueError("Output not empty")
+    rows, catalog_proof = {}, None
+    seen_hashes = {}
+    for path in manifests:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        if manifest.get("status") != "PASS":
+            raise ValueError(f"{path}: shard not PASS: {manifest.get('status')}")
+        if manifest.get("book_id") != 2268838 or manifest.get("source") != "zhys":
+            raise ValueError(f"{path}: wrong book/source")
+        if manifest.get("catalog_count") != expected:
+            raise ValueError(f"{path}: catalog count mismatch")
+        fingerprint = sha(json.dumps(
+            [(x["ordinal"], x["source_id"], x["url"]) for x in manifest["catalog"]],
+            ensure_ascii=False, separators=(",", ":")))
+        if catalog_proof and fingerprint != catalog_proof:
+            raise ValueError(f"{path}: catalog differs between shards")
+        catalog_proof = fingerprint
+        requested = manifest["requested"]
+        local = set()
+        for row in manifest["chapters"]:
+            n = row["ordinal"]
+            if n in rows or n in local:
+                raise ValueError(f"{path}: duplicate ordinal {n}")
+            local.add(n)
+            if row["status"] != "ok":
+                raise ValueError(f"{path}: chapter {n} not ok")
+            if n < requested["start"] or n > requested["end"]:
+                raise ValueError(f"{path}: chapter outside shard range: {n}")
+            relative = Path(row["file"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise ValueError(f"{path}: unsafe relative path")
+            f = path.parent / relative
+            if not f.is_file():
+                raise ValueError(f"{path}: chapter file missing: {n}")
+            content = f.read_text(encoding="utf-8")
+            if sha(content) != row["sha256"]:
+                raise ValueError(f"{path}: chapter checksum mismatch: {n}")
+            if row["body_sha256"] in seen_hashes:
+                raise ValueError(f"{path}: duplicated body with chapter {seen_hashes[row['body_sha256']]}")
+            seen_hashes[row["body_sha256"]] = n
+            rows[n] = (row, f)
+        if local != set(range(requested["start"], requested["end"] + 1)):
+            raise ValueError(f"{path}: incomplete requested shard")
+    if set(rows) != set(range(1, expected + 1)):
+        missing = sorted(set(range(1, expected + 1)) - set(rows))
+        extra = sorted(set(rows) - set(range(1, expected + 1)))
+        raise ValueError(f"Missing {missing}; extra {extra}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    raw = output_dir / "raw"
+    raw.mkdir()
+    collected, clean_rows = [], []
+    for n in range(1, expected+1):
+        row, source = rows[n]
+        dst = raw / f"{n:04d}.txt"
+        shutil.copyfile(source, dst)
+        collected.append(dst.read_text(encoding="utf-8").rstrip())
+        clean_rows.append({**row, "file": str(dst.relative_to(output_dir))})
+    combined = "\n\n" + "=" * 72 + "\n\n"
+    full = combined.join(collected) + "\n"
+    (output_dir / "combined.txt").write_text(full, encoding="utf-8")
+    manifest = {"schema_version": 1, "book_key": "marvel-who-rescued-him",
+                "source": "zhys", "source_book_url": "https://cn.zhys.tw/book/2268838.html",
+                "expected": expected, "verified": len(clean_rows), "status": "PASS",
+                "catalog_sha256": catalog_proof,
+                "combined_sha256": sha(full), "chapters": clean_rows,
+                "notion_sync": "not_performed"}
+    (output_dir / "manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+    (output_dir / "summary.md").write_text(
+        "# Marvel Taylor Chinese RAW\n\n"
+        f"- Verified **{len(clean_rows)} / {expected}** distinct chapter files\n"
+        f"- Total text characters: {len(full)}\n"
+        f"- Combined SHA-256: {manifest['combined_sha256']}\n"
+        "- Source: ZHYS, metadata/identity matches in all four shards\n"
+        "- Printed chapter numbers preserved separately (duplicates may be intentional)\n"
+        "- Notion sync and Russian translation: not performed\n",
+        encoding="utf-8")
+    return manifest
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument("--input-dir", type=Path, required=True)
+    p.add_argument("--out-dir", type=Path, required=True)
+    p.add_argument("--expected", type=int, default=318)
+    args = p.parse_args()
+    m = merge(args.input_dir,args.out_dir,args.expected)
+    print(json.dumps({"status":m["status"],"verified":m["verified"],
+                      "combined_sha256":m["combined_sha256"]}))
+
+
+if __name__=="__main__":
+    main()
