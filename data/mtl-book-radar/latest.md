@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-25T03:07:18+00:00
+Run: 2026-10-26T03:12:03+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -10,18 +10,28 @@ Run: 2026-10-25T03:07:18+00:00
 | tomatomtl | disabled | 0 | 0 | 0 |  |
 | fanmtl | disabled | 0 | 0 | 0 |  |
 | ranobes | disabled | 0 | 0 | 0 |  |
-| mtl-novel | error | 0 | 0 | 0 | Access blocked HTTP 403; stopping source |
+| mtl-novel | ok | 10 | 10 | 0 |  |
 | readnovelmtl | disabled | 0 | 0 | 0 |  |
 
 ## Newly observed URLs
 
-- **wtr-lab** `109974` [Ten-thousand-year Dragon Son-in-law: Xu Changsheng & Zhou Kui](https://wtr-lab.com/en/novel/109974/ten-thousand-year-dragon-son-in-law-xu-changsheng-zhou-kui) — catalog
-- **wtr-lab** `109977` [Live-in Dragon Son-in-law: Ye Chen & Liu Shihua](https://wtr-lab.com/en/novel/109977/live-in-dragon-son-in-law-ye-chen-liu-shihua) — catalog
-- **wtr-lab** `110087` [The Courtyard House: Intercepting Yu Li at the Outset Infuriates the Yan Family](https://wtr-lab.com/en/novel/110087/the-courtyard-house-intercepting-yu-li-at-the-outset-infuriates-the-yan-family) — catalog
-- **wtr-lab** `110175` [The Soft 1980s Darling and the Rugged Older Man](https://wtr-lab.com/en/novel/110175/the-soft-1980-s-darling-and-the-rugged-older-man) — catalog
-- **wtr-lab** `110244` [The Blessed Adopted Daughter of the Farming Household](https://wtr-lab.com/en/novel/110244/the-blessed-adopted-daughter-of-the-farming-household) — catalog
-- **wtr-lab** `109909` [I Was Married of to a Disabled Hero: My In-laws Dote on Me](https://wtr-lab.com/en/novel/109909/i-was-married-of-to-a-disabled-hero-my-in-laws-dote-on-me) — catalog
-- **wtr-lab** `110248` [Weird? Go Tell Kamen Rider Zzz](https://wtr-lab.com/en/novel/110248/weird-go-tell-kamen-rider-zzz) — catalog
-- **wtr-lab** `110205` [Master Wakes from Long Sleep to Find All His Disciples are Emperors](https://wtr-lab.com/en/novel/110205/master-wakes-from-long-sleep-to-find-all-his-disciples-are-emperors) — catalog
-- **wtr-lab** `109904` [Unwelcoming Night](https://wtr-lab.com/en/novel/109904/unwelcoming-night) — catalog
-- **wtr-lab** `109702` [My Little Pony: Yes! Princess](https://wtr-lab.com/en/novel/109702/my-little-pony-yes-princess) — catalog
+- **wtr-lab** `110376` [Martial Universe: The Five Emperors and the Great Demon Lord Suppress All Enemies](https://wtr-lab.com/en/novel/110376/martial-universe-the-five-emperors-and-the-great-demon-lord-suppress-all-enemies) — catalog
+- **wtr-lab** `110607` [Mingke: Ten Thousand Fans are Deeply Immersed in the Shura Field](https://wtr-lab.com/en/novel/110607/mingke-ten-thousand-fans-are-deeply-immersed-in-the-shura-field) — catalog
+- **wtr-lab** `110530` [The Love Burns My Heart](https://wtr-lab.com/en/novel/110530/the-love-burns-my-heart) — catalog
+- **wtr-lab** `110589` [Transmigrating Across Multiple Worlds Simultaneously: The Pinnacle of the Myriad Realms](https://wtr-lab.com/en/novel/110589/transmigrating-across-multiple-worlds-simultaneously-the-pinnacle-of-the-myriad-realms) — catalog
+- **wtr-lab** `110414` [Criminal Investigation: Max-level Ghost Detective—starting Off with Reverse Evidence Gathering](https://wtr-lab.com/en/novel/110414/criminal-investigation-max-level-ghost-detective-starting-off-with-reverse-evidence-gathering) — catalog
+- **wtr-lab** `110556` [Path Roleplaying: Giving Another World a Taste of Collapse World: Star Train World's Shock](https://wtr-lab.com/en/novel/110556/path-roleplaying-giving-another-world-a-taste-of-collapse-world-star-train-worlds-shock) — catalog
+- **wtr-lab** `110485` [I Became a Warlord at the End of the Ming Dynasty](https://wtr-lab.com/en/novel/110485/i-became-a-warlord-at-the-end-of-the-ming-dynasty) — catalog
+- **wtr-lab** `110536` [I Can Transform Into Kamen Rider in My Freshman Year](https://wtr-lab.com/en/novel/110536/i-can-transform-into-kamen-rider-in-my-freshman-year) — catalog
+- **wtr-lab** `110415` [In Uncle Nine’s World, Bound to the Myriad Worlds Martial Arts System](https://wtr-lab.com/en/novel/110415/in-uncle-nines-world-bound-to-the-myriad-worlds-martial-arts-system) — catalog
+- **wtr-lab** `110426` [My Divine Sequence](https://wtr-lab.com/en/novel/110426/my-divine-sequence) — catalog
+- **mtl-novel** `dragon-of-desire-and-destruction` [Dragon of Desire and Destruction](https://mtl-novel.com/novel/dragon-of-desire-and-destruction/) — catalog
+- **mtl-novel** `all-people-deities-my-cheat-is-time-acceleration` [All-people Deities: My Cheat is Time Acceleration](https://mtl-novel.com/novel/all-people-deities-my-cheat-is-time-acceleration/) — catalog
+- **mtl-novel** `i-am-the-emperor-of-mengwang` [I Am The Emperor Of Mengwang](https://mtl-novel.com/novel/i-am-the-emperor-of-mengwang/) — catalog
+- **mtl-novel** `naruto-starting-with-the-kaleidoscope-of-choices` [Naruto: Starting with the Kaleidoscope of Choices](https://mtl-novel.com/novel/naruto-starting-with-the-kaleidoscope-of-choices/) — catalog
+- **mtl-novel** `i-superman-the-fake-superman-have-joined-the-chat-group` [I, Superman, the Fake Superman, Have Joined the Chat Group](https://mtl-novel.com/novel/i-superman-the-fake-superman-have-joined-the-chat-group/) — catalog
+- **mtl-novel** `douluo-reincarnated-rock-king-emperor-exposed-by-the-sky` [Douluo: Reincarnated Rock King Emperor, Exposed by the Sky](https://mtl-novel.com/novel/douluo-reincarnated-rock-king-emperor-exposed-by-the-sky/) — catalog
+- **mtl-novel** `i-turned-my-sister-into-a-doll-and-now-im-pointing-my-sword-at-all-the-gods` [I Turned My Sister Into a Doll, and Now I’m Pointing My Sword at All the Gods](https://mtl-novel.com/novel/i-turned-my-sister-into-a-doll-and-now-im-pointing-my-sword-at-all-the-gods/) — catalog
+- **mtl-novel** `zenless-zone-zero-heart-of-steel` [Zenless Zone Zero: Heart of Steel](https://mtl-novel.com/novel/zenless-zone-zero-heart-of-steel/) — catalog
+- **mtl-novel** `highway-survival-starting-with-an-ambulance` [Highway Survival: Starting with an Ambulance](https://mtl-novel.com/novel/highway-survival-starting-with-an-ambulance/) — catalog
+- **mtl-novel** `become-a-creator-god-starting-with-creating-online-games` [Become a Creator God, Starting with Creating Online Games](https://mtl-novel.com/novel/become-a-creator-god-starting-with-creating-online-games/) — catalog
