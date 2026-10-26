@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import shutil
+import re
 from pathlib import Path
 
 
@@ -68,19 +68,54 @@ def merge(input_dir: Path, output_dir: Path, expected: int = 318) -> dict:
     raw = output_dir / "raw"
     raw.mkdir()
     collected, clean_rows = [], []
+    clean_signatures = set()
+    book_title = "漫威，谁把他救出来的？！"
     for n in range(1, expected+1):
         row, source = rows[n]
+        original = source.read_text(encoding="utf-8")
+        original_title, separator, original_body = original.partition("\n\n")
+        if not separator:
+            raise ValueError(f"Chapter {n}: no body separator")
+        content_lines = original_body.strip().splitlines()
+        if (len(content_lines) < 3 or not content_lines[0].startswith("第")
+                or content_lines[1] != book_title):
+            raise ValueError(f"Chapter {n}: unexpected chapter heading or book label")
+        chapter_title = content_lines[0].strip()
+        story = "\n".join(content_lines[2:]).strip()
+        if len(re.findall(r"[\u3400-\u9fff]", story)) < 180:
+            raise ValueError(f"Chapter {n}: too little story text")
+        if re.search(r"[\uac00-\ud7a3]", story):
+            raise ValueError(f"Chapter {n}: obfuscated Hangul in Chinese body")
+        normalized = chapter_title + "\n\n" + story + "\n"
+        story_hash = sha(re.sub(r"\s+", "", story))
+        if story_hash in clean_signatures:
+            raise ValueError(f"Chapter {n}: duplicated normalized story text")
+        clean_signatures.add(story_hash)
         dst = raw / f"{n:04d}.txt"
-        shutil.copyfile(source, dst)
-        collected.append(dst.read_text(encoding="utf-8").rstrip())
-        clean_rows.append({**row, "file": str(dst.relative_to(output_dir))})
+        dst.write_text(normalized, encoding="utf-8")
+        collected.append(normalized.rstrip())
+        label = re.match(r"^第\s*(\d+)\s*章", chapter_title)
+        clean_rows.append({
+            **row, "file": str(dst.relative_to(output_dir)),
+            "title": chapter_title,
+            "author_number": int(label.group(1)) if label else None,
+            "original_catalog_title": original_title,
+            "original_raw_sha256": row["sha256"],
+            "original_body_sha256": row["body_sha256"],
+            "sha256": sha(normalized),
+            "body_sha256": story_hash,
+            "chars": len(story),
+            "han": len(re.findall(r"[\u3400-\u9fff]", story)),
+            "title_source": "chapter_body",
+        })
     combined = "\n\n" + "=" * 72 + "\n\n"
     full = combined.join(collected) + "\n"
     (output_dir / "combined.txt").write_text(full, encoding="utf-8")
-    manifest = {"schema_version": 1, "book_key": "marvel-who-rescued-him",
+    manifest = {"schema_version": 2, "book_key": "marvel-who-rescued-him",
                 "source": "zhys", "source_book_url": "https://cn.zhys.tw/book/2268838.html",
                 "expected": expected, "verified": len(clean_rows), "status": "PASS",
                 "catalog_sha256": catalog_proof,
+                "title_fixes": sum(x["original_catalog_title"] != x["title"] for x in clean_rows),
                 "combined_sha256": sha(full), "chapters": clean_rows,
                 "notion_sync": "not_performed"}
     (output_dir / "manifest.json").write_text(
@@ -91,6 +126,7 @@ def merge(input_dir: Path, output_dir: Path, expected: int = 318) -> dict:
         f"- Total text characters: {len(full)}\n"
         f"- Combined SHA-256: {manifest['combined_sha256']}\n"
         "- Source: ZHYS, metadata/identity matches in all four shards\n"
+        f"- Titles repaired from chapter body: {manifest['title_fixes']}\n"
         "- Printed chapter numbers preserved separately (duplicates may be intentional)\n"
         "- Notion sync and Russian translation: not performed\n",
         encoding="utf-8")
