@@ -105,7 +105,7 @@ def probe(session, name, url):
     row["containers"] = node_stats(page)
     navigation = []
     for a in page.select("a[href]"):
-        label = re.sub(r"\\s+", " ", a.get_text(" ", strip=True))
+        label = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
         if any(key in label.lower() for key in ("目录", "目錄", "章节", "章節", "more", "全部")):
             href = urljoin(url, a["href"])
             if same_host(url, href) and len(navigation) < 20:
@@ -115,7 +115,7 @@ def probe(session, name, url):
     for el in page.select("article > *, main > *")[:30]:
         text = el.get_text(" ", strip=True)
         row["article_children"].append({"tag": el.name, "class": el.get("class", []),
-                                        "id": el.get("id"), "han": len(re.findall(r"[\\u3400-\\u9fff]", text)),
+                                        "id": el.get("id"), "han": len(re.findall(r"[\u3400-\u9fff]", text)),
                                         "links": len(el.select("a[href]"))})
     links = chapter_links(page, url)
     row["chapter_link_count"] = len(links)
