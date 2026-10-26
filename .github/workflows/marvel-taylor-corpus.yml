@@ -7,6 +7,9 @@ on:
       - tools/novel-ingest/marvel_taylor_collect.py
       - tools/novel-ingest/test_marvel_taylor_collect.py
       - .github/workflows/marvel-taylor-corpus.yml
+      - tools/novel-ingest/marvel_taylor_zhys.py
+      - tools/novel-ingest/test_marvel_taylor_zhys.py
+      - tools/novel-ingest/merge_marvel_taylor_zhys.py
       - tools/novel-ingest/marvel_taylor_mirror_probe.py
       - tools/novel-ingest/test_marvel_taylor_mirror_probe.py
   pull_request:
@@ -14,6 +17,9 @@ on:
       - tools/novel-ingest/marvel_taylor_collect.py
       - tools/novel-ingest/test_marvel_taylor_collect.py
       - .github/workflows/marvel-taylor-corpus.yml
+      - tools/novel-ingest/marvel_taylor_zhys.py
+      - tools/novel-ingest/test_marvel_taylor_zhys.py
+      - tools/novel-ingest/merge_marvel_taylor_zhys.py
       - tools/novel-ingest/marvel_taylor_mirror_probe.py
       - tools/novel-ingest/test_marvel_taylor_mirror_probe.py
   workflow_dispatch:
@@ -22,7 +28,7 @@ on:
         type: choice
         required: true
         default: full
-        options: [catalog, pilot, full]
+        options: [full]
       delay_seconds:
         type: number
         required: true
@@ -46,6 +52,7 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
       - run: python -m unittest discover -s tools/novel-ingest -p test_marvel_taylor_collect.py -v
+      - run: python -m unittest discover -s tools/novel-ingest -p test_marvel_taylor_zhys.py -v
   mirror-probe:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -67,58 +74,69 @@ jobs:
           path: out/marvel-taylor/mirror-probe.json
           if-no-files-found: warn
           retention-days: 7
-  collect:
+  fetch-zhys:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: offline-tests
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - {name: a, start: 1, end: 80}
+          - {name: b, start: 81, end: 160}
+          - {name: c, start: 161, end: 240}
+          - {name: d, start: 241, end: 318}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Fetch verified public chapters
-        id: fetch
+      - name: Fetch and hash this shard
+        id: ingest
         continue-on-error: true
-        shell: bash
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          REQUESTED_MODE: ${{ inputs.mode }}
-          REQUESTED_DELAY: ${{ inputs.delay_seconds }}
-        run: |
-          set -euo pipefail
-          mode=full
-          delay=3
-          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            mode="$REQUESTED_MODE"
-            delay="$REQUESTED_DELAY"
-          fi
-          args=(--out-dir out/marvel-taylor --expected 318 --delay "$delay")
-          case "$mode" in
-            catalog) args+=(--catalog-only) ;;
-            pilot) args+=(--start 1 --end 5) ;;
-            full) args+=(--start 1 --end 318) ;;
-            *) echo "Invalid mode" >&2; exit 2 ;;
-          esac
-          python tools/novel-ingest/marvel_taylor_collect.py "${args[@]}"
-      - name: Metadata-only summary
-        if: always()
+          START: ${{ matrix.start }}
+          END: ${{ matrix.end }}
+          SHARD: ${{ matrix.name }}
         shell: bash
         run: |
-          if [[ -f out/marvel-taylor/summary.md ]]; then
-            cat out/marvel-taylor/summary.md >> "$GITHUB_STEP_SUMMARY"
-          elif [[ -f out/marvel-taylor/manifest.json ]]; then
-            python -c 'import json; d=json.load(open("out/marvel-taylor/manifest.json")); print(d["status"], d["catalog_count"], d["catalog_error"])'
-          fi
-      - name: Upload temporary RAW artifact
+          python tools/novel-ingest/marvel_taylor_zhys.py --out-dir out/zhys/shard-${SHARD} --start ${START} --end ${END} --expected 318 --delay 1.25
+      - name: Upload shard including failure receipts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: marvel-taylor-zh-raw-${{ github.run_number }}
-          path: out/marvel-taylor/
+          name: marvel-taylor-zhys-shard-${{ matrix.name }}-${{ github.run_id }}
+          path: out/zhys/shard-${{ matrix.name }}/
           if-no-files-found: warn
-          retention-days: 1
-      - name: Fail on incomplete collection
-        if: steps.fetch.outcome != 'success'
+          retention-days: 7
+      - name: Enforce shard completeness
+        if: steps.ingest.outcome != 'success'
         run: exit 1
+  merge-zhys:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: fetch-zhys
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: marvel-taylor-zhys-shard-*-${{ github.run_id }}
+          path: downloaded
+      - name: Verify 318 files and create combined TXT
+        run: |
+          python tools/novel-ingest/merge_marvel_taylor_zhys.py --input-dir downloaded --out-dir out/verified --expected 318
+          cat out/verified/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload verified full corpus
+        uses: actions/upload-artifact@v4
+        with:
+          name: marvel-taylor-zhys-verified-${{ github.run_id }}
+          path: out/verified/
+          if-no-files-found: error
+          retention-days: 7
