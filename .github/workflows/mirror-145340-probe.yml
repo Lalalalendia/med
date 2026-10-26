@@ -1,0 +1,68 @@
+name: Book 145340 five-mirror source probe
+
+on:
+  push:
+    branches: [probe/mirrors-145340-20261017]
+    paths:
+      - 'tools/novel-ingest/mirror_145340_probe.py'
+      - '.github/workflows/mirror-145340-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-145340-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mirrors:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install HTML parser
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Verify local parser
+        run: python tools/novel-ingest/mirror_145340_probe.py --self-test
+      - name: Smoke-check IXDZS chapter 635 in normal Chrome
+        run: python tools/novel-ingest/ixdzs_browser_635_probe.py
+      - name: Probe five given mirrors and candidate chapters
+        run: |
+          set +e
+          python tools/novel-ingest/mirror_145340_probe.py --delay 1.5 --out-dir out/mirror-145340
+          rc=$?
+          set -e
+          if test "$rc" != "0" && test "$rc" != "2"; then exit "$rc"; fi
+      - name: Assert Chrome validates boundary 634-636
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('out/mirror-145340/ixdzs_chrome_samples.json')
+          report=json.loads(p.read_text(encoding='utf-8'))
+          samples=report.get('samples',{})
+          numbers=[634,635,636]
+          failed=[i for i in numbers if samples.get(str(i),{}).get('state')!='candidate_body']
+          hashes=[samples.get(str(i),{}).get('sha256') for i in numbers]
+          if failed or len(set(hashes))!=3:
+              raise SystemExit('CHAPTER_BOUNDARY_NOT_VERIFIED: '+str(failed)+' hashes_distinct='+str(len(set(hashes))))
+          print('CHAPTER_BOUNDARY_634_636_CONFIRMED')
+          PY
+      - name: Publish diagnostics summary
+        if: always()
+        run: |
+          if test -f out/mirror-145340/summary.md; then
+            cat out/mirror-145340/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload metadata diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mirror-145340-metadata
+          path: out/mirror-145340/
+          if-no-files-found: warn
+          retention-days: 7
