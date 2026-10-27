@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-26T03:12:03+00:00
+Run: 2026-10-27T03:11:48+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-10-26T03:12:03+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `110376` [Martial Universe: The Five Emperors and the Great Demon Lord Suppress All Enemies](https://wtr-lab.com/en/novel/110376/martial-universe-the-five-emperors-and-the-great-demon-lord-suppress-all-enemies) — catalog
-- **wtr-lab** `110607` [Mingke: Ten Thousand Fans are Deeply Immersed in the Shura Field](https://wtr-lab.com/en/novel/110607/mingke-ten-thousand-fans-are-deeply-immersed-in-the-shura-field) — catalog
-- **wtr-lab** `110530` [The Love Burns My Heart](https://wtr-lab.com/en/novel/110530/the-love-burns-my-heart) — catalog
-- **wtr-lab** `110589` [Transmigrating Across Multiple Worlds Simultaneously: The Pinnacle of the Myriad Realms](https://wtr-lab.com/en/novel/110589/transmigrating-across-multiple-worlds-simultaneously-the-pinnacle-of-the-myriad-realms) — catalog
-- **wtr-lab** `110414` [Criminal Investigation: Max-level Ghost Detective—starting Off with Reverse Evidence Gathering](https://wtr-lab.com/en/novel/110414/criminal-investigation-max-level-ghost-detective-starting-off-with-reverse-evidence-gathering) — catalog
-- **wtr-lab** `110556` [Path Roleplaying: Giving Another World a Taste of Collapse World: Star Train World's Shock](https://wtr-lab.com/en/novel/110556/path-roleplaying-giving-another-world-a-taste-of-collapse-world-star-train-worlds-shock) — catalog
-- **wtr-lab** `110485` [I Became a Warlord at the End of the Ming Dynasty](https://wtr-lab.com/en/novel/110485/i-became-a-warlord-at-the-end-of-the-ming-dynasty) — catalog
-- **wtr-lab** `110536` [I Can Transform Into Kamen Rider in My Freshman Year](https://wtr-lab.com/en/novel/110536/i-can-transform-into-kamen-rider-in-my-freshman-year) — catalog
-- **wtr-lab** `110415` [In Uncle Nine’s World, Bound to the Myriad Worlds Martial Arts System](https://wtr-lab.com/en/novel/110415/in-uncle-nines-world-bound-to-the-myriad-worlds-martial-arts-system) — catalog
-- **wtr-lab** `110426` [My Divine Sequence](https://wtr-lab.com/en/novel/110426/my-divine-sequence) — catalog
-- **mtl-novel** `dragon-of-desire-and-destruction` [Dragon of Desire and Destruction](https://mtl-novel.com/novel/dragon-of-desire-and-destruction/) — catalog
-- **mtl-novel** `all-people-deities-my-cheat-is-time-acceleration` [All-people Deities: My Cheat is Time Acceleration](https://mtl-novel.com/novel/all-people-deities-my-cheat-is-time-acceleration/) — catalog
-- **mtl-novel** `i-am-the-emperor-of-mengwang` [I Am The Emperor Of Mengwang](https://mtl-novel.com/novel/i-am-the-emperor-of-mengwang/) — catalog
-- **mtl-novel** `naruto-starting-with-the-kaleidoscope-of-choices` [Naruto: Starting with the Kaleidoscope of Choices](https://mtl-novel.com/novel/naruto-starting-with-the-kaleidoscope-of-choices/) — catalog
-- **mtl-novel** `i-superman-the-fake-superman-have-joined-the-chat-group` [I, Superman, the Fake Superman, Have Joined the Chat Group](https://mtl-novel.com/novel/i-superman-the-fake-superman-have-joined-the-chat-group/) — catalog
-- **mtl-novel** `douluo-reincarnated-rock-king-emperor-exposed-by-the-sky` [Douluo: Reincarnated Rock King Emperor, Exposed by the Sky](https://mtl-novel.com/novel/douluo-reincarnated-rock-king-emperor-exposed-by-the-sky/) — catalog
-- **mtl-novel** `i-turned-my-sister-into-a-doll-and-now-im-pointing-my-sword-at-all-the-gods` [I Turned My Sister Into a Doll, and Now I’m Pointing My Sword at All the Gods](https://mtl-novel.com/novel/i-turned-my-sister-into-a-doll-and-now-im-pointing-my-sword-at-all-the-gods/) — catalog
-- **mtl-novel** `zenless-zone-zero-heart-of-steel` [Zenless Zone Zero: Heart of Steel](https://mtl-novel.com/novel/zenless-zone-zero-heart-of-steel/) — catalog
-- **mtl-novel** `highway-survival-starting-with-an-ambulance` [Highway Survival: Starting with an Ambulance](https://mtl-novel.com/novel/highway-survival-starting-with-an-ambulance/) — catalog
-- **mtl-novel** `become-a-creator-god-starting-with-creating-online-games` [Become a Creator God, Starting with Creating Online Games](https://mtl-novel.com/novel/become-a-creator-god-starting-with-creating-online-games/) — catalog
+- **wtr-lab** `110269` [Quick Transmigration: My Host is Omnipotent](https://wtr-lab.com/en/novel/110269/quick-transmigration-my-host-is-omnipotent) — catalog
+- **wtr-lab** `110896` [Three Kingdoms Mythology World](https://wtr-lab.com/en/novel/110896/three-kingdoms-mythology-world) — catalog
+- **wtr-lab** `110692` [Five Elements Spiritual Root Cultivation Tale](https://wtr-lab.com/en/novel/110692/five-elements-spiritual-root-cultivation-tale) — catalog
+- **wtr-lab** `110920` [Ninja World's Garbage Dump](https://wtr-lab.com/en/novel/110920/ninja-worlds-garbage-dump) — catalog
+- **wtr-lab** `109923` [The Dark Guard Retired to Farm](https://wtr-lab.com/en/novel/109923/the-dark-guard-retired-to-farm) — catalog
+- **wtr-lab** `110750` [Film and Tv: Dual Traversing Into Ode to Joy Starting from the Courtyard](https://wtr-lab.com/en/novel/110750/film-and-tv-dual-traversing-into-ode-to-joy-starting-from-the-courtyard) — catalog
+- **wtr-lab** `110817` [Slay Demons to Grow Stronger: The Dao Ancestor is a Martial Artist!](https://wtr-lab.com/en/novel/110817/slay-demons-to-grow-stronger-the-dao-ancestor-is-a-martial-artist) — catalog
+- **wtr-lab** `108739` [Young Master Fu’s Billion-dollar Sweetheart](https://wtr-lab.com/en/novel/108739/young-master-fus-billion-dollar-sweetheart) — catalog
+- **wtr-lab** `110711` [Rebirth After the College Entrance Exam: Financial Freedom by Summer's End](https://wtr-lab.com/en/novel/110711/rebirth-after-the-college-entrance-exam-financial-freedom-by-summers-end) — catalog
+- **wtr-lab** `110913` [Hollywood Hunter](https://wtr-lab.com/en/novel/110913/hollywood-hunter) — catalog
+- **mtl-novel** `it-makes-sense-for-me-to-evolve-from-a-golden-python-into-an-ancestral-dragon-right` [It Makes Sense for Me to Evolve from a Golden Python Into an Ancestral Dragon, Right?](https://mtl-novel.com/novel/it-makes-sense-for-me-to-evolve-from-a-golden-python-into-an-ancestral-dragon-right/) — catalog
+- **mtl-novel** `naruto-the-path-to-genius-brought-by-the-keyword` [Naruto! The Path to Genius Brought by the Keyword](https://mtl-novel.com/novel/naruto-the-path-to-genius-brought-by-the-keyword/) — catalog
+- **mtl-novel** `douluo-reborn-as-a-mandala-serpent-a-python-transforms-into-a-dragon` [Douluo: Reborn As a Mandala Serpent, a Python Transforms Into a Dragon!](https://mtl-novel.com/novel/douluo-reborn-as-a-mandala-serpent-a-python-transforms-into-a-dragon/) — catalog
+- **mtl-novel** `global-datafication-im-a-little-bit-lucky` [Global Datafication: I’m a Little Bit Lucky](https://mtl-novel.com/novel/global-datafication-im-a-little-bit-lucky/) — catalog
+- **mtl-novel** `my-iron-suit` [My Iron Suit](https://mtl-novel.com/novel/my-iron-suit/) — catalog
+- **mtl-novel** `the-wild-god-has-arrived-the-incense-is-offered-and-all-evil-spirits-are-defeated` [The Wild God Has Arrived, the Incense is Offered, and All Evil Spirits are Defeated!](https://mtl-novel.com/novel/the-wild-god-has-arrived-the-incense-is-offered-and-all-evil-spirits-are-defeated/) — catalog
+- **mtl-novel** `all-gods-my-clan-can-cultivate-immortality` [All Gods: My Clan Can Cultivate Immortality](https://mtl-novel.com/novel/all-gods-my-clan-can-cultivate-immortality/) — catalog
+- **mtl-novel** `douluo-continent-the-death-tree-pursued-by-the-goddess-of-life` [Douluo Continent: The Death Tree, Pursued by the Goddess of Life](https://mtl-novel.com/novel/douluo-continent-the-death-tree-pursued-by-the-goddess-of-life/) — catalog
+- **mtl-novel** `writing-diary-complaints-and-being-seen-by-iron-man` [Writing diary complaints and being seen by Iron Man](https://mtl-novel.com/novel/writing-diary-complaints-and-being-seen-by-iron-man/) — catalog
+- **mtl-novel** `primordial-era-i-the-void-god-and-demon-will-recreate-the-primordial-true-realm` [Primordial Era: I, the Void God and Demon, Will Recreate the Primordial True Realm](https://mtl-novel.com/novel/primordial-era-i-the-void-god-and-demon-will-recreate-the-primordial-true-realm/) — catalog
