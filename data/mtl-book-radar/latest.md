@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-27T03:11:48+00:00
+Run: 2026-10-28T03:19:43+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-10-27T03:11:48+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `110269` [Quick Transmigration: My Host is Omnipotent](https://wtr-lab.com/en/novel/110269/quick-transmigration-my-host-is-omnipotent) — catalog
-- **wtr-lab** `110896` [Three Kingdoms Mythology World](https://wtr-lab.com/en/novel/110896/three-kingdoms-mythology-world) — catalog
-- **wtr-lab** `110692` [Five Elements Spiritual Root Cultivation Tale](https://wtr-lab.com/en/novel/110692/five-elements-spiritual-root-cultivation-tale) — catalog
-- **wtr-lab** `110920` [Ninja World's Garbage Dump](https://wtr-lab.com/en/novel/110920/ninja-worlds-garbage-dump) — catalog
-- **wtr-lab** `109923` [The Dark Guard Retired to Farm](https://wtr-lab.com/en/novel/109923/the-dark-guard-retired-to-farm) — catalog
-- **wtr-lab** `110750` [Film and Tv: Dual Traversing Into Ode to Joy Starting from the Courtyard](https://wtr-lab.com/en/novel/110750/film-and-tv-dual-traversing-into-ode-to-joy-starting-from-the-courtyard) — catalog
-- **wtr-lab** `110817` [Slay Demons to Grow Stronger: The Dao Ancestor is a Martial Artist!](https://wtr-lab.com/en/novel/110817/slay-demons-to-grow-stronger-the-dao-ancestor-is-a-martial-artist) — catalog
-- **wtr-lab** `108739` [Young Master Fu’s Billion-dollar Sweetheart](https://wtr-lab.com/en/novel/108739/young-master-fus-billion-dollar-sweetheart) — catalog
-- **wtr-lab** `110711` [Rebirth After the College Entrance Exam: Financial Freedom by Summer's End](https://wtr-lab.com/en/novel/110711/rebirth-after-the-college-entrance-exam-financial-freedom-by-summers-end) — catalog
-- **wtr-lab** `110913` [Hollywood Hunter](https://wtr-lab.com/en/novel/110913/hollywood-hunter) — catalog
-- **mtl-novel** `it-makes-sense-for-me-to-evolve-from-a-golden-python-into-an-ancestral-dragon-right` [It Makes Sense for Me to Evolve from a Golden Python Into an Ancestral Dragon, Right?](https://mtl-novel.com/novel/it-makes-sense-for-me-to-evolve-from-a-golden-python-into-an-ancestral-dragon-right/) — catalog
-- **mtl-novel** `naruto-the-path-to-genius-brought-by-the-keyword` [Naruto! The Path to Genius Brought by the Keyword](https://mtl-novel.com/novel/naruto-the-path-to-genius-brought-by-the-keyword/) — catalog
-- **mtl-novel** `douluo-reborn-as-a-mandala-serpent-a-python-transforms-into-a-dragon` [Douluo: Reborn As a Mandala Serpent, a Python Transforms Into a Dragon!](https://mtl-novel.com/novel/douluo-reborn-as-a-mandala-serpent-a-python-transforms-into-a-dragon/) — catalog
-- **mtl-novel** `global-datafication-im-a-little-bit-lucky` [Global Datafication: I’m a Little Bit Lucky](https://mtl-novel.com/novel/global-datafication-im-a-little-bit-lucky/) — catalog
-- **mtl-novel** `my-iron-suit` [My Iron Suit](https://mtl-novel.com/novel/my-iron-suit/) — catalog
-- **mtl-novel** `the-wild-god-has-arrived-the-incense-is-offered-and-all-evil-spirits-are-defeated` [The Wild God Has Arrived, the Incense is Offered, and All Evil Spirits are Defeated!](https://mtl-novel.com/novel/the-wild-god-has-arrived-the-incense-is-offered-and-all-evil-spirits-are-defeated/) — catalog
-- **mtl-novel** `all-gods-my-clan-can-cultivate-immortality` [All Gods: My Clan Can Cultivate Immortality](https://mtl-novel.com/novel/all-gods-my-clan-can-cultivate-immortality/) — catalog
-- **mtl-novel** `douluo-continent-the-death-tree-pursued-by-the-goddess-of-life` [Douluo Continent: The Death Tree, Pursued by the Goddess of Life](https://mtl-novel.com/novel/douluo-continent-the-death-tree-pursued-by-the-goddess-of-life/) — catalog
-- **mtl-novel** `writing-diary-complaints-and-being-seen-by-iron-man` [Writing diary complaints and being seen by Iron Man](https://mtl-novel.com/novel/writing-diary-complaints-and-being-seen-by-iron-man/) — catalog
-- **mtl-novel** `primordial-era-i-the-void-god-and-demon-will-recreate-the-primordial-true-realm` [Primordial Era: I, the Void God and Demon, Will Recreate the Primordial True Realm](https://mtl-novel.com/novel/primordial-era-i-the-void-god-and-demon-will-recreate-the-primordial-true-realm/) — catalog
+- **wtr-lab** `111112` [The Interstellar True Young Master is PUA-ing the Commander Again](https://wtr-lab.com/en/novel/111112/the-interstellar-true-young-master-is-pua-ing-the-commander-again) — catalog
+- **wtr-lab** `111103` [I am the Killing Sequence: Unbeatable the Moment I Remove My Mask](https://wtr-lab.com/en/novel/111103/i-am-the-killing-sequence-unbeatable-the-moment-i-remove-my-mask) — catalog
+- **wtr-lab** `110728` [The Real Heiress is Rejected](https://wtr-lab.com/en/novel/110728/the-real-heiress-is-rejected) — catalog
+- **wtr-lab** `110083` [Bai Zi Hei Tu: Leading the Female Boss from Security Guard to the Top](https://wtr-lab.com/en/novel/110083/bai-zi-hei-tu-leading-the-female-boss-from-security-guard-to-the-top) — catalog
+- **wtr-lab** `111173` [After Winning 18.4 Billion, I Return to the Northeast to Lie Flat](https://wtr-lab.com/en/novel/111173/after-winning-18-4-billion-i-return-to-the-northeast-to-lie-flat) — catalog
+- **wtr-lab** `111064` [A Stunning Beauty with Cunning Skills, She Will Stop at Nothing to Climb the Ladder](https://wtr-lab.com/en/novel/111064/a-stunning-beauty-with-cunning-skills-she-will-stop-at-nothing-to-climb-the-ladder) — catalog
+- **wtr-lab** `110964` [Primordial Era: Starting Off by Scamming Nüwa!](https://wtr-lab.com/en/novel/110964/primordial-era-starting-off-by-scamming-nuwa) — catalog
+- **wtr-lab** `110770` [I Woke Up As the Only God, Now Everyone Wants Me](https://wtr-lab.com/en/novel/110770/i-woke-up-as-the-only-god-now-everyone-wants-me) — catalog
+- **wtr-lab** `110656` [The Tycoon Begins with Antique Appraisal](https://wtr-lab.com/en/novel/110656/the-tycoon-begins-with-antique-appraisal) — catalog
+- **wtr-lab** `110655` [Tennis: I Use Anime Moves in the Real World](https://wtr-lab.com/en/novel/110655/tennis-i-use-anime-moves-in-the-real-world) — catalog
+- **mtl-novel** `versatile-mage-seize-devour-the-black-dragon` [Versatile Mage: Seize & Devour the Black Dragon](https://mtl-novel.com/novel/versatile-mage-seize-devour-the-black-dragon/) — catalog
+- **mtl-novel** `all-gods-western-mythology-i-created-the-primordial-world` [All Gods: Western Mythology? I Created the Primordial World](https://mtl-novel.com/novel/all-gods-western-mythology-i-created-the-primordial-world/) — catalog
+- **mtl-novel** `marvel-salty-fish-kryptonian` [Marvel Salty Fish Kryptonian](https://mtl-novel.com/novel/marvel-salty-fish-kryptonian/) — catalog
+- **mtl-novel** `starting-in-tokyo-the-world-is-being-drastically-altered` [Starting in Tokyo, the World is Being Drastically Altered](https://mtl-novel.com/novel/starting-in-tokyo-the-world-is-being-drastically-altered/) — catalog
+- **mtl-novel** `greek-mythology-starting-with-controlling-the-laws-of-fate` [Greek Mythology: Starting with Controlling the Laws of Fate](https://mtl-novel.com/novel/greek-mythology-starting-with-controlling-the-laws-of-fate/) — catalog
+- **mtl-novel** `all-gods-evolving-from-the-zerg-to-the-cataclysm` [All Gods: Evolving from the Zerg to the Cataclysm](https://mtl-novel.com/novel/all-gods-evolving-from-the-zerg-to-the-cataclysm/) — catalog
+- **mtl-novel** `you-said-you-would-be-the-reborn-empress-how-come-you-became-my-bootlicker` [You Said You Would Be the Reborn Empress, How Come You Became My Bootlicker?](https://mtl-novel.com/novel/you-said-you-would-be-the-reborn-empress-how-come-you-became-my-bootlicker/) — catalog
+- **mtl-novel** `greece-i-am-the-master-of-destiny` [Greece: I am the Master of Destiny!](https://mtl-novel.com/novel/greece-i-am-the-master-of-destiny/) — catalog
+- **mtl-novel** `american-tv-series-starting-with-sheldons-wool-collection` [American TV Series: Starting with Sheldon’s Wool Collection](https://mtl-novel.com/novel/american-tv-series-starting-with-sheldons-wool-collection/) — catalog
+- **mtl-novel** `global-gods-my-elf-familiar-is-a-bit-strong` [Global Gods: My Elf Familiar is a Bit Strong](https://mtl-novel.com/novel/global-gods-my-elf-familiar-is-a-bit-strong/) — catalog
