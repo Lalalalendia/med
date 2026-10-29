@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/kakuyomu-marquis-raw.yml"
+      - "tools/novel-ingest/kakuyomu_authorized_archive.py"
   workflow_dispatch:
 
 permissions:
