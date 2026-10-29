@@ -35,5 +35,5 @@ This directory is intentionally separate from the existing `novels/kakuyomu/1681
 ## Russian translation
 
 - [RU 62 chapter drafts](ru/README.md) — 001–061 and 065 complete in GitHub; 062–064 pending.
-- [Russian glossary](ru/glossary.md), [supplement 036–050](ru/glossary_addendum_036_050.md), [supplement 051–055](ru/glossary_addendum_051_055.md), and [supplement 056–060](ru/glossary_addendum_056_060.md) — characters and magic terminology.
+- [Russian glossary](ru/glossary.md), [supplement 036–050](ru/glossary_addendum_036_050.md), [supplement 051–055](ru/glossary_addendum_051_055.md), and [supplement 056–060](ru/glossary_addendum_056_060.md) and [draft supplement 061–065](ru/glossary_addendum_061_065.md) — characters and magic terminology.
 - [Notion editorial queue 001–005](https://app.notion.com/p/40832a84beec81888b93c18356653f80) and [061–065, partially complete](https://app.notion.com/p/40832a84beec81398301ccdc359e618c) — QA and Rulate publishing checks.
