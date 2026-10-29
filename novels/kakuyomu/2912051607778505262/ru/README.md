@@ -36,7 +36,7 @@
 | № | Название RU | Черновик | Страница Notion |
 |---|---|---|---|
 | 001 | Если нет — сделаю сам | [Draft](draft/001.md) | [Глава](https://app.notion.com/p/40832a84beec814a849fc72dc99a1553) |
-| 002 | Обычный полдень | [Draft](draft/002.md) | [Глава](https://app.notion.com/p/40832a84beec817c8dafcb1c901f878c) |
+| 002 | Обычный послеобеденный час | [Draft](draft/002.md) | [Глава](https://app.notion.com/p/40832a84beec817c8dafcb1c901f878c) |
 | 003 | Ещё комфортнее | [Draft](draft/003.md) | [Глава](https://app.notion.com/p/40832a84beec81e4a1c9eddc502b715c) |
 | 004 | Понадобилось четыре штуки | [Draft](draft/004.md) | [Глава](https://app.notion.com/p/40832a84beec81f78456e7402848beed) |
 | 005 | Время комфорта | [Draft](draft/005.md) | [Глава](https://app.notion.com/p/40832a84beec816286b6fb04cc53f18d) |
