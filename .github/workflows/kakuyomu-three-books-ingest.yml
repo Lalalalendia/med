@@ -1,8 +1,8 @@
-name: Kakuyomu three-book RAW ingest
+name: Kakuyomu books 4-6 RAW ingest
 
 on:
   push:
-    branches: [research/kakuyomu-three-books-20261028]
+    branches: [research/kakuyomu-books-456-20261029]
     paths:
       - '.github/workflows/kakuyomu-three-books-ingest.yml'
       - '.github/novel-batches/kakuyomu-three-books.json'
@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        book: [1, 2, 3]
+        book: [4, 5, 6]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -52,7 +52,7 @@ jobs:
           name: kakuyomu-book-${{ matrix.book }}-raw
           path: out/kakuyomu/**
           if-no-files-found: warn
-          retention-days: 7
+          retention-days: 30
       - name: Fail if incomplete
         if: steps.ingest.outcome != 'success'
         run: exit 1
