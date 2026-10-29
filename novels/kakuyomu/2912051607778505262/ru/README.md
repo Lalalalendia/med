@@ -18,7 +18,7 @@
 [Редакционная очередь 051–055](https://app.notion.com/p/40832a84beec81a2bb82fe1fc986ab42)  
 [Редакционная очередь 056–060](https://app.notion.com/p/40832a84beec81878965eb5e323759b4)  
 [Очередь 061–065 (частично готово)](https://app.notion.com/p/40832a84beec81398301ccdc359e618c)  
-[Глоссарий](glossary.md) · [Дополнение 036–050](glossary_addendum_036_050.md) · [Дополнение 051–055](glossary_addendum_051_055.md) · [Дополнение 056–060](glossary_addendum_056_060.md)
+[Глоссарий](glossary.md) · [Дополнение 036–050](glossary_addendum_036_050.md) · [Дополнение 051–055](glossary_addendum_051_055.md) · [Дополнение 056–060](glossary_addendum_056_060.md) · [Дополнение 061–065](glossary_addendum_061_065.md)
 
 | № | Название RU | Черновик | Страница Notion |
 |---|---|---|---|
