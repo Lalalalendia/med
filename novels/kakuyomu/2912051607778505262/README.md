@@ -9,7 +9,7 @@
 - **Rulate:** https://tl.rulate.ru/book/268193 (owner-supplied on 2026-10-29).
 - **Current archived episode count:** 118, complete as of 2026-10-29 (prior count 117; series ongoing).
 - **JP RAW:** **118/118 stored and checked**, 0 errors, 212,053 non-whitespace Japanese characters.
-- **RU translation:** [62 Russian drafts](ru/README.md) — complete chapters 001–061 and 065; 062–064 pending; **Final RU 0**, **confirmed published 0**.
+- **RU translation:** [67 Russian drafts](ru/README.md) — complete chapters 001–061 and 065–070; 062–064 pending; **Final RU 0**, **confirmed published 0**.
 
 ## Source catalog
 
@@ -34,6 +34,6 @@ This directory is intentionally separate from the existing `novels/kakuyomu/1681
 
 ## Russian translation
 
-- [RU 62 chapter drafts](ru/README.md) — 001–061 and 065 complete in GitHub; 062–064 pending.
-- [Russian glossary](ru/glossary.md), [supplement 036–050](ru/glossary_addendum_036_050.md), [supplement 051–055](ru/glossary_addendum_051_055.md), and [supplement 056–060](ru/glossary_addendum_056_060.md) and [draft supplement 061–065](ru/glossary_addendum_061_065.md) — characters and magic terminology.
-- [Notion editorial queue 001–005](https://app.notion.com/p/40832a84beec81888b93c18356653f80) and [061–065, partially complete](https://app.notion.com/p/40832a84beec81398301ccdc359e618c) — QA and Rulate publishing checks.
+- [RU 67 chapter drafts](ru/README.md) — 001–061 and 065–070 complete in GitHub; 062–064 pending.
+- [Russian glossary](ru/glossary.md), [supplement 036–050](ru/glossary_addendum_036_050.md), [supplement 051–055](ru/glossary_addendum_051_055.md), and [supplement 056–060](ru/glossary_addendum_056_060.md) [draft supplement 061–065](ru/glossary_addendum_061_065.md), and [supplement 066–070](ru/glossary_addendum_066_070.md) — characters and magic terminology.
+- [Notion editorial queue 001–005](https://app.notion.com/p/40832a84beec81888b93c18356653f80) [061–065, partially complete](https://app.notion.com/p/40832a84beec81398301ccdc359e618c), and [066–070](https://app.notion.com/p/40832a84beec816f8184e3ede8f9b560) — QA and Rulate publishing checks.
