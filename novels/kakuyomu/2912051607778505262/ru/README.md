@@ -24,7 +24,8 @@
 [Редакторская очередь 081–085](https://app.notion.com/p/40832a84beec816b99edcf07067c2384)  
 [Редакторская очередь 086–090](https://app.notion.com/p/40832a84beec81958521f43848a2d8c2)  
 [Редакторская очередь 091–095](https://app.notion.com/p/40832a84beec810e9f64e4a3ba111bd0)  
-[Глоссарий](glossary.md) · [Дополнение 036–050](glossary_addendum_036_050.md) · [Дополнение 051–055](glossary_addendum_051_055.md) · [Дополнение 056–060](glossary_addendum_056_060.md) · [Дополнение 061–065](glossary_addendum_061_065.md) · [Дополнение 066–070](glossary_addendum_066_070.md) · [Дополнение 071–075](glossary_addendum_071_075.md) · [Дополнение 076–080](glossary_addendum_076_080.md) · [Дополнение 081–085](glossary_addendum_081_085.md) · [Дополнение 086–090](glossary_addendum_086_090.md) · [Дополнение 091–095](glossary_addendum_091_095.md)
+[Редакторская очередь 096–100 (синхронизация Notion)](https://app.notion.com/p/40832a84beec81c4b39fc76779e6b55f)  
+[Глоссарий](glossary.md) · [Дополнение 036–050](glossary_addendum_036_050.md) · [Дополнение 051–055](glossary_addendum_051_055.md) · [Дополнение 056–060](glossary_addendum_056_060.md) · [Дополнение 061–065](glossary_addendum_061_065.md) · [Дополнение 066–070](glossary_addendum_066_070.md) · [Дополнение 071–075](glossary_addendum_071_075.md) · [Дополнение 076–080](glossary_addendum_076_080.md) · [Дополнение 081–085](glossary_addendum_081_085.md) · [Дополнение 086–090](glossary_addendum_086_090.md) · [Дополнение 091–095](glossary_addendum_091_095.md) · [Дополнение 096–100](glossary_addendum_096_100.md)
 
 | № | Название RU | Черновик | Страница Notion |
 |---|---|---|---|
