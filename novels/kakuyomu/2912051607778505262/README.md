@@ -9,7 +9,7 @@
 - **Rulate:** https://tl.rulate.ru/book/268193 (owner-supplied on 2026-10-29).
 - **Current archived episode count:** 118, complete as of 2026-10-29 (prior count 117; series ongoing).
 - **JP RAW:** **118/118 stored and checked**, 0 errors, 212,053 non-whitespace Japanese characters.
-- **RU translation:** [100 Russian drafts](ru/README.md) — complete chapters 001–100 in GitHub; Notion mirror for 096–100 incomplete; **Final RU 0**, **confirmed published 0**.
+- **RU translation:** [105 Russian drafts](ru/README.md) — complete chapters 001–105 in GitHub; Notion mirror for 096–105 incomplete; **Final RU 0**, **confirmed published 0**.
 
 ## Source catalog
 
