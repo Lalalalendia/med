@@ -12,9 +12,9 @@
   "status_prior_snapshot": "ongoing",
   "rulate_registration": {
     "owner_reported_on": "2026-10-29",
-    "rulate_url": null,
-    "rulate_id": null,
-    "external_verification": "pending"
+    "rulate_url": "https://tl.rulate.ru/book/268193",
+    "rulate_id": "268193",
+    "external_verification": "owner-supplied link; direct page not independently accessible through search"
   },
   "notion_progress_url": "https://app.notion.com/p/40832a84beec812c8b95f4b39cdf6d15",
   "raw_texts_in_this_directory": 118,
@@ -27,5 +27,12 @@
   "episode_count_at_last_archive": 118,
   "fulltext_archive_actions_url": "https://github.com/Lalalalendia/med/actions/runs/40795030366",
   "fulltext_archive_manifest_url": "https://github.com/Lalalalendia/med/blob/main/novels/kakuyomu/2912051607778505262/raw/manifest.json",
-  "fulltext_non_whitespace_characters": 212053
+  "fulltext_non_whitespace_characters": 212053,
+  "translation": {
+    "start_date": "2026-10-29",
+    "source_language": "ja",
+    "target_language": "ru",
+    "status": "draft-in-progress",
+    "first_batch": "001-005"
+  }
 }
