@@ -17,9 +17,11 @@
     "external_verification": "pending"
   },
   "notion_progress_url": "https://app.notion.com/p/40832a84beec812c8b95f4b39cdf6d15",
-  "raw_texts_in_this_directory": 0,
+  "raw_texts_in_this_directory": null,
   "ru_texts_in_this_directory": 0,
   "toc_status": "pending",
-  "license_for_text_redistribution": "not_verified",
-  "copyright_notice": "Metadata and external links only. Do not commit third-party chapter bodies without the relevant rights."
+  "license_for_text_redistribution": "user reports permission to store original chapters in this GitHub repository (2026-10-29); license document not supplied",
+  "copyright_notice": "Original chapters attributed to 西 悠希. Store only within user-reported authorization. Do not infer permission for publication on any other platform.",
+  "archive_manifest": "raw/manifest.json",
+  "fulltext_archive_status": "run pending; see GitHub Actions and manifest for actual count"
 }
