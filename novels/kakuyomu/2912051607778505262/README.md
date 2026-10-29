@@ -9,7 +9,7 @@
 - **Rulate:** https://tl.rulate.ru/book/268193 (owner-supplied on 2026-10-29).
 - **Current archived episode count:** 118, complete as of 2026-10-29 (prior count 117; series ongoing).
 - **JP RAW:** **118/118 stored and checked**, 0 errors, 212,053 non-whitespace Japanese characters.
-- **RU translation:** [Draft RU 001–050](ru/README.md) — fifty complete chapter drafts; **Final RU 0**, **confirmed published 0**.
+- **RU translation:** [Draft RU 001–055](ru/README.md) — fifty-five complete chapter drafts; **Final RU 0**, **confirmed published 0**.
 
 ## Source catalog
 
@@ -34,6 +34,6 @@ This directory is intentionally separate from the existing `novels/kakuyomu/1681
 
 ## Russian translation
 
-- [RU 001–050 drafts](ru/README.md) — complete prose, not just metadata.
-- [Russian glossary](ru/glossary.md) and [supplement 036–050](ru/glossary_addendum_036_050.md) — characters and magic terminology.
-- [Notion editorial queue 001–005](https://app.notion.com/p/40832a84beec81888b93c18356653f80) and [046–050](https://app.notion.com/p/40832a84beec818e9a65e2c1bfd90023) — QA and Rulate publishing checks.
+- [RU 001–055 drafts](ru/README.md) — complete prose, not just metadata.
+- [Russian glossary](ru/glossary.md), [supplement 036–050](ru/glossary_addendum_036_050.md), and [supplement 051–055](ru/glossary_addendum_051_055.md) — characters and magic terminology.
+- [Notion editorial queue 001–005](https://app.notion.com/p/40832a84beec81888b93c18356653f80) and [051–055](https://app.notion.com/p/40832a84beec81a2bb82fe1fc986ab42) — QA and Rulate publishing checks.
