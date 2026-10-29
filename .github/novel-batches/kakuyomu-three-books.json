@@ -26,5 +26,32 @@
     "expected_episodes": 129,
     "source": "https://kakuyomu.jp/works/822139838502050041",
     "notion": "https://app.notion.com/p/40732a84beec81d5bde8f15a89b666b8"
+  },
+  {
+    "number": 4,
+    "directory": "04_nice_guy_soulmate",
+    "russian_title": "Я просто «хороший парень», но красавица, которую я спас, решила, что я — её судьба",
+    "work_id": "822139838767525979",
+    "expected_episodes": 88,
+    "source": "https://kakuyomu.jp/works/822139838767525979",
+    "notion": "https://app.notion.com/p/40832a84beec819d9e48c5179aa32571"
+  },
+  {
+    "number": 5,
+    "directory": "05_guy_hating_gyaru",
+    "russian_title": "Я спас гяру, ненавидящую мужчин, рискуя жизнью. Но, узнав, кто её спас, она стала нежной только со мной",
+    "work_id": "2912051604677587313",
+    "expected_episodes": 95,
+    "source": "https://kakuyomu.jp/works/2912051604677587313",
+    "notion": "https://app.notion.com/p/40832a84beec819b9736cbdaa17b9dfb"
+  },
+  {
+    "number": 6,
+    "directory": "06_fake_confession",
+    "russian_title": "Я хотел прогулять школу, но устроившие фальшивое признание сами угодили в скандал",
+    "work_id": "2912051604668493030",
+    "expected_episodes": 81,
+    "source": "https://kakuyomu.jp/works/2912051604668493030",
+    "notion": "https://app.notion.com/p/40832a84beec81be9c37d0eeb430be87"
   }
 ]
