@@ -2,7 +2,7 @@
 
 Проект: «Третий сын маркиза хочет жить с комфортом». Японский оригинал: https://kakuyomu.jp/works/2912051607778505262
 
-**Состояние 29.10.2026:** полный исходный корпус **118/118**; полные русские черновики **001–105 — Draft RU (105 глав)**; вычитанных `Final RU` **0**; опубликованных глав **не подтверждено**.
+**Состояние 29.10.2026:** полный исходный корпус **118/118**; полные русские черновики **001–110 — Draft RU (110 глав)**; вычитанных `Final RU` **0**; опубликованных глав **не подтверждено**.
 
 [Операционная карточка в Notion](https://app.notion.com/p/40832a84beec812c8b95f4b39cdf6d15)  
 [Редакционная очередь 001–005](https://app.notion.com/p/40832a84beec81888b93c18356653f80)  
@@ -24,9 +24,10 @@
 [Редакторская очередь 081–085](https://app.notion.com/p/40832a84beec816b99edcf07067c2384)  
 [Редакторская очередь 086–090](https://app.notion.com/p/40832a84beec81958521f43848a2d8c2)  
 [Редакторская очередь 091–095](https://app.notion.com/p/40832a84beec810e9f64e4a3ba111bd0)  
-[Редакторская очередь 096–100 (синхронизация Notion)](https://app.notion.com/p/40832a84beec81c4b39fc76779e6b55f)  
-[Редакторская очередь 101–105 (синхронизация Notion)](https://app.notion.com/p/40832a84beec81f78f0ae925f534551a)  
-[Глоссарий](glossary.md) · [Дополнение 036–050](glossary_addendum_036_050.md) · [Дополнение 051–055](glossary_addendum_051_055.md) · [Дополнение 056–060](glossary_addendum_056_060.md) · [Дополнение 061–065](glossary_addendum_061_065.md) · [Дополнение 066–070](glossary_addendum_066_070.md) · [Дополнение 071–075](glossary_addendum_071_075.md) · [Дополнение 076–080](glossary_addendum_076_080.md) · [Дополнение 081–085](glossary_addendum_081_085.md) · [Дополнение 086–090](glossary_addendum_086_090.md) · [Дополнение 091–095](glossary_addendum_091_095.md) · [Дополнение 096–100](glossary_addendum_096_100.md) · [Дополнение 101–105](glossary_addendum_101_105.md)
+[Редакторская очередь 096–100](https://app.notion.com/p/40832a84beec81c4b39fc76779e6b55f)  
+[Редакторская очередь 101–105](https://app.notion.com/p/40832a84beec81f78f0ae925f534551a)  
+[Редакторская очередь 106–110](https://app.notion.com/p/40832a84beec81b5b638eaff9b5a66ed)  
+[Глоссарий](glossary.md) · [Дополнение 036–050](glossary_addendum_036_050.md) · [Дополнение 051–055](glossary_addendum_051_055.md) · [Дополнение 056–060](glossary_addendum_056_060.md) · [Дополнение 061–065](glossary_addendum_061_065.md) · [Дополнение 066–070](glossary_addendum_066_070.md) · [Дополнение 071–075](glossary_addendum_071_075.md) · [Дополнение 076–080](glossary_addendum_076_080.md) · [Дополнение 081–085](glossary_addendum_081_085.md) · [Дополнение 086–090](glossary_addendum_086_090.md) · [Дополнение 091–095](glossary_addendum_091_095.md) · [Дополнение 096–100](glossary_addendum_096_100.md) · [Дополнение 101–105](glossary_addendum_101_105.md) · [Дополнение 106–110](glossary_addendum_106_110.md)
 
 | № | Название RU | Черновик | Страница Notion |
 |---|---|---|---|
@@ -125,17 +126,22 @@
 | 093 | С магическими устройствами проще | [Draft](draft/093.md) | [Глава](https://app.notion.com/p/40832a84beec8129ba24fbcf7178a13e) |
 | 094 | Место для работы | [Draft](draft/094.md) | [Глава](https://app.notion.com/p/40832a84beec817984ededc38ab103d8) |
 | 095 | Слишком большой | [Draft](draft/095.md) | [Глава](https://app.notion.com/p/40832a84beec81f883e8e8054ecdd643) |
-| 096 | Сначала нужно сделать кое-что другое | [Draft](draft/096.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec812ab7e6c083114869d3) |
-| 097 | Пока отложим | [Draft](draft/097.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec81b6a59ecb1d6c77af7b) |
-| 098 | То одно, то другое | [Draft](draft/098.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec81e18c57e18e4a31c946) |
-| 099 | Слишком много | [Draft](draft/099.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec81ac89bdf21432a2b26e) |
-| 100 | Привычный вкус | [Draft](draft/100.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec81ff8f54d34231640c7d) |
-| 101 | Проблемы с будущим заведением | [Draft](draft/101.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec811ba079c9c7064d014b) |
-| 102 | Было бы неплохо | [Draft](draft/102.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec819a87f4debe3b78e28c) |
-| 103 | Неожиданная находка | [Draft](draft/103.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec819280dce20fc3f6abc1) |
-| 104 | Сделать-то сделал | [Draft](draft/104.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec81149c54f3ead74c5a40) |
-| 105 | Поторопился с планами | [Draft](draft/105.md) | [Карточка; текст частично](https://app.notion.com/p/40832a84beec81ef8998e1615294b9ab) |
+| 096 | Сначала нужно сделать кое-что другое | [Draft](draft/096.md) | [Глава](https://app.notion.com/p/40832a84beec812ab7e6c083114869d3) |
+| 097 | Пока отложим | [Draft](draft/097.md) | [Глава](https://app.notion.com/p/40832a84beec81b6a59ecb1d6c77af7b) |
+| 098 | То одно, то другое | [Draft](draft/098.md) | [Глава](https://app.notion.com/p/40832a84beec81e18c57e18e4a31c946) |
+| 099 | Слишком много | [Draft](draft/099.md) | [Глава](https://app.notion.com/p/40832a84beec81ac89bdf21432a2b26e) |
+| 100 | Привычный вкус | [Draft](draft/100.md) | [Глава](https://app.notion.com/p/40832a84beec81ff8f54d34231640c7d) |
+| 101 | Проблемы с будущим заведением | [Draft](draft/101.md) | [Глава](https://app.notion.com/p/40832a84beec811ba079c9c7064d014b) |
+| 102 | Было бы неплохо | [Draft](draft/102.md) | [Глава](https://app.notion.com/p/40832a84beec819a87f4debe3b78e28c) |
+| 103 | Неожиданная находка | [Draft](draft/103.md) | [Глава](https://app.notion.com/p/40832a84beec819280dce20fc3f6abc1) |
+| 104 | Сделать-то сделал | [Draft](draft/104.md) | [Глава](https://app.notion.com/p/40832a84beec81149c54f3ead74c5a40) |
+| 105 | Поторопился с планами | [Draft](draft/105.md) | [Глава](https://app.notion.com/p/40832a84beec81ef8998e1615294b9ab) |
+| 106 | Срок продления и белое дерево | [Draft](draft/106.md) | [Глава](https://app.notion.com/p/40832a84beec8183a57fe31066d49619) |
+| 107 | На это хватит | [Draft](draft/107.md) | [Глава](https://app.notion.com/p/40832a84beec818fae8fe7966f05cd0e) |
+| 108 | Вот это место | [Draft](draft/108.md) | [Глава](https://app.notion.com/p/40832a84beec8180a1a1f1bbca0aab78) |
+| 109 | И сегодня шумно | [Draft](draft/109.md) | [Глава](https://app.notion.com/p/40832a84beec81b089fdce7c0057a0e5) |
+| 110 | Идеям нет конца | [Draft](draft/110.md) | [Глава](https://app.notion.com/p/40832a84beec81a0873ae15ac840183e) |
 
-**Синхронизация:** все главы **001–105** сохранены полным текстом в GitHub без пропусков. В Notion полнотекстовые страницы **001–095**; карточки **096–105** пока содержат неполные копии. Все тексты Draft RU.
+**Синхронизация:** все главы **001–110** сохранены полным русским текстом в GitHub и на соответствующих полнотекстовых страницах Notion, без пропусков. Проверка абзацев 096–110 завершена. Все тексты пока **Draft RU**, без финальной JP↔RU сверки.
 
-Тексты переведены с японского оригинала. Ссылки в главной таблице позволяют проверить каждый русский текст отдельно; таблица заголовков **не заменяет** содержимое ста пяти файлов.
+Тексты переведены с японского оригинала. Ссылки в главной таблице позволяют проверить каждый русский текст отдельно; таблица заголовков **не заменяет** содержимое ста десяти файлов.
