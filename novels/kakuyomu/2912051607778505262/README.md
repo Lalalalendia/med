@@ -7,7 +7,8 @@
 - **Author's Narou mirror:** https://ncode.syosetu.com/n9756mm/
 - **Notion translation tracker:** https://app.notion.com/p/40832a84beec812c8b95f4b39cdf6d15
 - **Rulate:** registered according to owner (2026-10-29); **book URL and ID still needed**.
-- **Previous episode count:** 117 (ongoing; recount before use).
+- **Current archived episode count:** 118, complete as of 2026-10-29 (prior count 117; series ongoing).
+- **JP RAW:** **118/118 stored and checked**, 0 errors, 212,053 non-whitespace Japanese characters.
 - **RU chapter texts verified/published in this project:** 0/0.
 
 ## Source catalog
@@ -25,7 +26,7 @@
 ## Audit status
 
 - Rulate registration: **owner-reported; external URL not verified**.
-- RAW access 117/117: **not verified**; current episode count may change.
+- RAW archive: **118/118 COMPLETE**, 118 unique episode IDs and 118 unique SHA-256 body hashes. See [manifest](raw/manifest.json). New chapters may be added later.
 - Rulate prior-duplicate search (G5): **not conclusively closed**.
 - Translation/publication rights: **not checked**.
 
