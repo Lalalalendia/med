@@ -160,7 +160,7 @@
     "glossary": "ru/glossary.md",
     "index": "ru/README.md",
     "notion_queue_url": "https://app.notion.com/p/40832a84beec81888b93c18356653f80",
-    "qa_status": "118 full Draft RU files in GitHub; 118 chapter pages created in Notion. Chapters 111-118 verified identical across GitHub and Notion (329 paragraphs); complete JP↔RU editorial QA pending. Older 096-105 Notion mirror concerns require a fresh audit. Final RU 0; no publication verified.",
+    "qa_status": "2026-10-30: All 118 Japanese RAW and 118 Russian Draft RU files in GitHub. Technical GitHub<->Notion paragraph mirror verified for all 118 chapters (including 096-105) on 2026-10-29. Substantive Japanese-Russian review now covers 60/118 chapters: 001-045 and 096-110, with corrections synchronized in both systems; 58 chapters (046-095, 111-118) still require substantive proofreading. Literary final QA remains pending. Final RU 0; no publication or permissions verified.",
     "notions": {
       "first_batch_001_005": "https://app.notion.com/p/40832a84beec81888b93c18356653f80",
       "second_batch_006_010": "https://app.notion.com/p/40832a84beec81aa8d80d0a39a1ca875",
