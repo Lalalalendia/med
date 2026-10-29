@@ -18,7 +18,7 @@
   },
   "notion_progress_url": "https://app.notion.com/p/40832a84beec812c8b95f4b39cdf6d15",
   "raw_texts_in_this_directory": 118,
-  "ru_texts_in_this_directory": 15,
+  "ru_texts_in_this_directory": 20,
   "toc_status": "COMPLETE (118 episode links)",
   "license_for_text_redistribution": "user reports permission to store original chapters in this GitHub repository (2026-10-29); license document not supplied",
   "copyright_notice": "Original chapters attributed to 西 悠希. Store only within user-reported authorization. Do not infer permission for publication on any other platform.",
@@ -33,7 +33,7 @@
     "source_language": "ja",
     "target_language": "ru",
     "status": "Draft RU",
-    "draft_count": 15,
+    "draft_count": 20,
     "draft_chapters": [
       1,
       2,
@@ -49,7 +49,12 @@
       12,
       13,
       14,
-      15
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
     ],
     "final_count": 0,
     "published_count_verified": 0,
@@ -57,11 +62,12 @@
     "glossary": "ru/glossary.md",
     "index": "ru/README.md",
     "notion_queue_url": "https://app.notion.com/p/40832a84beec81888b93c18356653f80",
-    "qa_status": "All 15 Draft RU files committed to GitHub and Notion; chapters 011-015 have checked beginning/end match, 012 POV italic converted in Notion; full editorial JP-RU QA pending",
+    "qa_status": "All 20 Draft RU files stored in GitHub and Notion; batch 016-020 head/tail matches confirmed, complete independent JP-RU editorial review pending",
     "notions": {
       "first_batch_001_005": "https://app.notion.com/p/40832a84beec81888b93c18356653f80",
       "second_batch_006_010": "https://app.notion.com/p/40832a84beec81aa8d80d0a39a1ca875",
-      "third_batch_011_015": "https://app.notion.com/p/40832a84beec81aa9fc4ff4df41ef62c"
+      "third_batch_011_015": "https://app.notion.com/p/40832a84beec81aa9fc4ff4df41ef62c",
+      "fourth_batch_016_020": "https://app.notion.com/p/40832a84beec81c58810f3a3de72eaca"
     }
   }
 }
