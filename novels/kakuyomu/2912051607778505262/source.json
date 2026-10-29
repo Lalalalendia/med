@@ -32,7 +32,21 @@
     "start_date": "2026-10-29",
     "source_language": "ja",
     "target_language": "ru",
-    "status": "draft-in-progress",
-    "first_batch": "001-005"
+    "status": "Draft RU",
+    "draft_count": 5,
+    "draft_chapters": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "final_count": 0,
+    "published_count_verified": 0,
+    "drafts_dir": "ru/draft",
+    "glossary": "ru/glossary.md",
+    "index": "ru/README.md",
+    "notion_queue_url": "https://app.notion.com/p/40832a84beec81888b93c18356653f80",
+    "qa_status": "Notion/GitHub beginnings and endings checked; independent full JP-RU editorial QA pending"
   }
 }
