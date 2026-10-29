@@ -6,10 +6,10 @@
 - **Kakuyomu (canonical work ID 2912051607778505262):** https://kakuyomu.jp/works/2912051607778505262
 - **Author's Narou mirror:** https://ncode.syosetu.com/n9756mm/
 - **Notion translation tracker:** https://app.notion.com/p/40832a84beec812c8b95f4b39cdf6d15
-- **Rulate:** registered according to owner (2026-10-29); **book URL and ID still needed**.
+- **Rulate:** https://tl.rulate.ru/book/268193 (owner-supplied on 2026-10-29).
 - **Current archived episode count:** 118, complete as of 2026-10-29 (prior count 117; series ongoing).
 - **JP RAW:** **118/118 stored and checked**, 0 errors, 212,053 non-whitespace Japanese characters.
-- **RU chapter texts verified/published in this project:** 0/0.
+- **RU translation:** [Draft RU 001–005](ru/README.md) — five complete translated chapter drafts; **Final RU 0**, **confirmed published 0**.
 
 ## Source catalog
 
@@ -31,3 +31,9 @@
 - Translation/publication rights: **not checked**.
 
 This directory is intentionally separate from the existing `novels/kakuyomu/16816410413990086033` corpus.
+
+## Russian translation
+
+- [RU 001–005 drafts](ru/README.md) — complete prose, not just metadata.
+- [Russian glossary](ru/glossary.md) — characters and magic terminology.
+- [Notion editorial queue](https://app.notion.com/p/40832a84beec81888b93c18356653f80) — QA and Rulate publishing checks.
