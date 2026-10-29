@@ -61,7 +61,8 @@ def get_episode_index(client, work_id):
     result = []
     for toc_ref in toc_refs:
         toc = state[toc_ref["__ref"]]
-        chapter = state[toc["chapter"]["__ref"]]
+        chapter_ref = toc.get("chapter")
+        chapter = state[chapter_ref["__ref"]] if chapter_ref else {}
         section = chapter.get("title", "")
         for episode_ref in toc["episodeUnions"]:
             episode = state[episode_ref["__ref"]]
