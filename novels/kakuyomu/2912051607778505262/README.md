@@ -9,7 +9,7 @@
 - **Rulate:** https://tl.rulate.ru/book/268193 (owner-supplied on 2026-10-29).
 - **Current archived episode count:** 118, complete as of 2026-10-29 (prior count 117; series ongoing).
 - **JP RAW:** **118/118 stored and checked**, 0 errors, 212,053 non-whitespace Japanese characters.
-- **RU translation:** [Draft RU 001–005](ru/README.md) — five complete translated chapter drafts; **Final RU 0**, **confirmed published 0**.
+- **RU translation:** [Draft RU 001–035](ru/README.md) — thirty-five complete chapter drafts; **Final RU 0**, **confirmed published 0**.
 
 ## Source catalog
 
@@ -34,6 +34,6 @@ This directory is intentionally separate from the existing `novels/kakuyomu/1681
 
 ## Russian translation
 
-- [RU 001–005 drafts](ru/README.md) — complete prose, not just metadata.
+- [RU 001–035 drafts](ru/README.md) — complete prose, not just metadata.
 - [Russian glossary](ru/glossary.md) — characters and magic terminology.
-- [Notion editorial queue](https://app.notion.com/p/40832a84beec81888b93c18356653f80) — QA and Rulate publishing checks.
+- [Notion editorial queue 001–005](https://app.notion.com/p/40832a84beec81888b93c18356653f80) and [031–035](https://app.notion.com/p/40832a84beec81cfabadca76e21049d1) — QA and Rulate publishing checks.
