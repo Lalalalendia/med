@@ -18,7 +18,7 @@
   },
   "notion_progress_url": "https://app.notion.com/p/40832a84beec812c8b95f4b39cdf6d15",
   "raw_texts_in_this_directory": 118,
-  "ru_texts_in_this_directory": 0,
+  "ru_texts_in_this_directory": 10,
   "toc_status": "COMPLETE (118 episode links)",
   "license_for_text_redistribution": "user reports permission to store original chapters in this GitHub repository (2026-10-29); license document not supplied",
   "copyright_notice": "Original chapters attributed to 西 悠希. Store only within user-reported authorization. Do not infer permission for publication on any other platform.",
@@ -33,13 +33,18 @@
     "source_language": "ja",
     "target_language": "ru",
     "status": "Draft RU",
-    "draft_count": 5,
+    "draft_count": 10,
     "draft_chapters": [
       1,
       2,
       3,
       4,
-      5
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
     ],
     "final_count": 0,
     "published_count_verified": 0,
@@ -47,6 +52,10 @@
     "glossary": "ru/glossary.md",
     "index": "ru/README.md",
     "notion_queue_url": "https://app.notion.com/p/40832a84beec81888b93c18356653f80",
-    "qa_status": "Notion/GitHub beginnings and endings checked; independent full JP-RU editorial QA pending"
+    "qa_status": "All ten Draft RU files saved in GitHub and Notion; head/tail verified, markup difference in ch007 POV italics confirmed; editorial JP↔RU full comparison pending",
+    "notions": {
+      "first_batch_001_005": "https://app.notion.com/p/40832a84beec81888b93c18356653f80",
+      "second_batch_006_010": "https://app.notion.com/p/40832a84beec81aa8d80d0a39a1ca875"
+    }
   }
 }
