@@ -13,10 +13,14 @@
 ## Source catalog
 
 - `source.json`: book identifiers and source references.
-- `toc.json`: generated **episode metadata only** (order, title, official URL), when an authorized metadata-only GitHub Action completes successfully.
-- `tools/novel-ingest/kakuyomu_toc_index.py`: crawler of the **work-page table of contents only**.
+- `raw/NNN.txt`: Japanese chapter bodies **only if successfully downloaded** by the dedicated authorized-archive workflow.
+- `raw/manifest.json`: actual success/failure counts, URLs and SHA-256 hashes for each stored body.
+- `raw/toc.json`: indexed official Kakuyomu episode URLs and titles.
+- `raw/summary.md`: human-readable archive receipt.
+- [`tools/novel-ingest/kakuyomu_authorized_archive.py`](../../../../tools/novel-ingest/kakuyomu_authorized_archive.py): full-body archiver with validation.
+- [`GitHub Actions`](../../../../.github/workflows/kakuyomu-marquis-raw.yml): automatic on workflow/parser changes, plus manual dispatch.
 
-**No chapter bodies or translations are deposited by the catalog action.** A public Kakuyomu page is not a license to redistribute the novel. Store chapter text only after the relevant rights and permitted storage/publication conditions have been established. Treat source links as a reading index, not verified RAW N/N.
+**Permission provenance:** on 2026-10-29, the user stated that they have permission to store the original chapters in `med`. The actual license document and its precise scope were not provided here. Do not infer a general publication/translation license from the statement. The `raw` folder is authoritative only after verifying the generated `manifest.json`.
 
 ## Audit status
 
