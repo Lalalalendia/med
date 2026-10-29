@@ -1,0 +1,834 @@
+{
+  "schema_version": 1,
+  "work_id": "2912051607778505262",
+  "source_url": "https://kakuyomu.jp/works/2912051607778505262",
+  "episode_count": 118,
+  "episodes": [
+    {
+      "ordinal": 1,
+      "episode_id": "2912051607778569577",
+      "title_hint": "第1話  ないなら作ればいい",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607778569577"
+    },
+    {
+      "ordinal": 2,
+      "episode_id": "2912051607778699659",
+      "title_hint": "第2話  いつもの昼下がり。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607778699659"
+    },
+    {
+      "ordinal": 3,
+      "episode_id": "2912051607778770849",
+      "title_hint": "第3話  もっと快適に。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607778770849"
+    },
+    {
+      "ordinal": 4,
+      "episode_id": "2912051607778831751",
+      "title_hint": "第4話  四台必要になった。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607778831751"
+    },
+    {
+      "ordinal": 5,
+      "episode_id": "2912051607778918537",
+      "title_hint": "第5話  快適な時間。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607778918537"
+    },
+    {
+      "ordinal": 6,
+      "episode_id": "2912051607779350284",
+      "title_hint": "第6話  家族への贈り物。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607779350284"
+    },
+    {
+      "ordinal": 7,
+      "episode_id": "2912051607779440990",
+      "title_hint": "第7話  小さな気遣い。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607779440990"
+    },
+    {
+      "ordinal": 8,
+      "episode_id": "2912051607779508077",
+      "title_hint": "第8話  冷気を持ち運ぶ。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607779508077"
+    },
+    {
+      "ordinal": 9,
+      "episode_id": "2912051607779652109",
+      "title_hint": "第9話  魔導具職人と商人。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607779652109"
+    },
+    {
+      "ordinal": 10,
+      "episode_id": "2912051607780330531",
+      "title_hint": "第10話  家族と魔導具。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780330531"
+    },
+    {
+      "ordinal": 11,
+      "episode_id": "2912051607779718035",
+      "title_hint": "第11話  黒と薄紫と水色。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607779718035"
+    },
+    {
+      "ordinal": 12,
+      "episode_id": "2912051607780445159",
+      "title_hint": "第12話  アレクシス・リリエン",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780445159"
+    },
+    {
+      "ordinal": 13,
+      "episode_id": "2912051607780502139",
+      "title_hint": "第13話  新たな価値。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780502139"
+    },
+    {
+      "ordinal": 14,
+      "episode_id": "2912051607780580933",
+      "title_hint": "第14話  魔法好きの兄。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780580933"
+    },
+    {
+      "ordinal": 15,
+      "episode_id": "2912051607780637309",
+      "title_hint": "第15話  妹への贈り物。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780637309"
+    },
+    {
+      "ordinal": 16,
+      "episode_id": "2912051607780738869",
+      "title_hint": "第16話  兄弟で作る魔導具。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780738869"
+    },
+    {
+      "ordinal": 17,
+      "episode_id": "2912051607780809188",
+      "title_hint": "第17話  魔導師の興味。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780809188"
+    },
+    {
+      "ordinal": 18,
+      "episode_id": "2912051607780869026",
+      "title_hint": "第18話  魔導師の休日。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780869026"
+    },
+    {
+      "ordinal": 19,
+      "episode_id": "2912051607780924714",
+      "title_hint": "第19話  魔導師の働き方。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780924714"
+    },
+    {
+      "ordinal": 20,
+      "episode_id": "2912051607780984834",
+      "title_hint": "第20話  平穏な生活は難しい。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607780984834"
+    },
+    {
+      "ordinal": 21,
+      "episode_id": "2912051607781361150",
+      "title_hint": "第21話  放課後の約束。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781361150"
+    },
+    {
+      "ordinal": 22,
+      "episode_id": "2912051607781418196",
+      "title_hint": "第22話  話題の中心。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781418196"
+    },
+    {
+      "ordinal": 23,
+      "episode_id": "2912051607781488756",
+      "title_hint": "第23話  作る者と売る者。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781488756"
+    },
+    {
+      "ordinal": 24,
+      "episode_id": "2912051607781547866",
+      "title_hint": "第24話  新たな名前。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781547866"
+    },
+    {
+      "ordinal": 25,
+      "episode_id": "2912051607781593979",
+      "title_hint": "第25話  懐かしい味。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781593979"
+    },
+    {
+      "ordinal": 26,
+      "episode_id": "2912051607781662376",
+      "title_hint": "第26話  夢中になると忘れるもの。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781662376"
+    },
+    {
+      "ordinal": 27,
+      "episode_id": "2912051607781719822",
+      "title_hint": "第27話  氷の箱と魔力の無駄遣い。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781719822"
+    },
+    {
+      "ordinal": 28,
+      "episode_id": "2912051607781768340",
+      "title_hint": "第28話  小さな変化。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781768340"
+    },
+    {
+      "ordinal": 29,
+      "episode_id": "2912051607781809050",
+      "title_hint": "第29話  夏の楽しみ。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781809050"
+    },
+    {
+      "ordinal": 30,
+      "episode_id": "2912051607781848496",
+      "title_hint": "第30話  懐かしい味。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781848496"
+    },
+    {
+      "ordinal": 31,
+      "episode_id": "2912051607781897734",
+      "title_hint": "第31話  三本の扇子。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781897734"
+    },
+    {
+      "ordinal": 32,
+      "episode_id": "2912051607781944520",
+      "title_hint": "第32話  来訪に向けて。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781944520"
+    },
+    {
+      "ordinal": 33,
+      "episode_id": "2912051607781987006",
+      "title_hint": "第33話  久しぶりの再会。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607781987006"
+    },
+    {
+      "ordinal": 34,
+      "episode_id": "2912051607782342356",
+      "title_hint": "第34話  祖父との制作。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607782342356"
+    },
+    {
+      "ordinal": 35,
+      "episode_id": "2912051607782392716",
+      "title_hint": "第35話  家族との時間。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607782392716"
+    },
+    {
+      "ordinal": 36,
+      "episode_id": "2912051607782440500",
+      "title_hint": "第36話  昔から変わらない。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607782440500"
+    },
+    {
+      "ordinal": 37,
+      "episode_id": "2912051607782482809",
+      "title_hint": "第37話  家族の分。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607782482809"
+    },
+    {
+      "ordinal": 38,
+      "episode_id": "2912051607782531318",
+      "title_hint": "第38話  社交シーズン前に。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607782531318"
+    },
+    {
+      "ordinal": 39,
+      "episode_id": "2912051607782572010",
+      "title_hint": "第39話  新たな魔導具。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607782572010"
+    },
+    {
+      "ordinal": 40,
+      "episode_id": "2912051607782618471",
+      "title_hint": "第40話  新たな魔導具、その構想。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607782618471"
+    },
+    {
+      "ordinal": 41,
+      "episode_id": "2912051607783002136",
+      "title_hint": "第41話  完成と到着。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783002136"
+    },
+    {
+      "ordinal": 42,
+      "episode_id": "2912051607783048746",
+      "title_hint": "第42話  髪にツヤを。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783048746"
+    },
+    {
+      "ordinal": 43,
+      "episode_id": "2912051607783094708",
+      "title_hint": "第43話商会での相談。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783094708"
+    },
+    {
+      "ordinal": 44,
+      "episode_id": "2912051607783151049",
+      "title_hint": "第44話  王城へ納品。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783151049"
+    },
+    {
+      "ordinal": 45,
+      "episode_id": "2912051607783195313",
+      "title_hint": "第45話  夏の鍋。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783195313"
+    },
+    {
+      "ordinal": 46,
+      "episode_id": "2912051607783253667",
+      "title_hint": "第46話  髪を巻くなら。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783253667"
+    },
+    {
+      "ordinal": 47,
+      "episode_id": "2912051607783304114",
+      "title_hint": "第47話  髪型の選択肢。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783304114"
+    },
+    {
+      "ordinal": 48,
+      "episode_id": "2912051607783354356",
+      "title_hint": "第48話  身だしなみも快適に。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783354356"
+    },
+    {
+      "ordinal": 49,
+      "episode_id": "2912051607783409419",
+      "title_hint": "第49話  夜会に向けて。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783409419"
+    },
+    {
+      "ordinal": 50,
+      "episode_id": "2912051607783512420",
+      "title_hint": "第50話  王家主催の夜会へ。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607783512420"
+    },
+    {
+      "ordinal": 51,
+      "episode_id": "2912051607784083589",
+      "title_hint": "第51話  王子との再会。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784083589"
+    },
+    {
+      "ordinal": 52,
+      "episode_id": "2912051607784139845",
+      "title_hint": "第52話  王子と幼なじみ。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784139845"
+    },
+    {
+      "ordinal": 53,
+      "episode_id": "2912051607784191313",
+      "title_hint": "第53話  ダンスの合間に。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784191313"
+    },
+    {
+      "ordinal": 54,
+      "episode_id": "2912051607784244314",
+      "title_hint": "第54話  お茶会と避暑。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784244314"
+    },
+    {
+      "ordinal": 55,
+      "episode_id": "2912051607784301782",
+      "title_hint": "第55話  昔のように。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784301782"
+    },
+    {
+      "ordinal": 56,
+      "episode_id": "2912051607784348266",
+      "title_hint": "第56話  避暑の準備。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784348266"
+    },
+    {
+      "ordinal": 57,
+      "episode_id": "2912051607784424122",
+      "title_hint": "第57話  久しぶりの三人。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784424122"
+    },
+    {
+      "ordinal": 58,
+      "episode_id": "2912051607784479023",
+      "title_hint": "第58話  三人で過ごす午後。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784479023"
+    },
+    {
+      "ordinal": 59,
+      "episode_id": "2912051607784533705",
+      "title_hint": "第59話  あの頃の話。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784533705"
+    },
+    {
+      "ordinal": 60,
+      "episode_id": "2912051607784578918",
+      "title_hint": "第60話  もう一人の幼なじみ。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784578918"
+    },
+    {
+      "ordinal": 61,
+      "episode_id": "2912051607784621640",
+      "title_hint": "第61話  避暑の楽しみ。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784621640"
+    },
+    {
+      "ordinal": 62,
+      "episode_id": "2912051607784674908",
+      "title_hint": "第62話  ゆっくり過ごす朝。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784674908"
+    },
+    {
+      "ordinal": 63,
+      "episode_id": "2912051607784728984",
+      "title_hint": "第63話  新たな魔導具作り。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784728984"
+    },
+    {
+      "ordinal": 64,
+      "episode_id": "2912051607784782305",
+      "title_hint": "第64話  髭剃り、完成。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784782305"
+    },
+    {
+      "ordinal": 65,
+      "episode_id": "2912051607784867278",
+      "title_hint": "第65話  三人で過ごす夜。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784867278"
+    },
+    {
+      "ordinal": 66,
+      "episode_id": "2912051607784994691",
+      "title_hint": "第66話  新たな改良案。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607784994691"
+    },
+    {
+      "ordinal": 67,
+      "episode_id": "2912051607928253452",
+      "title_hint": "第67話  朝食と新たな予定。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607928253452"
+    },
+    {
+      "ordinal": 68,
+      "episode_id": "2912051607964875470",
+      "title_hint": "第68話  髭剃り、改良。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/2912051607964875470"
+    },
+    {
+      "ordinal": 69,
+      "episode_id": "11054822661927907270",
+      "title_hint": "第69話  細かな作業。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822661927907270"
+    },
+    {
+      "ordinal": 70,
+      "episode_id": "11054822661988831557",
+      "title_hint": "第70話  久しぶりの四人。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822661988831557"
+    },
+    {
+      "ordinal": 71,
+      "episode_id": "11054822662059119503",
+      "title_hint": "第71話  それぞれの事情。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662059119503"
+    },
+    {
+      "ordinal": 72,
+      "episode_id": "11054822662108255985",
+      "title_hint": "第72話  好きだった時間。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662108255985"
+    },
+    {
+      "ordinal": 73,
+      "episode_id": "11054822662220879183",
+      "title_hint": "第73話  細かい作業。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662220879183"
+    },
+    {
+      "ordinal": 74,
+      "episode_id": "11054822662358434465",
+      "title_hint": "第74話  疲れた。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662358434465"
+    },
+    {
+      "ordinal": 75,
+      "episode_id": "11054822662386169487",
+      "title_hint": "第75話  甘いものは正義。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662386169487"
+    },
+    {
+      "ordinal": 76,
+      "episode_id": "11054822662498302200",
+      "title_hint": "第76話  残りの二日。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662498302200"
+    },
+    {
+      "ordinal": 77,
+      "episode_id": "11054822662558627867",
+      "title_hint": "第77話  新しい遊び。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662558627867"
+    },
+    {
+      "ordinal": 78,
+      "episode_id": "11054822662612202027",
+      "title_hint": "第78話  今のところ。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662612202027"
+    },
+    {
+      "ordinal": 79,
+      "episode_id": "11054822662643557962",
+      "title_hint": "第79話  もう一勝負。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662643557962"
+    },
+    {
+      "ordinal": 80,
+      "episode_id": "11054822662704474008",
+      "title_hint": "第80話  却下。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662704474008"
+    },
+    {
+      "ordinal": 81,
+      "episode_id": "11054822662785131644",
+      "title_hint": "第81話  久しぶりの遠乗り。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662785131644"
+    },
+    {
+      "ordinal": 82,
+      "episode_id": "11054822662898169796",
+      "title_hint": "第82話  勝ち逃げ。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662898169796"
+    },
+    {
+      "ordinal": 83,
+      "episode_id": "11054822662942921856",
+      "title_hint": "第83話  一戦だけ。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822662942921856"
+    },
+    {
+      "ordinal": 84,
+      "episode_id": "11054822663055940377",
+      "title_hint": "第84話  飽きた。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663055940377"
+    },
+    {
+      "ordinal": 85,
+      "episode_id": "11054822663177796494",
+      "title_hint": "第85話  小さな魔導具。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663177796494"
+    },
+    {
+      "ordinal": 86,
+      "episode_id": "11054822663211014059",
+      "title_hint": "第86話  連想ゲーム。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663211014059"
+    },
+    {
+      "ordinal": 87,
+      "episode_id": "11054822663298148221",
+      "title_hint": "第87話  短い休み。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663298148221"
+    },
+    {
+      "ordinal": 88,
+      "episode_id": "11054822663321909206",
+      "title_hint": "第88話  切り替えが早い。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663321909206"
+    },
+    {
+      "ordinal": 89,
+      "episode_id": "11054822663334778802",
+      "title_hint": "第89話  理想の食事処。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663334778802"
+    },
+    {
+      "ordinal": 90,
+      "episode_id": "11054822663431372362",
+      "title_hint": "第90話  春に向けて。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663431372362"
+    },
+    {
+      "ordinal": 91,
+      "episode_id": "11054822663550487313",
+      "title_hint": "第91話  二度も言わなくていい。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663550487313"
+    },
+    {
+      "ordinal": 92,
+      "episode_id": "11054822663622004129",
+      "title_hint": "第92話  兄弟の時間。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663622004129"
+    },
+    {
+      "ordinal": 93,
+      "episode_id": "11054822663705050122",
+      "title_hint": "第93話  魔導具化は楽。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663705050122"
+    },
+    {
+      "ordinal": 94,
+      "episode_id": "11054822663739100097",
+      "title_hint": "第94話  作業スペース。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663739100097"
+    },
+    {
+      "ordinal": 95,
+      "episode_id": "11054822663885427237",
+      "title_hint": "第95話  大きすぎる。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663885427237"
+    },
+    {
+      "ordinal": 96,
+      "episode_id": "11054822663938429379",
+      "title_hint": "第96話  先にやること。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663938429379"
+    },
+    {
+      "ordinal": 97,
+      "episode_id": "11054822663943799238",
+      "title_hint": "第97話  一旦、保留。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822663943799238"
+    },
+    {
+      "ordinal": 98,
+      "episode_id": "11054822664113347039",
+      "title_hint": "第98話  あれもこれも。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664113347039"
+    },
+    {
+      "ordinal": 99,
+      "episode_id": "11054822664189802238",
+      "title_hint": "第99話  多すぎる。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664189802238"
+    },
+    {
+      "ordinal": 100,
+      "episode_id": "11054822664220451187",
+      "title_hint": "第100話  いつもの味。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664220451187"
+    },
+    {
+      "ordinal": 101,
+      "episode_id": "11054822664335212736",
+      "title_hint": "第101話  食事処問題。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664335212736"
+    },
+    {
+      "ordinal": 102,
+      "episode_id": "11054822664435191191",
+      "title_hint": "第102話  あったらいいけど。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664435191191"
+    },
+    {
+      "ordinal": 103,
+      "episode_id": "11054822664516927529",
+      "title_hint": "第103話  思わぬ収穫。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664516927529"
+    },
+    {
+      "ordinal": 104,
+      "episode_id": "11054822664570862875",
+      "title_hint": "第104話  出来たけど。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664570862875"
+    },
+    {
+      "ordinal": 105,
+      "episode_id": "11054822664679476108",
+      "title_hint": "第105話  気が早い。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664679476108"
+    },
+    {
+      "ordinal": 106,
+      "episode_id": "11054822664696194224",
+      "title_hint": "第106話  更新日と白い木。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664696194224"
+    },
+    {
+      "ordinal": 107,
+      "episode_id": "11054822664807832113",
+      "title_hint": "第107話  これなら大丈夫。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664807832113"
+    },
+    {
+      "ordinal": 108,
+      "episode_id": "11054822664906641550",
+      "title_hint": "第108話  ここがいい。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664906641550"
+    },
+    {
+      "ordinal": 109,
+      "episode_id": "11054822664973535377",
+      "title_hint": "第109話  今日も賑やか。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822664973535377"
+    },
+    {
+      "ordinal": 110,
+      "episode_id": "11054822665037764643",
+      "title_hint": "第110話  理想は尽きない。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822665037764643"
+    },
+    {
+      "ordinal": 111,
+      "episode_id": "11054822665108900957",
+      "title_hint": "第111話  平穏が遠い。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822665108900957"
+    },
+    {
+      "ordinal": 112,
+      "episode_id": "11054822665189869133",
+      "title_hint": "第112話  素材選びは大切。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822665189869133"
+    },
+    {
+      "ordinal": 113,
+      "episode_id": "11054822665256660325",
+      "title_hint": "第113話  面倒な話は後回し。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822665256660325"
+    },
+    {
+      "ordinal": 114,
+      "episode_id": "11054822665351633893",
+      "title_hint": "第114話  焼肉まであと少し。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822665351633893"
+    },
+    {
+      "ordinal": 115,
+      "episode_id": "11054822665414543583",
+      "title_hint": "第115話  使ってみると分かること。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822665414543583"
+    },
+    {
+      "ordinal": 116,
+      "episode_id": "11054822665489416162",
+      "title_hint": "第116話  現場の声は大事。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822665489416162"
+    },
+    {
+      "ordinal": 117,
+      "episode_id": "11054822665573074821",
+      "title_hint": "第117話  相変わらず魔導具談義。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822665573074821"
+    },
+    {
+      "ordinal": 118,
+      "episode_id": "11054822665624774811",
+      "title_hint": "第118話  手紙と物件。",
+      "section": "",
+      "source_url": "https://kakuyomu.jp/works/2912051607778505262/episodes/11054822665624774811"
+    }
+  ]
+}
