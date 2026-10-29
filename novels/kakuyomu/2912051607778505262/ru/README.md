@@ -2,7 +2,7 @@
 
 Проект: «Третий сын маркиза хочет жить с комфортом». Японский оригинал: https://kakuyomu.jp/works/2912051607778505262
 
-**Состояние 29.10.2026:** полный исходный корпус **118/118**; полные русские черновики **001–061 и 065–075 — Draft RU (72 главы)**; **062–064 пока не сохранены**; вычитанных `Final RU` **0**; опубликованных глав **не подтверждено**.
+**Состояние 29.10.2026:** полный исходный корпус **118/118**; полные русские черновики **001–080 — Draft RU (80 глав)**; вычитанных `Final RU` **0**; опубликованных глав **не подтверждено**.
 
 [Операционная карточка в Notion](https://app.notion.com/p/40832a84beec812c8b95f4b39cdf6d15)  
 [Редакционная очередь 001–005](https://app.notion.com/p/40832a84beec81888b93c18356653f80)  
@@ -17,10 +17,11 @@
 [Редакционная очередь 046–050](https://app.notion.com/p/40832a84beec818e9a65e2c1bfd90023)  
 [Редакционная очередь 051–055](https://app.notion.com/p/40832a84beec81a2bb82fe1fc986ab42)  
 [Редакционная очередь 056–060](https://app.notion.com/p/40832a84beec81878965eb5e323759b4)  
-[Очередь 061–065 (частично готово)](https://app.notion.com/p/40832a84beec81398301ccdc359e618c)  
+[Редакторская очередь 061–065](https://app.notion.com/p/40832a84beec81398301ccdc359e618c)  
 [Редакторская очередь 066–070](https://app.notion.com/p/40832a84beec816f8184e3ede8f9b560)  
 [Редакторская очередь 071–075](https://app.notion.com/p/40832a84beec811f9423fca875e5379a)  
-[Глоссарий](glossary.md) · [Дополнение 036–050](glossary_addendum_036_050.md) · [Дополнение 051–055](glossary_addendum_051_055.md) · [Дополнение 056–060](glossary_addendum_056_060.md) · [Дополнение 061–065](glossary_addendum_061_065.md) · [Дополнение 066–070](glossary_addendum_066_070.md) · [Дополнение 071–075](glossary_addendum_071_075.md)
+[Редакторская очередь 076–080](https://app.notion.com/p/40832a84beec818eb313e9dae8065dbc)  
+[Глоссарий](glossary.md) · [Дополнение 036–050](glossary_addendum_036_050.md) · [Дополнение 051–055](glossary_addendum_051_055.md) · [Дополнение 056–060](glossary_addendum_056_060.md) · [Дополнение 061–065](glossary_addendum_061_065.md) · [Дополнение 066–070](glossary_addendum_066_070.md) · [Дополнение 071–075](glossary_addendum_071_075.md) · [Дополнение 076–080](glossary_addendum_076_080.md)
 
 | № | Название RU | Черновик | Страница Notion |
 |---|---|---|---|
@@ -85,18 +86,26 @@
 | 059 | Воспоминания о тех днях | [Draft](draft/059.md) | [Глава](https://app.notion.com/p/40832a84beec81ee8cdbd5890e72562c) |
 | 060 | Ещё один друг детства | [Draft](draft/060.md) | [Глава](https://app.notion.com/p/40832a84beec812a9fbef929a691686d) |
 | 061 | Радости летнего отдыха | [Draft](draft/061.md) | [Глава](https://app.notion.com/p/40832a84beec812dad2ee07e0c1f7613) |
-| 065 | Вечер втроём | [Draft](draft/065.md) | [Карточка со ссылкой на GitHub](https://app.notion.com/p/40832a84beec8159bce1e139dc824968) |
+| 062 | Неспешное утро | [Draft](draft/062.md) | [Глава](https://app.notion.com/p/40832a84beec81619c57f023c97b1489) |
+| 063 | Работа над новым магическим устройством | [Draft](draft/063.md) | [Глава](https://app.notion.com/p/40832a84beec81bf8f5bc18652e1b00f) |
+| 064 | Бритва готова | [Draft](draft/064.md) | [Глава](https://app.notion.com/p/40832a84beec81c98755f504c4057c6a) |
+| 065 | Вечер втроём | [Draft](draft/065.md) | [Глава](https://app.notion.com/p/40832a84beec8159bce1e139dc824968) |
 | 066 | Новые идеи для улучшения | [Draft](draft/066.md) | [Глава](https://app.notion.com/p/40832a84beec8165b1ecfa12a882e776) |
 | 067 | Завтрак и новые планы | [Draft](draft/067.md) | [Глава](https://app.notion.com/p/40832a84beec81029f21cd8a67af924f) |
 | 068 | Усовершенствованная бритва | [Draft](draft/068.md) | [Глава](https://app.notion.com/p/40832a84beec8197bc2ae17dbdeb8dba) |
 | 069 | Кропотливая работа | [Draft](draft/069.md) | [Глава](https://app.notion.com/p/40832a84beec81a4a728f9c8232547a0) |
-| 070 | Снова вчетвером | [Draft](draft/070.md) | [Карточка со ссылкой](https://app.notion.com/p/40832a84beec81089a6fd823f5ffd7e4) |
+| 070 | Снова вчетвером | [Draft](draft/070.md) | [Глава](https://app.notion.com/p/40832a84beec81089a6fd823f5ffd7e4) |
 | 071 | У каждого свои обстоятельства | [Draft](draft/071.md) | [Глава](https://app.notion.com/p/40832a84beec81919a55fca189911e8a) |
 | 072 | Время, которое я любил | [Draft](draft/072.md) | [Глава](https://app.notion.com/p/40832a84beec813a9c40d9e71f401ef2) |
 | 073 | Мелкая работа | [Draft](draft/073.md) | [Глава](https://app.notion.com/p/40832a84beec81e994a7db9561d49049) |
 | 074 | Устал | [Draft](draft/074.md) | [Глава](https://app.notion.com/p/40832a84beec81d79bf1fbe373af139c) |
 | 075 | Сладости — это прекрасно | [Draft](draft/075.md) | [Глава](https://app.notion.com/p/40832a84beec81b2a482ddff466bc64b) |
+| 076 | Оставшиеся два дня | [Draft](draft/076.md) | [Глава](https://app.notion.com/p/40832a84beec815fbad9f73c44dcbf61) |
+| 077 | Новая игра | [Draft](draft/077.md) | [Глава](https://app.notion.com/p/40832a84beec811b9f2dcb70f09c451d) |
+| 078 | Пока что | [Draft](draft/078.md) | [Глава](https://app.notion.com/p/40832a84beec817d9259c70f4b1c646d) |
+| 079 | Ещё одна партия | [Draft](draft/079.md) | [Глава](https://app.notion.com/p/40832a84beec8110a5a9db3c2d4bc289) |
+| 080 | Отклонено | [Draft](draft/080.md) | [Глава](https://app.notion.com/p/40832a84beec811498fcd162135e8c29) |
 
-**Пропуск 062–064:** тексты пока не сохранены. Страницы Notion 065 и 070 содержат ссылки на полные черновики GitHub, но зеркалирование текста не завершено.
+**Синхронизация:** главы 001–080 имеют полные русские черновики в GitHub и Notion. Все они пока Draft RU, без финальной редакторской сверки.
 
-Тексты переведены с японского оригинала. Ссылки в главной таблице позволяют проверить каждый русский текст отдельно; таблица заголовков **не заменяет** содержимое семидесяти двух файлов.
+Тексты переведены с японского оригинала. Ссылки в главной таблице позволяют проверить каждый русский текст отдельно; таблица заголовков **не заменяет** содержимое восьмидесяти файлов.
