@@ -21,7 +21,7 @@ class PackTests(unittest.TestCase):
             index = root / "catalog.json"
             index.write_text(json.dumps({"ncode": "n6792em", "expected": 113, "entries": entries}))
             for i in range(1, 114):
-                (raw / f"{i:03d}.txt").write_text(f"Japanese episode {i} — test content only " + "x" * i, encoding="utf-8")
+                (raw / f"{i:03d}.txt").write_text(f"第{i}話：日本語の文章を試験用に用意します。物語の内容は架空のものです。" + "日本語の試験文章。" * i, encoding="utf-8")
             output = root / "book.zip"
             result = module.package(index, raw, output)
             self.assertEqual(result["verified"], 113)
