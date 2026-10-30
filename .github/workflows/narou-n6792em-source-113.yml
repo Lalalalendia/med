@@ -1,0 +1,64 @@
+name: Narou N6792EM - collect complete 113 episode original
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/narou-n6792em-source-113.yml'
+permissions:
+  contents: read
+concurrency:
+  group: narou-n6792em-113-raw
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parser dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Test existing Narou parser
+        run: python -m unittest discover -s tools/novel-ingest -p test_narou_ingest.py -v
+      - name: Test N6792EM packaging
+        run: python -m unittest discover -s tools/novel-ingest -p test_n6792em_package.py -v
+      - name: Read 113 public Japanese episodes
+        id: collect
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/narou_ingest.py \
+            --ncode n6792em --expected 113 --delay 1.5 --min-chars 120 \
+            --out-dir out/narou-n6792em
+      - name: Verify and package exactly 113 episodes
+        if: steps.collect.outcome == 'success'
+        id: package
+        run: |
+          python tools/novel-ingest/n6792em_package.py \
+            --source out/narou-n6792em \
+            --output out/narou-n6792em-japanese-original-001-113.zip
+      - name: Upload verification metadata even on partial runs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-n6792em-113-metadata
+          path: |
+            out/narou-n6792em/manifest.json
+            out/narou-n6792em/summary.md
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Upload combined.txt and all Japanese chapters only on full PASS
+        if: steps.collect.outcome == 'success' && steps.package.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-n6792em-japanese-original-001-113
+          path: out/narou-n6792em-japanese-original-001-113.zip
+          if-no-files-found: error
+          retention-days: 7
+      - name: Refuse partial success
+        if: steps.collect.outcome != 'success' || steps.package.outcome != 'success'
+        run: exit 1
