@@ -1,0 +1,37 @@
+name: N6792EM authorized source packager checks
+on:
+  pull_request:
+    paths:
+      - 'sources/narou-n6792em/**'
+      - 'tools/novel-ingest/pack_author_source.py'
+      - 'tools/novel-ingest/test_pack_author_source.py'
+      - '.github/workflows/narou-n6792em-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check local packager without network or copyrighted text
+        run: python -m unittest discover -s tools/novel-ingest -p test_pack_author_source.py -v
+      - name: Validate 113 episode metadata identities
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('sources/narou-n6792em/catalog.json').read_text(encoding='utf-8'))
+          assert d['ncode']=='n6792em' and d['expected']==113 and len(d['entries'])==113
+          for n,row in enumerate(d['entries'],1):
+              assert row['ordinal']==n and row['url']==f'https://ncode.syosetu.com/n6792em/{n}/'
+              assert row['body_status']=='not_collected'
+              if n<=100:
+                  assert row['title'] and row['section'] and row['entry_type']
+          assert d['ru_translated']==0 and d['ru_published']==0
+          print('PASS 113/113 references, titles 100/113, source RAW 0/113')
+          PY
