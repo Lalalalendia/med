@@ -1,0 +1,810 @@
+{
+  "schema_version": 1,
+  "ncode": "n6792em",
+  "title_ru": "Может ли обычный человек полюбить гения?",
+  "title_original": "それでも平凡は天才を愛せるか？",
+  "author": "由比ヶ浜 在人",
+  "original_url": "https://ncode.syosetu.com/n6792em/",
+  "rulate_url": "https://tl.rulate.ru/book/268337",
+  "expected": 113,
+  "public_toc_page_1_count": 100,
+  "second_page_entries_to_verify": 13,
+  "raw_verified": 0,
+  "ru_translated": 0,
+  "ru_published": 0,
+  "source_text_in_repository": false,
+  "permissions_status": "not_verified; no automated bulk text acquisition",
+  "entries": [
+    {
+      "ordinal": 1,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/1/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 2,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/2/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 3,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/3/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 4,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/4/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 5,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/5/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 6,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/6/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 7,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/7/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 8,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/8/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 9,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/9/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 10,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/10/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 11,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/11/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 12,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/12/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 13,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/13/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 14,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/14/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 15,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/15/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 16,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/16/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 17,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/17/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 18,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/18/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 19,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/19/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 20,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/20/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 21,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/21/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 22,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/22/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 23,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/23/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 24,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/24/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 25,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/25/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 26,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/26/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 27,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/27/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 28,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/28/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 29,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/29/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 30,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/30/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 31,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/31/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 32,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/32/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 33,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/33/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 34,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/34/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 35,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/35/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 36,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/36/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 37,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/37/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 38,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/38/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 39,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/39/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 40,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/40/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 41,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/41/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 42,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/42/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 43,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/43/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 44,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/44/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 45,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/45/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 46,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/46/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 47,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/47/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 48,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/48/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 49,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/49/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 50,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/50/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 51,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/51/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 52,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/52/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 53,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/53/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 54,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/54/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 55,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/55/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 56,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/56/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 57,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/57/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 58,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/58/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 59,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/59/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 60,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/60/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 61,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/61/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 62,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/62/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 63,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/63/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 64,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/64/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 65,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/65/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 66,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/66/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 67,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/67/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 68,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/68/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 69,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/69/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 70,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/70/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 71,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/71/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 72,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/72/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 73,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/73/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 74,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/74/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 75,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/75/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 76,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/76/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 77,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/77/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 78,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/78/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 79,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/79/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 80,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/80/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 81,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/81/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 82,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/82/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 83,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/83/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 84,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/84/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 85,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/85/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 86,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/86/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 87,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/87/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 88,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/88/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 89,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/89/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 90,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/90/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 91,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/91/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 92,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/92/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 93,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/93/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 94,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/94/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 95,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/95/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 96,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/96/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 97,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/97/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 98,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/98/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 99,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/99/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 100,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/100/",
+      "toc_status": "listed_on_public_toc_page_1",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 101,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/101/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 102,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/102/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 103,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/103/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 104,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/104/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 105,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/105/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 106,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/106/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 107,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/107/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 108,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/108/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 109,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/109/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 110,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/110/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 111,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/111/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 112,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/112/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    },
+    {
+      "ordinal": 113,
+      "title": null,
+      "url": "https://ncode.syosetu.com/n6792em/113/",
+      "toc_status": "derived_from_ordinal_pattern_needs_toc_page_2_check",
+      "body_status": "not_collected"
+    }
+  ]
+}
