@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-29T03:22:33+00:00
+Run: 2026-10-30T08:57:54+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-10-29T03:22:33+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `111324` [Industrial Cthulhu Doesn't Believe in](https://wtr-lab.com/en/novel/111324/industrial-cthulhu-doesnt-believe-in) — catalog
-- **wtr-lab** `111287` [I Became a Literary Giant in 1919](https://wtr-lab.com/en/novel/111287/i-became-a-literary-giant-in-1919) — catalog
-- **wtr-lab** `111243` [Giant Hero World: Zoffy's Adopted Daughter Wants to Blow Herself Up](https://wtr-lab.com/en/novel/111243/giant-hero-world-zoffys-adopted-daughter-wants-to-blow-herself-up) — catalog
-- **wtr-lab** `111328` [You're Asked to Write Your Graduation Thesis, and You Create Biomechanical Devices](https://wtr-lab.com/en/novel/111328/youre-asked-to-write-your-graduation-thesis-and-you-create-biomechanical-devices) — catalog
-- **wtr-lab** `111191` [Enlightened Ruler](https://wtr-lab.com/en/novel/111191/enlightened-ruler) — catalog
-- **wtr-lab** `111290` [When the Apocalypse Came, I Became a Landlady!](https://wtr-lab.com/en/novel/111290/when-the-apocalypse-came-i-became-a-landlady) — catalog
-- **wtr-lab** `111326` [Surviving Famine, How Did the Nation, Already at Its Lowest Point, End Up with Such a Famine?](https://wtr-lab.com/en/novel/111326/surviving-famine-how-did-the-nation-already-at-its-lowest-point-end-up-with-such-a-famine) — catalog
-- **wtr-lab** `111010` [The Radiant Journey of the Illusionary Star Emperor](https://wtr-lab.com/en/novel/111010/the-radiant-journey-of-the-illusionary-star-emperor) — catalog
-- **wtr-lab** `110714` [Even After the World is Refreshed, I'm Still the King of Mechs!](https://wtr-lab.com/en/novel/110714/even-after-the-world-is-refreshed-im-still-the-king-of-mechs) — catalog
-- **wtr-lab** `110594` [What Bad Intentions Can a NPC Have?](https://wtr-lab.com/en/novel/110594/what-bad-intentions-can-a-npc-have) — catalog
-- **mtl-novel** `changsheng-family-starting-from-becoming-the-head-of-the-family-at-the-age-of-seventeen` [Changsheng Family, Starting from Becoming the Head of the Family at the Age of Seventeen](https://mtl-novel.com/novel/changsheng-family-starting-from-becoming-the-head-of-the-family-at-the-age-of-seventeen/) — catalog
-- **mtl-novel** `warhammer-wizard` [Warhammer Wizard](https://mtl-novel.com/novel/warhammer-wizard/) — catalog
-- **mtl-novel** `my-gta-account-can-withdraw-cash` [My GTA Account Can Withdraw Cash](https://mtl-novel.com/novel/my-gta-account-can-withdraw-cash/) — catalog
-- **mtl-novel** `marvel-i-became-an-ancestor-by-sacrificing-offerings` [Marvel: I Became an Ancestor by Sacrificing Offerings](https://mtl-novel.com/novel/marvel-i-became-an-ancestor-by-sacrificing-offerings/) — catalog
-- **mtl-novel** `lord-the-angels-betrayed-me-i-set-off-the-zerg-disaster` [Lord: The Angels Betrayed Me, I Set Off the Zerg Disaster](https://mtl-novel.com/novel/lord-the-angels-betrayed-me-i-set-off-the-zerg-disaster/) — catalog
-- **mtl-novel** `my-dads-the-richest-man-in-the-world-but-all-i-want-to-do-is-deliver-food` [My Dad’s the Richest Man in the World, But All I Want to Do is Deliver Food](https://mtl-novel.com/novel/my-dads-the-richest-man-in-the-world-but-all-i-want-to-do-is-deliver-food/) — catalog
-- **mtl-novel** `harry-potter-and-the-secret-treasures` [Harry Potter and the Secret Treasures](https://mtl-novel.com/novel/harry-potter-and-the-secret-treasures/) — catalog
-- **mtl-novel** `monster-hunter-descends-my-strategy-guides-shocked-the-whole-server` [Monster Hunter Descends: My Strategy Guides Shocked the Whole Server](https://mtl-novel.com/novel/monster-hunter-descends-my-strategy-guides-shocked-the-whole-server/) — catalog
-- **mtl-novel** `rebirth-72-three-shots-create-a-ten-thousand-yuan-household` [Rebirth 72: Three Shots Create a Ten-thousand-yuan Household!](https://mtl-novel.com/novel/rebirth-72-three-shots-create-a-ten-thousand-yuan-household/) — catalog
-- **mtl-novel** `all-heavens-share-your-talents-with-countless-me` [All Heavens: Share your talents with countless me](https://mtl-novel.com/novel/all-heavens-share-your-talents-with-countless-me/) — catalog
+- **wtr-lab** `111496` [Fierce Soldier Slays the Heavens](https://wtr-lab.com/en/novel/111496/fierce-soldier-slays-the-heavens) — catalog
+- **wtr-lab** `111856` [Anime Crossover: My Heroic Spirit Gets Taken Over by Them](https://wtr-lab.com/en/novel/111856/anime-crossover-my-heroic-spirit-gets-taken-over-by-them) — catalog
+- **wtr-lab** `111813` [NBA: My High School Deskmate Was Kobe](https://wtr-lab.com/en/novel/111813/nba-my-high-school-deskmate-was-kobe) — catalog
+- **wtr-lab** `111849` [Saving a Sum of Money Every Year, One Can Rise from a Sect Servant to the Ancestor of All Heavens](https://wtr-lab.com/en/novel/111849/saving-a-sum-of-money-every-year-one-can-rise-from-a-sect-servant-to-the-ancestor-of-all-heavens) — catalog
+- **wtr-lab** `111838` [Highway Survival: Starting with a Car with My Childhood Friend](https://wtr-lab.com/en/novel/111838/highway-survival-starting-with-a-car-with-my-childhood-friend) — catalog
+- **wtr-lab** `111795` [Strike the Blood: All the Familiars are Beautiful Girls from Various Anime Crossovers](https://wtr-lab.com/en/novel/111795/strike-the-blood-all-the-familiars-are-beautiful-girls-from-various-anime-crossovers) — catalog
+- **wtr-lab** `111824` [Survival Game: Starting with an SSS-Rank Talent](https://wtr-lab.com/en/novel/111824/survival-game-starting-with-an-sss-rank-talent) — catalog
+- **wtr-lab** `111815` [I Have Two Chat Groups](https://wtr-lab.com/en/novel/111815/i-have-two-chat-groups) — catalog
+- **wtr-lab** `111809` [Pirates: I Formed the Akatsuki Organization](https://wtr-lab.com/en/novel/111809/pirates-i-formed-the-akatsuki-organization) — catalog
+- **wtr-lab** `111609` [The are All Abnormal](https://wtr-lab.com/en/novel/111609/the-are-all-abnormal) — catalog
+- **mtl-novel** `the-fourth-scourge-of-star-wars` [The Fourth Scourge of Star Wars](https://mtl-novel.com/novel/the-fourth-scourge-of-star-wars/) — catalog
+- **mtl-novel** `american-comics-pay-to-win-gacha-system-no-pity-system-rely-on-volume` [American Comics: Pay-to-win Gacha System, No Pity System, Rely on Volume](https://mtl-novel.com/novel/american-comics-pay-to-win-gacha-system-no-pity-system-rely-on-volume/) — catalog
+- **mtl-novel** `marvel-getting-stronger-through-childbirth-jennys-pregnancy-glow-is-off-the-charts` [Marvel: Getting Stronger Through Childbirth? Jenny’s Pregnancy Glow is Off the Charts](https://mtl-novel.com/novel/marvel-getting-stronger-through-childbirth-jennys-pregnancy-glow-is-off-the-charts/) — catalog
+- **mtl-novel** `daily-information-from-being-a-fisherman-to-martial-arts-and-becoming-a-god` [Daily Information: From Being a Fisherman to Martial Arts and Becoming a God](https://mtl-novel.com/novel/daily-information-from-being-a-fisherman-to-martial-arts-and-becoming-a-god/) — catalog
+- **mtl-novel** `douluo-continent-reborn-with-the-kun-peng-martial-soul-i-soar-beyond-the-heavens` [Douluo Continent: Reborn with the Kun Peng Martial Soul, I Soar Beyond the Heavens!](https://mtl-novel.com/novel/douluo-continent-reborn-with-the-kun-peng-martial-soul-i-soar-beyond-the-heavens/) — catalog
+- **mtl-novel** `the-strongest-deduction-of-the-comprehensive-comics` [The Strongest Deduction of the Comprehensive Comics](https://mtl-novel.com/novel/the-strongest-deduction-of-the-comprehensive-comics/) — catalog
+- **mtl-novel** `everyone-becomes-a-wild-god-only-i-offer-a-hundredfold` [Everyone becomes a wild god? Only I offer a hundredfold!](https://mtl-novel.com/novel/everyone-becomes-a-wild-god-only-i-offer-a-hundredfold/) — catalog
+- **mtl-novel** `a-song-of-ice-and-fire-the-magic-empire-of-the-plane-where-the-song-begins` [A Song of Ice and Fire: The Magic Empire of the Plane Where the Song Begins](https://mtl-novel.com/novel/a-song-of-ice-and-fire-the-magic-empire-of-the-plane-where-the-song-begins/) — catalog
+- **mtl-novel** `im-shooting-anime-in-another-world` [I’m shooting anime in another world](https://mtl-novel.com/novel/im-shooting-anime-in-another-world/) — catalog
+- **mtl-novel** `becoming-the-ancestor-of-the-blood-clan-from-central-europe` [Becoming the Ancestor of the Blood Clan from Central Europe](https://mtl-novel.com/novel/becoming-the-ancestor-of-the-blood-clan-from-central-europe/) — catalog
