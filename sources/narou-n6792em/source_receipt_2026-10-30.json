@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "project": "N6792EM",
+  "source_url": "https://ncode.syosetu.com/n6792em/",
+  "rulate_url": "https://tl.rulate.ru/book/268337",
+  "verified_at_utc": "2026-10-30T12:31:18Z",
+  "workflow_run_url": "https://github.com/Lalalalendia/med/actions/runs/41055451071",
+  "workflow_conclusion": "success",
+  "count": {
+    "expected": 113,
+    "catalog_entries": 113,
+    "verified_bodies": 113,
+    "failed": 0,
+    "missing_catalog_entries": 0,
+    "unexpected_catalog_entries": 0,
+    "distinct_body_sha256": 113,
+    "combined_headings": 113,
+    "combined_duplicate_headings": 0
+  },
+  "source_non_whitespace_characters": 277656,
+  "inner_archive_sha256": "624e58fdac898b3066c3ccf7042b387dc7235ce81812c5c453d4b359ed301327",
+  "github_actions_artifact": {
+    "id": 12977410860,
+    "name": "narou-n6792em-japanese-original-001-113",
+    "expires_at_utc": "2026-11-06T12:31:13Z"
+  },
+  "included_files": [
+    "chapters/001.txt..chapters/113.txt",
+    "combined.txt",
+    "manifest.json"
+  ],
+  "private_backup": "Uploaded to user's private Google Drive; no public download link in Git repository.",
+  "russian_translation": {
+    "confirmed_drafts": 0,
+    "published_rulate": 0,
+    "source": "owner confirmation 2026-10-30"
+  },
+  "rights": {
+    "japanese_text_publication": "not verified",
+    "russian_translation_publication": "not verified"
+  },
+  "note": "Metadata only. Full copyrighted original bodies deliberately not committed to this public repository."
+}
