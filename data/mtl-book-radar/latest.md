@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-10-30T08:57:54+00:00
+Run: 2026-10-31T08:50:46+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-10-30T08:57:54+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `111496` [Fierce Soldier Slays the Heavens](https://wtr-lab.com/en/novel/111496/fierce-soldier-slays-the-heavens) — catalog
-- **wtr-lab** `111856` [Anime Crossover: My Heroic Spirit Gets Taken Over by Them](https://wtr-lab.com/en/novel/111856/anime-crossover-my-heroic-spirit-gets-taken-over-by-them) — catalog
-- **wtr-lab** `111813` [NBA: My High School Deskmate Was Kobe](https://wtr-lab.com/en/novel/111813/nba-my-high-school-deskmate-was-kobe) — catalog
-- **wtr-lab** `111849` [Saving a Sum of Money Every Year, One Can Rise from a Sect Servant to the Ancestor of All Heavens](https://wtr-lab.com/en/novel/111849/saving-a-sum-of-money-every-year-one-can-rise-from-a-sect-servant-to-the-ancestor-of-all-heavens) — catalog
-- **wtr-lab** `111838` [Highway Survival: Starting with a Car with My Childhood Friend](https://wtr-lab.com/en/novel/111838/highway-survival-starting-with-a-car-with-my-childhood-friend) — catalog
-- **wtr-lab** `111795` [Strike the Blood: All the Familiars are Beautiful Girls from Various Anime Crossovers](https://wtr-lab.com/en/novel/111795/strike-the-blood-all-the-familiars-are-beautiful-girls-from-various-anime-crossovers) — catalog
-- **wtr-lab** `111824` [Survival Game: Starting with an SSS-Rank Talent](https://wtr-lab.com/en/novel/111824/survival-game-starting-with-an-sss-rank-talent) — catalog
-- **wtr-lab** `111815` [I Have Two Chat Groups](https://wtr-lab.com/en/novel/111815/i-have-two-chat-groups) — catalog
-- **wtr-lab** `111809` [Pirates: I Formed the Akatsuki Organization](https://wtr-lab.com/en/novel/111809/pirates-i-formed-the-akatsuki-organization) — catalog
-- **wtr-lab** `111609` [The are All Abnormal](https://wtr-lab.com/en/novel/111609/the-are-all-abnormal) — catalog
-- **mtl-novel** `the-fourth-scourge-of-star-wars` [The Fourth Scourge of Star Wars](https://mtl-novel.com/novel/the-fourth-scourge-of-star-wars/) — catalog
-- **mtl-novel** `american-comics-pay-to-win-gacha-system-no-pity-system-rely-on-volume` [American Comics: Pay-to-win Gacha System, No Pity System, Rely on Volume](https://mtl-novel.com/novel/american-comics-pay-to-win-gacha-system-no-pity-system-rely-on-volume/) — catalog
-- **mtl-novel** `marvel-getting-stronger-through-childbirth-jennys-pregnancy-glow-is-off-the-charts` [Marvel: Getting Stronger Through Childbirth? Jenny’s Pregnancy Glow is Off the Charts](https://mtl-novel.com/novel/marvel-getting-stronger-through-childbirth-jennys-pregnancy-glow-is-off-the-charts/) — catalog
-- **mtl-novel** `daily-information-from-being-a-fisherman-to-martial-arts-and-becoming-a-god` [Daily Information: From Being a Fisherman to Martial Arts and Becoming a God](https://mtl-novel.com/novel/daily-information-from-being-a-fisherman-to-martial-arts-and-becoming-a-god/) — catalog
-- **mtl-novel** `douluo-continent-reborn-with-the-kun-peng-martial-soul-i-soar-beyond-the-heavens` [Douluo Continent: Reborn with the Kun Peng Martial Soul, I Soar Beyond the Heavens!](https://mtl-novel.com/novel/douluo-continent-reborn-with-the-kun-peng-martial-soul-i-soar-beyond-the-heavens/) — catalog
-- **mtl-novel** `the-strongest-deduction-of-the-comprehensive-comics` [The Strongest Deduction of the Comprehensive Comics](https://mtl-novel.com/novel/the-strongest-deduction-of-the-comprehensive-comics/) — catalog
-- **mtl-novel** `everyone-becomes-a-wild-god-only-i-offer-a-hundredfold` [Everyone becomes a wild god? Only I offer a hundredfold!](https://mtl-novel.com/novel/everyone-becomes-a-wild-god-only-i-offer-a-hundredfold/) — catalog
-- **mtl-novel** `a-song-of-ice-and-fire-the-magic-empire-of-the-plane-where-the-song-begins` [A Song of Ice and Fire: The Magic Empire of the Plane Where the Song Begins](https://mtl-novel.com/novel/a-song-of-ice-and-fire-the-magic-empire-of-the-plane-where-the-song-begins/) — catalog
-- **mtl-novel** `im-shooting-anime-in-another-world` [I’m shooting anime in another world](https://mtl-novel.com/novel/im-shooting-anime-in-another-world/) — catalog
-- **mtl-novel** `becoming-the-ancestor-of-the-blood-clan-from-central-europe` [Becoming the Ancestor of the Blood Clan from Central Europe](https://mtl-novel.com/novel/becoming-the-ancestor-of-the-blood-clan-from-central-europe/) — catalog
+- **wtr-lab** `112029` [Reborn in America: Fighting My Way Out of Alcatraz and Across the Comic Universe Universe](https://wtr-lab.com/en/novel/112029/reborn-in-america-fighting-my-way-out-of-alcatraz-and-across-the-comic-universe-universe) — catalog
+- **wtr-lab** `112091` [Luxury Goods Recycling Rebates: Starting by Taking Down the Fake Socialite](https://wtr-lab.com/en/novel/112091/luxury-goods-recycling-rebates-starting-by-taking-down-the-fake-socialite) — catalog
+- **wtr-lab** `112090` [Door-to-door Recycling: At the Beginning, the Fake Socialite Begged Me Not to Expose Her](https://wtr-lab.com/en/novel/112090/door-to-door-recycling-at-the-beginning-the-fake-socialite-begged-me-not-to-expose-her) — catalog
+- **wtr-lab** `112089` [I'll Open a Luxury Consignment Shop and See How I Handle the Real and Fake Socialites](https://wtr-lab.com/en/novel/112089/ill-open-a-luxury-consignment-shop-and-see-how-i-handle-the-real-and-fake-socialites) — catalog
+- **wtr-lab** `112087` [I Run a Luxury Boutique: Manipulating Fake Socialites](https://wtr-lab.com/en/novel/112087/i-run-a-luxury-boutique-manipulating-fake-socialites) — catalog
+- **wtr-lab** `112086` [The Story Begins with a Pawn Shop Selling Unusual Items, Where a Fake Socialite Cashes Out Stockings](https://wtr-lab.com/en/novel/112086/the-story-begins-with-a-pawn-shop-selling-unusual-items-where-a-fake-socialite-cashes-out-stockings) — catalog
+- **wtr-lab** `112023` [Football: Get the Pirlo Long Pass Module at the Start](https://wtr-lab.com/en/novel/112023/football-get-the-pirlo-long-pass-module-at-the-start) — catalog
+- **wtr-lab** `111963` [Why is Light Yagami in This Crossover Anime Series That Features Yukinoshita?](https://wtr-lab.com/en/novel/111963/why-is-light-yagami-in-this-crossover-anime-series-that-features-yukinoshita) — catalog
+- **wtr-lab** `112062` [Star Train World: The Final Envoy, Filled with Regret](https://wtr-lab.com/en/novel/112062/star-train-world-the-final-envoy-filled-with-regret) — catalog
+- **wtr-lab** `112070` [One Extraordinary Encounter a Day, Transforming from a Martial Artist Into an Immortal Celestial Being](https://wtr-lab.com/en/novel/112070/one-extraordinary-encounter-a-day-transforming-from-a-martial-artist-into-an-immortal-celestial-being) — catalog
+- **mtl-novel** `i-teach-in-naruto-the-system-says-i-am-narutos-classmate` [I Teach in Naruto, the System Says I am Naruto’s Classmate](https://mtl-novel.com/novel/i-teach-in-naruto-the-system-says-i-am-narutos-classmate/) — catalog
+- **mtl-novel** `douluo-continent-holding-the-power-of-life-and-death-resurrecting-past-popes` [Douluo Continent: Holding the Power of Life and Death, Resurrecting Past Popes](https://mtl-novel.com/novel/douluo-continent-holding-the-power-of-life-and-death-resurrecting-past-popes/) — catalog
+- **mtl-novel** `one-player-at-the-start-copied-the-celestial-masters-max-level-golden-light-mantra` [One Player: At the Start, Copied the Celestial Master’s Max-level Golden Light Mantra](https://mtl-novel.com/novel/one-player-at-the-start-copied-the-celestial-masters-max-level-golden-light-mantra/) — catalog
+- **mtl-novel** `i-am-in-marvel` [I Am In Marvel](https://mtl-novel.com/novel/i-am-in-marvel/) — catalog
+- **mtl-novel** `earth-immortal` [Earth Immortal!](https://mtl-novel.com/novel/earth-immortal/) — catalog
+- **mtl-novel** `pirate-im-cracked-but-my-mutation-talent-is-incredibly-strong` [Pirate: I’m Cracked, But My Mutation Talent is Incredibly Strong](https://mtl-novel.com/novel/pirate-im-cracked-but-my-mutation-talent-is-incredibly-strong/) — catalog
+- **mtl-novel** `watching-warhammer-the-multiverse-is-shaken` [Watching Warhammer, the Multiverse is Shaken](https://mtl-novel.com/novel/watching-warhammer-the-multiverse-is-shaken/) — catalog
+- **mtl-novel** `mortal-cultivation-i-forged-the-su-clan-through-alchemy` [Mortal Cultivation: I Forged the Su Clan Through Alchemy](https://mtl-novel.com/novel/mortal-cultivation-i-forged-the-su-clan-through-alchemy/) — catalog
+- **mtl-novel** `basketball-i-want-to-be-a-coach` [Basketball, I Want to Be a Coach](https://mtl-novel.com/novel/basketball-i-want-to-be-a-coach/) — catalog
+- **mtl-novel** `naruto-my-progress-in-konoha` [Naruto: My Progress in Konoha](https://mtl-novel.com/novel/naruto-my-progress-in-konoha/) — catalog
