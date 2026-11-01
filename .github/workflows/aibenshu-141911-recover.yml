@@ -1,0 +1,56 @@
+name: Aibenshu 141911 recover 17 and merge verified 237-395
+on:
+  push:
+    branches: ["collect/aibenshu-141911-from-237"]
+    paths: [".github/workflows/aibenshu-141911-recover.yml"]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  restore-and-merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 cryptography
+      - name: Download 142 already verified chapters
+        uses: actions/download-artifact@v4
+        with:
+          name: aibenshu-141911-237-end
+          run-id: 41326217897
+          github-token: ${{ github.token }}
+          path: out/partial
+      - name: Validate Python collector and merge script
+        run: python -m py_compile tools/novel-ingest/aibenshu_141911.py tools/novel-ingest/aibenshu_merge.py
+      - name: Recover exactly 17 failed chapters
+        env:
+          MISSING: 249,261,262,276,281,282,295,300,303,328,336,339,347,355,376,382,387
+        run: |
+          python tools/novel-ingest/aibenshu_141911.py --only "$MISSING" --delay 0.7 --output out/recovery
+      - name: Merge and verify complete 159 chapters
+        run: |
+          python tools/novel-ingest/aibenshu_merge.py --base out/partial --recovery out/recovery --output out/final
+      - name: Publish status
+        if: always()
+        run: |
+          if test -f out/final/summary.md; then cat out/final/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+          if test -f out/recovery/summary.md; then cat out/recovery/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload complete verified 237-395 corpus
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aibenshu-141911-237-395-verified
+          path: out/final/**
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Upload failure receipts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aibenshu-141911-recovery-diagnostics
+          path: out/recovery/**
+          if-no-files-found: warn
+          retention-days: 7
