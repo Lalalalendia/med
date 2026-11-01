@@ -1,0 +1,45 @@
+name: Aibenshu 141911 HTML diagnostics
+on:
+  push:
+    branches: ["collect/aibenshu-141911-from-237"]
+    paths: [".github/workflows/aibenshu-141911-diagnostics.yml"]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python -m pip install requests beautifulsoup4
+      - name: Inspect source HTML and front-end loading
+        run: |
+          python - <<'PY'
+          import requests, re, json, pathlib
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          p=pathlib.Path("html-inspect");p.mkdir(exist_ok=True)
+          s=requests.Session()
+          s.headers.update({"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129.0.0.0 Safari/537.36", "Accept-Language":"zh-CN,zh;q=0.9"})
+          for ch,base in ((237,97119),(395,97282)):
+            for number in (1,2):
+              url=f"https://www.aibenshu.com/read/141911/{base}{'_'+str(number) if number>1 else ''}.html"
+              r=s.get(url,timeout=30);r.encoding=r.apparent_encoding or r.encoding
+              html=r.text
+              name=f"{ch}-{number}"
+              (p/f"{name}.html").write_text(html,encoding="utf-8")
+              soup=BeautifulSoup(html,'html.parser')
+              print("PAGE",name,"STATUS",r.status_code,"BYTES",len(r.content),"CHARSET",r.encoding)
+              print("SCRIPTS",json.dumps([{"src":urljoin(url,n.get("src","")),"inline":n.get_text(" ",strip=True)[:350]} for n in soup.select("script")],ensure_ascii=False))
+              print("ELEMENTS",json.dumps([{"tag":n.name,"id":n.get("id"),"class":n.get("class"),"text":n.get_text(" ",strip=True)[:400],"html":str(n)[:700]} for n in soup.select(".content")[:3]],ensure_ascii=False))
+              for term in ("Loading...", "内容未加载完成", "base64", "ajax", "fetch(", "chapter", "/api/", "section"):
+                print("TOKEN",name,term,"COUNT",html.count(term))
+              print("INLINE_JS_HITS",json.dumps([m.group(0)[:250] for m in list(re.finditer(r".{0,100}(?:fetch\\(|ajax|content|text|read\\.|loadChapter|/api/).{0,130}",html,re.I))[:15]],ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aibenshu-141911-html-diagnostics
+          path: html-inspect/
+          retention-days: 7
