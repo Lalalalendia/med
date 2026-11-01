@@ -4,6 +4,7 @@ on:
     branches: ["collect/aibenshu-141911-from-237"]
     paths:
       - ".github/workflows/aibenshu-141911-collect.yml"
+      - "tools/novel-ingest/aibenshu_141911.py"
   workflow_dispatch:
     inputs:
       start:
