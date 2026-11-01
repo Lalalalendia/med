@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Collect public Aibenshu 141911 chapters with fail-closed page completeness."""
 import argparse
+import base64
+import hashlib
 import json
 import re
 import time
@@ -9,6 +11,7 @@ from urllib.parse import urljoin, urlsplit
 
 import requests
 from bs4 import BeautifulSoup
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 BOOK = "https://www.aibenshu.com/book/141911/"
 CHAPTER_RE = re.compile(r"^/read/141911/(\d+)(?:_(\d+))?\.html$")
@@ -27,7 +30,7 @@ def get(session, url):
                 continue
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
-            return BeautifulSoup(r.text, "html.parser"), r.url
+            return BeautifulSoup(r.text, "html.parser"), r.url, r.text
         except requests.RequestException as exc:
             last = str(exc)
             time.sleep(2 ** attempt + 1)
@@ -35,7 +38,7 @@ def get(session, url):
 
 
 def catalog(session):
-    soup, resolved = get(session, BOOK)
+    soup, resolved, _ = get(session, BOOK)
     result = {}
     for a in soup.select(".chapterlist a[href], dd a[href]"):
         title = a.get_text(" ", strip=True)
@@ -65,20 +68,13 @@ def normalize(value):
 
 
 def page(session, url, expected_ordinal):
-    soup, final = get(session, url)
+    soup, final, html = get(session, url)
     h = soup.select_one("h1")
     heading = h.get_text(" ", strip=True) if h else ""
     m = TITLE_RE.search(heading)
     if not m or int(m.group(1)) != expected_ordinal:
         raise RuntimeError(f"wrong chapter header at {final}: {heading}")
-    container = soup.select_one(".content")
-    if not container:
-        raise RuntimeError(f"missing chapter body at {final}")
-    for bad in container.select("script,style,iframe,nav,footer,header,button,form,aside,.ads,.ad"):
-        bad.decompose()
-    body = normalize(container.get_text("\n", strip=True))
-    if len(body) < 250 or len(re.findall(r"[\u3400-\u9fff]", body)) < 100:
-        raise RuntimeError(f"short/empty chapter body at {final} chars={len(body)}")
+
     current = CHAPTER_RE.fullmatch(urlsplit(final).path)
     if not current:
         raise RuntimeError(f"unexpected page url {final}")
@@ -87,6 +83,46 @@ def page(session, url, expected_ordinal):
     total = int(count.group(2)) if count else page_no
     if count and int(count.group(1)) != page_no:
         raise RuntimeError(f"wrong page index at {final}: {heading}")
+
+    # The server-side #rtext node includes only an incomplete preview and
+    # "Loading..." placeholder. The full public content is in an inline
+    # CryptoJS AES-CBC payload, inserted into #rtext by the website itself.
+    script_call = re.search(
+        r"""\$\(\s*['"]#rtext['"]\s*\)\s*\.html\(\s*z\(\s*['"]([A-Za-z0-9+/=]+)['"]\s*,\s*['"]([A-Za-z0-9]{16})['"]\s*,\s*['"]([A-Za-z0-9]{16})['"]\s*\)\s*\)""",
+        html,
+        re.S,
+    )
+    if not script_call:
+        raise RuntimeError(f"missing encrypted full chapter at {final}")
+
+    ciphertext64, key, iv = script_call.groups()
+    ciphertext = base64.b64decode(ciphertext64, validate=True)
+    if len(ciphertext) < 1000 or len(ciphertext) % 16:
+        raise RuntimeError(f"invalid ciphertext length at {final}: {len(ciphertext)}")
+    decryptor = Cipher(algorithms.AES(key.encode("ascii")), modes.CBC(iv.encode("ascii"))).decryptor()
+    decrypted = decryptor.update(ciphertext) + decryptor.finalize()
+    pad_len = decrypted[-1]
+    if not 1 <= pad_len <= 16 or decrypted[-pad_len:] != bytes([pad_len]) * pad_len:
+        raise RuntimeError(f"invalid PKCS7 padding at {final}")
+    chapter_html = decrypted[:-pad_len].decode("utf-8")
+    chapter_soup = BeautifulSoup(chapter_html, "html.parser")
+    for tag in chapter_soup.select("script,style,iframe,nav,header,footer,form,button"):
+        tag.decompose()
+    body = normalize(chapter_soup.get_text("\n", strip=True))
+
+    preview_node = soup.select_one("#rtext")
+    if preview_node is None:
+        raise RuntimeError(f"missing preview node at {final}")
+    visible_prefix = normalize(
+        preview_node.get_text("\n", strip=True).split("Loading...", 1)[0]
+    )
+    if len(visible_prefix) < 50 or not body.startswith(visible_prefix):
+        raise RuntimeError(f"decrypted body does not match visible preview at {final}")
+    if "Loading..." in body or "内容未加载完成" in body:
+        raise RuntimeError(f"unloaded placeholder in decrypted body at {final}")
+    cjk_chars = len(re.findall(r"[\u3400-\u9fff]", body))
+    if len(body) < 700 or cjk_chars < 450 or len(body) <= len(visible_prefix) + 200:
+        raise RuntimeError(f"too little verified chapter at {final}: chars={len(body)}, cjk={cjk_chars}")
     return body, page_no, total
 
 
@@ -129,7 +165,7 @@ def run(args):
             path = root / "chapters" / f"{n:04}.txt"
             path.write_text(chapter_text, encoding="utf-8")
             combined.append(chapter_text)
-            manifest["chapters"].append({"number":n,"title":title,"source":url,"pages":total,"chars":len(content),"file":str(path.relative_to(root))})
+            manifest["chapters"].append({"number":n,"title":title,"source":url,"pages":total,"chars":len(content),"cjk_chars":len(re.findall(r"[\u3400-\u9fff]", content)),"sha256":hashlib.sha256(content.encode("utf-8")).hexdigest(),"file":str(path.relative_to(root))})
             print(f"{n}: OK {len(content)} chars, {total} pages", flush=True)
         except Exception as exc:
             manifest["failures"].append({"number":n,"url":url,"error":str(exc)})
