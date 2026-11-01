@@ -1,0 +1,41 @@
+name: Aibenshu 141911 prefix mismatch audit
+on:
+  push:
+    branches: ["collect/aibenshu-141911-from-237"]
+    paths: [".github/workflows/aibenshu-141911-prefix-diff.yml"]
+permissions: {contents: read}
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python -m pip install requests beautifulsoup4 cryptography
+      - name: Compare visible previews and encrypted full text
+        run: |
+          python - <<'PY'
+          import requests, re,base64,json
+          from bs4 import BeautifulSoup
+          from cryptography.hazmat.primitives.ciphers import Cipher,algorithms,modes
+          def norm(x):return "\n".join(y.strip() for y in x.splitlines() if y.strip())
+          s=requests.Session();s.headers.update({'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129.0.0.0 Safari/537.36'})
+          samples=((249,97131,1),(261,97143,2),(262,97144,2),(282,97165,1),(300,97184,1),(303,97187,2),(328,97212,2),(387,97274,1))
+          results=[]
+          for ordinal,slug,part in samples:
+            url=f"https://www.aibenshu.com/read/141911/{slug}{'_'+str(part) if part!=1 else ''}.html"
+            try:
+              r=s.get(url,timeout=30);r.raise_for_status();r.encoding=r.apparent_encoding or r.encoding
+              html=r.text;sp=BeautifulSoup(html,'html.parser')
+              script=re.search(r"""\$\(\s*['"]#rtext['"]\s*\)\s*\.html\(\s*z\(\s*['"]([A-Za-z0-9+/=]+)['"]\s*,\s*['"]([A-Za-z0-9]{16})['"]\s*,\s*['"]([A-Za-z0-9]{16})['"]\s*\)\s*\)""",html,re.S)
+              if not script:raise ValueError('no AES payload')
+              c,key,iv=script.groups();cipher=Cipher(algorithms.AES(key.encode()),modes.CBC(iv.encode())).decryptor();d=cipher.update(base64.b64decode(c))+cipher.finalize();d=d[:-d[-1]]
+              body=norm(BeautifulSoup(d.decode('utf8'),'html.parser').get_text('\n',strip=True))
+              visible=norm(sp.select_one('#rtext').get_text('\n',strip=True).split('Loading...')[0])
+              i=0
+              while i<min(len(body),len(visible)) and body[i]==visible[i]:i+=1
+              rec={'chapter':ordinal,'page':part,'full_chars':len(body),'preview_chars':len(visible),'matched_prefix_chars':i,'match':body.startswith(visible),'visible_snip':repr(visible[max(0,i-18):i+32]),'decrypted_snip':repr(body[max(0,i-18):i+32]),'short_preview_matched':body.startswith(visible[:80]),'h1':sp.h1.get_text(' ',strip=True) if sp.h1 else None}
+              results.append(rec);print(json.dumps(rec,ensure_ascii=False))
+            except Exception as e:print('ERROR',ordinal,part,repr(e))
+          PY
