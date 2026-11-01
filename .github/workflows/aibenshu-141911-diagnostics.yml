@@ -36,7 +36,6 @@ jobs:
               print("ELEMENTS",json.dumps([{"tag":n.name,"id":n.get("id"),"class":n.get("class"),"text":n.get_text(" ",strip=True)[:400],"html":str(n)[:700]} for n in soup.select(".content")[:3]],ensure_ascii=False))
               for term in ("Loading...", "内容未加载完成", "base64", "ajax", "fetch(", "chapter", "/api/", "section"):
                 print("TOKEN",name,term,"COUNT",html.count(term))
-              print("INLINE_JS_HITS",json.dumps([m.group(0)[:250] for m in list(re.finditer(r".{0,100}(?:fetch\\(|ajax|content|text|read\\.|loadChapter|/api/).{0,130}",html,re.I))[:15]],ensure_ascii=False))
           PY
       - uses: actions/upload-artifact@v4
         with:
