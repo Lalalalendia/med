@@ -116,6 +116,10 @@ def page(session, url, expected_ordinal):
     visible_prefix = normalize(
         preview_node.get_text("\n", strip=True).split("Loading...", 1)[0]
     )
+    # Some pages end the server-side preview with an orphan literal "<".
+    # It is markup debris, not part of the AES-decrypted chapter text.
+    if visible_prefix.endswith("<"):
+        visible_prefix = visible_prefix[:-1]
     if len(visible_prefix) < 50 or not body.startswith(visible_prefix):
         raise RuntimeError(f"decrypted body does not match visible preview at {final}")
     if "Loading..." in body or "内容未加载完成" in body:
@@ -132,14 +136,22 @@ def run(args):
     chapters = catalog(session)
     if not chapters:
         raise RuntimeError("catalog empty")
-    end = max(chapters) if args.end == 0 else args.end
-    if not 1 <= args.start <= end:
-        raise RuntimeError(f"bad range {args.start}-{end}")
+    if args.only:
+        selected = sorted({int(part.strip()) for part in args.only.split(",") if part.strip()})
+        if not selected:
+            raise RuntimeError("empty --only list")
+        start, end = selected[0], selected[-1]
+    else:
+        start = args.start
+        end = max(chapters) if args.end == 0 else args.end
+        selected = list(range(start, end + 1))
+    if not 1 <= start <= end <= max(chapters):
+        raise RuntimeError(f"bad requested chapters: {start}-{end} (catalog max {max(chapters)})")
     root = Path(args.output)
     (root / "chapters").mkdir(parents=True, exist_ok=True)
-    manifest = {"book_url": BOOK, "catalog_count": len(chapters), "catalog_max": max(chapters), "requested_start": args.start, "requested_end": end, "chapters": [], "failures": []}
+    manifest = {"book_url": BOOK, "catalog_count": len(chapters), "catalog_max": max(chapters), "requested_start": start, "requested_end": end, "requested_numbers": selected, "chapters": [], "failures": []}
     combined = []
-    for n in range(args.start, end + 1):
+    for n in selected:
         if n not in chapters:
             manifest["failures"].append({"number": n, "error": "missing catalog entry"})
             print(f"{n}: missing catalog entry", flush=True)
@@ -173,9 +185,9 @@ def run(args):
         time.sleep(max(args.delay, .5))
     if combined:
         (root / "combined.txt").write_text("\n\n" + ("\n\n" + "="*60 + "\n\n").join(combined),encoding="utf-8")
-    manifest["status"] = "PASS" if not manifest["failures"] and len(manifest["chapters"]) == end-args.start+1 else "INCOMPLETE"
+    manifest["status"] = "PASS" if not manifest["failures"] and len(manifest["chapters"]) == len(selected) else "INCOMPLETE"
     (root/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    (root/"summary.md").write_text(f"# Aibenshu 141911\n\nRange: {args.start}-{end}\n\nStatus: {manifest['status']}\n\nVerified chapters: {len(manifest['chapters'])}\n\nFailures: {len(manifest['failures'])}\n",encoding="utf-8")
+    (root/"summary.md").write_text(f"# Aibenshu 141911\n\nRange: {start}-{end} (requested {len(selected)})\n\nStatus: {manifest['status']}\n\nVerified chapters: {len(manifest['chapters'])}\n\nFailures: {len(manifest['failures'])}\n",encoding="utf-8")
     print("STATUS",manifest["status"],"OK",len(manifest["chapters"]),"FAILURES",len(manifest["failures"]))
     return 0 if manifest["status"]=="PASS" else 1
 
@@ -183,6 +195,7 @@ def run(args):
 if __name__=="__main__":
     ap=argparse.ArgumentParser()
     ap.add_argument("--start",type=int,default=237)
+    ap.add_argument("--only",default="",help="Comma-separated non-contiguous chapter ordinals")
     ap.add_argument("--end",type=int,default=0)
     ap.add_argument("--delay",type=float,default=0.7)
     ap.add_argument("--output",default="out/aibenshu-141911")
