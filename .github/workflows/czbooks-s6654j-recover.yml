@@ -1,0 +1,59 @@
+name: Czbooks s6654j - merge existing verified chapters
+
+on:
+  push:
+    branches: [collect/czbooks-s6654j]
+    paths:
+      - .github/workflows/czbooks-s6654j-recover.yml
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  recover-full-book:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install collector dependencies for merge
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Download all four previously collected chapter shards
+        uses: actions/download-artifact@v4
+        with:
+          repository: Lalalalendia/med
+          run-id: 41319595367
+          github-token: ${{ github.token }}
+          pattern: czbooks-part-*
+          path: out/parts
+      - name: Verify full 1028/1028 manifest and assemble TXT
+        id: closure
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/czbooks_ingest.py merge \
+            --parts-root out/parts --out-dir out/merged --expected 1028
+      - name: Print completeness and diagnostics
+        if: always()
+        run: |
+          if [ -f out/merged/summary.md ]; then
+            cat out/merged/summary.md
+            cat out/merged/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f out/merged/merge-report.json ]; then
+            cat out/merged/merge-report.json
+          fi
+          ls -lh out/merged || true
+      - name: Archive finished book and integrity report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: czbooks-s6654j-full-verified-1028
+          path: out/merged/**
+          if-no-files-found: error
+          retention-days: 30
+      - name: Fail if any chapter is missing or invalid
+        if: steps.closure.outcome != 'success'
+        run: exit 1
