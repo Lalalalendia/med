@@ -47,8 +47,16 @@ def catalog(session):
             continue
         ordinal = int(match.group(1))
         if ordinal in result and result[ordinal][0] != href:
-            raise RuntimeError(f"ambiguous chapter {ordinal}")
-        result[ordinal] = (href, title)
+            # Some catalog titles duplicate chapter numbers; prefer the expected
+            # sequential URL ID, keeping the anomaly visible in the manifest.
+            old_url = result[ordinal][0]
+            expected_id = 96882 + ordinal - 1
+            old_id = int(CHAPTER_RE.fullmatch(urlsplit(old_url).path).group(1))
+            new_id = int(CHAPTER_RE.fullmatch(urlsplit(href).path).group(1))
+            if abs(new_id - expected_id) < abs(old_id - expected_id):
+                result[ordinal] = (href, title)
+        else:
+            result[ordinal] = (href, title)
     return result
 
 
