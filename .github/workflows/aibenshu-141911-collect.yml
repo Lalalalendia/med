@@ -1,0 +1,80 @@
+name: Aibenshu 141911 - verified RAW collection
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/aibenshu-141911-collect.yml"
+      - "tools/novel-ingest/aibenshu_141911.py"
+      - "tools/novel-ingest/aibenshu_merge.py"
+      - "tools/novel-ingest/test_aibenshu_141911.py"
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "First chapter (inclusive)"
+        required: true
+        default: "237"
+        type: string
+      end:
+        description: "Last chapter (0 = latest available)"
+        required: true
+        default: "0"
+        type: string
+      only:
+        description: "Optional comma-separated chapter numbers for recovery"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 cryptography
+      - name: Check Python syntax
+        run: python -m py_compile tools/novel-ingest/aibenshu_141911.py tools/novel-ingest/aibenshu_merge.py tools/novel-ingest/test_aibenshu_141911.py
+      - name: Aibenshu encrypted-chapter regression tests
+        run: python -m unittest discover -s tools/novel-ingest -p "test_aibenshu_141911.py" -v
+
+  collect:
+    if: github.event_name == 'workflow_dispatch'
+    needs: regressions
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 cryptography
+      - name: Collect and validate public chapters
+        env:
+          START: ${{ inputs.start }}
+          END: ${{ inputs.end }}
+          ONLY: ${{ inputs.only }}
+        run: |
+          set -euo pipefail
+          args=(--start "$START" --end "$END" --delay 0.7 --output out/aibenshu-141911)
+          if test -n "$ONLY"; then args+=(--only "$ONLY"); fi
+          python tools/novel-ingest/aibenshu_141911.py "${args[@]}"
+      - name: Publish verification summary
+        if: always()
+        run: |
+          if test -f out/aibenshu-141911/summary.md; then
+            cat out/aibenshu-141911/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload verified text or failure receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aibenshu-141911-run-${{ github.run_id }}
+          path: out/aibenshu-141911/**
+          retention-days: 14
+          if-no-files-found: warn

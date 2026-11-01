@@ -1,0 +1,21 @@
+{
+  "title": "民俗从傩戏班子开始",
+  "author": "夜半探窗",
+  "book_id": "141911",
+  "source_url": "https://www.aibenshu.com/book/141911/",
+  "verified_at": "2026-11-01",
+  "start_chapter": 237,
+  "end_chapter": 395,
+  "chapter_count": 159,
+  "source_pages": 318,
+  "verified_body_chars": 522803,
+  "verified_cjk_chars": 412119,
+  "chapter_hashes_manifest_sha256": "6ae506c17277979efd99df8657bf41c5b3bd6a29003752d00d91212d83d9d78a",
+  "verification": {
+    "direct_collection_run": 41326834486,
+    "verified_recovery_merge_run": 41326884402,
+    "chapter_hashes_match_across_runs": true,
+    "missing_chapters": 0,
+    "partial_page_placeholder_count": 0
+  }
+}
