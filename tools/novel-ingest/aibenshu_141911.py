@@ -11,8 +11,8 @@ import requests
 from bs4 import BeautifulSoup
 
 BOOK = "https://www.aibenshu.com/book/141911/"
-CHAPTER_RE = re.compile(r"^/read/141911/(\\d+)(?:_(\\d+))?\\.html$")
-TITLE_RE = re.compile(r"第\\s*(\\d+)\\s*章")
+CHAPTER_RE = re.compile(r"^/read/141911/(\d+)(?:_(\d+))?\.html$")
+TITLE_RE = re.compile(r"第\s*(\d+)\s*章")
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129 Safari/537.36"
 
 
@@ -53,7 +53,7 @@ def catalog(session):
 
 
 def normalize(value):
-    return "\\n".join(line.strip() for line in value.splitlines() if line.strip())
+    return "\n".join(line.strip() for line in value.splitlines() if line.strip())
 
 
 def page(session, url, expected_ordinal):
@@ -68,14 +68,14 @@ def page(session, url, expected_ordinal):
         raise RuntimeError(f"missing chapter body at {final}")
     for bad in container.select("script,style,iframe,nav,footer,header,button,form,aside,.ads,.ad"):
         bad.decompose()
-    body = normalize(container.get_text("\\n", strip=True))
-    if len(body) < 250 or len(re.findall(r"[\\u3400-\\u9fff]", body)) < 100:
+    body = normalize(container.get_text("\n", strip=True))
+    if len(body) < 250 or len(re.findall(r"[\u3400-\u9fff]", body)) < 100:
         raise RuntimeError(f"short/empty chapter body at {final} chars={len(body)}")
     current = CHAPTER_RE.fullmatch(urlsplit(final).path)
     if not current:
         raise RuntimeError(f"unexpected page url {final}")
     page_no = int(current.group(2) or 1)
-    count = re.search(r"[（(]\\s*(\\d+)\\s*/\\s*(\\d+)\\s*[）)]", heading)
+    count = re.search(r"[（(]\s*(\d+)\s*/\s*(\d+)\s*[）)]", heading)
     total = int(count.group(2)) if count else page_no
     if count and int(count.group(1)) != page_no:
         raise RuntimeError(f"wrong page index at {final}: {heading}")
@@ -114,10 +114,10 @@ def run(args):
                 if actual != p or declared != total:
                     raise RuntimeError(f"bad pagination page {p}/{total}: got {actual}/{declared}")
                 text.append(part)
-            content = "\\n\\n".join(text)
+            content = "\n\n".join(text)
             if any(x == y for x,y in zip(text,text[1:])):
                 raise RuntimeError("duplicate consecutive pages")
-            chapter_text = f"{title}\\nSource: {url}\\n\\n{content}\\n"
+            chapter_text = f"{title}\nSource: {url}\n\n{content}\n"
             path = root / "chapters" / f"{n:04}.txt"
             path.write_text(chapter_text, encoding="utf-8")
             combined.append(chapter_text)
@@ -128,10 +128,10 @@ def run(args):
             print(f"{n}: FAILED {exc}", flush=True)
         time.sleep(max(args.delay, .5))
     if combined:
-        (root / "combined.txt").write_text("\\n\\n" + ("\\n\\n" + "="*60 + "\\n\\n").join(combined),encoding="utf-8")
+        (root / "combined.txt").write_text("\n\n" + ("\n\n" + "="*60 + "\n\n").join(combined),encoding="utf-8")
     manifest["status"] = "PASS" if not manifest["failures"] and len(manifest["chapters"]) == end-args.start+1 else "INCOMPLETE"
-    (root/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
-    (root/"summary.md").write_text(f"# Aibenshu 141911\\n\\nRange: {args.start}-{end}\\n\\nStatus: {manifest['status']}\\n\\nVerified chapters: {len(manifest['chapters'])}\\n\\nFailures: {len(manifest['failures'])}\\n",encoding="utf-8")
+    (root/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    (root/"summary.md").write_text(f"# Aibenshu 141911\n\nRange: {args.start}-{end}\n\nStatus: {manifest['status']}\n\nVerified chapters: {len(manifest['chapters'])}\n\nFailures: {len(manifest['failures'])}\n",encoding="utf-8")
     print("STATUS",manifest["status"],"OK",len(manifest["chapters"]),"FAILURES",len(manifest["failures"]))
     return 0 if manifest["status"]=="PASS" else 1
 
