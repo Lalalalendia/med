@@ -86,7 +86,7 @@ class AibenshuChapterTests(unittest.TestCase):
 
     def test_rejects_short_decrypted_body(self):
         with self.assertRaisesRegex(RuntimeError, "too little verified"):
-            self.parse(text="这是一段不足以构成完整章节的合成测试文本。" * 13)
+            self.parse(text="这是一段不足以构成完整章节的合成测试文本。" * 23)
 
     def test_rejects_wrong_pagination(self):
         with self.assertRaisesRegex(RuntimeError, "wrong page index"):
