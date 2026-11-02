@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-01T09:41:08+00:00
+Run: 2026-11-02T09:55:43+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-01T09:41:08+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `111578` [Heaven Sword and Dragon Saber: I, Song Qingshu, Take Command of Wudang](https://wtr-lab.com/en/novel/111578/heaven-sword-and-dragon-saber-i-song-qingshu-take-command-of-wudang) — catalog
-- **wtr-lab** `112325` [Will Online Romance with the Campus Beauty Stop Me Building Mechas?](https://wtr-lab.com/en/novel/112325/will-online-romance-with-the-campus-beauty-stop-me-building-mechas) — catalog
-- **wtr-lab** `112332` [Don't Worship Me, I'm Really Not Your Ancestor!](https://wtr-lab.com/en/novel/112332/dont-worship-me-im-really-not-your-ancestor) — catalog
-- **wtr-lab** `109191` [Anatomy of a Flower](https://wtr-lab.com/en/novel/109191/anatomy-of-a-flower) — catalog
-- **wtr-lab** `112345` [Are You Kidding Me? This Island Produces Controlled Nuclear Fusion?](https://wtr-lab.com/en/novel/112345/are-you-kidding-me-this-island-produces-controlled-nuclear-fusion) — catalog
-- **wtr-lab** `112336` [You Were Supposed to Play in the Premier League, So Why are You Ham-fisting Your Acting in the Penalty Box?](https://wtr-lab.com/en/novel/112336/you-were-supposed-to-play-in-the-premier-league-so-why-are-you-ham-fisting-your-acting-in-the-penalty-box) — catalog
-- **wtr-lab** `112335` [Mad Dog, All-around Midfielder: Breaking the Messi-ronaldo Monopoly](https://wtr-lab.com/en/novel/112335/mad-dog-all-around-midfielder-breaking-the-messi-ronaldo-monopoly) — catalog
-- **wtr-lab** `112337` [Football: I Train Young Talents at the Top Clubs](https://wtr-lab.com/en/novel/112337/football-i-train-young-talents-at-the-top-clubs) — catalog
-- **wtr-lab** `112365` [29 Years Old, Worried That the Monster Isn't Dragon-level Enough!](https://wtr-lab.com/en/novel/112365/29-years-old-worried-that-the-monster-isnt-dragon-level-enough) — catalog
-- **wtr-lab** `112349` [Ice and Fire Saga: Westeross Chronicles](https://wtr-lab.com/en/novel/112349/ice-and-fire-saga-westeross-chronicles) — catalog
-- **mtl-novel** `little-monkey-king-traversing-the-universe-from-marvel` [Little Monkey King Traversing the Universe from Marvel](https://mtl-novel.com/novel/little-monkey-king-traversing-the-universe-from-marvel/) — catalog
-- **mtl-novel** `saving-uchiha-starts-by-flipping-the-table` [Saving Uchiha starts by flipping the table](https://mtl-novel.com/novel/saving-uchiha-starts-by-flipping-the-table/) — catalog
-- **mtl-novel** `gao-wu-replace-me-as-the-top-scholar-go-talk-to-my-marshal-grandpa` [Gao Wu: Replace Me As the Top Scholar? Go Talk to My Marshal Grandpa!](https://mtl-novel.com/novel/gao-wu-replace-me-as-the-top-scholar-go-talk-to-my-marshal-grandpa/) — catalog
-- **mtl-novel** `hogwarts-starting-as-a-sequence-9-wizard` [Hogwarts: Starting As a Sequence 9 Wizard](https://mtl-novel.com/novel/hogwarts-starting-as-a-sequence-9-wizard/) — catalog
-- **mtl-novel** `survival-for-all-starting-with-building-a-city` [Survival for All: Starting with Building a City](https://mtl-novel.com/novel/survival-for-all-starting-with-building-a-city/) — catalog
-- **mtl-novel** `narutos-strongest-force` [Naruto’s Strongest Force](https://mtl-novel.com/novel/narutos-strongest-force/) — catalog
-- **mtl-novel** `one-piece-starting-from-an-intern-the-non-human-pirate-life` [One Piece: Starting from an Intern, the Non-human Pirate Life](https://mtl-novel.com/novel/one-piece-starting-from-an-intern-the-non-human-pirate-life/) — catalog
-- **mtl-novel** `enmility-of-uchiha-dont-regret-the-relocation-of-the-whole-family` [Enmility of Uchiha? Don’t Regret the Relocation of the Whole Family](https://mtl-novel.com/novel/enmility-of-uchiha-dont-regret-the-relocation-of-the-whole-family/) — catalog
-- **mtl-novel** `primordial-era-after-lying-low-for-eons-hongjun-begs-me-to-leave-my-abode` [Primordial Era: After Lying Low for Eons, Hongjun Begs Me to Leave My Abode](https://mtl-novel.com/novel/primordial-era-after-lying-low-for-eons-hongjun-begs-me-to-leave-my-abode/) — catalog
-- **mtl-novel** `naruto-get-stronger-by-hanging-up` [Naruto: Get Stronger by Hanging Up](https://mtl-novel.com/novel/naruto-get-stronger-by-hanging-up/) — catalog
+- **wtr-lab** `112616` [Magic School: Malfoy Couldn't Possibly Be a Beautiful Girl](https://wtr-lab.com/en/novel/112616/magic-school-malfoy-couldnt-possibly-be-a-beautiful-girl) — catalog
+- **wtr-lab** `112675` [Element World: Picked Up by Columbina, No Escape Now](https://wtr-lab.com/en/novel/112675/element-world-picked-up-by-columbina-no-escape-now) — catalog
+- **wtr-lab** `112681` [Chosen by the Primordial Gods: Starting by Refining Emperor Jun and Taiyi](https://wtr-lab.com/en/novel/112681/chosen-by-the-primordial-gods-starting-by-refining-emperor-jun-and-taiyi) — catalog
+- **wtr-lab** `112571` [American Entertainment Stars Shine Brightly](https://wtr-lab.com/en/novel/112571/american-entertainment-stars-shine-brightly) — catalog
+- **wtr-lab** `112684` [Full-time Mage: The System Asked Me to Guide the Fire and Thunder System](https://wtr-lab.com/en/novel/112684/full-time-mage-the-system-asked-me-to-guide-the-fire-and-thunder-system) — catalog
+- **wtr-lab** `112557` [Pirates: Injected with the Devil Serum, the King Returns!](https://wtr-lab.com/en/novel/112557/pirates-injected-with-the-devil-serum-the-king-returns) — catalog
+- **wtr-lab** `112622` [Date a Live: Firefly Journey, Light and Shadow of the Stars](https://wtr-lab.com/en/novel/112622/date-a-live-firefly-journey-light-and-shadow-of-the-stars) — catalog
+- **wtr-lab** `112678` [Re: Zero - the Strongest Journey Begins at the Sage's Tower](https://wtr-lab.com/en/novel/112678/re-zero-the-strongest-journey-begins-at-the-sages-tower) — catalog
+- **wtr-lab** `112677` [Unparalleled Comprehension: I, the Burning Lamp, Forge the Mythical Great Luo](https://wtr-lab.com/en/novel/112677/unparalleled-comprehension-i-the-burning-lamp-forge-the-mythical-great-luo) — catalog
+- **wtr-lab** `112596` [Soul Land: The Phoenix Fire God](https://wtr-lab.com/en/novel/112596/soul-land-the-phoenix-fire-god) — catalog
+- **mtl-novel** `marvel-my-talent-is-mind-control` [Marvel: My Talent is Mind Control](https://mtl-novel.com/novel/marvel-my-talent-is-mind-control/) — catalog
+- **mtl-novel** `uchiha-orphan-so-what-if-im-ruthless` [Uchiha Orphan, So What If I’m Ruthless?](https://mtl-novel.com/novel/uchiha-orphan-so-what-if-im-ruthless/) — catalog
+- **mtl-novel** `survival-for-all-i-am-the-minecraft-magician` [Survival for All: I am the Minecraft Magician](https://mtl-novel.com/novel/survival-for-all-i-am-the-minecraft-magician/) — catalog
+- **mtl-novel** `douluo-dalu-my-simulation-system-lets-me-conquer-the-heavens-why-should-i-ever-bow-to-tang-san` [Douluo Dalu: My Simulation System Lets Me Conquer the Heavens, Why Should I Ever Bow to Tang San?](https://mtl-novel.com/novel/douluo-dalu-my-simulation-system-lets-me-conquer-the-heavens-why-should-i-ever-bow-to-tang-san/) — catalog
+- **mtl-novel** `start-selling-jars-from-naruto` [Start Selling Jars from Naruto](https://mtl-novel.com/novel/start-selling-jars-from-naruto/) — catalog
+- **mtl-novel** `uchihas-double-pupil-sharingan-exterminates-the-clan-and-suppresses-itachi` [Uchiha’s Double Pupil Sharingan, Exterminates the Clan and Suppresses Itachi](https://mtl-novel.com/novel/uchihas-double-pupil-sharingan-exterminates-the-clan-and-suppresses-itachi/) — catalog
+- **mtl-novel** `start-learning-magic-at-hogwarts` [Start Learning Magic at Hogwarts](https://mtl-novel.com/novel/start-learning-magic-at-hogwarts/) — catalog
+- **mtl-novel** `i-came-to-the-wizard-world-while-cultivating-immortality` [I Came to the Wizard World While Cultivating Immortality](https://mtl-novel.com/novel/i-came-to-the-wizard-world-while-cultivating-immortality/) — catalog
+- **mtl-novel** `konoha-i-uzumaki-hokage-possess-heavenly-comprehension` [Konoha: I, Uzumaki Hokage, Possess Heavenly Comprehension](https://mtl-novel.com/novel/konoha-i-uzumaki-hokage-possess-heavenly-comprehension/) — catalog
+- **mtl-novel** `a-certain-marvel-super-player` [A Certain Marvel Super Player](https://mtl-novel.com/novel/a-certain-marvel-super-player/) — catalog
