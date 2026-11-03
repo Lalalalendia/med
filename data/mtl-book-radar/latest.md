@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-02T09:55:43+00:00
+Run: 2026-11-03T10:01:30+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-02T09:55:43+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `112616` [Magic School: Malfoy Couldn't Possibly Be a Beautiful Girl](https://wtr-lab.com/en/novel/112616/magic-school-malfoy-couldnt-possibly-be-a-beautiful-girl) — catalog
-- **wtr-lab** `112675` [Element World: Picked Up by Columbina, No Escape Now](https://wtr-lab.com/en/novel/112675/element-world-picked-up-by-columbina-no-escape-now) — catalog
-- **wtr-lab** `112681` [Chosen by the Primordial Gods: Starting by Refining Emperor Jun and Taiyi](https://wtr-lab.com/en/novel/112681/chosen-by-the-primordial-gods-starting-by-refining-emperor-jun-and-taiyi) — catalog
-- **wtr-lab** `112571` [American Entertainment Stars Shine Brightly](https://wtr-lab.com/en/novel/112571/american-entertainment-stars-shine-brightly) — catalog
-- **wtr-lab** `112684` [Full-time Mage: The System Asked Me to Guide the Fire and Thunder System](https://wtr-lab.com/en/novel/112684/full-time-mage-the-system-asked-me-to-guide-the-fire-and-thunder-system) — catalog
-- **wtr-lab** `112557` [Pirates: Injected with the Devil Serum, the King Returns!](https://wtr-lab.com/en/novel/112557/pirates-injected-with-the-devil-serum-the-king-returns) — catalog
-- **wtr-lab** `112622` [Date a Live: Firefly Journey, Light and Shadow of the Stars](https://wtr-lab.com/en/novel/112622/date-a-live-firefly-journey-light-and-shadow-of-the-stars) — catalog
-- **wtr-lab** `112678` [Re: Zero - the Strongest Journey Begins at the Sage's Tower](https://wtr-lab.com/en/novel/112678/re-zero-the-strongest-journey-begins-at-the-sages-tower) — catalog
-- **wtr-lab** `112677` [Unparalleled Comprehension: I, the Burning Lamp, Forge the Mythical Great Luo](https://wtr-lab.com/en/novel/112677/unparalleled-comprehension-i-the-burning-lamp-forge-the-mythical-great-luo) — catalog
-- **wtr-lab** `112596` [Soul Land: The Phoenix Fire God](https://wtr-lab.com/en/novel/112596/soul-land-the-phoenix-fire-god) — catalog
-- **mtl-novel** `marvel-my-talent-is-mind-control` [Marvel: My Talent is Mind Control](https://mtl-novel.com/novel/marvel-my-talent-is-mind-control/) — catalog
-- **mtl-novel** `uchiha-orphan-so-what-if-im-ruthless` [Uchiha Orphan, So What If I’m Ruthless?](https://mtl-novel.com/novel/uchiha-orphan-so-what-if-im-ruthless/) — catalog
-- **mtl-novel** `survival-for-all-i-am-the-minecraft-magician` [Survival for All: I am the Minecraft Magician](https://mtl-novel.com/novel/survival-for-all-i-am-the-minecraft-magician/) — catalog
-- **mtl-novel** `douluo-dalu-my-simulation-system-lets-me-conquer-the-heavens-why-should-i-ever-bow-to-tang-san` [Douluo Dalu: My Simulation System Lets Me Conquer the Heavens, Why Should I Ever Bow to Tang San?](https://mtl-novel.com/novel/douluo-dalu-my-simulation-system-lets-me-conquer-the-heavens-why-should-i-ever-bow-to-tang-san/) — catalog
-- **mtl-novel** `start-selling-jars-from-naruto` [Start Selling Jars from Naruto](https://mtl-novel.com/novel/start-selling-jars-from-naruto/) — catalog
-- **mtl-novel** `uchihas-double-pupil-sharingan-exterminates-the-clan-and-suppresses-itachi` [Uchiha’s Double Pupil Sharingan, Exterminates the Clan and Suppresses Itachi](https://mtl-novel.com/novel/uchihas-double-pupil-sharingan-exterminates-the-clan-and-suppresses-itachi/) — catalog
-- **mtl-novel** `start-learning-magic-at-hogwarts` [Start Learning Magic at Hogwarts](https://mtl-novel.com/novel/start-learning-magic-at-hogwarts/) — catalog
-- **mtl-novel** `i-came-to-the-wizard-world-while-cultivating-immortality` [I Came to the Wizard World While Cultivating Immortality](https://mtl-novel.com/novel/i-came-to-the-wizard-world-while-cultivating-immortality/) — catalog
-- **mtl-novel** `konoha-i-uzumaki-hokage-possess-heavenly-comprehension` [Konoha: I, Uzumaki Hokage, Possess Heavenly Comprehension](https://mtl-novel.com/novel/konoha-i-uzumaki-hokage-possess-heavenly-comprehension/) — catalog
-- **mtl-novel** `a-certain-marvel-super-player` [A Certain Marvel Super Player](https://mtl-novel.com/novel/a-certain-marvel-super-player/) — catalog
+- **wtr-lab** `109986` [Dragon Son-in-law: Revealing His Identity](https://wtr-lab.com/en/novel/109986/dragon-son-in-law-revealing-his-identity) — catalog
+- **wtr-lab** `112844` [The Goddess My Brother Secretly Loves Likes Me](https://wtr-lab.com/en/novel/112844/the-goddess-my-brother-secretly-loves-likes-me) — catalog
+- **wtr-lab** `112962` [Soul Land: Shadow Soul Land](https://wtr-lab.com/en/novel/112962/soul-land-shadow-soul-land) — catalog
+- **wtr-lab** `112887` [Turning Into a Pink-haired Girl is All About Life](https://wtr-lab.com/en/novel/112887/turning-into-a-pink-haired-girl-is-all-about-life) — catalog
+- **wtr-lab** `112914` [My Identity As a Ten-generation Emperor Has Been Exposed, and Spiritual Energy is Reviving](https://wtr-lab.com/en/novel/112914/my-identity-as-a-ten-generation-emperor-has-been-exposed-and-spiritual-energy-is-reviving) — catalog
+- **wtr-lab** `112945` [Quick Transmigration: The Cunning Supporting Actress Steals the Male Lead for Herself](https://wtr-lab.com/en/novel/112945/quick-transmigration-the-cunning-supporting-actress-steals-the-male-lead-for-herself) — catalog
+- **wtr-lab** `112964` [Pirates: Barrett's Ghost Brother, Creating the Strongest Beast Pirates](https://wtr-lab.com/en/novel/112964/pirates-barretts-ghost-brother-creating-the-strongest-beast-pirates) — catalog
+- **wtr-lab** `112981` [Pirates: Let World Government Continue for Eight Hundred Years](https://wtr-lab.com/en/novel/112981/pirates-let-world-government-continue-for-eight-hundred-years) — catalog
+- **wtr-lab** `112872` [Love, Heroic Spirits, and Magicians](https://wtr-lab.com/en/novel/112872/love-heroic-spirits-and-magicians) — catalog
+- **wtr-lab** `112969` [After Being Bought by the Maid, the Lifespan Theory System is Here?](https://wtr-lab.com/en/novel/112969/after-being-bought-by-the-maid-the-lifespan-theory-system-is-here) — catalog
+- **mtl-novel** `the-villain-who-traveled-to-the-book-at-the-beginning-forced-the-protagonists-mother-to-give-birth-to-a-child` [The Villain Who Traveled to the Book at the Beginning Forced the Protagonist’s Mother to Give Birth to a Child](https://mtl-novel.com/novel/the-villain-who-traveled-to-the-book-at-the-beginning-forced-the-protagonists-mother-to-give-birth-to-a-child/) — catalog
+- **mtl-novel** `perfect-world-i-the-stone-emperor-have-offspring-that-are-infinitely-enhanced` [Perfect World: I, the Stone Emperor, Have Offspring That are Infinitely Enhanced](https://mtl-novel.com/novel/perfect-world-i-the-stone-emperor-have-offspring-that-are-infinitely-enhanced/) — catalog
+- **mtl-novel** `fantasy-family-investment-building-the-worlds-no-1-clan` [Fantasy: Family Investment, Building the World’s No. 1 Clan!](https://mtl-novel.com/novel/fantasy-family-investment-building-the-worlds-no-1-clan/) — catalog
+- **mtl-novel** `invincible-mad-jaguar-leopard` [Invincible Mad Jaguar/leopard](https://mtl-novel.com/novel/invincible-mad-jaguar-leopard/) — catalog
+- **mtl-novel** `marvel-the-dragon-with-kryptonian-blood-in-the-opening` [Marvel: The Dragon with Kryptonian Blood in the Opening](https://mtl-novel.com/novel/marvel-the-dragon-with-kryptonian-blood-in-the-opening/) — catalog
+- **mtl-novel** `the-development-of-the-world-of-mingke` [The Development of the World of Mingke](https://mtl-novel.com/novel/the-development-of-the-world-of-mingke/) — catalog
+- **mtl-novel** `naruto-the-beginning-of-the-eternal-eye` [Naruto : The Beginning of the Eternal Eye](https://mtl-novel.com/novel/naruto-the-beginning-of-the-eternal-eye/) — catalog
+- **mtl-novel** `travel-through-myriad-worlds-starting-with-obtaining-the-marvel-ten-rings` [Travel Through Myriad Worlds, Starting with Obtaining the Marvel Ten Rings](https://mtl-novel.com/novel/travel-through-myriad-worlds-starting-with-obtaining-the-marvel-ten-rings/) — catalog
+- **mtl-novel** `forcing-me-to-leave-the-team-backhand-contract-with-a-golden-legend-soft-girl` [Forcing Me to Leave the Team? Backhand Contract with a Golden Legend Soft Girl](https://mtl-novel.com/novel/forcing-me-to-leave-the-team-backhand-contract-with-a-golden-legend-soft-girl/) — catalog
+- **mtl-novel** `rebuild-the-land-of-whirlpools-start-with-a-massive-army-of-the-thirteen-guardian-soldiers` [Rebuild the Land of Whirlpools, Start with a Massive Army of the Thirteen Guardian Soldiers](https://mtl-novel.com/novel/rebuild-the-land-of-whirlpools-start-with-a-massive-army-of-the-thirteen-guardian-soldiers/) — catalog
