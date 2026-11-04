@@ -55,7 +55,7 @@ def get_soup(session: requests.Session, url: str) -> BeautifulSoup:
     return soup
 
 
-def build_catalog(session: requests.Session) -> dict[int, dict]:
+def build_catalog(session: requests.Session, min_chapter: int = 1, max_chapter: int = 855) -> dict[int, dict]:
     soup = get_soup(session, BOOK_URL)
     catalog: dict[int, dict] = {}
     for a in soup.find_all("a", href=True):
@@ -71,6 +71,8 @@ def build_catalog(session: requests.Session) -> dict[int, dict]:
         ordinal = source_no
         if source_no == 853 and "大天尊" in title and "大结局" in title:
             ordinal = 855  # Suduguu's misnumbered finale; official original is #855.
+        if not min_chapter <= ordinal <= max_chapter:
+            continue  # Historical numbering conflicts outside the requested range are irrelevant.
         item = {"chapter": ordinal, "source_number": source_no,
                 "title": title, "url": link}
         if ordinal in catalog and catalog[ordinal]["url"] != link:
@@ -175,7 +177,7 @@ def main() -> int:
     raw = folder / "raw"
     raw.mkdir(parents=True, exist_ok=True)
     session = make_session()
-    catalog = build_catalog(session)
+    catalog = build_catalog(session, args.start, args.end)
     required = set(range(args.start, args.end + 1))
     absent = required - catalog.keys()
     manifest = []
