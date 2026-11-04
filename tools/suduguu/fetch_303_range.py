@@ -91,41 +91,25 @@ def normalize_text(text: str) -> list[str]:
 
 
 def extract_page(soup: BeautifulSoup, source_number: int, title: str) -> str:
-    selectors = ("#chaptercontent", "#chapter-content", "#content",
-                 ".chapter-content", ".chapter_content", ".read-content",
-                 ".reading-content", ".content", ".article-content",
-                 ".txtnav", ".novel-content", "article", "main")
-    options = []
-    for selector in selectors:
-        for node in soup.select(selector):
-            part = BeautifulSoup(str(node), "html.parser")
-            for bad in part.select("script,style,noscript,iframe,svg,nav,header,footer,form,button,aside"):
-                bad.decompose()
-            lines = normalize_text(part.get_text("\n", strip=True))
-            if not lines:
-                continue
-            heading = f"第{source_number}章"
-            header_positions = [i for i, line in enumerate(lines)
-                                if line.startswith(heading) and (title in line or len(line) < 80)]
-            if header_positions:
-                lines = lines[header_positions[-1] + 1:]
-            if lines and title and lines[0] == title:
-                lines = lines[1:]
-            cleaned = []
-            for line in lines:
-                if line in STOP or line.startswith("相关小说"):
-                    break
-                if line not in BAD and line != BOOK_NAME:
-                    cleaned.append(line)
-            body = "\n\n".join(cleaned).strip()
-            if body:
-                options.append((len(body), selector, body))
-    if not options:
-        raise ValueError("No readable chapter text in page selectors")
-    options.sort(key=lambda entry: entry[0], reverse=True)
-    # Prefer a concrete content node; main/article can include navigation.
-    specialized = [entry for entry in options if entry[1] not in {"main", "article"}]
-    _, _, body = max(specialized or options, key=lambda entry: entry[0])
+    """Use the confirmed story container, never the body or related-books sidebar."""
+    containers = soup.select("div.container > div.con")
+    if len(containers) != 1:
+        raise ValueError(f"Expected 1 story container, found {len(containers)}")
+    paragraphs = containers[0].find_all("p", recursive=False)
+    if len(paragraphs) < 3:
+        raise ValueError(f"Expected multiple story paragraphs, found {len(paragraphs)}")
+    lines = []
+    for paragraph in paragraphs:
+        item = paragraph.get_text(" ", strip=True)
+        item = re.sub(r"[\t\u00a0 ]+", " ", item).strip()
+        if item:
+            lines.append(item)
+    body = "\n\n".join(lines)
+    cjk_count = len(re.findall(r"[\u3400-\u9fff]", body))
+    if len(body) < 100 or cjk_count < 65:
+        raise ValueError(f"Suspiciously short page, total={len(body)}, CJK={cjk_count}")
+    if "第" + str(source_number) + "章" in body[:100] and title in body[:100]:
+        raise ValueError("Chapter heading leaked into extracted body")
     return body
 
 
@@ -150,6 +134,7 @@ def fetch_chapter(session: requests.Session, item: dict, delay: float) -> tuple[
     visited: set[str] = set()
     parts = []
     links = []
+    page_hashes: set[str] = set()
     for part_number in range(1, 41):
         if url in visited:
             raise ValueError("Pagination loop")
@@ -158,6 +143,10 @@ def fetch_chapter(session: requests.Session, item: dict, delay: float) -> tuple[
         body = extract_page(soup, item["source_number"], item["title"])
         if len(body) < 100:
             raise ValueError(f"Unexpected short page {len(body)} chars: {url}")
+        body_hash = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        if body_hash in page_hashes:
+            raise ValueError(f"Repeated page content at {url}")
+        page_hashes.add(body_hash)
         parts.append(body)
         links.append(url)
         next_url = next_part(soup, item["url"], part_number)
@@ -168,7 +157,7 @@ def fetch_chapter(session: requests.Session, item: dict, delay: float) -> tuple[
     else:
         raise ValueError("Exceeded 40 pages for a single chapter")
     full = "\n\n".join(parts)
-    if len(full) < 400:
+    if len(full) < 550:
         raise ValueError(f"Unexpected short chapter {len(full)} chars: {item['chapter']}")
     return full, links
 
