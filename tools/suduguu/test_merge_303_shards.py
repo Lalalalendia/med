@@ -23,6 +23,7 @@ class Merge303Tests(unittest.TestCase):
             "source_number": 650,
             "title": "父凭子贵",
             "url": SOURCE + "3982179.html",
+            "canonical_url": "https://www.qidian.com/chapter/1045561279/901522769/",
             "pages": [SOURCE + "3982179.html", SOURCE + "3982179-2.html"],
             "page_count": 2,
             "chars": len(self.body),
@@ -40,7 +41,7 @@ class Merge303Tests(unittest.TestCase):
         (self.shard / "failures.json").write_text("[]\n", encoding="utf-8")
         (self.shard / "raw" / "650.txt").write_text(
             "Chapter: 650\nCN-Title: 第650章 父凭子贵\n"
-            f"Source: {self.item['url']}\nPage count: 2\n\n{self.body}\n", encoding="utf-8")
+            f"Source: {self.item['url']}\nCanonical-Index: {self.item['canonical_url']}\nPage count: 2\n\n{self.body}\n", encoding="utf-8")
 
     def test_merge_verified_single_shard(self):
         result = merge_shards(self.root, self.dest, 650, 650, 1)
