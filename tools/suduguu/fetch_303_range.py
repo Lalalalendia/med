@@ -14,6 +14,7 @@ import re
 import time
 from pathlib import Path
 from urllib.parse import urljoin
+import unicodedata
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,6 +22,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 BOOK_URL = "https://www.suduguu.com/303/"
+REFERENCE_URL = "https://www.xs8.cn/bookquery/fobpskdylwcl"
+OFFICIALLY_ABSENT = frozenset({697})
 BOOK_NAME = "百世修仙：我能固定天赋"
 AUTHOR = "牛顿不秃顶"
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129.0 Safari/537.36"
@@ -55,31 +58,82 @@ def get_soup(session: requests.Session, url: str) -> BeautifulSoup:
     return soup
 
 
-def build_catalog(session: requests.Session, min_chapter: int = 1, max_chapter: int = 855) -> dict[int, dict]:
-    soup = get_soup(session, BOOK_URL)
+def normalized_title(title: str) -> str:
+    """Compare source titles while ignoring punctuation and width."""
+    return "".join(c for c in unicodedata.normalize("NFKC", title) if c.isalnum())
+
+
+def reference_catalog(session: requests.Session, start: int, end: int) -> dict[int, dict]:
+    """Official numbered titles and Qidian links from an index replica."""
+    response = session.get(REFERENCE_URL, timeout=(15, 45))
+    response.raise_for_status()
+    soup = BeautifulSoup(response.content, "html.parser")
+    if not soup.title or BOOK_NAME not in soup.title.get_text(" ", strip=True):
+        raise ValueError("Canonical index title mismatch")
     catalog: dict[int, dict] = {}
     for a in soup.find_all("a", href=True):
         label = re.sub(r"\s+", " ", a.get_text(" ", strip=True)).strip()
         match = LABEL.fullmatch(label)
         if not match:
             continue
-        source_no = int(match.group(1))
-        title = match.group(2).strip()
-        link = urljoin(BOOK_URL, a["href"]).split("?", 1)[0]
-        if not CHAPTER_LINK.fullmatch(link):
+        n = int(match.group(1))
+        if not start <= n <= end:
             continue
-        ordinal = source_no
-        if source_no == 853 and "大天尊" in title and "大结局" in title:
-            ordinal = 855  # Suduguu's misnumbered finale; official original is #855.
-        if not min_chapter <= ordinal <= max_chapter:
-            continue  # Historical numbering conflicts outside the requested range are irrelevant.
-        item = {"chapter": ordinal, "source_number": source_no,
-                "title": title, "url": link}
-        if ordinal in catalog and catalog[ordinal]["url"] != link:
-            raise ValueError(f"Conflicting links for chapter {ordinal}: " +
-                             f"{catalog[ordinal]['url']} vs {link}")
-        catalog[ordinal] = item
+        url = urljoin(response.url, a["href"])
+        if not url.startswith("https://www.qidian.com/chapter/1045561279/"):
+            continue
+        title = match.group(2).strip()
+        if n in catalog and catalog[n]["title"] != title:
+            raise ValueError(f"Conflicting canonical chapter number {n}")
+        catalog[n] = {"title": title, "canonical_url": url}
+    required = set(range(start, end + 1)) - OFFICIALLY_ABSENT
+    missing = sorted(required - catalog.keys())
+    if missing:
+        raise ValueError(f"Canonical reference lacks published numbers: {missing}")
+    if any(n in catalog for n in OFFICIALLY_ABSENT):
+        raise ValueError("Canonical chapter 697 appeared; re-audit missing-number exception")
     return catalog
+
+
+def build_catalog(session: requests.Session, min_chapter: int = 650,
+                  max_chapter: int = 855) -> dict[int, dict]:
+    """Align canonical ordinals to source URLs by unique normalized titles.
+
+    Suduguu is offset by 1–2 chapters for parts of this book, and the finale
+    repeats source label 853. Never trust source number as canonical ordinal.
+    """
+    reference = reference_catalog(session, min_chapter, max_chapter)
+    soup = get_soup(session, BOOK_URL)
+    by_url: dict[str, dict] = {}
+    for a in soup.find_all("a", href=True):
+        text = re.sub(r"\s+", " ", a.get_text(" ", strip=True)).strip()
+        m = LABEL.fullmatch(text)
+        if not m:
+            continue
+        number, title = int(m.group(1)), m.group(2).strip()
+        url = urljoin(BOOK_URL, a["href"]).split("?", 1)[0]
+        if not CHAPTER_LINK.fullmatch(url):
+            continue
+        item = {"source_number": number, "source_title": title, "url": url}
+        if url in by_url and by_url[url] != item:
+            raise ValueError(f"Conflicting labels for one Suduguu URL: {url}")
+        by_url[url] = item
+    result = {}
+    seen_urls = set()
+    for n, ref in sorted(reference.items()):
+        candidates = [x for x in by_url.values()
+                      if normalized_title(x["source_title"]) == normalized_title(ref["title"])
+                      and abs(x["source_number"] - n) <= 5]
+        if len(candidates) != 1:
+            raise ValueError(f"Chapter {n} ({ref['title']}): expected one matching URL, "
+                             f"got {len(candidates)}")
+        chosen = candidates[0]
+        if chosen["url"] in seen_urls:
+            raise ValueError(f"Duplicate mapping to source URL for chapter {n}")
+        seen_urls.add(chosen["url"])
+        result[n] = {"chapter": n, "title": ref["title"],
+                     "canonical_url": ref["canonical_url"], **chosen}
+    return result
 
 
 def normalize_text(text: str) -> list[str]:
@@ -150,7 +204,7 @@ def fetch_chapter(session: requests.Session, item: dict, delay: float) -> tuple[
             raise ValueError("Pagination loop")
         visited.add(url)
         soup = get_soup(session, url)
-        body = extract_page(soup, item["source_number"], item["title"])
+        body = extract_page(soup, item["source_number"], item["source_title"])
         if len(body) < 100:
             raise ValueError(f"Unexpected short page {len(body)} chars: {url}")
         body_hash = hashlib.sha256(body.encode("utf-8")).hexdigest()
@@ -186,7 +240,7 @@ def main() -> int:
     raw.mkdir(parents=True, exist_ok=True)
     session = make_session()
     catalog = build_catalog(session, args.start, args.end)
-    required = set(range(args.start, args.end + 1))
+    required = set(range(args.start, args.end + 1)) - OFFICIALLY_ABSENT
     absent = required - catalog.keys()
     manifest = []
     failures = []
@@ -202,17 +256,21 @@ def main() -> int:
         try:
             body, pages = fetch_chapter(session, item, args.delay)
             filename = raw / f"{ordinal:03d}.txt"
-            source_heading = f"第{item['source_number']}章 {item['title']}"
+            source_heading = f"第{item['source_number']}章 {item['source_title']}"
             filename.write_text(
                 f"Chapter: {ordinal}\n"
-                f"CN-Title: {source_heading}\n"
+                f"CN-Title: 第{ordinal}章 {item['title']}\n"
+                f"Suduguu-Title: {source_heading}\n"
+                f"Canonical-Index: {item['canonical_url']}\n"
                 f"Source: {item['url']}\n"
                 f"Page count: {len(pages)}\n\n"
                 f"{body}\n", encoding="utf-8")
             manifest.append({
                 "chapter": ordinal,
                 "source_number": item["source_number"],
+                "source_title": item["source_title"],
                 "title": item["title"],
+                "canonical_url": item["canonical_url"],
                 "url": item["url"],
                 "pages": pages,
                 "page_count": len(pages),
@@ -251,12 +309,14 @@ def main() -> int:
     summary = [
         f"# {BOOK_NAME} — RAW {args.start}–{args.end}",
         f"Source: {BOOK_URL}",
-        f"Requested: {len(required)} numbered chapters",
+        f"Published in range: {len(required)} (canonical chapter 697 absent)",
         f"Collected: {len(manifest)}",
         f"Failures: {len(failures)}",
         f"Total source pages: {sum(item['page_count'] for item in manifest)}",
         f"Complete: {'YES' if not failures and len(manifest) == len(required) else 'NO'}",
         "",
+        "Canonical reference: https://www.xs8.cn/bookquery/fobpskdylwcl",
+        "Source numbering differs by 0–2; chapter 697 absent from canonical index.",
         "Chapter 855 on Suduguu is mislabelled '第853章 大天尊（大结局）';",
         "the verified original numbering is 855. All paginated chapter parts are included.",
         "",
