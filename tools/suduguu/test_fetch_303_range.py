@@ -97,6 +97,24 @@ class Suduguu303Tests(unittest.TestCase):
         }), 650, 650)
         self.assertEqual(set(catalog), {650})
 
+    def test_source_number_shift_does_not_shift_canonical_chapters(self):
+        source = (
+            f"<html><title>{BOOK_NAME}</title><body>"
+            '<a href="/303/3980075.html">第649章 阿依木</a>'
+            '<a href="/303/3982179.html">第650章 父凭子贵</a>'
+            '<a href="/303/3983858.html">第651章 人生赢家</a>'
+            "</body></html>"
+        )
+        reference = canonical_html([
+            (650, "阿依木"), (651, "父凭子贵"), (652, "人生赢家")
+        ])
+        catalog = build_catalog(DummySession({
+            BOOK_URL: source, REFERENCE_URL: reference}), 650, 652)
+        self.assertEqual({n: catalog[n]["source_number"] for n in catalog},
+                         {650: 649, 651: 650, 652: 651})
+        self.assertEqual(catalog[650]["title"], "阿依木")
+        self.assertEqual(catalog[652]["url"], BOOK_URL + "3983858.html")
+
     def test_canonical_unpublished_697_is_not_a_missing_chapter(self):
         source = (
             f"<html><title>{BOOK_NAME}</title><body>"
