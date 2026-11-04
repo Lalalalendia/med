@@ -115,3 +115,45 @@ jobs:
                       if matches:print('ALT_MATCH',url,n,matches,flush=True)
               except Exception as e:print('ALT_ERROR',url,type(e).__name__,str(e)[:250],flush=True)
           PY
+
+      - name: Reconcile all canonical 650-855 chapters against Suduguu titles
+        run: |
+          python - <<'PY'
+          import re, unicodedata, collections, requests
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          s=requests.Session()
+          s.headers['User-Agent']='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129 Safari/537.36'
+          def links(url):
+              r=s.get(url,timeout=45);r.raise_for_status()
+              o=[]
+              for a in BeautifulSoup(r.content,'html.parser').find_all('a',href=True):
+                  m=re.match(r'^第\s*(\d+)\s*章\s*(.+)$',a.get_text(' ',strip=True))
+                  if m: o.append((int(m.group(1)),m.group(2).strip(),urljoin(r.url,a['href'])))
+              return o
+          def norm(t):
+              return ''.join(x for x in unicodedata.normalize('NFKC',t) if x.isalnum())
+          ref=links('https://www.xs8.cn/bookquery/fobpskdylwcl')
+          source=links('https://www.suduguu.com/303/')
+          expected=set(range(650,856))
+          canonical={}
+          for n,t,u in ref:
+              if n in expected:
+                  if n in canonical and canonical[n][0]!=t:print('REF_CONFLICT',n,canonical[n][0],t,flush=True)
+                  canonical[n]=(t,u)
+          print('REF_MISSING',sorted(expected-set(canonical)),flush=True)
+          used=set()
+          matches={}
+          for n in sorted(canonical):
+              t,_=canonical[n]
+              candidates=[(sn,st,u) for sn,st,u in source if norm(st)==norm(t) and abs(sn-n)<=5 and u not in used]
+              candidates=list(dict((u,(sn,st,u)) for sn,st,u in candidates).values())
+              if len(candidates)==1:
+                  matches[n]=candidates[0];used.add(candidates[0][2])
+              else:print('MATCH_PROBLEM',n,t,candidates[:6],flush=True)
+          print('MATCH_TOTAL',len(matches),'EXPECTED',len(expected),'UNMATCHED',sorted(expected-set(matches)),flush=True)
+          offsets=collections.Counter(n-v[0] for n,v in matches.items())
+          print('OFFSETS',dict(offsets),flush=True)
+          for n in (650,651,652,659,660,720,723,724,740,750,760,769,770,771,772,773,774,800,851,852,853,854,855):
+              print('RECONCILED',n,canonical.get(n),matches.get(n),flush=True)
+          PY
