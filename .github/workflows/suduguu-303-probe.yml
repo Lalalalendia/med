@@ -67,6 +67,12 @@ jobs:
                       ln=len(tag.get_text(' ',strip=True))
                       if (ln>350 and len(own)<15) or tag.name.startswith('h'):
                           print('NODE',tag.name,'id',tag.get('id'),'class',tag.get('class'),'style',str(tag.get('style'))[:100],'length',ln,'direct_children',len(own),'hrefs',len(tag.find_all('a')),flush=True)
+              for j, root in enumerate(tree.select('div.container')[:2]):
+                  print('CONTAINER',number,j,'length',len(root.get_text(' ',strip=True)),flush=True)
+                  for child in root.find_all(True):
+                      depth=len(list(child.parents))-len(list(root.parents))
+                      if depth<=3:
+                          print('SUBNODE',number,j,'depth',depth,'tag',child.name,'id',child.get('id'),'class',child.get('class'),'chars',len(child.get_text(' ',strip=True)),'links',len(child.find_all('a')),flush=True)
               c=0
               cur=url
               while cur and c<16:
