@@ -68,6 +68,17 @@ class Suduguu303Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Conflicting links"):
             build_catalog(DummySession({BOOK_URL: catalog_html}))
 
+    def test_historical_conflict_outside_target_range_is_ignored(self):
+        catalog_html = (
+            f"<html><title>{BOOK_NAME}</title><body>"
+            '<a href="/303/1293236.html">第403章 历史记录</a>'
+            '<a href="/303/1407015.html">第403章 冲突条目</a>'
+            '<a href="/303/3982179.html">第650章 父凭子贵</a>'
+            "</body></html>"
+        )
+        catalog = build_catalog(DummySession({BOOK_URL: catalog_html}), 650, 650)
+        self.assertEqual(set(catalog), {650})
+
     def test_exact_story_container_not_navigation(self):
         paras = "<p>这是正文章节内容一段话，用来检查净化结果。</p>" * 9
         soup = BeautifulSoup(html_page(paras), "html.parser")
