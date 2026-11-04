@@ -106,12 +106,20 @@ def extract_page(soup: BeautifulSoup, source_number: int, title: str) -> str:
         item = re.sub(r"[\t\u00a0 ]+", " ", item).strip()
         if item:
             lines.append(item)
+    # Suduguu often duplicates the chapter heading as its first <p>.
+    # Strip only an exact heading (with optional part number), never story prose.
+    heading = re.compile(
+        rf"^第\\s*{source_number}\\s*章\\s*[:：]?\\s*{re.escape(title)}"
+        r"(?:[（(]\\d+[）)])?\\s*$"
+    )
+    if lines and heading.fullmatch(lines[0]):
+        lines.pop(0)
+    if lines and lines[0].startswith(f"第{source_number}章") and title in lines[0]:
+        raise ValueError("Unrecognized chapter heading within story paragraphs")
     body = "\n\n".join(lines)
     cjk_count = len(re.findall(r"[\u3400-\u9fff]", body))
     if len(body) < 100 or cjk_count < 65:
         raise ValueError(f"Suspiciously short page, total={len(body)}, CJK={cjk_count}")
-    if "第" + str(source_number) + "章" in body[:100] and title in body[:100]:
-        raise ValueError("Chapter heading leaked into extracted body")
     return body
 
 
