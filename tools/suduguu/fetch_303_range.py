@@ -109,8 +109,8 @@ def extract_page(soup: BeautifulSoup, source_number: int, title: str) -> str:
     # Suduguu often duplicates the chapter heading as its first <p>.
     # Strip only an exact heading (with optional part number), never story prose.
     heading = re.compile(
-        rf"^第\\s*{source_number}\\s*章\\s*[:：]?\\s*{re.escape(title)}"
-        r"(?:[（(]\\d+[）)])?\\s*$"
+        rf"^第\s*{source_number}\s*章\s*[:：]?\s*{re.escape(title)}"
+        r"(?:[（(]\d+[）)])?\s*$"
     )
     if lines and heading.fullmatch(lines[0]):
         lines.pop(0)
