@@ -1,0 +1,126 @@
+name: Suduguu 303 verified RAW 650-855
+on:
+  push:
+    branches:
+      - raw/suduguu-303-650-855
+    paths:
+      - ".github/workflows/suduguu-303-650-855.yml"
+      - "tools/suduguu/fetch_303_range.py"
+      - "tools/suduguu/merge_303_shards.py"
+      - "tools/suduguu/test_fetch_303_range.py"
+      - "tools/suduguu/test_merge_303_shards.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: suduguu-303-650-855-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Compile collectors and merger
+        run: python -m py_compile tools/suduguu/fetch_303_range.py tools/suduguu/merge_303_shards.py tools/suduguu/test_fetch_303_range.py tools/suduguu/test_merge_303_shards.py
+      - name: Run offline false-positive and integrity regressions
+        run: python -m unittest discover -s tools/suduguu -p "test_*303*.py" -v
+
+  fetch:
+    needs: regressions
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - {shard: a, start: 650, end: 701}
+          - {shard: b, start: 702, end: 753}
+          - {shard: c, start: 754, end: 805}
+          - {shard: d, start: 806, end: 855}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collect full Chinese text including all split pages
+        run: |
+          python tools/suduguu/fetch_303_range.py \
+            --start ${{ matrix.start }} \
+            --end ${{ matrix.end }} \
+            --delay 0.40 \
+            --out-dir out/shard-${{ matrix.shard }}
+      - name: Upload completed verified shard
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: suduguu-303-shard-${{ matrix.shard }}
+          path: out/shard-${{ matrix.shard }}/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Preserve failure receipts without claiming completion
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: suduguu-303-failures-${{ matrix.shard }}
+          path: |
+            out/shard-${{ matrix.shard }}/manifest.json
+            out/shard-${{ matrix.shard }}/failures.json
+            out/shard-${{ matrix.shard }}/summary.md
+          if-no-files-found: warn
+          retention-days: 14
+
+  verify:
+    needs: [regressions, fetch]
+    if: always() && needs.regressions.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Retrieve all verified shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: suduguu-303-shard-*
+          path: merged
+      - name: Reject incomplete corpus; build ZIP and verification record
+        run: |
+          python tools/suduguu/merge_303_shards.py \
+            --source-root merged --out-dir out/final \
+            --start 650 --end 855 --expected-shards 4
+      - name: Publish verification report
+        if: always()
+        run: |
+          if test -f out/final/summary.md; then cat out/final/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+          if test -f out/final/FAILED.md; then cat out/final/FAILED.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload complete verified RAW ZIP only on PASS
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: suduguu-303-cn-650-855-verified-${{ github.run_id }}
+          path: |
+            out/final/suduguu-303-cn-650-855.zip
+            out/final/verified.json
+            out/final/manifest.json
+            out/final/summary.md
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload partial verification report only on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: suduguu-303-verify-failure-${{ github.run_id }}
+          path: out/final/FAILED.md
+          if-no-files-found: warn
+          retention-days: 14
