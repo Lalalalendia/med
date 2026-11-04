@@ -11,7 +11,7 @@ Book: 百世修仙：我能固定天赋 (牛顿不秃顶).
 
 ## Reproducible collection
 
-GitHub Actions workflow: [Suduguu 303 verified RAW 650-855](../../../../.github/workflows/suduguu-303-650-855.yml). The collector is `tools/suduguu/fetch_303_range.py` and the 4-shard merge validator is `tools/suduguu/merge_303_shards.py`.
+GitHub Actions workflow: [Suduguu 303 verified RAW 650-855](https://github.com/Lalalalendia/med/blob/main/.github/workflows/suduguu-303-650-855.yml). The collector is `tools/suduguu/fetch_303_range.py` and the 4-shard merge validator is `tools/suduguu/merge_303_shards.py`.
 
 The Actions workflow fetches source HTML parts for each chapter and checks individual SHA-256 hashes. On full PASS the combined text, all individual TXT chapters, manifest, verification record and a ZIP are available as a downloadable **GitHub Actions artifact** for 14 days. Raw text is not committed into this public Git repository.
 
