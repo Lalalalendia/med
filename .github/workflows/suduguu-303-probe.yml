@@ -52,4 +52,29 @@ jobs:
                   nav=[(a.get_text(' ',strip=True)[:16],urljoin(u,a['href'])) for a in s.find_all('a',href=True) if '下' in a.get_text(' ',strip=True) and ('页' in a.get_text(' ',strip=True) or '頁' in a.get_text(' ',strip=True))]
                   print('PAGE_NEXT',n,nav[:8],flush=True)
                   print('CHINESE_CHARS',n,len(re.findall(r'[\u4e00-\u9fff]',s.get_text(' ',strip=True))),flush=True)
+          for number in (650,854):
+              url=next((u for n,u,t in items if n==number),None)
+              if not url:continue
+              response=S.get(url,timeout=35)
+              tree=BeautifulSoup(response.content,'html.parser')
+              print('STRUCTURE_START',number,flush=True)
+              for child in list(tree.body.children):
+                  if getattr(child,'name',None):
+                      print('BODY_CHILD',child.name,child.get('id'),child.get('class'),'length',len(child.get_text(' ',strip=True)), 'links',len(child.find_all('a')),flush=True)
+              for tag in tree.body.find_all(True):
+                  if tag.name in ('p','div','section','article','main','h1','h2','h3','dl','dd','font','span','table'):
+                      own=tag.find_all(['p','div','section','article','main','h1','h2','h3','dl','dd','font','span','table'],recursive=False)
+                      ln=len(tag.get_text(' ',strip=True))
+                      if (ln>350 and len(own)<15) or tag.name.startswith('h'):
+                          print('NODE',tag.name,'id',tag.get('id'),'class',tag.get('class'),'style',str(tag.get('style'))[:100],'length',ln,'direct_children',len(own),'hrefs',len(tag.find_all('a')),flush=True)
+              c=0
+              cur=url
+              while cur and c<16:
+                  r=S.get(cur,timeout=35)
+                  q=BeautifulSoup(r.content,'html.parser')
+                  nxt=[urljoin(cur,a.get('href','')) for a in q.find_all('a',href=True) if a.get_text(' ',strip=True) in ('下一页','下一頁')]
+                  print('PART',number,c+1,'url',cur,'html_len',len(r.content),'bodylen',len(q.body.get_text(' ',strip=True)),'next',nxt[:2],flush=True)
+                  cur=nxt[0] if nxt and nxt[0]!=cur else None
+                  c+=1
+              print('STRUCTURE_END',number,flush=True)
           PY
