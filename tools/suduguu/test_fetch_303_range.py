@@ -6,13 +6,14 @@ from unittest.mock import patch
 from bs4 import BeautifulSoup
 
 from fetch_303_range import (
-    BOOK_NAME, BOOK_URL, build_catalog, extract_page, fetch_chapter, get_soup, next_part,
+    BOOK_NAME, BOOK_URL, REFERENCE_URL, build_catalog, extract_page, fetch_chapter, get_soup, next_part,
 )
 
 
 class DummyResponse:
-    def __init__(self, html: str):
+    def __init__(self, html: str, url: str):
         self.content = html.encode("utf-8")
+        self.url = url
 
     def raise_for_status(self):
         return None
@@ -25,7 +26,7 @@ class DummySession:
     def get(self, url, timeout=None):
         if url not in self.pages:
             raise AssertionError(f"Unexpected request: {url}")
-        return DummyResponse(self.pages[url])
+        return DummyResponse(self.pages[url], url)
 
 
 def html_page(inner: str, next_link: str = "", number: int = 650,
@@ -42,42 +43,77 @@ def html_page(inner: str, next_link: str = "", number: int = 650,
     )
 
 
+def canonical_html(entries):
+    """Offline Qidian-indexed list with canonical chapter titles."""
+    links = "".join(
+        f'<a href="https://www.qidian.com/chapter/1045561279/{900000000+i}/">'
+        f'第{number}章 {title}</a>'
+        for i, (number, title) in enumerate(entries)
+    )
+    return f"<html><title>{BOOK_NAME} index</title><body>{links}</body></html>"
+
+
 class Suduguu303Tests(unittest.TestCase):
     def test_finale_misnumber_is_canonical_855(self):
-        catalog_html = (
+        source = (
             f"<html><title>{BOOK_NAME}</title><body>"
             '<a href="/303/4565858.html">第853章 超脱之力</a>'
             '<a href="/303/4565865.html">第854章 了结因果</a>'
             '<a href="/303/4610070.html">第853章 大天尊（大结局）</a>'
-            '<a href="/unrelated/3.html">第855章 错误</a>'
             "</body></html>"
         )
-        catalog = build_catalog(DummySession({BOOK_URL: catalog_html}))
+        canonical = canonical_html([
+            (853, "超脱之力"), (854, "了结因果"), (855, "大天尊（大结局）")
+        ])
+        catalog = build_catalog(DummySession({
+            BOOK_URL: source, REFERENCE_URL: canonical}), 853, 855)
         self.assertEqual(set(catalog), {853, 854, 855})
         self.assertEqual(catalog[855]["source_number"], 853)
         self.assertEqual(catalog[855]["url"], BOOK_URL + "4610070.html")
         self.assertEqual(catalog[853]["url"], BOOK_URL + "4565858.html")
 
-    def test_reject_conflicting_number_links(self):
-        catalog_html = (
+    def test_reject_ambiguous_same_title_urls(self):
+        source = (
             f"<html><title>{BOOK_NAME}</title><body>"
             '<a href="/303/1.html">第650章 父凭子贵</a>'
-            '<a href="/303/2.html">第650章 另一个</a>'
+            '<a href="/303/2.html">第651章 父凭子贵</a>'
             "</body></html>"
         )
-        with self.assertRaisesRegex(ValueError, "Conflicting links"):
-            build_catalog(DummySession({BOOK_URL: catalog_html}))
+        with self.assertRaisesRegex(ValueError, "expected one matching URL"):
+            build_catalog(DummySession({
+                BOOK_URL: source, REFERENCE_URL: canonical_html([(651, "父凭子贵")])
+            }), 651, 651)
 
     def test_historical_conflict_outside_target_range_is_ignored(self):
-        catalog_html = (
+        source = (
             f"<html><title>{BOOK_NAME}</title><body>"
             '<a href="/303/1293236.html">第403章 历史记录</a>'
             '<a href="/303/1407015.html">第403章 冲突条目</a>'
             '<a href="/303/3982179.html">第650章 父凭子贵</a>'
             "</body></html>"
         )
-        catalog = build_catalog(DummySession({BOOK_URL: catalog_html}), 650, 650)
+        catalog = build_catalog(DummySession({
+            BOOK_URL: source, REFERENCE_URL: canonical_html([(650, "父凭子贵")])
+        }), 650, 650)
         self.assertEqual(set(catalog), {650})
+
+    def test_canonical_unpublished_697_is_not_a_missing_chapter(self):
+        source = (
+            f"<html><title>{BOOK_NAME}</title><body>"
+            '<a href="/303/1.html">第695章 两脉围剿</a>'
+            '<a href="/303/2.html">第696章 布局</a>'
+            "</body></html>"
+        )
+        canonical = canonical_html([(696, "两脉围剿"), (698, "布局")])
+        catalog = build_catalog(DummySession({
+            BOOK_URL: source, REFERENCE_URL: canonical}), 696, 698)
+        self.assertEqual(set(catalog), {696, 698})
+
+    def test_refuses_missing_published_canonical_entry(self):
+        source = f"<html><title>{BOOK_NAME}</title><body></body></html>"
+        with self.assertRaisesRegex(ValueError, "Canonical reference lacks published"):
+            build_catalog(DummySession({
+                BOOK_URL: source, REFERENCE_URL: canonical_html([])}), 650, 650)
 
     def test_exact_story_container_not_navigation(self):
         paras = "<p>这是正文章节内容一段话，用来检查净化结果。</p>" * 9
@@ -131,7 +167,7 @@ class Suduguu303Tests(unittest.TestCase):
             body, urls = fetch_chapter(
                 DummySession(pages),
                 {"chapter": 650, "source_number": 650,
-                 "title": "父凭子贵", "url": start}, 0)
+                 "title": "父凭子贵", "source_title": "父凭子贵", "url": start}, 0)
         self.assertEqual(len(urls), 4)
         self.assertIn("1-0", body)
         self.assertIn("4-4", body)
@@ -148,7 +184,7 @@ class Suduguu303Tests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Repeated page content"):
                 fetch_chapter(DummySession(pages),
                               {"chapter": 650, "source_number": 650,
-                               "title": "父凭子贵", "url": start}, 0)
+                               "title": "父凭子贵", "source_title": "父凭子贵", "url": start}, 0)
 
     def test_reject_wrong_book(self):
         fake = DummySession({BOOK_URL: "<html><title>Different book</title></html>"})
