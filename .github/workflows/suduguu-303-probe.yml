@@ -84,3 +84,34 @@ jobs:
                   c+=1
               print('STRUCTURE_END',number,flush=True)
           PY
+      - name: Cross-check canonical chapter titles in other sources
+        run: |
+          python - <<'PY'
+          import re
+          import requests
+          from bs4 import BeautifulSoup
+          urls=[
+            'https://m.kudushu.org/book/1076685/',
+            'https://www.xs8.cn/bookquery/fobpskdylwcl',
+            'https://www.xiaoshuo.com.tw/883717/',
+            'https://www.hongxiu.com/bookquery/qbxamilwskyc'
+          ]
+          s=requests.Session()
+          s.headers['User-Agent']='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129 Safari/537.36'
+          for url in urls:
+              try:
+                  r=s.get(url,timeout=30); print('ALT_STATUS',url,r.status_code,'BYTES',len(r.content),'FINAL',r.url,flush=True)
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  print('ALT_TITLE',url,repr(soup.title.get_text(' ',strip=True)[:120] if soup.title else ''),flush=True)
+                  anchors=[]
+                  for a in soup.find_all('a',href=True):
+                      t=re.sub(r'\\s+',' ',a.get_text(' ',strip=True))
+                      m=re.search(r'第\\s*(\\d+)\\s*章\\s*(.+)',t)
+                      if m:
+                          anchors.append((int(m.group(1)),m.group(2).strip(),requests.compat.urljoin(r.url,a['href'])))
+                  print('ALT_LINKS',url,'count',len(anchors),'unique',len(set(x[0] for x in anchors)),'min',min((x[0] for x in anchors),default=None),'max',max((x[0] for x in anchors),default=None),flush=True)
+                  for n in (649,650,651,652,750,758,769,770,771,772,773,774,853,854,855):
+                      matches=[x for x in anchors if x[0]==n][:1]
+                      if matches:print('ALT_MATCH',url,n,matches,flush=True)
+              except Exception as e:print('ALT_ERROR',url,type(e).__name__,str(e)[:250],flush=True)
+          PY
