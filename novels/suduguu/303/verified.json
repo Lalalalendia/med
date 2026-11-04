@@ -1,0 +1,49 @@
+{
+  "title": "百世修仙：我能固定天赋",
+  "author": "牛顿不秃顶",
+  "source_url": "https://www.suduguu.com/303/",
+  "canonical_catalog_url": "https://www.xs8.cn/bookquery/fobpskdylwcl",
+  "canonical_book_url": "https://book.qidian.com/info/1045561279/",
+  "verified_at": "2026-11-05",
+  "start_chapter": 650,
+  "end_chapter": 855,
+  "published_chapter_count": 205,
+  "unpublished_canonical_numbers": [
+    697
+  ],
+  "source_html_pages": 820,
+  "verified_cjk_characters": 490024,
+  "ordered_chapter_hashes_sha256": "4e124be4e060ebbed513ee4944df1009ecef84d462e25e74323bd181e0157dbd",
+  "verification": {
+    "status": "PASS",
+    "first_verified_run": 41930697333,
+    "first_artifact_id": 13372325604,
+    "independent_verified_run": 41931112026,
+    "independent_artifact_id": 13371832834,
+    "chapter_hashes_match_across_runs": true,
+    "total_source_html_pages_match": true,
+    "total_cjk_characters_match": true,
+    "missing_published_chapters": 0,
+    "failed_chapters": 0,
+    "archive_format": "ZIP with combined.txt, chapters/, manifest.json, verified.json, summary.md",
+    "original_text_committed_to_git": false,
+    "artifact_retention_days": 14
+  },
+  "notes": [
+    "Suduguu chapter numbers are displaced by 0–2; each text was assigned the canonical number by unique Chinese title matching to a Qidian-linked index.",
+    "Canonical chapter 697 is absent from the Qidian-linked index and was not manufactured.",
+    "Final chapter 855 appears as chapter 853 on Suduguu; verified by title 大天尊（大结局）."
+  ],
+  "artifacts": [
+    {
+      "run_id": 41930697333,
+      "artifact_url": "https://github.com/Lalalalendia/med/actions/runs/41930697333/artifacts/13372325604",
+      "expires_at": "2026-11-18T23:06:34Z"
+    },
+    {
+      "run_id": 41931112026,
+      "artifact_url": "https://github.com/Lalalalendia/med/actions/runs/41931112026/artifacts/13371832834",
+      "expires_at": "2026-11-18T23:09:42Z"
+    }
+  ]
+}
