@@ -1,0 +1,55 @@
+name: Suduguu 303 HTML preflight
+on:
+  push:
+    branches: [raw/suduguu-303-650-855]
+    paths:
+      - ".github/workflows/suduguu-303-probe.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Inspect chapter structure without logging copyright text
+        run: |
+          python - <<'PY'
+          import re
+          import requests
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          S = requests.Session()
+          S.headers['User-Agent']='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129 Safari/537.36'
+          url='https://www.suduguu.com/303/'
+          r=S.get(url,timeout=35);print('CATALOG_STATUS',r.status_code,'SIZE',len(r.content),'URL',r.url,flush=True);r.raise_for_status()
+          soup=BeautifulSoup(r.content,'html.parser')
+          print('TITLE_OK','百世修仙' in (soup.title.get_text() if soup.title else ''),flush=True)
+          items=[]
+          for a in soup.find_all('a',href=True):
+              t=a.get_text(' ',strip=True)
+              m=re.match(r'^第\s*(\d+)\s*章',t)
+              u=urljoin(url,a['href'])
+              if m and '/303/' in u:items.append((int(m.group(1)),u,t))
+          print('NUMBERED_LINKS',len(items),'UNIQUE_URLS',len(set(x[1] for x in items)),'MIN',min((i[0] for i in items),default=0),'MAX',max((i[0] for i in items),default=0))
+          for k in (649,650,651,700,852,853,854,855):
+              rows=[i for i in items if i[0]==k]
+              print('CATALOG_ENTRY',k,[(u,t[:75]) for _,u,t in rows],flush=True)
+          for n in (650,651,853,854):
+              rows=[i for i in items if i[0]==n]
+              for _no,u,t in rows[:2]:
+                  r=S.get(u,timeout=35)
+                  s=BeautifulSoup(r.content,'html.parser')
+                  print('PAGE',n,'STATUS',r.status_code,'LEN',len(r.content),'TITLE',repr(s.title.get_text(' ',strip=True)[:95] if s.title else None),flush=True)
+                  for sel in ('#chaptercontent','#content','.content','.chapter-content','article','main','body'):
+                      els=s.select(sel)
+                      print('ELEMENT',n,sel,[(len(x.get_text(' ',strip=True)),x.name,x.get('id'),x.get('class')) for x in els[:2]],flush=True)
+                  nav=[(a.get_text(' ',strip=True)[:16],urljoin(u,a['href'])) for a in s.find_all('a',href=True) if '下' in a.get_text(' ',strip=True) and ('页' in a.get_text(' ',strip=True) or '頁' in a.get_text(' ',strip=True))]
+                  print('PAGE_NEXT',n,nav[:8],flush=True)
+                  print('CHINESE_CHARS',n,len(re.findall(r'[\u4e00-\u9fff]',s.get_text(' ',strip=True))),flush=True)
+          PY
