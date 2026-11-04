@@ -17,4 +17,15 @@ The Actions workflow fetches source HTML parts for each chapter and checks indiv
 
 Every source-page fragment must be verified; success means all 205 published chapters were acquired, no missing published ordinals, no duplicated text bodies, all canonical titles matched, and all recorded checks passed.
 
-An Actions link and the machine-readable verified record will be recorded after a complete successful execution. The presence of this README does not indicate that acquisition or validation succeeded.
+## Verified result — PASS (2026-11-05)
+
+The complete corpus was acquired twice independently. Both workflows reported **205/205 PASS**, **820 HTML source pages**, **490,024 CJK characters**, zero missing published chapters and the same ordered chapter-SHA-256 digest:
+
+`4e124be4e060ebbed513ee4944df1009ecef84d462e25e74323bd181e0157dbd`
+
+- [First verified run / ZIP](https://github.com/Lalalalendia/med/actions/runs/41930697333/artifacts/13372325604)
+- [Second independent verified run / ZIP](https://github.com/Lalalalendia/med/actions/runs/41931112026/artifacts/13371832834)
+- [Permanent machine-readable audit](verified.json)
+
+The ZIP artifacts include each original chapter, merged `combined.txt`, a manifest and a detailed verification report. Artifacts expire **2026-11-18**; rerun via the workflow to regenerate.
+
