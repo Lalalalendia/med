@@ -12,6 +12,7 @@ from pathlib import Path
 
 TITLE = "百世修仙：我能固定天赋"
 SOURCE = "https://www.suduguu.com/303/"
+OFFICIALLY_ABSENT = frozenset({697})
 
 
 def digest(data: str) -> str:
@@ -23,7 +24,7 @@ def merge_shards(root: Path, output: Path, start: int, end: int,
     manifests = sorted(root.glob("*/manifest.json"))
     if len(manifests) != expected_shards:
         raise ValueError(f"Expected {expected_shards} shard manifests, found {len(manifests)}")
-    expected = set(range(start, end + 1))
+    expected = set(range(start, end + 1)) - OFFICIALLY_ABSENT
     seen: dict[int, tuple[dict, Path]] = {}
     ranges: set[tuple[int, int]] = set()
     for manifest_path in manifests:
@@ -38,7 +39,7 @@ def merge_shards(root: Path, output: Path, start: int, end: int,
         failures = json.loads((parent / "failures.json").read_text(encoding="utf-8"))
         if failures:
             raise ValueError(f"Shard has {len(failures)} failures: {manifest_path}")
-        shard_expected = set(range(shard_range[0], shard_range[1] + 1))
+        shard_expected = set(range(shard_range[0], shard_range[1] + 1)) - OFFICIALLY_ABSENT
         contents = data["chapters"]
         if set(int(item["chapter"]) for item in contents) != shard_expected:
             raise ValueError(f"Shard incomplete: {manifest_path}")
@@ -56,6 +57,11 @@ def merge_shards(root: Path, output: Path, start: int, end: int,
                 raise ValueError(f"Wrong chapter header in {file}")
             if f"Source: {item['url']}\n" not in content:
                 raise ValueError(f"Missing source provenance in {file}")
+            canonical_url = item.get("canonical_url", "")
+            if not canonical_url.startswith("https://www.qidian.com/chapter/1045561279/"):
+                raise ValueError(f"Unverified canonical index URL for chapter {n}")
+            if f"Canonical-Index: {canonical_url}\n" not in content:
+                raise ValueError(f"Missing canonical chapter provenance in {file}")
             if "\n\n" not in content:
                 raise ValueError(f"Missing body delimiter in {file}")
             body = content.split("\n\n", 1)[1].rstrip("\n")
@@ -113,6 +119,7 @@ def merge_shards(root: Path, output: Path, start: int, end: int,
         "source_pages": pages_total,
         "verified_chinese_chars": cjk_total,
         "missing_chapters": [],
+        "unpublished_canonical_numbers": sorted(OFFICIALLY_ABSENT.intersection(range(start, end + 1))),
         "failed_chapters": [],
         "unique_chapter_hashes": len(set(hashes)),
         "ordered_chapter_sha256_digest": digest("\n".join(hashes)),
@@ -127,7 +134,8 @@ def merge_shards(root: Path, output: Path, start: int, end: int,
         f"- Chapters: {start}–{end}, **{len(expected)}/{len(expected)} PASS**\n"
         f"- Source HTML pages: {pages_total}\n"
         f"- Chinese body characters: {cjk_total}\n"
-        f"- Missing and failed chapters: **0**\n"
+        f"- Missing or failed *published* chapters: **0**\n"
+        f"- Canonical number 697 is absent from Qidian-indexed contents\n"
         f"- All chapter SHA-256 digests verified against original shard outputs\n"
         f"- Canonical finale: 855 (Suduguu displays the finale as 853)\n"
         f"- Ordered digest: {verified['ordered_chapter_sha256_digest']}\n",
