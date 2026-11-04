@@ -105,8 +105,8 @@ jobs:
                   print('ALT_TITLE',url,repr(soup.title.get_text(' ',strip=True)[:120] if soup.title else ''),flush=True)
                   anchors=[]
                   for a in soup.find_all('a',href=True):
-                      t=re.sub(r'\\s+',' ',a.get_text(' ',strip=True))
-                      m=re.search(r'第\\s*(\\d+)\\s*章\\s*(.+)',t)
+                      t=re.sub(r'\s+',' ',a.get_text(' ',strip=True))
+                      m=re.search(r'第\s*(\d+)\s*章\s*(.+)',t)
                       if m:
                           anchors.append((int(m.group(1)),m.group(2).strip(),requests.compat.urljoin(r.url,a['href'])))
                   print('ALT_LINKS',url,'count',len(anchors),'unique',len(set(x[0] for x in anchors)),'min',min((x[0] for x in anchors),default=None),'max',max((x[0] for x in anchors),default=None),flush=True)
