@@ -88,6 +88,15 @@ class Suduguu303Tests(unittest.TestCase):
         self.assertNotIn("下一章", result)
         self.assertEqual(len(result.split("\n\n")), 9)
 
+    def test_source_chapter_heading_paragraph_is_removed(self):
+        heading = "<p>第650章 父凭子贵</p>"
+        story = "<p>这是真正的小说正文，必须保留所有实质段落内容。</p>" * 10
+        soup = BeautifulSoup(html_page(heading + story), "html.parser")
+        body = extract_page(soup, 650, "父凭子贵")
+        self.assertFalse(body.startswith("第650章"))
+        self.assertEqual(len(body.split("\n\n")), 10)
+        self.assertIn("必须保留", body)
+
     def test_no_story_container_must_fail(self):
         soup = BeautifulSoup(f"<html><title>{BOOK_NAME}</title><body>"
                              + "<p>正文</p>" * 40 + "</body></html>", "html.parser")
