@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-04T09:49:06+00:00
+Run: 2026-11-05T09:49:05+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-04T09:49:06+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `113166` [Everyone Chooses Evolution, I Choose Spores to Produce Oxygen](https://wtr-lab.com/en/novel/113166/everyone-chooses-evolution-i-choose-spores-to-produce-oxygen) — catalog
-- **wtr-lab** `113178` [The Walking Dead: The Last of Us](https://wtr-lab.com/en/novel/113178/the-walking-dead-the-last-of-us) — catalog
-- **wtr-lab** `113184` [All Gods: At the Start, Choose Four Out of Nine Every Day!](https://wtr-lab.com/en/novel/113184/all-gods-at-the-start-choose-four-out-of-nine-every-day) — catalog
-- **wtr-lab** `113154` [Unknown Talent, My Beast Can Melt All Things](https://wtr-lab.com/en/novel/113154/unknown-talent-my-beast-can-melt-all-things) — catalog
-- **wtr-lab** `113223` [Awaken the Immortal Martial System, and Achieve Divine Martial Arts Prowess in a Chaotic World](https://wtr-lab.com/en/novel/113223/awaken-the-immortal-martial-system-and-achieve-divine-martial-arts-prowess-in-a-chaotic-world) — catalog
-- **wtr-lab** `113191` [Global Lords: If You Don't Give Me Barracks, Give Me Money](https://wtr-lab.com/en/novel/113191/global-lords-if-you-dont-give-me-barracks-give-me-money) — catalog
-- **wtr-lab** `112593` [Holy Maiden, I Truly Have to Enslave You](https://wtr-lab.com/en/novel/112593/holy-maiden-i-truly-have-to-enslave-you) — catalog
-- **wtr-lab** `113242` [Curse World: Turntable Simulation, Dump Truck Creates Su Nuo!](https://wtr-lab.com/en/novel/113242/curse-world-turntable-simulation-dump-truck-creates-su-nuo) — catalog
-- **wtr-lab** `113216` [I Can See the Attribute Panel When I'm Cultivating Immortality As a Miner](https://wtr-lab.com/en/novel/113216/i-can-see-the-attribute-panel-when-im-cultivating-immortality-as-a-miner) — catalog
-- **wtr-lab** `113290` [Damn It! How Did I Get a Headshot from Gin the Moment I Showed My Face?](https://wtr-lab.com/en/novel/113290/damn-it-how-did-i-get-a-headshot-from-gin-the-moment-i-showed-my-face) — catalog
-- **mtl-novel** `after-being-divorced-by-the-empress-i-took-away-a-million-times-my-cultivation` [After Being Divorced by the Empress, I Took Away a Million Times My Cultivation](https://mtl-novel.com/novel/after-being-divorced-by-the-empress-i-took-away-a-million-times-my-cultivation/) — catalog
-- **mtl-novel** `if-i-become-a-saint-the-immortal-official-will-call-me-to-raise-horses` [If I become a saint, the immortal official will call me to raise horses](https://mtl-novel.com/novel/if-i-become-a-saint-the-immortal-official-will-call-me-to-raise-horses/) — catalog
-- **mtl-novel** `summon-the-skeletons-to-farm-i-make-money-lying-down` [Summon The Skeletons To Farm, I Make Money Lying Down](https://mtl-novel.com/novel/summon-the-skeletons-to-farm-i-make-money-lying-down/) — catalog
-- **mtl-novel** `infinite-world-billions-of-times` [Infinite World Billions of Times](https://mtl-novel.com/novel/infinite-world-billions-of-times/) — catalog
-- **mtl-novel** `winter-lords-start-with-daily-intelligence` [Winter Lords: Start with Daily Intelligence](https://mtl-novel.com/novel/winter-lords-start-with-daily-intelligence/) — catalog
-- **mtl-novel** `im-a-born-lover-of-uchiha` [I’m a Born Lover of Uchiha](https://mtl-novel.com/novel/im-a-born-lover-of-uchiha/) — catalog
-- **mtl-novel** `naruto-people-at-the-ninja-school-can-become-stronger-by-teaching` [Naruto: People at the Ninja School Can Become Stronger by Teaching](https://mtl-novel.com/novel/naruto-people-at-the-ninja-school-can-become-stronger-by-teaching/) — catalog
-- **mtl-novel** `naruto-itachi-watch-closely-this-is-how-sasuke-uses-it` [Naruto: Itachi, Watch Closely, This is How Sasuke Uses It](https://mtl-novel.com/novel/naruto-itachi-watch-closely-this-is-how-sasuke-uses-it/) — catalog
-- **mtl-novel** `global-coming-farming-with-my-sister-in-law-in-the-end-times` [Global Coming: Farming with my sister-in-law in the end times](https://mtl-novel.com/novel/global-coming-farming-with-my-sister-in-law-in-the-end-times/) — catalog
-- **mtl-novel** `naruto-starts-from-the-otsutsuki-bloodline` [Naruto Starts from the Otsutsuki Bloodline](https://mtl-novel.com/novel/naruto-starts-from-the-otsutsuki-bloodline/) — catalog
+- **wtr-lab** `113387` [My Legend Spreads Everywhere After I Traveled the World](https://wtr-lab.com/en/novel/113387/my-legend-spreads-everywhere-after-i-traveled-the-world) — catalog
+- **wtr-lab** `113450` [Infinite Flow: Me, the Tavern Owner, Pay Up!](https://wtr-lab.com/en/novel/113450/infinite-flow-me-the-tavern-owner-pay-up) — catalog
+- **wtr-lab** `113391` [Longevity Martial Arts: Starting As a Menial Laborer, Endlessly Stacking Passive Abilities](https://wtr-lab.com/en/novel/113391/longevity-martial-arts-starting-as-a-menial-laborer-endlessly-stacking-passive-abilities) — catalog
+- **wtr-lab** `113321` [Reborn to Wed the War God Prince, Spoiled Beyond Belief!](https://wtr-lab.com/en/novel/113321/reborn-to-wed-the-war-god-prince-spoiled-beyond-belief) — catalog
+- **wtr-lab** `113479` [Courtyard House: Liu Yifei's Golden Touch After Getting Married](https://wtr-lab.com/en/novel/113479/courtyard-house-liu-yifeis-golden-touch-after-getting-married) — catalog
+- **wtr-lab** `113228` [Mad Emperor of the Ming Dynasty](https://wtr-lab.com/en/novel/113228/mad-emperor-of-the-ming-dynasty) — catalog
+- **wtr-lab** `113106` [The Ming Dynasty's Nanyang Resurgence](https://wtr-lab.com/en/novel/113106/the-ming-dynastys-nanyang-resurgence) — catalog
+- **wtr-lab** `113518` [Even If the Abyss Invades, the Need to Pass the Civil Service Exam to Get Ashore](https://wtr-lab.com/en/novel/113518/even-if-the-abyss-invades-the-need-to-pass-the-civil-service-exam-to-get-ashore) — catalog
+- **wtr-lab** `113428` [Ninja World: Boxing for Six Months, Starting Reward is the Tiger Heavenly Emperor](https://wtr-lab.com/en/novel/113428/ninja-world-boxing-for-six-months-starting-reward-is-the-tiger-heavenly-emperor) — catalog
+- **wtr-lab** `113432` [I'm a Villain, How Did I End Up in the Protagonist Chat Group?](https://wtr-lab.com/en/novel/113432/im-a-villain-how-did-i-end-up-in-the-protagonist-chat-group) — catalog
+- **mtl-novel** `quick-transmigration-i-went-crazy-in-the-short-drama-world` [Quick Transmigration: I Went Crazy in the Short Drama World](https://mtl-novel.com/novel/quick-transmigration-i-went-crazy-in-the-short-drama-world/) — catalog
+- **mtl-novel** `one-piece-outrageous-this-can-be-called-justice` [One Piece: Outrageous!! This Can Be Called Justice?!](https://mtl-novel.com/novel/one-piece-outrageous-this-can-be-called-justice/) — catalog
+- **mtl-novel** `i-rely-on-my-talent-to-avoid-danger-to-live-long` [I Rely on My Talent to Avoid Danger to Live Long](https://mtl-novel.com/novel/i-rely-on-my-talent-to-avoid-danger-to-live-long/) — catalog
+- **mtl-novel** `naruto-team-7-got-the-wrong-teacher-and-the-entire-ninja-world-lost-its-mind` [Naruto: Team 7 Got the Wrong Teacher and the Entire Ninja World Lost Its Mind](https://mtl-novel.com/novel/naruto-team-7-got-the-wrong-teacher-and-the-entire-ninja-world-lost-its-mind/) — catalog
+- **mtl-novel** `douluo-venom-martial-spirit-possessed-by-xiao-wu-at-the-beginning` [Douluo: Venom Martial Spirit, Possessed by Xiao Wu at the beginning](https://mtl-novel.com/novel/douluo-venom-martial-spirit-possessed-by-xiao-wu-at-the-beginning/) — catalog
+- **mtl-novel** `in-battle-through-the-heavens-i-started-as-a-master-of-the-laws` [In Battle Through the Heavens, I Started As a Master of the Laws](https://mtl-novel.com/novel/in-battle-through-the-heavens-i-started-as-a-master-of-the-laws/) — catalog
+- **mtl-novel** `i-fabricated-the-techniques-but-my-disciple-really-mastered-them` [I Fabricated the Techniques, but my disciple really mastered them?](https://mtl-novel.com/novel/i-fabricated-the-techniques-but-my-disciple-really-mastered-them/) — catalog
+- **mtl-novel** `become-a-martial-arts-god-you-can-add-points-by-watching` [Become a Martial Arts God, You can Add Points by Watching!](https://mtl-novel.com/novel/become-a-martial-arts-god-you-can-add-points-by-watching/) — catalog
+- **mtl-novel** `top-talent-game-upgrade` [Top talent, game upgrade](https://mtl-novel.com/novel/top-talent-game-upgrade/) — catalog
+- **mtl-novel** `e-class-is-the-weakest-my-clones-are-all-god-level` [E-class is the Weakest? My Clones are All God-level!](https://mtl-novel.com/novel/e-class-is-the-weakest-my-clones-are-all-god-level/) — catalog
