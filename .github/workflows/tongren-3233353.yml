@@ -25,7 +25,6 @@ on:
         type: boolean
 permissions:
   contents: read
-  actions: read
 jobs:
   structure:
     runs-on: ubuntu-latest
@@ -43,7 +42,7 @@ jobs:
       - name: Inspect HTML structure without downloading story text
         run: python -u tools/novel-ingest/tongren_3233353_probe.py
   collect:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     needs: structure
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -53,14 +52,6 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Recover 171 previously verified chapters from failed run
-        if: github.event_name == 'pull_request'
-        uses: actions/download-artifact@v4
-        with:
-          name: tongren-3233353-42287749578
-          run-id: 42287749578
-          github-token: ${{ github.token }}
-          path: out/tongren-3233353
       - name: Gather all requested accessible RAW chapters
         env:
           START: ${{ inputs.start || '1' }}
