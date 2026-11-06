@@ -1,0 +1,22 @@
+{
+  "book_id": "3233353",
+  "source": "https://m.tongrenxiaoshuo.com/b/3233353/cs/1",
+  "title": "基金會：徵召動漫角色，收容至高",
+  "author": "天榜777",
+  "verified_at_utc": "2026-11-06",
+  "status": "PASS",
+  "expected_chapters": 178,
+  "chapters_verified": 178,
+  "pages_verified": 711,
+  "missing": [],
+  "errors": [],
+  "combined_chars": 406050,
+  "combined_sha256": "f6038f11b997d0dd77567ccf6773f7212433b05209a2c92c698ea3f17307f046",
+  "run_id": 42290777705,
+  "artifact_id": 13538964066,
+  "run_url": "https://github.com/Lalalalendia/med/actions/runs/42290777705",
+  "artifact_url": "https://github.com/Lalalalendia/med/actions/runs/42290777705/artifacts/13538964066",
+  "raw_storage": "github_actions_artifact",
+  "raw_committed_to_git": false,
+  "artifact_expires_at_utc": "2026-11-20T20:44:38Z"
+}
