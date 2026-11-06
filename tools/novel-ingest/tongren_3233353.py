@@ -134,8 +134,10 @@ def split_page(soup,url):
     paragraphs=[p for p in paragraphs if p]
     content="\n".join(paragraphs)
     han=len(re.findall(r"[\u3400-\u9fff]",content))
-    if han<100 or len(content)<200:
-        raise ValueError("Chapter body too short; possible excerpt or template")
+    # Split pages can contain a short final paragraph. Full-chapter minimum
+    # length is checked only after every declared page has been assembled.
+    if han<10 or len(content)<25:
+        raise ValueError("Split page appears empty or truncated")
     if any(x.lower() in content.lower() for x in CHALLENGES):
         raise ValueError("Access gate embedded in chapter")
     next_pages=[]
@@ -177,6 +179,10 @@ def chapter(session,policy,entry,delay):
             raise ValueError("Repeated page or page count overflow")
         seen.add(url)
         page=read(session,policy,url,delay)
+        heading=page.title.get_text(" ",strip=True) if page.title else ""
+        m=re.search(r"第\s*(\d+)\s*章",heading)
+        if not m or int(m.group(1))!=entry["ordinal"]:
+            raise ValueError("Wrong chapter number in page title: "+heading[:100])
         body,next_url=split_page(page,url)
         if body in texts:
             raise ValueError("Duplicate split-page text")
@@ -184,8 +190,8 @@ def chapter(session,policy,entry,delay):
         pages.append(url)
         url=next_url
     full="\n\n".join(texts)
-    if not full:
-        raise ValueError("Empty chapter")
+    if len(full)<1000 or len(re.findall(r"[\u3400-\u9fff]",full))<500:
+        raise ValueError("Assembled chapter is incomplete")
     return full,pages
 
 
@@ -211,8 +217,36 @@ def run(args):
             raise ValueError("Empty selection")
         if not args.catalog_only:
             (out/"chapters").mkdir(exist_ok=True)
+            existing={}
+            if args.resume and (out/"manifest.json").exists():
+                old=json.loads((out/"manifest.json").read_text(encoding="utf-8"))
+                if old.get("source")!=ROOT or old.get("catalog")!=receipt["catalog"]:
+                    raise ValueError("Catalog changed; refusing unsafe resume")
+                for row in old.get("chapters",[]):
+                    ordinal=row.get("ordinal")
+                    if not isinstance(ordinal,int) or ordinal not in range(args.start,end+1):
+                        continue
+                    entry=entries[ordinal-1]
+                    if row.get("url")!=entry["url"] or row.get("title")!=entry["title"]:
+                        raise ValueError("Prior chapter source mismatch at "+str(ordinal))
+                    expected="chapters/%04d.txt" % ordinal
+                    if row.get("file")!=expected:
+                        raise ValueError("Prior chapter path mismatch at "+str(ordinal))
+                    content_path=out/expected
+                    if not content_path.is_file():
+                        raise ValueError("Prior chapter file missing at "+str(ordinal))
+                    data=content_path.read_bytes()
+                    if hashlib.sha256(data).hexdigest()!=row.get("sha256"):
+                        raise ValueError("Prior chapter hash mismatch at "+str(ordinal))
+                    if ordinal in existing:
+                        raise ValueError("Duplicate prior chapter "+str(ordinal))
+                    existing[ordinal]=row
+                print("RESUME",len(existing),"verified existing chapters",flush=True)
             for entry in selected:
                 n=entry["ordinal"]
+                if n in existing:
+                    receipt["chapters"].append(existing[n])
+                    continue
                 try:
                     content,pages=chapter(session,policy,entry,args.delay)
                     value=entry["title"]+"\nSource: "+entry["url"]+"\n\n"+content+"\n"
@@ -227,6 +261,7 @@ def run(args):
                     receipt["errors"].append({"ordinal":n,"url":entry["url"],"error":str(exc)})
                     print("FAIL",n,str(exc),flush=True)
             if len(receipt["chapters"])==len(selected) and not receipt["errors"]:
+                receipt["chapters"].sort(key=lambda row:row["ordinal"])
                 combined="\n\n".join((out/x["file"]).read_text(encoding="utf-8") for x in receipt["chapters"])
                 (out/"combined.txt").write_text(combined,encoding="utf-8")
                 with zipfile.ZipFile(out/"chapters.zip","w",compression=zipfile.ZIP_DEFLATED) as archive:
@@ -252,4 +287,5 @@ if __name__=="__main__":
     ap.add_argument("--delay",type=float,default=1.0)
     ap.add_argument("--output",default="out/tongren-3233353")
     ap.add_argument("--catalog-only",action="store_true")
+    ap.add_argument("--resume",action="store_true",help="Verify and reuse existing chapter files and manifest")
     raise SystemExit(run(ap.parse_args()))
