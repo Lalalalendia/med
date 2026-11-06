@@ -80,7 +80,7 @@ def robots(session):
 
 
 def catalog(session,policy,delay):
-    pending=[ROOT,ROOT+"/cs/1"]
+    pending=[ROOT+"/cs/1"]
     visited=set()
     chapters={}
     while pending:
@@ -109,7 +109,13 @@ def catalog(session,policy,delay):
             chapters.setdefault(href,title)
     if len(chapters)<1:
         raise ValueError("No chapter links discovered")
-    return [{"ordinal":n,"url":url,"title":title} for n,(url,title) in enumerate(chapters.items(),1)]
+    result=[]
+    for n,(url,title) in enumerate(chapters.items(),1):
+        m=re.search(r"第\s*(\d+)\s*章",title)
+        if not m or int(m.group(1))!=n:
+            raise ValueError("Catalog order mismatch at %s: %s" % (n,title))
+        result.append({"ordinal":n,"url":url,"title":title})
+    return result
 
 
 def split_page(soup,url):
@@ -147,6 +153,17 @@ def split_page(soup,url):
             next_pages.append(candidate_url)
     if len(set(next_pages))>1:
         raise ValueError("Ambiguous next page URL")
+    title=soup.title.get_text(" ",strip=True) if soup.title else ""
+    page_match=re.search(r"\((\d+)\s*/\s*(\d+)\)",title)
+    if not page_match:
+        raise ValueError("Missing multipart page count: " + title[:100])
+    shown,total=map(int,page_match.groups())
+    if shown!=current or not 1<=total<=30:
+        raise ValueError("Invalid multipart page number")
+    if current<total and not next_pages:
+        raise ValueError("Missing continuation for page %s/%s" % (current,total))
+    if current==total and next_pages:
+        raise ValueError("Continuation beyond declared total")
     return content, (next_pages[0] if next_pages else None)
 
 
