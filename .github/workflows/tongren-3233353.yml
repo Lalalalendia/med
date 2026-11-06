@@ -1,0 +1,76 @@
+name: Tongren 3233353 verified RAW
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/tongren-3233353.yml"
+      - "tools/novel-ingest/tongren_3233353.py"
+      - "tools/novel-ingest/tongren_3233353_probe.py"
+      - "tools/novel-ingest/test_tongren_3233353.py"
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "First chapter ordinal"
+        required: true
+        default: "1"
+        type: string
+      end:
+        description: "Last chapter ordinal, 0 = end of catalog"
+        required: true
+        default: "0"
+        type: string
+      catalog_only:
+        description: "Inspect index without downloading chapters"
+        required: true
+        default: false
+        type: boolean
+permissions:
+  contents: read
+jobs:
+  structure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Validate parser syntax
+        run: python -m py_compile tools/novel-ingest/tongren_3233353.py tools/novel-ingest/tongren_3233353_probe.py
+      - name: Offline parser regression tests
+        run: python -m unittest discover -s tools/novel-ingest -p 'test_tongren_3233353.py' -v
+      - name: Inspect HTML structure without downloading story text
+        run: python -u tools/novel-ingest/tongren_3233353_probe.py
+  collect:
+    if: github.event_name == 'workflow_dispatch'
+    needs: structure
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Gather all requested accessible RAW chapters
+        env:
+          START: ${{ inputs.start || '1' }}
+          END: ${{ inputs.end || '0' }}
+          CATALOG_ONLY: ${{ inputs.catalog_only || 'false' }}
+        run: |
+          set -euo pipefail
+          extra=()
+          if [ "$CATALOG_ONLY" = "true" ]; then extra+=(--catalog-only); fi
+          python -u tools/novel-ingest/tongren_3233353.py --start "$START" --end "$END" --delay 1.0 --output out/tongren-3233353 --resume "${extra[@]}"
+      - name: Publish verified coverage report
+        if: always()
+        run: |
+          if test -f out/tongren-3233353/summary.md; then cat out/tongren-3233353/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed RAW or failure manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tongren-3233353-${{ github.run_id }}
+          path: out/tongren-3233353/
+          retention-days: 14
+          if-no-files-found: warn
