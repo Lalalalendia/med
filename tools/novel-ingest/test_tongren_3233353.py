@@ -20,7 +20,7 @@ def page(n,part,total,text,next_part=None):
 class TongrenTests(unittest.TestCase):
     def test_short_final_page_is_accepted(self):
         url=mod.ROOT+"/c/18848634?page=4"
-        tiny="本章終。" * 6
+        tiny="本章終。" * 8
         text,next_url=mod.split_page(page(1,4,4,tiny),url)
         self.assertEqual(text,tiny)
         self.assertIsNone(next_url)
