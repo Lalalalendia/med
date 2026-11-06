@@ -39,7 +39,7 @@ jobs:
       - name: Inspect HTML structure without downloading story text
         run: python -u tools/novel-ingest/tongren_3233353_probe.py
   collect:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
     needs: structure
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -51,9 +51,9 @@ jobs:
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
       - name: Gather all requested accessible RAW chapters
         env:
-          START: ${{ inputs.start }}
-          END: ${{ inputs.end }}
-          CATALOG_ONLY: ${{ inputs.catalog_only }}
+          START: ${{ inputs.start || '1' }}
+          END: ${{ inputs.end || '0' }}
+          CATALOG_ONLY: ${{ inputs.catalog_only || 'false' }}
         run: |
           set -euo pipefail
           extra=()
