@@ -5,6 +5,7 @@ on:
       - ".github/workflows/tongren-3233353.yml"
       - "tools/novel-ingest/tongren_3233353.py"
       - "tools/novel-ingest/tongren_3233353_probe.py"
+      - "tools/novel-ingest/test_tongren_3233353.py"
   workflow_dispatch:
     inputs:
       start:
@@ -24,6 +25,7 @@ on:
         type: boolean
 permissions:
   contents: read
+  actions: read
 jobs:
   structure:
     runs-on: ubuntu-latest
@@ -36,6 +38,8 @@ jobs:
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
       - name: Validate parser syntax
         run: python -m py_compile tools/novel-ingest/tongren_3233353.py tools/novel-ingest/tongren_3233353_probe.py
+      - name: Offline parser regression tests
+        run: python -m unittest discover -s tools/novel-ingest -p 'test_tongren_3233353.py' -v
       - name: Inspect HTML structure without downloading story text
         run: python -u tools/novel-ingest/tongren_3233353_probe.py
   collect:
@@ -49,6 +53,14 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Recover 171 previously verified chapters from failed run
+        if: github.event_name == 'pull_request'
+        uses: actions/download-artifact@v4
+        with:
+          name: tongren-3233353-42287749578
+          run-id: 42287749578
+          github-token: ${{ github.token }}
+          path: out/tongren-3233353
       - name: Gather all requested accessible RAW chapters
         env:
           START: ${{ inputs.start || '1' }}
@@ -58,7 +70,7 @@ jobs:
           set -euo pipefail
           extra=()
           if [ "$CATALOG_ONLY" = "true" ]; then extra+=(--catalog-only); fi
-          python -u tools/novel-ingest/tongren_3233353.py --start "$START" --end "$END" --delay 1.0 --output out/tongren-3233353 "${extra[@]}"
+          python -u tools/novel-ingest/tongren_3233353.py --start "$START" --end "$END" --delay 1.0 --output out/tongren-3233353 --resume "${extra[@]}"
       - name: Publish verified coverage report
         if: always()
         run: |
