@@ -1,0 +1,39 @@
+name: IXDZS 642933 chapters 186-205 metadata probe
+on:
+  push:
+    branches: [probe/ixdzs-642933-186-205]
+    paths:
+      - tools/novel-ingest/ixdzs_642933_probe.py
+      - .github/workflows/ixdzs-642933-186-205-probe.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ixdzs-642933-metadata-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Test index and chapter validators without network
+        run: python tools/novel-ingest/ixdzs_642933_probe.py --selftest
+      - name: Verify source index and 186-205 without storing book prose
+        run: python tools/novel-ingest/ixdzs_642933_probe.py --start 186 --end 205 --delay 2 --out out/ixdzs-642933
+      - name: Append human-readable result
+        if: always()
+        run: |
+          if test -f out/ixdzs-642933/summary.md; then cat out/ixdzs-642933/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload metadata only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-642933-186-205-metadata
+          path: out/ixdzs-642933/
+          if-no-files-found: warn
+          retention-days: 14
