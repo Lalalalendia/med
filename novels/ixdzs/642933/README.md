@@ -25,7 +25,7 @@ To claim complete RAW, separately verify same-chapter continuation pages, short 
 
 ## Rights-gated TXT exporter
 
-A dedicated optional tool is prepared at [ixdzs_642933_export.py](../../../../tools/novel-ingest/ixdzs_642933_export.py) with workflow [ixdzs-642933-authorized-export.yml](../../../../.github/workflows/ixdzs-642933-authorized-export.yml).
+A dedicated optional tool is prepared at [ixdzs_642933_export.py](../../../tools/novel-ingest/ixdzs_642933_export.py) with workflow [ixdzs-642933-authorized-export.yml](../../../.github/workflows/ixdzs-642933-authorized-export.yml).
 
 The export workflow has two independent stages:
 
