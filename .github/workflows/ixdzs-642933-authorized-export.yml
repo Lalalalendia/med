@@ -2,10 +2,9 @@ name: IXDZS 642933 permitted TXT export (186-205)
 
 on:
   push:
-    branches: [probe/ixdzs-642933-186-205]
+    branches: [main]
     paths:
-      - "tools/novel-ingest/ixdzs_642933_export.py"
-      - ".github/workflows/ixdzs-642933-authorized-export.yml"
+      - ".github/ixdzs-642933-export-request.json"
   workflow_dispatch:
     inputs:
       rights_confirmed:
@@ -18,6 +17,40 @@ permissions:
   contents: read
 
 jobs:
+  authorize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      authorized: ${{ steps.gate.outputs.authorized }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require scoped, explicit reproduction rights
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          DISPATCH_RIGHTS: ${{ inputs.rights_confirmed }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          allowed = False
+          if os.environ["EVENT_NAME"] == "workflow_dispatch":
+              allowed = os.environ.get("DISPATCH_RIGHTS", "").lower() == "true"
+          elif os.environ["EVENT_NAME"] == "push":
+              f = Path(".github/ixdzs-642933-export-request.json")
+              if f.is_file():
+                  data = json.loads(f.read_text(encoding="utf-8"))
+                  allowed = (
+                      data.get("requested") is True
+                      and data.get("rights_confirmed") is True
+                      and data.get("source_index") == "https://ixdzs.tw/read/642933/"
+                      and data.get("start") == 186 and data.get("end") == 205
+                  )
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as o:
+              o.write(f"authorized={'true' if allowed else 'false'}\n")
+          print("Request authorized:", allowed)
+          PY
+
   offline-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -33,8 +66,8 @@ jobs:
           python tools/novel-ingest/ixdzs_642933_export.py --selftest
 
   authorized-export:
-    needs: offline-tests
-    if: github.event_name == 'workflow_dispatch' && inputs.rights_confirmed == true
+    needs: [offline-tests, authorize]
+    if: needs.authorize.outputs.authorized == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
