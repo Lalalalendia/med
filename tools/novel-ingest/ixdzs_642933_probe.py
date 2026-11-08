@@ -11,7 +11,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import parse_qs, urljoin, urlsplit
 from urllib.robotparser import RobotFileParser
 
 import requests
@@ -49,6 +49,30 @@ def extract_catalog(html, base_url, start, end):
             raise ValueError(f"Ambiguous chapter URL: {n}")
         found[n] = {"url": url, "catalog_title": title[:200]}
     return found
+
+
+def detect_split_links(html, n, current_url):
+    """Identify explicit same-chapter continuation pages, without copying prose."""
+    soup = BeautifulSoup(html, "html.parser")
+    found = set()
+    current = urlsplit(current_url)
+    pattern = re.compile(r"^/read/642933/p" + str(n) + r"(?:[_-][0-9]+)\.html$")
+    for anchor in soup.select("a[href]"):
+        url = urljoin(current_url, anchor.get("href", ""))
+        target = urlsplit(url)
+        if target.scheme != "https" or target.netloc.lower() != "ixdzs.tw":
+            continue
+        label = anchor.get_text(" ", strip=True).lower()
+        explicit = bool(pattern.fullmatch(target.path))
+        continuation_query = (
+            target.path == current.path
+            and target.query != current.query
+            and (parse_qs(target.query).get("page") or parse_qs(target.query).get("p"))
+            and any(marker in label for marker in ("下一頁", "下页", "下一页", "繼續", "继续"))
+        )
+        if explicit or continuation_query:
+            found.add(url)
+    return sorted(found)
 
 
 def inspect(html, n):
@@ -129,7 +153,17 @@ def audit(start, end, delay):
                 if response.status_code != 200:
                     row["state"] = "http_error"
                 else:
-                    row.update(inspect(response.text, n))
+                    final = urlsplit(response.url)
+                    if (final.scheme != "https" or final.netloc.lower() != "ixdzs.tw"
+                            or not PATH.fullmatch(final.path)
+                            or int(PATH.fullmatch(final.path).group(1)) != n):
+                        row["state"] = "unexpected_redirect"
+                        row["final_url"] = response.url
+                    else:
+                        row.update(inspect(response.text, n))
+                        row["possible_split_pages"] = detect_split_links(response.text, n, response.url)
+                        if row["possible_split_pages"]:
+                            row["state"] = "continuation_page_unverified"
             except requests.RequestException as error:
                 row["state"] = "network_error"
                 row["error_type"] = type(error).__name__
@@ -149,11 +183,16 @@ def save(result, out):
     good = [row for row in result["chapters"] if row["state"] == "readable"]
     unique = {row["body_sha256"] for row in good}
     present = {row["chapter"] for row in good}
+    split = sorted(row["chapter"] for row in result["chapters"]
+                   if row.get("possible_split_pages"))
+    short = sorted(row["chapter"] for row in good if row.get("cjk_chars", 0) < 1100)
     result["totals"] = {
         "requested": len(expected), "readable": len(good),
         "unverified": sorted(expected - present),
         "unique_body_hashes": len(unique),
-        "all_verified": present == expected and len(unique) == len(expected)
+        "possible_split_chapters": split,
+        "short_chapters_review": short,
+        "all_verified": present == expected and len(unique) == len(expected) and not split
     }
     (out / "manifest.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -164,7 +203,11 @@ def save(result, out):
         f"- Chapter URLs found: {result.get('catalog_links_in_range', 0)}\n"
         f"- Verified readable chapter pages: {t['readable']}/{t['requested']}\n"
         f"- Unverified ordinals: {t['unverified']}\n"
-        f"- Unique text fingerprints: {t['unique_body_hashes']}\n\n"
+        f"- Unique text fingerprints: {t['unique_body_hashes']}\n"
+        f"- Possible same-chapter continuation pages: {t['possible_split_chapters']}\n"
+        f"- Short chapters requiring manual completeness review: {t['short_chapters_review']}\n\n"
+        "Readable pages do not prove that chapters are complete; compare against "
+        "another permitted reference before claiming full RAW completeness.\n\n"
         "No novel chapter prose was downloaded to artifacts or committed to git.\n",
         encoding="utf-8")
     return t["all_verified"]
@@ -177,6 +220,12 @@ def selftest():
     sample = "這是一段測試中文。" * 50
     assert inspect("<h1>第186章 標題</h1><article>" + sample + "</article>", 186)["state"] == "readable"
     assert inspect("<h1>第187章 標題</h1><article>" + sample + "</article>", 186)["state"] == "title_mismatch"
+    single = '<a href="/read/642933/p187.html">下一章</a>'
+    assert not detect_split_links(single, 186, "https://ixdzs.tw/read/642933/p186.html")
+    multi = '<a href="/read/642933/p186_2.html">下一頁</a>'
+    assert detect_split_links(multi, 186, "https://ixdzs.tw/read/642933/p186.html")
+    assert detect_split_links('<a href="?page=2">下一頁</a>', 186,
+                              "https://ixdzs.tw/read/642933/p186.html")
     print("SELFTEST_PASS")
 
 
