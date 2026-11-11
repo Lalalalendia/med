@@ -56,3 +56,11 @@ Artifacts expire after 14 days.
 - Offline synthetic parser/integrity tests: **6/6 PASS**.
 - Full live 588-page audit and book export: **not yet run**; no completed RAW
   archive is claimed by this README.
+
+## Production source switch — 2026-11-11
+
+Bingfong returned HTTP 403 during GitHub Actions live checks. The validated full
+novel was instead obtained from **CZBooks uk0ff** with chapter-by-chapter checks.
+See [verified 587/587 acquisition receipt](../../czbooks/uk0ff/README.md).
+The Bingfong collection workflow is retained for diagnostics; it was not used
+to produce the delivered full-book archive.
