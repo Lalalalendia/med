@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: ixdzs-570527-1164-end-\${{ github.ref }}
+  group: ixdzs-570527-1164-end-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -49,7 +49,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: ixdzs-570527-chinese-1164-end-\${{ github.run_id }}
+          name: ixdzs-570527-chinese-1164-end-${{ github.run_id }}
           path: novels/ixdzs/570527/
           retention-days: 30
           if-no-files-found: error
@@ -70,7 +70,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: ixdzs-570527-failure-\${{ github.run_id }}
+          name: ixdzs-570527-failure-${{ github.run_id }}
           path: novels/ixdzs/570527/failure-audit.json
           retention-days: 14
           if-no-files-found: warn
