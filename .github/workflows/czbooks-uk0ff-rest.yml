@@ -1,0 +1,153 @@
+name: CZBooks uk0ff remaining 51-587
+on:
+  push:
+    branches:
+      - feature/bingfong-736-audit
+    paths:
+      - ".github/workflows/czbooks-uk0ff-rest.yml"
+      - "tools/novel-ingest/czbooks_uk0ff.py"
+permissions:
+  contents: read
+jobs:
+  collect:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {start: 51, end: 230}
+          - {start: 231, end: 410}
+          - {start: 411, end: 587}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collect rights-confirmed RAW ${{ matrix.start }}-${{ matrix.end }}
+        run: |
+          python -u tools/novel-ingest/czbooks_uk0ff.py \
+            --mode collect --rights-confirmed \
+            --start ${{ matrix.start }} --end ${{ matrix.end }} \
+            --delay 1.8 --out out/uk0ff
+      - name: Verify completed shard manifest and file digests
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          start,end=${{ matrix.start }},${{ matrix.end }}
+          root=Path("out/uk0ff")
+          p=root/"manifests"/f"part-{start:04d}.json"
+          d=json.loads(p.read_text(encoding="utf-8"))
+          assert d["status"] == "PASS" and d["rights_attested"],d.get("errors")
+          assert d["range"]==[start,end]
+          unique={}
+          for r in d["chapters"]:
+              n=r["number"]
+              assert start<=n<=end
+              if n in unique:
+                  assert n==476 and r["body_sha256"]==unique[n]["body_sha256"]
+              else:
+                  unique[n]=r
+          assert list(sorted(unique)) == list(range(start,end+1))
+          for n,r in unique.items():
+              raw=(root/f"chapters/{n:04d}.txt").read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==r["file_sha256"],n
+          print("SHARD_PASS",start,end,len(unique),"of",end-start+1,flush=True)
+          PY
+      - name: Upload successful shard or partial diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uk0ff-shard-${{ matrix.start }}-${{ matrix.end }}
+          path: out/uk0ff/
+          retention-days: 14
+          if-no-files-found: warn
+  assemble:
+    needs: collect
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: uk0ff-shard-*
+          path: staging/
+          merge-multiple: true
+      - name: Verify 537 chapter files and create ZIP/TXT
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from zipfile import ZipFile,ZIP_DEFLATED
+          root=Path("staging")
+          shards=[(51,230),(231,410),(411,587)]
+          base_catalog="ca81a6d1445071f0b7ca74e6070e2954dfed9334572f025cf3d27e641d0e48cd"
+          records={}
+          for first,last in shards:
+              path=root/"manifests"/f"part-{first:04d}.json"
+              d=json.loads(path.read_text(encoding="utf-8"))
+              assert d["status"]=="PASS" and d["rights_attested"],(first,d.get("errors"))
+              assert d["range"]==[first,last]
+              assert d["catalog_sha256"]==base_catalog,"Catalog changed from verified first 50"
+              within={}
+              for r in d["chapters"]:
+                  n=r["number"]
+                  assert first<=n<=last
+                  if n in within:
+                      assert n==476 and r["body_sha256"]==within[n]["body_sha256"]
+                  else:
+                      within[n]=r
+              assert sorted(within)==list(range(first,last+1)),(first,last)
+              records.update(within)
+          assert sorted(records)==list(range(51,588))
+          assert len({r["body_sha256"] for r in records.values()})==537
+          texts=[]
+          for n in range(51,588):
+              r=records[n]
+              raw=(root/"chapters"/f"{n:04d}.txt").read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==r["file_sha256"],n
+              txt=raw.decode("utf-8")
+              assert len(txt)>500,n
+              texts.append(txt)
+          out=Path("out/remainder")
+          out.mkdir(parents=True,exist_ok=True)
+          combined="\n\n".join(texts)
+          (out/"combined.txt").write_text(combined,encoding="utf-8")
+          digest=hashlib.sha256(combined.encode("utf-8")).hexdigest()
+          manifest={"status":"PASS","title":"修真网络时代","author":"惟一的叶子",
+                    "source":"https://czbooks.net/n/uk0ff","start":51,"end":587,
+                    "chapters_count":537,"catalog_sha256":base_catalog,
+                    "combined_sha256":digest,"rights_attested":True,
+                    "chapter_files":list(records.values())}
+          (out/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
+          (out/"summary.md").write_text(
+              "# 修真网络时代 — remaining 51-587\n\n"
+              "- Status: PASS 537/537 chapters; no gaps\n"
+              "- Duplicate chapter 476: identical source page content, deduplicated\n"
+              "- Source: https://czbooks.net/n/uk0ff\n"
+              f"- SHA256 combined: {digest}\n",encoding="utf-8")
+          archive=out/"xiuzhen-wangluo-shidai-051-587-cn.zip"
+          with ZipFile(archive,"w",ZIP_DEFLATED,compresslevel=7) as z:
+              for n in range(51,588):
+                  z.write(root/"chapters"/f"{n:04d}.txt",f"chapters/{n:04d}.txt")
+              for name in ("combined.txt","manifest.json","summary.md"):
+                  z.write(out/name,name)
+          with ZipFile(archive) as z:
+              assert len(z.namelist())==540 and z.testzip() is None
+          print("REMAINDER_PASS",len(records),"ZIP",archive,"COMBINED_SHA256",digest,flush=True)
+          PY
+      - name: Print verification summary
+        if: always()
+        run: |
+          if test -f out/remainder/summary.md; then cat out/remainder/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: xiuzhen-wangluo-shidai-051-587-cn
+          path: |
+            out/remainder/xiuzhen-wangluo-shidai-051-587-cn.zip
+            out/remainder/manifest.json
+            out/remainder/summary.md
+          retention-days: 14
+          if-no-files-found: error

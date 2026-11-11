@@ -1,0 +1,113 @@
+name: Bingfong 736 chapter audit and permitted TXT
+on:
+  pull_request:
+    paths:
+      - "tools/novel-ingest/bingfong_736.py"
+      - "tools/novel-ingest/bingfong_736_mirror_probe.py"
+      - "tools/novel-ingest/test_bingfong_736.py"
+      - ".github/workflows/bingfong-736.yml"
+      - "novels/bingfong/736/**"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe (5 pages), audit (all 588 metadata pages), collect (587 chapters)"
+        type: choice
+        required: true
+        default: probe
+        options: [probe, audit, collect]
+      rights_confirmed:
+        description: "I hold permission to reproduce all 587 chapters of Bingfong book 736"
+        type: boolean
+        required: true
+        default: false
+      delay_seconds:
+        description: "Request spacing in seconds; minimum 2"
+        type: string
+        required: true
+        default: "2"
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Synthetic parser and integrity tests
+        run: python -m unittest discover -s tools/novel-ingest -p test_bingfong_736.py -v
+  manual:
+    if: github.event_name == 'workflow_dispatch'
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Check book-scoped reproduction authorization
+        env:
+          MODE: ${{ inputs.mode }}
+          RIGHTS_CONFIRMED: ${{ inputs.rights_confirmed }}
+        run: |
+          if [ "$MODE" = "collect" ] && [ "$RIGHTS_CONFIRMED" != "true" ]; then
+            echo 'Collection requires explicit reproduction rights for all 587 chapters.'
+            exit 1
+          fi
+      - name: Verify source or collect authorized original
+        env:
+          MODE: ${{ inputs.mode }}
+          RIGHTS_CONFIRMED: ${{ inputs.rights_confirmed }}
+          DELAY: ${{ inputs.delay_seconds }}
+        run: |
+          set -euo pipefail
+          flags=()
+          if [ "$MODE" = "collect" ] && [ "$RIGHTS_CONFIRMED" = "true" ]; then
+            flags+=(--rights-confirmed)
+          fi
+          python -u tools/novel-ingest/bingfong_736.py \
+            --mode "$MODE" --delay "$DELAY" \
+            --out out/bingfong-736 "${flags[@]}"
+      - name: Publish source coverage summary
+        if: always()
+        run: |
+          if [ -f out/bingfong-736/summary.md ]; then cat out/bingfong-736/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload verified archive or metadata report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bingfong-736-${{ inputs.mode }}-${{ github.run_id }}
+          path: out/bingfong-736/
+          retention-days: 14
+          if-no-files-found: warn
+
+  mirror-probe:
+    if: github.event_name == 'pull_request'
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Inspect three alternate sites (metadata only)
+        run: python -u tools/novel-ingest/bingfong_736_mirror_probe.py
+      - name: Publish metadata summary
+        if: always()
+        run: |
+          if [ -f out/bingfong-736-mirrors/summary.md ]; then cat out/bingfong-736-mirrors/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload metadata report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bingfong-736-mirror-probe-${{ github.run_id }}
+          path: out/bingfong-736-mirrors/
+          retention-days: 14
+          if-no-files-found: warn
