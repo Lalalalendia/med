@@ -143,6 +143,23 @@ def continuation_links(soup, current, chapter, host):
     return sorted(set(found))
 
 
+def strip_source_chrome(body: str, number: int, heading: str) -> str:
+    """Remove page-generated chapter header and book metadata, never story prose."""
+    parts = [s.strip() for s in body.split("\n\n") if s.strip()]
+    # HTML chapter headers can be repeated within the article's content block.
+    while parts and (parts[0] == heading or
+                     (chapter_num(parts[0]) == number and len(parts[0]) < 180)):
+        parts.pop(0)
+    if parts and parts[0].startswith("《") and any(
+            word in parts[0] for word in ("惊悚游戏", "驚悚遊戲")):
+        parts.pop(0)
+        while parts and parts[0] in ("·", "其他", "其它", "主角：", "主角:", "江野"):
+            parts.pop(0)
+    if not parts:
+        raise ValueError(f"Empty chapter after site-header cleanup: {number}")
+    return "\n\n".join(parts)
+
+
 def parse_page(raw: bytes, number: int, url: str, host: str):
     soup = BeautifulSoup(raw, "html.parser")
     title_el = soup.select_one("h1") or soup.title
@@ -175,7 +192,7 @@ def parse_page(raw: bytes, number: int, url: str, host: str):
             if re.search(r"(https?://|www\.ixdzs|下载本书|下載本書)", item):
                 continue
             text.append(item)
-        body = "\n\n".join(text)
+        body = strip_source_chrome("\n\n".join(text), number, heading)
         count = len(CJK.findall(body))
         if count:
             roots.append((count, body))
