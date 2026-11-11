@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-10T10:21:00+00:00
+Run: 2026-11-11T09:49:38+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-10T10:21:00+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `114898` [Start As a Guard in the Eastern Palace, and Reach the Maximum Level of Nine Yang Divine Skill Through Daily Sign-ins](https://wtr-lab.com/en/novel/114898/start-as-a-guard-in-the-eastern-palace-and-reach-the-maximum-level-of-nine-yang-divine-skill-through-daily-sign-ins) — catalog
-- **wtr-lab** `114759` [Report That There is Something Wrong with This Product, It is Even Worse](https://wtr-lab.com/en/novel/114759/report-that-there-is-something-wrong-with-this-product-it-is-even-worse) — catalog
-- **wtr-lab** `114896` [Mortal: Starting with Hextech Crafting in the Chaotic Star Sea](https://wtr-lab.com/en/novel/114896/mortal-starting-with-hextech-crafting-in-the-chaotic-star-sea) — catalog
-- **wtr-lab** `111469` [The Capricorn Inside Me](https://wtr-lab.com/en/novel/111469/the-capricorn-inside-me) — catalog
-- **wtr-lab** `114893` [Pocket Monsters: Start with a Zeraora](https://wtr-lab.com/en/novel/114893/pocket-monsters-start-with-a-zeraora) — catalog
-- **wtr-lab** `114873` [Starts As a Woman, Awakens SSS-level Abilities](https://wtr-lab.com/en/novel/114873/starts-as-a-woman-awakens-sss-level-abilities) — catalog
-- **wtr-lab** `113433` [Rise of the Zerg: I’m Really Just Playing a Game](https://wtr-lab.com/en/novel/113433/rise-of-the-zerg-im-really-just-playing-a-game) — catalog
-- **wtr-lab** `113933` [Forced to Marry Into the Deep Mountains, Reclaiming Land and Farming for a Prosperous Life](https://wtr-lab.com/en/novel/113933/forced-to-marry-into-the-deep-mountains-reclaiming-land-and-farming-for-a-prosperous-life) — catalog
-- **wtr-lab** `112782` [Wild Desire: My Nemesis is Secretly in Love with Me](https://wtr-lab.com/en/novel/112782/wild-desire-my-nemesis-is-secretly-in-love-with-me) — catalog
-- **wtr-lab** `114651` [I, the Empress's Furnace, Have Been Signing in at the Imperial City for Seventy Years](https://wtr-lab.com/en/novel/114651/i-the-empresss-furnace-have-been-signing-in-at-the-imperial-city-for-seventy-years) — catalog
-- **mtl-novel** `comprehensive-comic-live-broadcast-the-beginning-allows-black-zetsu-to-break-the-defense` [Comprehensive Comic Live Broadcast, the Beginning Allows Black Zetsu to Break the Defense](https://mtl-novel.com/novel/comprehensive-comic-live-broadcast-the-beginning-allows-black-zetsu-to-break-the-defense/) — catalog
-- **mtl-novel** `naruto-starting-with-borutos-death-live-broadcast` [Naruto: Starting with Boruto’s Death Live Broadcast?](https://mtl-novel.com/novel/naruto-starting-with-borutos-death-live-broadcast/) — catalog
-- **mtl-novel** `entertainment-2000-this-best-actor-is-a-bit-odd` [Entertainment 2000: This Best Actor is a Bit Odd](https://mtl-novel.com/novel/entertainment-2000-this-best-actor-is-a-bit-odd/) — catalog
-- **mtl-novel** `douluo-dalu-bringing-over-the-world-of-wu-zhan-dao` [Douluo Dalu: Bringing Over the World of “wu Zhan Dao](https://mtl-novel.com/novel/douluo-dalu-bringing-over-the-world-of-wu-zhan-dao/) — catalog
-- **mtl-novel** `god-of-finance-i-draw-candlesticks-in-the-financial-markets` [God of Finance: I Draw Candlesticks in the Financial Markets](https://mtl-novel.com/novel/god-of-finance-i-draw-candlesticks-in-the-financial-markets/) — catalog
-- **mtl-novel** `rebuilding-the-xiuxian-family` [Rebuilding the Xiuxian family](https://mtl-novel.com/novel/rebuilding-the-xiuxian-family/) — catalog
-- **mtl-novel** `douluo-phoenix-burning-the-heavens` [Douluo: Phoenix Burning the Heavens](https://mtl-novel.com/novel/douluo-phoenix-burning-the-heavens/) — catalog
-- **mtl-novel** `fantasy-i-defy-fate-for-eternity-and-defeat-the-immortal-emperor` [Fantasy: I Defy Fate for Eternity and Defeat the Immortal Emperor](https://mtl-novel.com/novel/fantasy-i-defy-fate-for-eternity-and-defeat-the-immortal-emperor/) — catalog
-- **mtl-novel** `one-piece-lacking-a-special-lineage-i-have-to-rely-on-technology` [One Piece: Lacking a Special Lineage, I Have to Rely on Technology](https://mtl-novel.com/novel/one-piece-lacking-a-special-lineage-i-have-to-rely-on-technology/) — catalog
-- **mtl-novel** `in-the-primordial-era-i-zhen-yuanzi-have-avatars-scattered-throughout-the-heavens` [In the Primordial Era, I, Zhen Yuanzi, Have Avatars Scattered Throughout the Heavens](https://mtl-novel.com/novel/in-the-primordial-era-i-zhen-yuanzi-have-avatars-scattered-throughout-the-heavens/) — catalog
+- **wtr-lab** `115252` [Korean Entertainment: All-around Singers Won't Meet Snake-type Beauties](https://wtr-lab.com/en/novel/115252/korean-entertainment-all-around-singers-wont-meet-snake-type-beauties) — catalog
+- **wtr-lab** `115210` [Courtyard House: Wudang Disciple Sweeps Through the Compound](https://wtr-lab.com/en/novel/115210/courtyard-house-wudang-disciple-sweeps-through-the-compound) — catalog
+- **wtr-lab** `115157` [Badminton: My Forum is Full of True Experts](https://wtr-lab.com/en/novel/115157/badminton-my-forum-is-full-of-true-experts) — catalog
+- **wtr-lab** `115026` [The Godmother of Entertainment Starts with Sweet and Sour is Me](https://wtr-lab.com/en/novel/115026/the-godmother-of-entertainment-starts-with-sweet-and-sour-is-me) — catalog
+- **wtr-lab** `115220` [Ben 10: Anime Crossover! Starting with Demon Hunting World!](https://wtr-lab.com/en/novel/115220/ben-10-anime-crossover-starting-with-demon-hunting-world) — catalog
+- **wtr-lab** `115233` [Rise from Perfect World](https://wtr-lab.com/en/novel/115233/rise-from-perfect-world) — catalog
+- **wtr-lab** `115198` [My Childhood Sweetheart and I Choose Each Other, So Why is the School Belle Crying?](https://wtr-lab.com/en/novel/115198/my-childhood-sweetheart-and-i-choose-each-other-so-why-is-the-school-belle-crying) — catalog
+- **wtr-lab** `115200` [Goddess and School Belle Conquest System](https://wtr-lab.com/en/novel/115200/goddess-and-school-belle-conquest-system) — catalog
+- **wtr-lab** `115052` [Don’t Come Near Me, Young Miss](https://wtr-lab.com/en/novel/115052/dont-come-near-me-young-miss) — catalog
+- **wtr-lab** `115219` [Returning to High School to Cultivate, the Clingy Empress Followed Me Over](https://wtr-lab.com/en/novel/115219/returning-to-high-school-to-cultivate-the-clingy-empress-followed-me-over) — catalog
+- **mtl-novel** `reborn-in-tianjin-1997` [Reborn in Tianjin 1997](https://mtl-novel.com/novel/reborn-in-tianjin-1997/) — catalog
+- **mtl-novel** `one-piece-the-art-of-explosions` [One Piece: The Art of Explosions](https://mtl-novel.com/novel/one-piece-the-art-of-explosions/) — catalog
+- **mtl-novel** `king-of-glory-the-greater-the-traffic-the-stronger-i-become` [King of Glory: The Greater the Traffic, the Stronger I Become](https://mtl-novel.com/novel/king-of-glory-the-greater-the-traffic-the-stronger-i-become/) — catalog
+- **mtl-novel** `theyre-on-a-deserted-island-whos-going-to-pamper-them` [They’re on a Deserted Island, Who’s Going to Pamper Them?](https://mtl-novel.com/novel/theyre-on-a-deserted-island-whos-going-to-pamper-them/) — catalog
+- **mtl-novel** `my-low-dimensional-universe-model` [My Low-dimensional Universe Model](https://mtl-novel.com/novel/my-low-dimensional-universe-model/) — catalog
+- **mtl-novel** `gao-wu-becoming-stronger-by-bending-the-enemy` [Gao Wu: Becoming Stronger by Bending the Enemy](https://mtl-novel.com/novel/gao-wu-becoming-stronger-by-bending-the-enemy/) — catalog
+- **mtl-novel** `the-auction-returns-ten-thousand-times-and-an-auction-house-opens` [The auction returns ten thousand times and an auction house opens!](https://mtl-novel.com/novel/the-auction-returns-ten-thousand-times-and-an-auction-house-opens/) — catalog
+- **mtl-novel** `naruto-the-youngest-succubus-son-of-the-hatake-family` [Naruto, the Youngest Succubus Son of the Hatake Family](https://mtl-novel.com/novel/naruto-the-youngest-succubus-son-of-the-hatake-family/) — catalog
+- **mtl-novel** `the-emperor-is-too-addictive-a-frail-male-empress-raises-two-cubs` [The Emperor is Too Addictive! A Frail Male Empress Raises Two Cubs](https://mtl-novel.com/novel/the-emperor-is-too-addictive-a-frail-male-empress-raises-two-cubs/) — catalog
+- **mtl-novel** `all-in-on-damage-reflection-you-call-this-a-useless-shield-guardian` [All-in on Damage Reflection — You Call This a Useless Shield Guardian?](https://mtl-novel.com/novel/all-in-on-damage-reflection-you-call-this-a-useless-shield-guardian/) — catalog
