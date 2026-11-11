@@ -1,0 +1,91 @@
+name: Suduguu 3328 RU 843-852 verified bundle
+
+on:
+  push:
+    branches:
+      - translation/suduguu-3328-843-852-ru-20261112
+    paths:
+      - ".github/workflows/suduguu-3328-ru-843-852.yml"
+      - "novels/suduguu/3328/ru/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate all ten translations and build combined TXT and ZIP
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          from hashlib import sha256
+          import json, re, shutil
+
+          source = Path("novels/suduguu/3328/ru")
+          out = Path("out")
+          (out / "ru").mkdir(parents=True, exist_ok=True)
+          expected = list(range(843, 853))
+          actual = sorted(p.name for p in source.glob("[0-9][0-9][0-9][0-9].txt"))
+          want = [f"{n:04d}.txt" for n in expected]
+          assert actual == want, f"File-set mismatch: {actual!r} != {want!r}"
+          records = []
+          texts = []
+          for n in expected:
+              filename = source / f"{n:04d}.txt"
+              txt = filename.read_text(encoding="utf-8").strip()
+              assert txt.startswith(f"Глава {n}."), f"Chapter heading incorrect: {filename}"
+              assert "Источник: https://www.suduguu.com/3328/" in txt, f"Missing source URL: {filename}"
+              assert len(txt) > 5500, f"Suspiciously short translation: {filename}"
+              assert len(re.findall(r"[А-Яа-яЁё]", txt)) > 4500, f"Insufficient translated text: {filename}"
+              assert txt.count("\n\n") > 60, f"Suspicious paragraph count: {filename}"
+              shutil.copyfile(filename, out / "ru" / filename.name)
+              texts.append(txt)
+              records.append({
+                  "chapter": n, "file": f"ru/{n:04d}.txt",
+                  "characters": len(txt),
+                  "paragraphs": len(txt.split("\n\n")),
+                  "sha256": sha256(txt.encode("utf-8")).hexdigest()
+              })
+          combined = ("\n\n" + "=" * 80 + "\n\n").join(texts) + "\n"
+          (out / "combined-ru-843-852.txt").write_text(combined, encoding="utf-8")
+          (out / "manifest.json").write_text(
+              json.dumps({
+                  "book": "杂役都是仙帝，你管这叫没落宗门",
+                  "language": "ru", "first_chapter": 843, "last_chapter": 852,
+                  "status": "complete_draft_translation",
+                  "chapter_count": len(records), "chapters": records,
+              }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          shutil.copyfile(source / "README.md", out / "README.md")
+          lines = [
+              "# Russian translation 843–852", "", "Complete: PASS",
+              "Chapters: 10/10",
+              f"Total translated characters: {sum(x['characters'] for x in records)}",
+              f"Combined size (UTF-8 bytes): {len(combined.encode('utf-8'))}",
+              "", "All individual chapters validated for heading, source, length and paragraph count.", "",
+          ]
+          (out / "summary.md").write_text("\n".join(lines), encoding="utf-8")
+          archive = out / "suduguu-3328-ru-843-852.zip"
+          with ZipFile(archive, "w", ZIP_DEFLATED, compresslevel=9) as z:
+              for f in sorted(out.rglob("*")):
+                  if f.is_file() and f != archive:
+                      z.write(f, f.relative_to(out))
+          print("\n".join(lines))
+          PY
+      - name: Publish validation report
+        run: cat out/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload translated chapters and verified bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: suduguu-3328-ru-843-852
+          path: out/
+          retention-days: 30
+          if-no-files-found: error
