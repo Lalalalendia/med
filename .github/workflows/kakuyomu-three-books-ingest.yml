@@ -1,0 +1,58 @@
+name: Kakuyomu books 4-6 RAW ingest
+
+on:
+  push:
+    branches: [research/kakuyomu-books-456-20261029]
+    paths:
+      - '.github/workflows/kakuyomu-three-books-ingest.yml'
+      - '.github/novel-batches/kakuyomu-three-books.json'
+      - 'tools/novel-ingest/kakuyomu_ingest.py'
+      - 'tools/novel-ingest/test_kakuyomu_ingest.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests beautifulsoup4
+      - run: python -m unittest discover -s tools/novel-ingest -p test_kakuyomu_ingest.py -v
+  collect:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        book: [4, 5, 6]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests beautifulsoup4
+      - name: Collect book
+        id: ingest
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/kakuyomu_ingest.py \
+            --books .github/novel-batches/kakuyomu-three-books.json \
+            --output out/kakuyomu --book ${{ matrix.book }} --delay 2
+      - name: Upload source receipts and complete RAW when available
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kakuyomu-book-${{ matrix.book }}-raw
+          path: out/kakuyomu/**
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Fail if incomplete
+        if: steps.ingest.outcome != 'success'
+        run: exit 1
