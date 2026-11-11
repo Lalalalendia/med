@@ -1,0 +1,39 @@
+{
+  "book": "修真网络时代",
+  "author": "惟一的叶子",
+  "source": "https://czbooks.net/n/uk0ff",
+  "source_language": "zh-Hant",
+  "verified_at_utc": "2026-11-11",
+  "status": "PASS",
+  "story_chapters": 587,
+  "source_entries": 588,
+  "duplicate_chapter": 476,
+  "index_sha256": "ca81a6d1445071f0b7ca74e6070e2954dfed9334572f025cf3d27e641d0e48cd",
+  "first_50": {
+    "range": [
+      1,
+      50
+    ],
+    "sha256_combined": "c84dda0cac3202a40cedcc16ee34dd7ee2aef4e9df6dce52dd2eb0584d24f353",
+    "run_id": 43040881873,
+    "artifact_id": 13865391895
+  },
+  "remainder": {
+    "range": [
+      51,
+      587
+    ],
+    "sha256_combined": "82862facc0288215936e88e8233495d5239a52e30f38d8ef34fe51a3f71f8927",
+    "run_id": 43041975355,
+    "artifact_id": 13866366299
+  },
+  "full": {
+    "range": [
+      1,
+      587
+    ],
+    "sha256_combined": "8792ecd3102d19e3b6ec7c1f336751b481879bfef13144a89fd26ecaa58c057c",
+    "where": "ChatGPT-delivered ZIP, not committed to public repo"
+  },
+  "notes": "Original novel text is not committed to Git; full assembly combines first50 and remainder artifacts."
+}
