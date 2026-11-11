@@ -5,7 +5,7 @@ Author: 美味的口蘑
 Source: https://ixdzs8.com/read/570527/
 Requested: 25
 Collected: 25
-Total Chinese characters: 33058
+Total Chinese characters: 32295
 Total HTML chapter pages: 25
 Unique chapter fingerprints: 25
 Completeness: PASS (index, title, length, duplicates, pagination)
