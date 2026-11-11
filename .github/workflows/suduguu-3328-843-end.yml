@@ -1,0 +1,78 @@
+name: Suduguu 3328 authorized RAW 843-end
+
+on:
+  push:
+    branches:
+      - raw/suduguu-3328-843-end-20261112
+    paths:
+      - ".github/workflows/suduguu-3328-843-end.yml"
+      - "tools/suduguu/fetch_3328_range.py"
+      - "tools/suduguu/fetch_303_range.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: suduguu-3328-843-end-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Compile collector
+        run: |
+          python -m py_compile tools/suduguu/fetch_3328_range.py tools/suduguu/fetch_303_range.py
+      - name: Run existing multipart parsing regression tests
+        run: python -m unittest discover -s tools/suduguu -p 'test_fetch_303_range.py' -v
+      - name: Collect current chapter range (including all paginated parts)
+        run: |
+          python tools/suduguu/fetch_3328_range.py \
+            --start 843 --end 0 --delay 0.6 --out-dir novels/suduguu/3328
+      - name: Publish summary
+        if: always()
+        run: |
+          if test -f novels/suduguu/3328/summary.md; then
+            cat novels/suduguu/3328/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload complete corpus
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: suduguu-3328-cn-843-end-${{ github.run_id }}
+          path: novels/suduguu/3328/
+          retention-days: 14
+          if-no-files-found: error
+      - name: Commit verified corpus to source branch
+        if: success()
+        run: |
+          set -euo pipefail
+          test -f novels/suduguu/3328/combined.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add novels/suduguu/3328
+          if git diff --cached --quiet; then
+            echo 'Nothing new to commit'
+            exit 0
+          fi
+          git commit -m 'Persist verified Suduguu 3328 Chinese RAW 843-end'
+          git push
+      - name: Upload failure audit
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: suduguu-3328-failure-${{ github.run_id }}
+          path: |
+            novels/suduguu/3328/manifest.json
+            novels/suduguu/3328/failures.json
+            novels/suduguu/3328/summary.md
+          if-no-files-found: warn
+          retention-days: 14
