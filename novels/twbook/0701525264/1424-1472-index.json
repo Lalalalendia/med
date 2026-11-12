@@ -3,258 +3,258 @@
   "title": "穿進後悔流？開局百抽，抽爽了！",
   "author": "老陳醋春卷",
   "catalog_url": "https://www.twbook.cc/0701525264/dir",
-  "catalog_checked_on": "2026-11-12",
   "requested_first_chapter": 1424,
   "last_chapter_listed_at_check": 1472,
   "chapter_count": 49,
   "last_chapter_is_confirmed_ending": false,
-  "contents_included": false,
-  "provenance": "Catalog metadata and chapter-number checklist only; direct chapter URLs not independently verified. Full chapter texts are not reproduced.",
+  "contents_included": true,
+  "provenance": "Chapter text imported from public pages of TWBook with user-asserted permission.",
+  "audit_file": "1424-end/audit.json",
   "chapters": [
     {
       "chapter": 1424,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1424.html"
     },
     {
       "chapter": 1425,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1425.html"
     },
     {
       "chapter": 1426,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1426.html"
     },
     {
       "chapter": 1427,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1427.html"
     },
     {
       "chapter": 1428,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1428.html"
     },
     {
       "chapter": 1429,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1429.html"
     },
     {
       "chapter": 1430,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1430.html"
     },
     {
       "chapter": 1431,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1431.html"
     },
     {
       "chapter": 1432,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1432.html"
     },
     {
       "chapter": 1433,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1433.html"
     },
     {
       "chapter": 1434,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1434.html"
     },
     {
       "chapter": 1435,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1435.html"
     },
     {
       "chapter": 1436,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1436.html"
     },
     {
       "chapter": 1437,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1437.html"
     },
     {
       "chapter": 1438,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1438.html"
     },
     {
       "chapter": 1439,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1439.html"
     },
     {
       "chapter": 1440,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1440.html"
     },
     {
       "chapter": 1441,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1441.html"
     },
     {
       "chapter": 1442,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1442.html"
     },
     {
       "chapter": 1443,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1443.html"
     },
     {
       "chapter": 1444,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1444.html"
     },
     {
       "chapter": 1445,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1445.html"
     },
     {
       "chapter": 1446,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1446.html"
     },
     {
       "chapter": 1447,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1447.html"
     },
     {
       "chapter": 1448,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1448.html"
     },
     {
       "chapter": 1449,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1449.html"
     },
     {
       "chapter": 1450,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1450.html"
     },
     {
       "chapter": 1451,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1451.html"
     },
     {
       "chapter": 1452,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1452.html"
     },
     {
       "chapter": 1453,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1453.html"
     },
     {
       "chapter": 1454,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1454.html"
     },
     {
       "chapter": 1455,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1455.html"
     },
     {
       "chapter": 1456,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1456.html"
     },
     {
       "chapter": 1457,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1457.html"
     },
     {
       "chapter": 1458,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1458.html"
     },
     {
       "chapter": 1459,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1459.html"
     },
     {
       "chapter": 1460,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1460.html"
     },
     {
       "chapter": 1461,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1461.html"
     },
     {
       "chapter": 1462,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1462.html"
     },
     {
       "chapter": 1463,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1463.html"
     },
     {
       "chapter": 1464,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1464.html"
     },
     {
       "chapter": 1465,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1465.html"
     },
     {
       "chapter": 1466,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1466.html"
     },
     {
       "chapter": 1467,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1467.html"
     },
     {
       "chapter": 1468,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1468.html"
     },
     {
       "chapter": 1469,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1469.html"
     },
     {
       "chapter": 1470,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1470.html"
     },
     {
       "chapter": 1471,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1471.html"
     },
     {
       "chapter": 1472,
-      "catalog_url": "https://www.twbook.cc/0701525264/dir",
-      "url_status": "not independently verified"
+      "status": "ok",
+      "source_url": "https://www.twbook.cc/0701525264/1472.html"
     }
   ]
 }
