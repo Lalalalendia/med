@@ -1,0 +1,764 @@
+{
+  "requested": [
+    607,
+    756
+  ],
+  "completed": 150,
+  "missing": [],
+  "failures": [],
+  "method": "machine first-pass translation; requires human literary editing",
+  "stats": {
+    "607": {
+      "zh_chars": 1205,
+      "ru_chars": 3223,
+      "segments": 3
+    },
+    "608": {
+      "zh_chars": 1154,
+      "ru_chars": 3082,
+      "segments": 5
+    },
+    "609": {
+      "zh_chars": 1168,
+      "ru_chars": 3138,
+      "segments": 5
+    },
+    "612": {
+      "zh_chars": 1174,
+      "ru_chars": 3134,
+      "segments": 4
+    },
+    "610": {
+      "zh_chars": 1191,
+      "ru_chars": 3094,
+      "segments": 5
+    },
+    "613": {
+      "zh_chars": 1172,
+      "ru_chars": 3170,
+      "segments": 5
+    },
+    "611": {
+      "zh_chars": 1153,
+      "ru_chars": 3378,
+      "segments": 5
+    },
+    "616": {
+      "zh_chars": 1153,
+      "ru_chars": 3310,
+      "segments": 3
+    },
+    "614": {
+      "zh_chars": 1123,
+      "ru_chars": 3145,
+      "segments": 5
+    },
+    "617": {
+      "zh_chars": 1160,
+      "ru_chars": 3477,
+      "segments": 5
+    },
+    "615": {
+      "zh_chars": 1159,
+      "ru_chars": 3306,
+      "segments": 6
+    },
+    "618": {
+      "zh_chars": 1151,
+      "ru_chars": 3307,
+      "segments": 4
+    },
+    "619": {
+      "zh_chars": 1117,
+      "ru_chars": 2982,
+      "segments": 4
+    },
+    "620": {
+      "zh_chars": 1184,
+      "ru_chars": 3542,
+      "segments": 3
+    },
+    "621": {
+      "zh_chars": 1156,
+      "ru_chars": 3281,
+      "segments": 4
+    },
+    "622": {
+      "zh_chars": 1145,
+      "ru_chars": 3298,
+      "segments": 5
+    },
+    "623": {
+      "zh_chars": 1121,
+      "ru_chars": 3141,
+      "segments": 6
+    },
+    "624": {
+      "zh_chars": 1109,
+      "ru_chars": 3049,
+      "segments": 5
+    },
+    "625": {
+      "zh_chars": 1139,
+      "ru_chars": 3207,
+      "segments": 4
+    },
+    "626": {
+      "zh_chars": 1153,
+      "ru_chars": 3277,
+      "segments": 2
+    },
+    "628": {
+      "zh_chars": 1132,
+      "ru_chars": 3233,
+      "segments": 5
+    },
+    "627": {
+      "zh_chars": 1203,
+      "ru_chars": 3369,
+      "segments": 6
+    },
+    "630": {
+      "zh_chars": 1174,
+      "ru_chars": 3373,
+      "segments": 5
+    },
+    "629": {
+      "zh_chars": 1167,
+      "ru_chars": 3174,
+      "segments": 5
+    },
+    "631": {
+      "zh_chars": 1146,
+      "ru_chars": 3157,
+      "segments": 5
+    },
+    "633": {
+      "zh_chars": 1152,
+      "ru_chars": 3577,
+      "segments": 3
+    },
+    "632": {
+      "zh_chars": 1168,
+      "ru_chars": 3310,
+      "segments": 5
+    },
+    "634": {
+      "zh_chars": 1118,
+      "ru_chars": 3208,
+      "segments": 5
+    },
+    "635": {
+      "zh_chars": 1187,
+      "ru_chars": 3221,
+      "segments": 5
+    },
+    "636": {
+      "zh_chars": 1137,
+      "ru_chars": 3363,
+      "segments": 5
+    },
+    "637": {
+      "zh_chars": 1127,
+      "ru_chars": 3194,
+      "segments": 5
+    },
+    "638": {
+      "zh_chars": 1150,
+      "ru_chars": 3253,
+      "segments": 5
+    },
+    "639": {
+      "zh_chars": 1143,
+      "ru_chars": 3048,
+      "segments": 4
+    },
+    "640": {
+      "zh_chars": 1130,
+      "ru_chars": 3357,
+      "segments": 4
+    },
+    "641": {
+      "zh_chars": 1097,
+      "ru_chars": 3063,
+      "segments": 4
+    },
+    "643": {
+      "zh_chars": 1072,
+      "ru_chars": 3101,
+      "segments": 5
+    },
+    "642": {
+      "zh_chars": 1124,
+      "ru_chars": 3129,
+      "segments": 5
+    },
+    "644": {
+      "zh_chars": 1083,
+      "ru_chars": 2995,
+      "segments": 4
+    },
+    "645": {
+      "zh_chars": 1151,
+      "ru_chars": 3086,
+      "segments": 5
+    },
+    "647": {
+      "zh_chars": 1126,
+      "ru_chars": 2921,
+      "segments": 4
+    },
+    "646": {
+      "zh_chars": 1142,
+      "ru_chars": 3225,
+      "segments": 4
+    },
+    "648": {
+      "zh_chars": 1128,
+      "ru_chars": 3108,
+      "segments": 5
+    },
+    "649": {
+      "zh_chars": 1153,
+      "ru_chars": 3363,
+      "segments": 5
+    },
+    "650": {
+      "zh_chars": 1177,
+      "ru_chars": 3189,
+      "segments": 4
+    },
+    "651": {
+      "zh_chars": 1175,
+      "ru_chars": 3043,
+      "segments": 5
+    },
+    "652": {
+      "zh_chars": 1146,
+      "ru_chars": 3222,
+      "segments": 5
+    },
+    "653": {
+      "zh_chars": 1088,
+      "ru_chars": 2976,
+      "segments": 4
+    },
+    "654": {
+      "zh_chars": 1118,
+      "ru_chars": 3216,
+      "segments": 4
+    },
+    "655": {
+      "zh_chars": 1156,
+      "ru_chars": 3062,
+      "segments": 5
+    },
+    "656": {
+      "zh_chars": 1143,
+      "ru_chars": 3213,
+      "segments": 5
+    },
+    "657": {
+      "zh_chars": 1129,
+      "ru_chars": 3073,
+      "segments": 5
+    },
+    "659": {
+      "zh_chars": 1156,
+      "ru_chars": 3294,
+      "segments": 4
+    },
+    "658": {
+      "zh_chars": 1164,
+      "ru_chars": 3256,
+      "segments": 6
+    },
+    "660": {
+      "zh_chars": 1152,
+      "ru_chars": 3364,
+      "segments": 5
+    },
+    "661": {
+      "zh_chars": 1116,
+      "ru_chars": 3195,
+      "segments": 5
+    },
+    "663": {
+      "zh_chars": 1120,
+      "ru_chars": 3405,
+      "segments": 3
+    },
+    "662": {
+      "zh_chars": 1142,
+      "ru_chars": 3499,
+      "segments": 5
+    },
+    "665": {
+      "zh_chars": 1176,
+      "ru_chars": 3593,
+      "segments": 4
+    },
+    "664": {
+      "zh_chars": 1144,
+      "ru_chars": 3420,
+      "segments": 4
+    },
+    "666": {
+      "zh_chars": 1152,
+      "ru_chars": 3301,
+      "segments": 6
+    },
+    "667": {
+      "zh_chars": 1143,
+      "ru_chars": 3377,
+      "segments": 5
+    },
+    "668": {
+      "zh_chars": 1157,
+      "ru_chars": 3360,
+      "segments": 5
+    },
+    "669": {
+      "zh_chars": 1131,
+      "ru_chars": 3366,
+      "segments": 5
+    },
+    "671": {
+      "zh_chars": 1143,
+      "ru_chars": 3382,
+      "segments": 5
+    },
+    "670": {
+      "zh_chars": 1114,
+      "ru_chars": 3334,
+      "segments": 5
+    },
+    "673": {
+      "zh_chars": 1117,
+      "ru_chars": 3409,
+      "segments": 4
+    },
+    "672": {
+      "zh_chars": 1122,
+      "ru_chars": 3341,
+      "segments": 5
+    },
+    "674": {
+      "zh_chars": 1173,
+      "ru_chars": 3679,
+      "segments": 4
+    },
+    "675": {
+      "zh_chars": 1187,
+      "ru_chars": 3159,
+      "segments": 5
+    },
+    "676": {
+      "zh_chars": 1127,
+      "ru_chars": 3296,
+      "segments": 5
+    },
+    "677": {
+      "zh_chars": 1124,
+      "ru_chars": 3461,
+      "segments": 5
+    },
+    "678": {
+      "zh_chars": 1147,
+      "ru_chars": 3578,
+      "segments": 5
+    },
+    "679": {
+      "zh_chars": 1114,
+      "ru_chars": 3621,
+      "segments": 4
+    },
+    "681": {
+      "zh_chars": 1106,
+      "ru_chars": 3262,
+      "segments": 4
+    },
+    "680": {
+      "zh_chars": 1161,
+      "ru_chars": 3488,
+      "segments": 5
+    },
+    "682": {
+      "zh_chars": 1075,
+      "ru_chars": 3378,
+      "segments": 4
+    },
+    "683": {
+      "zh_chars": 1122,
+      "ru_chars": 3367,
+      "segments": 5
+    },
+    "684": {
+      "zh_chars": 1154,
+      "ru_chars": 3567,
+      "segments": 4
+    },
+    "685": {
+      "zh_chars": 1160,
+      "ru_chars": 3331,
+      "segments": 5
+    },
+    "686": {
+      "zh_chars": 1128,
+      "ru_chars": 3344,
+      "segments": 4
+    },
+    "687": {
+      "zh_chars": 1125,
+      "ru_chars": 3128,
+      "segments": 5
+    },
+    "688": {
+      "zh_chars": 1135,
+      "ru_chars": 3565,
+      "segments": 5
+    },
+    "689": {
+      "zh_chars": 1111,
+      "ru_chars": 3359,
+      "segments": 5
+    },
+    "690": {
+      "zh_chars": 1127,
+      "ru_chars": 3488,
+      "segments": 5
+    },
+    "691": {
+      "zh_chars": 1128,
+      "ru_chars": 3602,
+      "segments": 4
+    },
+    "692": {
+      "zh_chars": 1093,
+      "ru_chars": 3444,
+      "segments": 4
+    },
+    "694": {
+      "zh_chars": 1098,
+      "ru_chars": 3108,
+      "segments": 5
+    },
+    "693": {
+      "zh_chars": 1097,
+      "ru_chars": 3413,
+      "segments": 5
+    },
+    "695": {
+      "zh_chars": 1148,
+      "ru_chars": 3329,
+      "segments": 4
+    },
+    "696": {
+      "zh_chars": 1106,
+      "ru_chars": 3328,
+      "segments": 5
+    },
+    "697": {
+      "zh_chars": 1150,
+      "ru_chars": 3564,
+      "segments": 4
+    },
+    "698": {
+      "zh_chars": 1136,
+      "ru_chars": 3504,
+      "segments": 4
+    },
+    "699": {
+      "zh_chars": 1121,
+      "ru_chars": 3425,
+      "segments": 4
+    },
+    "701": {
+      "zh_chars": 1127,
+      "ru_chars": 2974,
+      "segments": 5
+    },
+    "700": {
+      "zh_chars": 1161,
+      "ru_chars": 3389,
+      "segments": 5
+    },
+    "702": {
+      "zh_chars": 1161,
+      "ru_chars": 3444,
+      "segments": 5
+    },
+    "703": {
+      "zh_chars": 1085,
+      "ru_chars": 3041,
+      "segments": 4
+    },
+    "705": {
+      "zh_chars": 1106,
+      "ru_chars": 3253,
+      "segments": 4
+    },
+    "704": {
+      "zh_chars": 1108,
+      "ru_chars": 2880,
+      "segments": 4
+    },
+    "706": {
+      "zh_chars": 1144,
+      "ru_chars": 3165,
+      "segments": 5
+    },
+    "707": {
+      "zh_chars": 1136,
+      "ru_chars": 3342,
+      "segments": 4
+    },
+    "708": {
+      "zh_chars": 1134,
+      "ru_chars": 3198,
+      "segments": 4
+    },
+    "711": {
+      "zh_chars": 1146,
+      "ru_chars": 3214,
+      "segments": 4
+    },
+    "710": {
+      "zh_chars": 1113,
+      "ru_chars": 3059,
+      "segments": 4
+    },
+    "709": {
+      "zh_chars": 1144,
+      "ru_chars": 3301,
+      "segments": 6
+    },
+    "712": {
+      "zh_chars": 1156,
+      "ru_chars": 3333,
+      "segments": 5
+    },
+    "714": {
+      "zh_chars": 1077,
+      "ru_chars": 3302,
+      "segments": 3
+    },
+    "713": {
+      "zh_chars": 1139,
+      "ru_chars": 3225,
+      "segments": 4
+    },
+    "715": {
+      "zh_chars": 1136,
+      "ru_chars": 3414,
+      "segments": 4
+    },
+    "717": {
+      "zh_chars": 1121,
+      "ru_chars": 3045,
+      "segments": 5
+    },
+    "716": {
+      "zh_chars": 1119,
+      "ru_chars": 3423,
+      "segments": 6
+    },
+    "719": {
+      "zh_chars": 1133,
+      "ru_chars": 3153,
+      "segments": 4
+    },
+    "718": {
+      "zh_chars": 1149,
+      "ru_chars": 3204,
+      "segments": 6
+    },
+    "722": {
+      "zh_chars": 1119,
+      "ru_chars": 3289,
+      "segments": 3
+    },
+    "721": {
+      "zh_chars": 1104,
+      "ru_chars": 3260,
+      "segments": 4
+    },
+    "720": {
+      "zh_chars": 1158,
+      "ru_chars": 3063,
+      "segments": 5
+    },
+    "723": {
+      "zh_chars": 1135,
+      "ru_chars": 3337,
+      "segments": 4
+    },
+    "724": {
+      "zh_chars": 1105,
+      "ru_chars": 3145,
+      "segments": 5
+    },
+    "726": {
+      "zh_chars": 1135,
+      "ru_chars": 3278,
+      "segments": 4
+    },
+    "725": {
+      "zh_chars": 1128,
+      "ru_chars": 3106,
+      "segments": 5
+    },
+    "727": {
+      "zh_chars": 1133,
+      "ru_chars": 3306,
+      "segments": 5
+    },
+    "728": {
+      "zh_chars": 1149,
+      "ru_chars": 3045,
+      "segments": 6
+    },
+    "729": {
+      "zh_chars": 1113,
+      "ru_chars": 3152,
+      "segments": 5
+    },
+    "730": {
+      "zh_chars": 1137,
+      "ru_chars": 3025,
+      "segments": 5
+    },
+    "731": {
+      "zh_chars": 1116,
+      "ru_chars": 3054,
+      "segments": 5
+    },
+    "733": {
+      "zh_chars": 1101,
+      "ru_chars": 3166,
+      "segments": 4
+    },
+    "732": {
+      "zh_chars": 1098,
+      "ru_chars": 3195,
+      "segments": 4
+    },
+    "734": {
+      "zh_chars": 1127,
+      "ru_chars": 3260,
+      "segments": 5
+    },
+    "735": {
+      "zh_chars": 1121,
+      "ru_chars": 2800,
+      "segments": 5
+    },
+    "736": {
+      "zh_chars": 1141,
+      "ru_chars": 3255,
+      "segments": 4
+    },
+    "737": {
+      "zh_chars": 1102,
+      "ru_chars": 3473,
+      "segments": 4
+    },
+    "738": {
+      "zh_chars": 1126,
+      "ru_chars": 3413,
+      "segments": 5
+    },
+    "739": {
+      "zh_chars": 1092,
+      "ru_chars": 3376,
+      "segments": 3
+    },
+    "741": {
+      "zh_chars": 1096,
+      "ru_chars": 3368,
+      "segments": 4
+    },
+    "740": {
+      "zh_chars": 1119,
+      "ru_chars": 3302,
+      "segments": 4
+    },
+    "743": {
+      "zh_chars": 1069,
+      "ru_chars": 3427,
+      "segments": 4
+    },
+    "745": {
+      "zh_chars": 1122,
+      "ru_chars": 3325,
+      "segments": 3
+    },
+    "742": {
+      "zh_chars": 1135,
+      "ru_chars": 3384,
+      "segments": 5
+    },
+    "744": {
+      "zh_chars": 1128,
+      "ru_chars": 3152,
+      "segments": 5
+    },
+    "747": {
+      "zh_chars": 1091,
+      "ru_chars": 3180,
+      "segments": 4
+    },
+    "746": {
+      "zh_chars": 1059,
+      "ru_chars": 3186,
+      "segments": 5
+    },
+    "749": {
+      "zh_chars": 1112,
+      "ru_chars": 3492,
+      "segments": 4
+    },
+    "748": {
+      "zh_chars": 1088,
+      "ru_chars": 2739,
+      "segments": 5
+    },
+    "750": {
+      "zh_chars": 1113,
+      "ru_chars": 3370,
+      "segments": 4
+    },
+    "751": {
+      "zh_chars": 1090,
+      "ru_chars": 3227,
+      "segments": 5
+    },
+    "752": {
+      "zh_chars": 1108,
+      "ru_chars": 3426,
+      "segments": 5
+    },
+    "753": {
+      "zh_chars": 1108,
+      "ru_chars": 2998,
+      "segments": 6
+    },
+    "754": {
+      "zh_chars": 1103,
+      "ru_chars": 3220,
+      "segments": 5
+    },
+    "755": {
+      "zh_chars": 1107,
+      "ru_chars": 3275,
+      "segments": 5
+    },
+    "756": {
+      "zh_chars": 1096,
+      "ru_chars": 3478,
+      "segments": 4
+    }
+  },
+  "combined_sha256": "e4d188a794ebc0ab45a476a3973afddd4e38ea4fbde4054378ac8ef6587ce4b7",
+  "bytes": 885844
+}
