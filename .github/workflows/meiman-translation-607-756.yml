@@ -1,0 +1,27 @@
+name: Marvel RU continuation translation (607-756)
+on:
+  push:
+    branches: [translation/meiman-rule-horror-westernized-607-756-20261114]
+    paths:
+      - .github/workflows/meiman-translation-607-756.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: translation/meiman-rule-horror-westernized-607-756-20261114
+      - name: Translate pilot chapters
+        run: python3 novels/meiman-rule-horror/scripts/translate_607_756.py --start 607 --end 609 --workers 2
+      - name: Upload Russian text and integrity report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marvel-ru-607-609-pilot
+          path: novels/meiman-rule-horror/ru/continuation-607-756/*
+          if-no-files-found: error
+          retention-days: 90
