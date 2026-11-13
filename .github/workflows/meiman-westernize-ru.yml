@@ -1,0 +1,45 @@
+name: Marvel RU Westernization 001-606
+on:
+  push:
+    branches:
+      - translation/meiman-rule-horror-westernized-001-606-20261114
+    paths:
+      - novels/meiman-rule-horror/localization/westernization-ru.json
+      - novels/meiman-rule-horror/localization/westernize_ru.py
+      - .github/workflows/meiman-westernize-ru.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  westernize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout localization branch
+        uses: actions/checkout@v4
+        with:
+          ref: translation/meiman-rule-horror-westernized-001-606-20261114
+          persist-credentials: true
+      - name: Apply glossary to all Russian chapters and combined files
+        run: python3 novels/meiman-rule-horror/localization/westernize_ru.py
+      - name: Verify repeat application makes no changes
+        run: python3 novels/meiman-rule-horror/localization/westernize_ru.py --check
+      - name: Commit localized chapters on translation branch only
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add novels/meiman-rule-horror/ru novels/meiman-rule-horror/localization/westernization-report.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Westernize all Russian Marvel chapters through 606"
+            git push origin HEAD:refs/heads/translation/meiman-rule-horror-westernized-001-606-20261114
+          else
+            echo "Everything is already Westernized"
+          fi
+      - name: Upload new reader-ready text and archives
+        uses: actions/upload-artifact@v4
+        with:
+          name: marvel-ru-westernized-001-606
+          path: marvel-ru-westernized-artifacts/*
+          if-no-files-found: error
+          retention-days: 90
