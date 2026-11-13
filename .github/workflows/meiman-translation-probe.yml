@@ -14,7 +14,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import json,urllib.parse,urllib.request,urllib.error,time
-          sample="苏林看向天空，突然发现了一道金色的光芒。他知道，新的世界正在等待他。"
+          sample="Silas Lane看向天空，突然发现了一道金色的光芒。他知道，新的世界正在等待他。"
           for api in ("https://translate.googleapis.com/translate_a/t","https://translate.googleapis.com/translate_a/single","https://clients5.google.com/translate_a/t"):
             qs={"client":"dict-chrome-ex" if api.endswith("/t") else "gtx","sl":"zh-CN","tl":"ru","q":sample}
             if api.endswith("/single"):qs["dt"]="t"
