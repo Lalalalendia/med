@@ -108,11 +108,11 @@ def process_zh(txt: str) -> str:
     # Suppress obvious standalone ad page counters; do not delete narrative numbers.
     txt = re.sub(r"(?m)^\s*(?:790|807|930|4[.]2)\s*$", "", txt)
     for chinese, english in NAME_PAIRS:
-        txt = txt.replace(chinese, english)
+        txt = txt.replace(chinese, ' ' + english + ' ')
     return txt.strip()
 
 
-def chunks(txt: str, length: int = 560) -> list[str]:
+def chunks(txt: str, length: int = 750) -> list[str]:
     lines = [line.strip() for line in txt.splitlines()]
     chunks, buf = [], ""
     for line in lines:
@@ -125,7 +125,7 @@ def chunks(txt: str, length: int = 560) -> list[str]:
         if line.startswith(("“", "”")) and len(buf) > 180:
             chunks.append(buf)
             buf = ""
-        buf += ("\n" if buf else "") + line
+        buf += line
     if buf:
         chunks.append(buf)
     return chunks
@@ -180,6 +180,8 @@ def westernize_ru(txt: str) -> str:
         "Башня Тяньтун": "Небесная башня",
         "Небесная башня": "Небесная башня",
         "Скай Тауэр": "Небесная башня",
+        "Сайлас-лейн": "Сайлас Лейн",
+        "Сайлас-Лейн": "Сайлас Лейн",
     })
     ordered = sorted((k for k, v in substitutions.items() if k != v), key=lambda x: (-len(x), x))
     pattern = re.compile(r"(?<![^\W\d_])(?:" + "|".join(re.escape(x) for x in ordered) + r")(?![^\W\d_])")
