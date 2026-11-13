@@ -152,7 +152,7 @@ def translate_api(txt: str) -> str:
                                              headers={"User-Agent": "Mozilla/5.0"})
                 with urllib.request.urlopen(req, timeout=28) as response:
                     output = parse_response(response.read())
-                if not output or len(CYR.findall(output)) < 15:
+                if not output or len(CYR.findall(output)) < max(2, min(15, int(len(txt) * 0.20))):
                     raise ValueError("Translation returned no meaningful Cyrillic")
                 if len(HAN.findall(output)) > 2:
                     raise ValueError("Untranslated Chinese remains")
