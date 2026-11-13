@@ -1,0 +1,43 @@
+name: Marvel LLM Literary Translation Probe
+on:
+  push:
+    branches: [translation/meiman-rule-horror-westernized-607-756-20261114]
+    paths: [.github/workflows/meiman-model-probe.yml]
+permissions:
+  contents: read
+  models: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Translate one chapter with GitHub Models
+        env:
+          GH_MODELS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os, json, urllib.request, urllib.error, re
+          from pathlib import Path
+          src=Path("novels/meiman-rule-horror/source/meiman-zh-607-756.txt").read_text()
+          match=re.search(r"(?ms)^607章 ([^\n]+)\n(.*?)(?=^608章)",src)
+          assert match,"Missing original chapter"
+          ch=match.group(2)
+          system="Translate Chinese web-fiction into fluent, polished Russian prose, literary but faithful. Translate the complete text, never omit a sentence, preserve all dialogue and plot. The main character 苏林 is named Сайлас Лейн (male); 玛丽肖 is Мэри Шоу; 宁采臣 is Натан Кейн; 聂小倩 is Эвелин Мур. Other recognized Marvel names should retain their canonical Western forms. Use 'аномалия правил' for 规则怪谈; 'Небесная башня' for 通天塔. Do not add commentary or a summary. Start 'Глава 607.' and translate the title, then full chapter."
+          payload={"model":"openai/gpt-4.1-mini","temperature":0.1,"max_tokens":4096,"messages":[{"role":"system","content":system},{"role":"user","content":"Глава 607. "+match.group(1)+"\n\n"+ch}]}
+          req=urllib.request.Request("https://models.github.ai/inference/chat/completions",data=json.dumps(payload,ensure_ascii=False).encode(),headers={"Authorization":"Bearer "+os.environ["GH_MODELS_TOKEN"],"Content-Type":"application/json","Accept":"application/vnd.github+json"},method="POST")
+          try:
+            with urllib.request.urlopen(req,timeout=65) as r:
+              j=json.loads(r.read())
+              out=j["choices"][0]["message"]["content"]
+              Path("literary-ru-607.txt").write_text(out)
+              print("LLM_SUCCESS length",len(out),"preview",repr(out[:1300]),"tail",repr(out[-300:]))
+          except urllib.error.HTTPError as e:
+            print("LLM_HTTP_ERROR",e.code,e.read().decode(errors="replace")[:1000]);raise
+          PY
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: marvel-ru-607-literary-probe
+          path: literary-ru-607.txt
