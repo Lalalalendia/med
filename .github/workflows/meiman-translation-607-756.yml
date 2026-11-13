@@ -6,7 +6,7 @@ on:
       - .github/workflows/meiman-translation-607-756.yml
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   translate:
     runs-on: ubuntu-latest
@@ -15,13 +15,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: translation/meiman-rule-horror-westernized-607-756-20261114
-      - name: Translate joined-clause pilot chapters
-        run: python3 novels/meiman-rule-horror/scripts/translate_607_756.py --start 607 --end 609 --workers 2
+      - name: Translate all remaining chapters 607-756
+        run: python3 novels/meiman-rule-horror/scripts/translate_607_756.py --start 607 --end 756 --workers 4
+      - name: Commit translated continuation on this branch
+        if: success()
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add novels/meiman-rule-horror/ru/continuation-607-756/
+          if ! git diff --cached --quiet; then
+            git commit -m "Translate remaining Marvel chapters 607-756 into westernized Russian draft"
+            git push origin HEAD:refs/heads/translation/meiman-rule-horror-westernized-607-756-20261114
+          fi
       - name: Upload Russian text and integrity report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: marvel-ru-607-609-joined-pilot
+          name: marvel-ru-607-756-westernized-draft
           path: novels/meiman-rule-horror/ru/continuation-607-756/*
           if-no-files-found: error
           retention-days: 90
