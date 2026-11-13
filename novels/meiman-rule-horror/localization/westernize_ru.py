@@ -29,25 +29,26 @@ def sha(data: bytes) -> str:
 
 def replacements():
     spec = json.loads(GLOSSARY.read_text(encoding="utf-8"))
-    pairs = list(spec["names"]) + list(spec["terms"])
     seen = {}
-    for old, new in pairs:
+    for old, new in list(spec["names"]) + list(spec["terms"]):
         if old in seen and seen[old] != new:
             raise ValueError(f"Contradictory mapping for {old!r}")
         seen[old] = new
-    ordered = sorted(seen.items(), key=lambda pair: (-len(pair[0]), pair[0]))
-    return [
-        (old, new, re.compile(r"(?<!" + LETTER + r")" + re.escape(old) + r"(?!" + LETTER + r")"))
-        for old, new in ordered if old != new
-    ]
+    ordered = sorted((key for key in seen if key != seen[key]), key=lambda x: (-len(x), x))
+    pattern = re.compile(r"(?<!" + LETTER + r")(?:"
+                         + "|".join(re.escape(old) for old in ordered) + r")(?!" + LETTER + r")")
+    return pattern, seen
 
 
 def westernize(body: str, rules, counters: collections.Counter) -> str:
-    for old, new, regex in rules:
-        body, n = regex.subn(lambda _match: new, body)
-        if n:
-            counters[old] += n
-    return body
+    pattern, mapping = rules
+
+    def swap(match):
+        original = match.group(0)
+        counters[original] += 1
+        return mapping[original]
+
+    return pattern.sub(swap, body)
 
 
 def build_zip(path: Path, sources: dict[str, bytes], identifiers: list[str]):
