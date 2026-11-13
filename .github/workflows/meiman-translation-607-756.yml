@@ -15,13 +15,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: translation/meiman-rule-horror-westernized-607-756-20261114
-      - name: Translate pilot chapters
+      - name: Translate joined-clause pilot chapters
         run: python3 novels/meiman-rule-horror/scripts/translate_607_756.py --start 607 --end 609 --workers 2
       - name: Upload Russian text and integrity report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: marvel-ru-607-609-pilot
+          name: marvel-ru-607-609-joined-pilot
           path: novels/meiman-rule-horror/ru/continuation-607-756/*
           if-no-files-found: error
           retention-days: 90
