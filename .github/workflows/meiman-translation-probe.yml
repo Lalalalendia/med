@@ -1,0 +1,29 @@
+name: Marvel Translation Provider Probe
+on:
+  push:
+    branches: [translation/meiman-rule-horror-westernized-607-756-20261114]
+    paths: [.github/workflows/meiman-translation-probe.yml]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check translation providers for Chinese to Russian
+        run: |
+          python3 - <<'PY'
+          import json,urllib.parse,urllib.request,urllib.error,time
+          sample="苏林看向天空，突然发现了一道金色的光芒。他知道，新的世界正在等待他。"
+          for api in ("https://translate.googleapis.com/translate_a/t","https://translate.googleapis.com/translate_a/single","https://clients5.google.com/translate_a/t"):
+            qs={"client":"dict-chrome-ex" if api.endswith("/t") else "gtx","sl":"zh-CN","tl":"ru","q":sample}
+            if api.endswith("/single"):qs["dt"]="t"
+            url=api+"?"+urllib.parse.urlencode(qs)
+            t=time.monotonic()
+            try:
+              with urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"}),timeout=15) as r:
+                body=r.read().decode("utf-8")
+                print("PROVIDER",api,"STATUS",r.status,"SECONDS",round(time.monotonic()-t,2),"RESULT",body[:400])
+            except Exception as e:
+              print("PROVIDER",api,"ERROR",repr(e),"SECONDS",round(time.monotonic()-t,2))
+          PY
