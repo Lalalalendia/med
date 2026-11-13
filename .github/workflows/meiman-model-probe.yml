@@ -29,7 +29,9 @@ jobs:
           req=urllib.request.Request("https://models.github.ai/inference/chat/completions",data=json.dumps(payload,ensure_ascii=False).encode(),headers={"Authorization":"Bearer "+os.environ["GH_MODELS_TOKEN"],"Content-Type":"application/json","Accept":"application/vnd.github+json"},method="POST")
           try:
             with urllib.request.urlopen(req,timeout=65) as r:
-              j=json.loads(r.read())
+              raw=r.read()
+              print("MODEL_HTTP",r.status,r.url,r.headers.get("Content-Type"),"PREFIX",repr(raw[:250]))
+              j=json.loads(raw)
               out=j["choices"][0]["message"]["content"]
               Path("literary-ru-607.txt").write_text(out)
               print("LLM_SUCCESS length",len(out),"preview",repr(out[:1300]),"tail",repr(out[-300:]))
