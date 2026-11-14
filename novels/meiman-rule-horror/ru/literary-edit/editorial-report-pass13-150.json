@@ -29,7 +29,14 @@
     "new_chapters_have_no_cjk": true,
     "new_chapters_have_no_replacement_char": true,
     "previous_144_chapters_preserved_at_chapter_level": true,
-    "full_readback_pending": true
+    "full_readback_pending": false,
+    "standalone_git_blob_sha_matches": true,
+    "complete_git_blob_sha_matches": true,
+    "both_zips_crc_ok": true,
+    "zip_member_counts": [
+      6,
+      150
+    ]
   },
   "editorial_notes": [
     "751-756 reviewed against Chinese original, including title and final cliffhanger of 756.",
@@ -41,5 +48,6 @@
     "Chapter 756 is NOT the end of the original novel. This completes only the literary editing range 607-756.",
     "Earlier chapter 226 is missing outside this collection.",
     "Editorial QA does not establish publication rights or completeness beyond chapter 756."
-  ]
+  ],
+  "chapters_previous_144_byte_level_preserved": true
 }
