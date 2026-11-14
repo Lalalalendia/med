@@ -26,3 +26,11 @@ The normal push workflow runs metadata checks only. It does not save original pr
 This collection is not marked complete until GitHub Actions confirms the actual discovered end chapter and validates all chapter content.
 
 The unnumbered postscript/bonus material listed after the final numbered chapter is outside the current verified numbered-range export and needs separate validation.
+
+## Verified first block (2026-11-14)
+The metadata-only acceptance run [#43572525446](https://github.com/Lalalalendia/med/actions/runs/43572525446)
+verified **20/20 chapters** in the range 660-679, with 20 unique body SHA-256 hashes.
+In this exact range, printed chapter 660 is `p648.html` and printed chapter 679 is
+`p667.html`; **do not extrapolate that offset** to other parts of the book.
+The public index is sparse, so all later physical pages must be independently validated.
+
