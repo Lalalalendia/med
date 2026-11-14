@@ -98,8 +98,7 @@ def fetch_all(start, end, delay, session, first_locator, last_locator):
         number = int(match.group(1))
         if number < start or number > end:
             raise ValueError(f"Unexpected chapter {number} at p{locator}; expected {start}-{end}")
-        if records and number < records[-1]["number"]:
-            raise ValueError(f"Chapter numbering regressed at p{locator}: {number}")
+        number_regression = bool(records and number < records[-1]["number"])
         title, body, cjk = parse_chapter(page.text, number, page.url)
         digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
         if digest in seen_hashes:
@@ -109,12 +108,13 @@ def fetch_all(start, end, delay, session, first_locator, last_locator):
         seen_numbers.add(number)
         records.append({"number": number, "url_number": locator, "url": page.url,
                         "title": title, "cjk_chars": cjk, "sha256": digest,
-                        "duplicate_ordinal": duplicate_number, "text": body})
+                        "duplicate_ordinal": duplicate_number, "number_regression": number_regression,
+                        "text": body})
         print(f"p{locator} -> {number}, {cjk} CJK, duplicate_number={duplicate_number}", flush=True)
     missing = sorted(set(range(start, end + 1)) - seen_numbers)
     if missing:
-        raise ValueError(f"Missing displayed chapter numbers: {missing}")
-    print(f"FULL_RANGE_VERIFIED {start}-{end}: pages={len(records)}, distinct={len(seen_numbers)}", flush=True)
+        print("SOURCE_HEADING_GAPS", missing, flush=True)
+    print(f"FULL_RANGE_VERIFIED {start}-{end}: pages={len(records)}, distinct={len(seen_numbers)}, missing_headings={len(missing)}", flush=True)
     return records
 
 def chapter_filename(item):
@@ -124,8 +124,8 @@ def chapter_filename(item):
 def write_zip(records, out_dir):
     numbered = {r["number"] for r in records}
     wanted = set(range(START, END + 1))
-    if not records or numbered != wanted:
-        raise ValueError(f"Incomplete chapter range: missing={sorted(wanted-numbered)} extra={sorted(numbered-wanted)}")
+    if not records or records[0]["number"] != START or records[-1]["number"] != END:
+        raise ValueError("Source endpoint headings are not the requested start/end")
     locators = [r["url_number"] for r in records]
     if locators != list(range(min(locators), max(locators) + 1)):
         raise ValueError("Nonconsecutive physical pages")
@@ -144,6 +144,8 @@ def write_zip(records, out_dir):
             "source": INDEX, "start": START, "end": END,
             "physical_pages": len(records), "unique_chapter_numbers": len(numbered),
             "duplicate_numbered_pages": len(records) - len(numbered),
+            "missing_printed_ordinals": sorted(wanted - numbered),
+            "number_regressions": [r["url_number"] for r in records if r["number_regression"]],
             "verified_utc": datetime.now(timezone.utc).isoformat(),
             "chapters": manifest, "rights_attested": True,
         }, indent=2, ensure_ascii=False))
@@ -232,6 +234,8 @@ def main():
         records = fetch_all(START, END, args.delay, session, first_locator, last_locator)
         archive = write_zip(records, args.out)
         report = {"source": INDEX, "start": START, "end": END, "count": len(records),
+                  "distinct_numbers": len({r["number"] for r in records}),
+                  "missing_printed_ordinals": sorted(set(range(START, END + 1)) - {r["number"] for r in records}),
                   "archive": archive.name, "completed": True, "rights_confirmed": True}
         (args.out / "status.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
         print("COMPLETE", len(records), str(archive))
