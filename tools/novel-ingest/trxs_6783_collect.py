@@ -41,6 +41,8 @@ def get_html(url):
     r.raise_for_status()
     if len(r.content) < 300:
         raise RuntimeError(f"short HTML: {len(r.content)} bytes")
+    if "/6783/" in url and not r.content.strip():
+        raise RuntimeError("blank page bytes length=" + str(len(r.content)) + " status=" + str(r.status_code) + " url=" + str(r.url) + " content-type=" + str(r.headers.get("Content-Type")) + " byte_prefix=" + repr(r.content[:200]))
     return BeautifulSoup(r.content, "lxml")
 
 
