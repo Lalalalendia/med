@@ -1,0 +1,61 @@
+{
+  "status": "partial-literary-edition",
+  "range": [
+    607,
+    756
+  ],
+  "chapter_count": 150,
+  "literary_checked_against_chinese": [
+    607,
+    740
+  ],
+  "literary_count": 134,
+  "newly_retranslated": [
+    731,
+    732,
+    733,
+    734,
+    735,
+    736,
+    737,
+    738,
+    739,
+    740
+  ],
+  "remaining_machine_draft": [
+    741,
+    756
+  ],
+  "machine_draft_count": 16,
+  "untouched_previous": [
+    607,
+    730
+  ],
+  "untouched_following": [
+    741,
+    756
+  ],
+  "untouched_total_count": 140,
+  "previous_revision": "PASS10-124",
+  "chinese_source": "novels/meiman-rule-horror/source/meiman-zh-607-756.txt",
+  "checks": {
+    "all_chapters_contiguous": true,
+    "all_10_new_chapters_have_no_cjk": true,
+    "previous_124_chapters_unchanged": true,
+    "following_16_chapters_unchanged": true
+  },
+  "editorial_notes": [
+    "Chapter 731 creates a second Annie through time manipulation; the double is destroyed while the original survives.",
+    "Chapter 733 death-word curse kills an avatar only; the underlying time/curse ghost escapes.",
+    "Chapter 735 ghost-god slave contract fails because Silas refuses to invoke the ghost god; he uses soul marks instead.",
+    "Chapter 738 headless ghost has no eyes, so the gaze rule cannot work; the death-word rule is used.",
+    "Chapter 739 calls the refuge the Dark Void World; coordinates are still unknown.",
+    "Original heroine's name Annie is retained even though it differs from the film Triangle.",
+    "Ambiguous sexual material involving the youthful-coded character Zhao Yingkong in 736-737 was adapted to nonsexual language; plot-relevant recovery and rule-energy transformation retained."
+  ],
+  "warnings": [
+    "741-756 remain machine drafts; not ready for publication.",
+    "Chapter 756 does not end the original novel.",
+    "Earlier chapter 226 is missing outside this range."
+  ]
+}

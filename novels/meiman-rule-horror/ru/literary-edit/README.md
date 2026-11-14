@@ -1,10 +1,12 @@
-# Marvel RU literary editing status (PASS10)
+# Marvel RU literary editing status (PASS11)
 
-- **607–730:** 124 chapters source-checked and literarily revised; individual `ru-607.txt` to `ru-730.txt` and `combined-ru-607-730-LITERARY.txt`.
-- **731–756:** 26 machine-draft chapters, not ready for publication.
-- Mixed compilation: `combined-ru-607-756-EDITORIAL-PASS10-124.txt`.
-- Previous **607–720** and following **731–756** preserved verbatim at chapter level compared with PASS9.
-- See `editorial-report-pass10-124.json` for status and checks.
-- The original uses the name **Annie** for the time-loop heroine, retained despite the film being different.
-- Retain identifiable fictional names Zhan Lan, Zhao Yingkong, Zheng Zha, Freddy, and Sadako, and established Westernization of original characters.
-- Chinese source chapter 756 is not the novel's conclusion; earlier chapter 226 is missing outside this range.
+- **607–740:** 134 chapters revised in Russian against the Chinese original; saved individually as `ru-607.txt` through `ru-740.txt` and in `combined-ru-607-740-LITERARY.txt`.
+- **741–756:** 16 machine-translation draft chapters, not publication-ready.
+- Mixed-status compilation: `combined-ru-607-756-EDITORIAL-PASS11-134.txt`.
+- Previous 607–730 and later 741–756 are unchanged compared with PASS10.
+- Original hero name localized to Silas Lane; existing character names Annie, Zhan Lan, Zhao Yingkong, Sadako and Freddy preserved.
+- Chapter 733: Death-word curse destroyed an avatar, not the primary ghost entity.
+- Chapter 739: Dark Void World is named as the possible refuge, location not yet found.
+- In chapters 736–737, ambiguous sexual material involving a youth-coded character is handled nonsexually while preserving plot-critical energy transformation.
+- See `editorial-report-pass11-134.json` for status and checks.
+- Chinese source chapter 756 is not the novel's conclusion; earlier chapter 226 remains missing outside the compilation.
