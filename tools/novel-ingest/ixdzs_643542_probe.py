@@ -120,6 +120,68 @@ def inspect(html, n):
     }
 
 
+
+def backfill_missing_prefix(session, rp, catalog, start, end, delay, limit=80):
+    """Inspect preceding pNNN pages to recover chapters absent from a truncated catalog.
+
+    Derive the starting URL from a verified index entry. Never infer chapter
+    numbers from URL numbers: require each chapter's actual H1 and readable
+    body before indexing it. Stops on access challenges or an unresolved gap.
+    """
+    if not catalog:
+        raise ValueError("No numbered chapter links in source index")
+    anchor_number = min(n for n in catalog if n >= start)
+    anchor = catalog[anchor_number]
+    if anchor_number == start:
+        return {"anchor": anchor_number, "probed": 0, "added": []}
+    locator = anchor["url_number"]
+    missing = set(range(start, min(anchor_number, end + 1)))
+    added = []
+    probed = 0
+    for current in range(locator - 1, max(0, locator - limit) - 1, -1):
+        if not missing:
+            break
+        url = f"https://ixdzs.tw/read/643542/p{current}.html"
+        if not rp.can_fetch(UA, url):
+            raise ValueError(f"robots.txt forbids preceding URL p{current}")
+        time.sleep(delay)
+        response = session.get(url, timeout=(8, 25))
+        if response.status_code in (403, 429, 503):
+            raise ValueError(f"Source blocked access at p{current}: {response.status_code}")
+        response.raise_for_status()
+        final = urlsplit(response.url)
+        if (final.scheme != "https" or final.netloc.lower() != "ixdzs.tw"
+                or final.path != f"/read/643542/p{current}.html"):
+            raise ValueError(f"Unexpected preceding chapter redirect p{current}: {response.url}")
+        doc = BeautifulSoup(response.text, "html.parser")
+        header = doc.select_one("h1") or doc.title
+        title = header.get_text(" ", strip=True) if header else ""
+        match = NUM.search(title)
+        if not match or any(word in title.lower() for word in BLOCK):
+            raise ValueError(f"Unverifiable preceding chapter p{current}: {title[:120]}")
+        n = int(match.group(1))
+        check = inspect(response.text, n)
+        if check["state"] != "readable" or detect_split_links(response.text, n, response.url):
+            raise ValueError(f"Incomplete preceding chapter p{current}: {check['state']}")
+        probed += 1
+        if n in catalog and catalog[n]["url"] != url:
+            raise ValueError(f"Two different URLs claim chapter {n}")
+        if n in missing:
+            catalog[n] = {
+                "url": url, "url_number": current, "catalog_title": title[:200],
+                "number_mismatch": n != current, "backfilled": True,
+            }
+            missing.remove(n)
+            added.append(n)
+        print(f"BACKFILL p{current} => chapter {n} ({check['cjk_chars']} CJK)", flush=True)
+        if n < start:
+            break
+    if missing:
+        raise ValueError(f"Cannot verify missing earlier chapters: {sorted(missing)}")
+    return {"anchor": anchor_number, "probed": probed, "added": sorted(added)}
+
+
+
 def audit(start, end, delay):
     result = {
         "source": INDEX, "range": [start, end],
@@ -145,11 +207,14 @@ def audit(start, end, delay):
         if index.status_code != 200:
             result["state"] = "index_unavailable"
             return result
-        links = extract_catalog(index.text, index.url, start, end)
+        catalog = extract_catalog(index.text, index.url, start, 999999)
+        result["index_links"] = len(catalog)
+        result["backfill"] = backfill_missing_prefix(s, rp, catalog, start, end, delay)
+        links = {n: row for n, row in catalog.items() if start <= n <= end}
         result["catalog_links_in_range"] = len(links)
         result["number_mismatches"] = [
-            {"chapter": k, "url_number": v["url_number"], "catalog_title": v["catalog_title"]}
-            for k, v in sorted(links.items()) if v["number_mismatch"]
+            {"chapter": n, "url_number": v["url_number"], "catalog_title": v["catalog_title"]}
+            for n, v in sorted(links.items()) if v["number_mismatch"]
         ]
         for n in range(start, end + 1):
             row = {"chapter": n}
