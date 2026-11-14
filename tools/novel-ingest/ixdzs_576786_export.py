@@ -213,8 +213,8 @@ def parse_page(html: str, number: int) -> tuple[str, str]:
     return title, body
 
 
-def write_archive(records: list[dict], outdir: Path, source: str, source_sha: str | None):
-    validate(records)
+def write_archive(records: list[dict], outdir: Path, source: str, source_sha: str | None, expected: int = TOTAL):
+    validate(records, expected)
     outdir.mkdir(parents=True, exist_ok=True)
     path = outdir / f"ixdzs-{BOOK}-1-{TOTAL}-cn.zip"
     chapter_info = []
@@ -249,7 +249,7 @@ def write_archive(records: list[dict], outdir: Path, source: str, source_sha: st
     with ZipFile(path) as archive:
         if archive.testzip() is not None:
             raise ValueError("Generated ZIP CRC validation failed")
-        if len(archive.namelist()) != TOTAL + 2:
+        if len(archive.namelist()) != expected + 2:
             raise ValueError("Generated ZIP file count mismatch")
         if digest(archive.read("combined.txt")) != manifest["combined_sha256"]:
             raise ValueError("combined.txt checksum mismatch")
@@ -282,7 +282,7 @@ def selftest():
         old_total = globals()["TOTAL"]
         globals()["TOTAL"] = 3
         try:
-            result, metadata = write_archive(records, Path(folder), "test", None)
+            result, metadata = write_archive(records, Path(folder), "test", None, expected=3)
             assert metadata["chapters_count"] == 3
             with ZipFile(result) as z:
                 assert "combined.txt" in z.namelist() and z.testzip() is None
