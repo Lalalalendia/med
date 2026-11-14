@@ -1,0 +1,50 @@
+{
+  "status": "partial-literary-edition",
+  "range": [
+    607,
+    756
+  ],
+  "chapters": 150,
+  "literary_checked_against_chinese": [
+    607,
+    710
+  ],
+  "literary_count": 104,
+  "newly_retranslated": [
+    701,
+    702,
+    703,
+    704,
+    705,
+    706,
+    707,
+    708,
+    709,
+    710
+  ],
+  "machine_draft_partially_mechanical": [
+    711,
+    756
+  ],
+  "machine_draft_count": 46,
+  "preserved_607_700": true,
+  "preserved_711_756": true,
+  "source": "novels/meiman-rule-horror/source/meiman-zh-607-756.txt",
+  "previous_revision": "PASS7-094",
+  "checks": {
+    "chapter_order": "607..756 contiguous",
+    "new_chapter_source": "Chinese original",
+    "new_chapters_contain_chinese": false,
+    "preserved_unchanged_chapters": 140
+  },
+  "editorial_notes": [
+    "Chinese source: chapter 702 states half a month (半个月), not one and a half months.",
+    "Westernized established character names: Sайлас Лейн, Шэрон, Джулиан Кейн; preserve canonical Marvel and historical figures.",
+    "Chapter 710 ends before the outcome of Clark's renewed attack."
+  ],
+  "warnings": [
+    "Only chapters 607-710 are source-checked literary rewriting; 711-756 remain machine draft.",
+    "Source chapter 756 does not conclude the novel.",
+    "Earlier chapter 226 is missing outside this range."
+  ]
+}
