@@ -34,3 +34,22 @@ In this exact range, printed chapter 660 is `p648.html` and printed chapter 679 
 `p667.html`; **do not extrapolate that offset** to other parts of the book.
 The public index is sparse, so all later physical pages must be independently validated.
 
+
+## Whole-tail metadata census
+
+A separate **non-reproduction** workflow scans every physical chapter page between the
+verified chapter-660 URL and the last numbered chapter currently shown in the catalogue:
+
+[IXDZS complete source metadata census](https://github.com/Lalalalendia/med/actions/workflows/ixdzs-643542-full-census.yml)
+
+The job runs `tools/novel-ingest/ixdzs_643542_full_census.py`. Its artifact
+`ixdzs-643542-full-metadata-660-tail` contains `manifest.json` and `summary.md`
+with H1 chapter ordinals, source URL locators, CJK lengths, hashes, observed duplicate
+numbers, missing numbered chapters, and incomplete-source diagnostics.
+**The artifact does not include the novel prose.** A successful first-20 probe is not
+proof that the full range is complete. An unsuccessful full scan is not permission
+to bypass access controls or omit failed pages.
+
+The only full-text export workflow remains manually gated on explicit permission
+for reproduction. Do not mark the full TXT collection complete until the requested
+physical-page range has been validated and the export archive has been verified.
