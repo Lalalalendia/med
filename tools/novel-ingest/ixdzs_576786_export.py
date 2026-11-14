@@ -260,7 +260,7 @@ def write_archive(records: list[dict], outdir: Path, source: str, source_sha: st
 
 
 def selftest():
-    fixture = "".join(f"第{n}章 标题{n}\n" + ("这是完整的测试文字。" * 38) + "\n" for n in range(1, 4))
+    fixture = "".join(f"第{n}章 标题{n}\n" + ((f"这是完整的测试文字{n}。" ) * 38) + "\n" for n in range(1, 4))
     records = split_text(fixture, expected=3)
     assert [r["number"] for r in records] == [1, 2, 3]
     try:
