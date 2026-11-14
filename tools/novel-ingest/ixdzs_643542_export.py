@@ -155,6 +155,7 @@ def write_zip(records, out_dir):
     return target
 
 def selftest():
+    global END
     text = "這是一段測試文本。" * 80
     html = f"<h1>第660章 測試</h1><article><p>{text}</p></article>"
     title, body, n = parse_chapter(html, 660, "https://ixdzs.tw/read/643542/p660.html")
@@ -174,6 +175,26 @@ def selftest():
         pass
     else:
         raise AssertionError("Split chapter was not rejected")
+    old_end = END
+    try:
+        END = 661
+        fixture = [
+            {"number": 660, "url_number": 648, "title": "第660章", "text": "甲" * 300,
+             "sha256": "a", "number_regression": False},
+            {"number": 661, "url_number": 649, "title": "第661章", "text": "乙" * 300,
+             "sha256": "b", "number_regression": False},
+            {"number": 661, "url_number": 650, "title": "第661章 另章", "text": "丙" * 300,
+             "sha256": "c", "number_regression": False},
+        ]
+        with TemporaryDirectory() as folder:
+            archive = write_zip(fixture, Path(folder))
+            with ZipFile(archive) as pack:
+                assert pack.testzip() is None
+                assert "chapters/0661_p0649.txt" in pack.namelist()
+                assert "chapters/0661_p0650.txt" in pack.namelist()
+                assert len(pack.namelist()) == 5
+    finally:
+        END = old_end
     print("EXPORT_SELFTEST_PASS")
 
 
