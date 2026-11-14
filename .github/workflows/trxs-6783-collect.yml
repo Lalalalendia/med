@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/trxs-6783-collect.yml"
+      - "tools/novel-ingest/trxs_6783_collect.py"
   workflow_dispatch:
 
 permissions:
