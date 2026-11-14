@@ -196,6 +196,19 @@ def selftest():
                 assert "chapters/0661_p0649.txt" in pack.namelist()
                 assert "chapters/0661_p0650.txt" in pack.namelist()
                 assert len(pack.namelist()) == 5
+        END = 662
+        invalid = [
+            dict(fixture[0]),
+            {"number": 662, "url_number": 649, "title": "第662章", "text": "戊" * 300,
+             "sha256": "e", "number_regression": False},
+        ]
+        with TemporaryDirectory() as folder:
+            try:
+                write_zip(invalid, Path(folder))
+            except ValueError as error:
+                assert "Missing printed chapters" in str(error)
+            else:
+                raise AssertionError("Exporter allowed a missing printed ordinal")
     finally:
         END = old_end
     print("EXPORT_SELFTEST_PASS")
