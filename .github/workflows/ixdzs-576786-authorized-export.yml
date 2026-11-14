@@ -1,0 +1,58 @@
+name: IXDZS 576786 authorized complete novel collection
+
+on:
+  push:
+    branches: [feat/ixdzs-576786-full-20261114]
+    paths:
+      - "tools/novel-ingest/ixdzs_576786_export.py"
+      - ".github/workflows/ixdzs-576786-authorized-export.yml"
+  workflow_dispatch:
+    inputs:
+      rights_confirmed:
+        description: "I have permission to copy the full original text (chapters 1-242)"
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ixdzs-576786-full-authorized-export
+  cancel-in-progress: false
+
+jobs:
+  export:
+    if: github.event_name == 'push' || inputs.rights_confirmed == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Offline parser and archive validation
+        run: python tools/novel-ingest/ixdzs_576786_export.py --selftest
+      - name: Collect authorized full Chinese text (all 242 chapters)
+        run: |
+          python tools/novel-ingest/ixdzs_576786_export.py \
+            --rights-confirmed --delay 2.0 \
+            --out out/authorized-ixdzs-576786
+      - name: Record verification status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-576786-verification-status
+          path: out/authorized-ixdzs-576786/status.json
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Publish verified TXT collection only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-576786-chapters-001-242-authorized-cn
+          path: out/authorized-ixdzs-576786/ixdzs-576786-1-242-cn.zip
+          retention-days: 30
+          if-no-files-found: error
