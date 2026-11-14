@@ -24,7 +24,7 @@ from bs4 import BeautifulSoup
 
 from ixdzs_643542_probe import (
     BLOCK, INDEX, PATH, SELECTORS, UA, NUM,
-    detect_split_links, extract_catalog,
+    detect_split_links, extract_catalog, backfill_missing_prefix,
 )
 
 START, END = 660, 679
@@ -74,7 +74,9 @@ def fetch_all(start, end, delay, session):
     response.raise_for_status()
     if urlsplit(response.url).hostname != "ixdzs.tw":
         raise ValueError("Catalog redirected to unexpected host")
-    catalog = extract_catalog(response.text, response.url, start, end)
+    catalog = extract_catalog(response.text, response.url, start, 999999)
+    backfill_missing_prefix(session, rp, catalog, start, end, delay)
+    catalog = {n: row for n, row in catalog.items() if start <= n <= end}
     required = list(range(start, end + 1))
     if len(catalog) != len(required):
         raise ValueError(f"Catalog has {len(catalog)} chapters but {len(required)} required")
@@ -165,6 +167,7 @@ def discover_latest(session):
     if final.scheme != "https" or final.netloc.lower() != "ixdzs.tw" or final.path.rstrip("/") != "/read/643542":
         raise ValueError(f"Unexpected catalog redirect: {res.url}")
     catalog = extract_catalog(res.text, res.url, START, 999999)
+    backfill_missing_prefix(session, rp, catalog, START, min(catalog), 2.0)
     mismatches = [(n, row["url_number"]) for n, row in sorted(catalog.items()) if row["number_mismatch"]]
     if mismatches:
         print("CATALOG_URL_NUMBER_MISMATCHES", mismatches[:50], flush=True)
