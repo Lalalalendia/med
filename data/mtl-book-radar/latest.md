@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-13T09:56:52+00:00
+Run: 2026-11-14T09:23:18+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-13T09:56:52+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `115817` [War Tabletop World 40: Emperor, Come Down with Me](https://wtr-lab.com/en/novel/115817/war-tabletop-world-40-emperor-come-down-with-me) — catalog
-- **wtr-lab** `115883` [Transmigrated As a Self-destructive Little Fox: Senior Sister, Please Don’t Turn Dark Yet](https://wtr-lab.com/en/novel/115883/transmigrated-as-a-self-destructive-little-fox-senior-sister-please-dont-turn-dark-yet) — catalog
-- **wtr-lab** `115885` [Who Would Have Thought That the Aloof Professor Was Actually Such a Clingy Person!](https://wtr-lab.com/en/novel/115885/who-would-have-thought-that-the-aloof-professor-was-actually-such-a-clingy-person) — catalog
-- **wtr-lab** `115502` [To Raise My Female Disciple, I Chose to Go Mad](https://wtr-lab.com/en/novel/115502/to-raise-my-female-disciple-i-chose-to-go-mad) — catalog
-- **wtr-lab** `115856` [Cthulhu: Reincarnated As a Teenage Idol But Not Doing Anything Productive](https://wtr-lab.com/en/novel/115856/cthulhu-reincarnated-as-a-teenage-idol-but-not-doing-anything-productive) — catalog
-- **wtr-lab** `115807` [Anime Crossover: After Redeeming Them, the Chaotic Scene Completely Spiraled Out of Control](https://wtr-lab.com/en/novel/115807/anime-crossover-after-redeeming-them-the-chaotic-scene-completely-spiraled-out-of-control) — catalog
-- **wtr-lab** `115873` [Dominating the Football World Starting with Iron Head Kung Fu](https://wtr-lab.com/en/novel/115873/dominating-the-football-world-starting-with-iron-head-kung-fu) — catalog
-- **wtr-lab** `115910` [Survival in the Apocalypse: Starting with a Contract with a Stunning School Beauty](https://wtr-lab.com/en/novel/115910/survival-in-the-apocalypse-starting-with-a-contract-with-a-stunning-school-beauty) — catalog
-- **wtr-lab** `115854` [Star Train World: This Isn't How You Play the Game of Breeding!](https://wtr-lab.com/en/novel/115854/star-train-world-this-isnt-how-you-play-the-game-of-breeding) — catalog
-- **wtr-lab** `115843` [Global Evolution: This Mouse Can Swallow the Sky](https://wtr-lab.com/en/novel/115843/global-evolution-this-mouse-can-swallow-the-sky) — catalog
-- **mtl-novel** `the-devouring-demon-emperor` [The Devouring Demon Emperor](https://mtl-novel.com/novel/the-devouring-demon-emperor/) — catalog
-- **mtl-novel** `empire-of-shadows` [Empire of Shadows](https://mtl-novel.com/novel/empire-of-shadows/) — catalog
-- **mtl-novel** `hiss-after-provoking-a-lewd-crazy-and-yandere-ive-been-imprisoned` [Hiss! After Provoking a Lewd, Crazy, and Yandere, I’ve Been Imprisoned](https://mtl-novel.com/novel/hiss-after-provoking-a-lewd-crazy-and-yandere-ive-been-imprisoned/) — catalog
-- **mtl-novel** `wittrum-the-madman` [Wittrum the Madman](https://mtl-novel.com/novel/wittrum-the-madman/) — catalog
-- **mtl-novel** `whos-main-job-is-a-trainer` [Who’s Main Job is a Trainer?](https://mtl-novel.com/novel/whos-main-job-is-a-trainer/) — catalog
-- **mtl-novel** `i-a-wizard-came-to-the-world-of-immortal-cultivation` [I, a Wizard, Came to the World of Immortal Cultivation](https://mtl-novel.com/novel/i-a-wizard-came-to-the-world-of-immortal-cultivation/) — catalog
-- **mtl-novel** `starting-off-as-muzan-kibutsuji-i-join-a-chat-group-for-villains` [Starting Off As Muzan Kibutsuji, I Join a Chat Group for Villains](https://mtl-novel.com/novel/starting-off-as-muzan-kibutsuji-i-join-a-chat-group-for-villains/) — catalog
-- **mtl-novel** `hogwarts-blood-wizard` [Hogwarts Blood Wizard](https://mtl-novel.com/novel/hogwarts-blood-wizard/) — catalog
-- **mtl-novel** `minecraft-wilderness-survival-hundredfold-critical-hit` [Minecraft: Wilderness Survival – Hundredfold Critical Hit!](https://mtl-novel.com/novel/minecraft-wilderness-survival-hundredfold-critical-hit/) — catalog
-- **mtl-novel** `douluo-dalu-from-green-lizard-to-azure-dragon` [Douluo Dalu: From Green Lizard to Azure Dragon](https://mtl-novel.com/novel/douluo-dalu-from-green-lizard-to-azure-dragon/) — catalog
+- **wtr-lab** `116031` [Wizard Chronicle](https://wtr-lab.com/en/novel/116031/wizard-chronicle) — catalog
+- **wtr-lab** `116170` [Gao Wu: The Weakest Disassembler? I Can Dissect Gods](https://wtr-lab.com/en/novel/116170/gao-wu-the-weakest-disassembler-i-can-dissect-gods) — catalog
+- **wtr-lab** `116195` [Star Train World: It Does Seem a Bit Crazy](https://wtr-lab.com/en/novel/116195/star-train-world-it-does-seem-a-bit-crazy) — catalog
+- **wtr-lab** `116156` [Game Development: I Really Didn't Turn Evil!](https://wtr-lab.com/en/novel/116156/game-development-i-really-didnt-turn-evil) — catalog
+- **wtr-lab** `116192` [The World of Film and Television Begins with University Lecturers](https://wtr-lab.com/en/novel/116192/the-world-of-film-and-television-begins-with-university-lecturers) — catalog
+- **wtr-lab** `116136` [Tycoon System: I Want Money and Good Looks!!](https://wtr-lab.com/en/novel/116136/tycoon-system-i-want-money-and-good-looks) — catalog
+- **wtr-lab** `116171` [Huh? Do Angels Get Kissed Until They Cry Too?](https://wtr-lab.com/en/novel/116171/huh-do-angels-get-kissed-until-they-cry-too) — catalog
+- **wtr-lab** `115475` [Livestream: My Past and Present Lives, I'm the Backbone of the Nation!](https://wtr-lab.com/en/novel/115475/livestream-my-past-and-present-lives-im-the-backbone-of-the-nation) — catalog
+- **wtr-lab** `116186` [For Videos About Collapse World Impact 3rd, Please Check Out the Fan-made Content](https://wtr-lab.com/en/novel/116186/for-videos-about-collapse-world-impact-3rd-please-check-out-the-fan-made-content) — catalog
+- **wtr-lab** `116167` [The Box Office Was a Hit, But the Audience Was Left Depressed](https://wtr-lab.com/en/novel/116167/the-box-office-was-a-hit-but-the-audience-was-left-depressed) — catalog
+- **mtl-novel** `my-yandere-tentacle-wielding-girl-is-becoming-increasingly-perverted-towards-me` [My Yandere Tentacle-wielding Girl is Becoming Increasingly Perverted Towards Me](https://mtl-novel.com/novel/my-yandere-tentacle-wielding-girl-is-becoming-increasingly-perverted-towards-me/) — catalog
+- **mtl-novel** `im-driving-a-campervan-in-the-apocalypse` [I’m Driving a Campervan in the Apocalypse](https://mtl-novel.com/novel/im-driving-a-campervan-in-the-apocalypse/) — catalog
+- **mtl-novel** `a-timid-beauty-transmigrates-to-the-1970s-a-roguish-chieftain-is-busy-doting-on-his-wife` [A Timid Beauty Transmigrates to the 1970s; a Roguish Chieftain is Busy Doting on His Wife](https://mtl-novel.com/novel/a-timid-beauty-transmigrates-to-the-1970s-a-roguish-chieftain-is-busy-doting-on-his-wife/) — catalog
+- **mtl-novel** `daily-divination-from-a-rogue-cultivator-in-the-marketplace-to-an-immortal` [Daily Divination: From a Rogue Cultivator in the Marketplace to an Immortal](https://mtl-novel.com/novel/daily-divination-from-a-rogue-cultivator-in-the-marketplace-to-an-immortal/) — catalog
+- **mtl-novel** `bound-to-the-fate-of-the-nation-starting-as-the-swift-swordsman` [Bound to the Fate of the Nation: Starting As the Swift Swordsman](https://mtl-novel.com/novel/bound-to-the-fate-of-the-nation-starting-as-the-swift-swordsman/) — catalog
+- **mtl-novel** `martial-arts-crossover-supporting-the-waist-cherishing-the-stars-vigorously-supporting-the-moon` [Martial Arts Crossover: Supporting the Waist, Cherishing the Stars; Vigorously Supporting the Moon](https://mtl-novel.com/novel/martial-arts-crossover-supporting-the-waist-cherishing-the-stars-vigorously-supporting-the-moon/) — catalog
+- **mtl-novel** `transmigrated-as-a-top-male-side-character-the-whitewashing-system-bound-the-wrong-person` [Transmigrated As a Top Male Side Character, the Whitewashing System Bound the Wrong Person!](https://mtl-novel.com/novel/transmigrated-as-a-top-male-side-character-the-whitewashing-system-bound-the-wrong-person/) — catalog
+- **mtl-novel** `subway-survival-i-helped-the-comic-con-goddess-spread-her-seeds` [Subway Survival: I Helped the Comic Con Goddess Spread Her Seeds](https://mtl-novel.com/novel/subway-survival-i-helped-the-comic-con-goddess-spread-her-seeds/) — catalog
+- **mtl-novel** `pokemon-with-a-built-in-cheat-tool-i-choose-to-slack-off` [Pokémon: With a Built-in Cheat Tool, I Choose to Slack Off](https://mtl-novel.com/novel/pokemon-with-a-built-in-cheat-tool-i-choose-to-slack-off/) — catalog
+- **mtl-novel** `everyone-is-cultivating-immortals-in-the-wasteland-my-cave-is-full-of-goddesses` [Everyone is Cultivating Immortals in the Wasteland, My Cave is Full of Goddesses](https://mtl-novel.com/novel/everyone-is-cultivating-immortals-in-the-wasteland-my-cave-is-full-of-goddesses/) — catalog
