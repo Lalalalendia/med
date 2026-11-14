@@ -100,7 +100,8 @@ def fetch_all(start, end, delay, session):
             raise ValueError(f"Duplicate chapter detected: {num}")
         seen.add(digest)
         records.append({
-            "number": num, "title": title, "url": page.url,\n            "url_number": int(match.group(1)), "catalog_title": catalog[num]["catalog_title"],
+            "number": num, "title": title, "url": page.url,
+            "url_number": int(match.group(1)), "catalog_title": catalog[num]["catalog_title"],
             "cjk_chars": cjk, "sha256": digest, "text": text
         })
         print(f"Chapter {num}: verified {cjk} Chinese characters", flush=True)
@@ -163,7 +164,10 @@ def discover_latest(session):
     final = urlsplit(res.url)
     if final.scheme != "https" or final.netloc.lower() != "ixdzs.tw" or final.path.rstrip("/") != "/read/643542":
         raise ValueError(f"Unexpected catalog redirect: {res.url}")
-    catalog = extract_catalog(res.text, res.url, START, 999999)\n    mismatches = [(n, row["url_number"]) for n, row in sorted(catalog.items()) if row["number_mismatch"]]\n    if mismatches:\n        print("CATALOG_URL_NUMBER_MISMATCHES", mismatches[:50], flush=True)
+    catalog = extract_catalog(res.text, res.url, START, 999999)
+    mismatches = [(n, row["url_number"]) for n, row in sorted(catalog.items()) if row["number_mismatch"]]
+    if mismatches:
+        print("CATALOG_URL_NUMBER_MISMATCHES", mismatches[:50], flush=True)
     if not catalog or max(catalog) < START:
         raise ValueError("Chapter 660 is not present in the index")
     last = max(catalog)
