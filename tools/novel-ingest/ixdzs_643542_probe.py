@@ -28,8 +28,14 @@ SELECTORS = ("article", "#content", "#chaptercontent", "#txtcontent",
 
 
 def extract_catalog(html, base_url, start, end):
+    """Index by *displayed* chapter number, not the URL's pNNN locator.
+
+    IXDZS may use a path number different from the printed chapter ordinal.
+    The actual chapter heading is validated again on the chapter page.
+    """
     soup = BeautifulSoup(html, "html.parser")
     found = {}
+    seen_urls = {}
     for a in soup.select("a[href]"):
         url = urljoin(base_url, a.get("href", ""))
         bits = urlsplit(url)
@@ -38,16 +44,23 @@ def extract_catalog(html, base_url, start, end):
         match = PATH.fullmatch(bits.path)
         if not match:
             continue
-        n = int(match.group(1))
-        if not start <= n <= end:
-            continue
         title = a.get_text(" ", strip=True)
         label = NUM.search(title)
-        if label and int(label.group(1)) != n:
-            raise ValueError(f"Chapter number and link disagree: {n}")
-        if n in found and found[n]["url"] != url:
-            raise ValueError(f"Ambiguous chapter URL: {n}")
-        found[n] = {"url": url, "catalog_title": title[:200]}
+        if not label:
+            continue
+        chapter = int(label.group(1))
+        if not start <= chapter <= end:
+            continue
+        url_number = int(match.group(1))
+        if chapter in found and found[chapter]["url"] != url:
+            raise ValueError(f"Multiple URLs for chapter {chapter}: {found[chapter]['url']} and {url}")
+        if url in seen_urls and seen_urls[url] != chapter:
+            raise ValueError(f"Same URL serves chapters {seen_urls[url]} and {chapter}: {url}")
+        seen_urls[url] = chapter
+        found[chapter] = {
+            "url": url, "catalog_title": title[:200],
+            "url_number": url_number, "number_mismatch": chapter != url_number,
+        }
     return found
 
 
@@ -56,7 +69,7 @@ def detect_split_links(html, n, current_url):
     soup = BeautifulSoup(html, "html.parser")
     found = set()
     current = urlsplit(current_url)
-    pattern = re.compile(r"^/read/643542/p" + str(n) + r"(?:[_-][0-9]+)\.html$")
+    # Continuation is tied to the URL locator, which need not equal the chapter ordinal.\n    locator = PATH.fullmatch(current.path)\n    if not locator:\n        raise ValueError(f"Invalid chapter URL in split-page check: {current_url}")\n    pattern = re.compile(r"^/read/643542/p" + re.escape(locator.group(1)) + r"(?:[_-][0-9]+)\.html$")
     for anchor in soup.select("a[href]"):
         url = urljoin(current_url, anchor.get("href", ""))
         target = urlsplit(url)
@@ -129,7 +142,7 @@ def audit(start, end, delay):
             result["state"] = "index_unavailable"
             return result
         links = extract_catalog(index.text, index.url, start, end)
-        result["catalog_links_in_range"] = len(links)
+        result["catalog_links_in_range"] = len(links)\n        result["number_mismatches"] = [\n            {"chapter": k, "url_number": v["url_number"], "catalog_title": v["catalog_title"]}\n            for k, v in sorted(links.items()) if v["number_mismatch"]\n        ]
         for n in range(start, end + 1):
             row = {"chapter": n}
             if n not in links:
@@ -156,7 +169,7 @@ def audit(start, end, delay):
                     final = urlsplit(response.url)
                     if (final.scheme != "https" or final.netloc.lower() != "ixdzs.tw"
                             or not PATH.fullmatch(final.path)
-                            or int(PATH.fullmatch(final.path).group(1)) != n):
+                            or final.path != urlsplit(row["url"]).path):
                         row["state"] = "unexpected_redirect"
                         row["final_url"] = response.url
                     else:
@@ -217,6 +230,15 @@ def selftest():
     html = '<a href="/read/643542/p660.html">第660章 伊塔努：天賜良機</a>'
     got = extract_catalog(html, INDEX, 660, 660)
     assert got[660]["url"] == "https://ixdzs.tw/read/643542/p660.html"
+    shifted = extract_catalog('<a href="/read/643542/p667.html">第660章 Test</a>', INDEX, 660, 660)
+    assert shifted[660]["url_number"] == 667 and shifted[660]["number_mismatch"]
+    try:
+        extract_catalog('<a href="/read/643542/p667.html">第660章</a>'
+                        '<a href="/read/643542/p668.html">第660章</a>', INDEX, 660, 660)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Duplicate chapter number was not rejected")
     sample = "這是一段測試中文。" * 50
     assert inspect("<h1>第660章 標題</h1><article>" + sample + "</article>", 660)["state"] == "readable"
     assert inspect("<h1>第187章 標題</h1><article>" + sample + "</article>", 660)["state"] == "title_mismatch"
