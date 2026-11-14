@@ -1,0 +1,44 @@
+{
+  "status": "partial-literary-edition",
+  "range": [
+    607,
+    756
+  ],
+  "chapters": 150,
+  "literary_checked_against_chinese": [
+    607,
+    670
+  ],
+  "literary_count": 64,
+  "newly_retranslated": [
+    661,
+    662,
+    663,
+    664,
+    665,
+    666,
+    667,
+    668,
+    669,
+    670
+  ],
+  "machine_draft_partially_mechanical": [
+    671,
+    756
+  ],
+  "machine_draft_count": 86,
+  "preserved_607_660": true,
+  "preserved_671_756": true,
+  "original_pass3_sha256": "00270d85d06a3ffc89afd5feabc72d4ccbe755fbbe40fddb8cc7a776bb6de153",
+  "standalone_sha256": "6b11176c9847ebf35be1606042a3559d9618f4d9bd7f1b02065a13677c4efa70",
+  "literary_sha256": "fad1d8d7c597f67a24847f7907991a62af38284d25db402228dbe414e9965304",
+  "full_sha256": "e36a3a56b756d9ef7735c3a876d5367710b8afa5aca569445cfc9540150624df",
+  "standalone_bytes": 53769,
+  "literary_bytes": 310787,
+  "full_bytes": 823143,
+  "warnings": [
+    "Only chapters 607-670 are source-checked literary rewriting. 671-756 remains machine draft.",
+    "Chapter 756 is not the end of the novel.",
+    "Earlier chapter 226 is missing."
+  ]
+}
