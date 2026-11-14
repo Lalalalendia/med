@@ -1,0 +1,86 @@
+name: IXDZS 643542 chapters 660+ metadata and permitted export
+on:
+  push:
+    branches: [feat/ixdzs-643542-660-tail]
+    paths:
+      - "tools/novel-ingest/ixdzs_643542_*.py"
+      - ".github/workflows/ixdzs-643542-660-tail.yml"
+  workflow_dispatch:
+    inputs:
+      rights_confirmed:
+        description: "I hold necessary reproduction rights for chapter text 660 onward"
+        required: true
+        type: boolean
+        default: false
+      start:
+        description: "First chapter number (660)"
+        type: number
+        default: 660
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Offline parser fixtures
+        run: |
+          python tools/novel-ingest/ixdzs_643542_probe.py --selftest
+          python tools/novel-ingest/ixdzs_643542_export.py --selftest
+      - name: Probe chapters 660-679 without storing book text
+        run: |
+          python tools/novel-ingest/ixdzs_643542_probe.py \
+            --start 660 --end 679 --delay 2 \
+            --out out/ixdzs-643542
+      - name: Report metadata
+        if: always()
+        run: |
+          if [ -f out/ixdzs-643542/summary.md ]; then
+            cat out/ixdzs-643542/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ixdzs-643542-660-679-metadata
+          path: out/ixdzs-643542/
+          if-no-files-found: warn
+          retention-days: 14
+
+  permitted-export:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.rights_confirmed == true && inputs.start == 660 }}
+    needs: [metadata]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Export chapter 660 through final catalog chapter
+        run: |
+          python tools/novel-ingest/ixdzs_643542_export.py \
+            --rights-confirmed --start 660 --delay 2 \
+            --out out/authorized-ixdzs-643542
+      - name: Upload status report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-643542-tail-status
+          path: out/authorized-ixdzs-643542/status.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Upload full verified archive
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-643542-660-tail-cn
+          path: out/authorized-ixdzs-643542/ixdzs-643542-*-cn.zip
+          if-no-files-found: error
+          retention-days: 14
