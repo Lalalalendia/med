@@ -74,7 +74,7 @@ def parse_index(soup):
 def parse_page(soup, entry):
     detail = soup.select_one("div.read_chapterDetail")
     if not detail:
-        raise RuntimeError("missing read_chapterDetail; anti-bot or changed HTML")
+        raise RuntimeError("missing read_chapterDetail; classes=" + str([(x.name, x.get("class")) for x in soup.select("div[id],div[class]") if any(k in str(x.get("class"))+str(x.get("id")).lower() for k in ["read","content","chapter","txt","article"])][:35]) + " html=" + str(soup.get_text(" ", strip=True)[:600]))
     paras = [p.get_text("", strip=True).replace("\u3000", " ").strip()
              for p in detail.select("p")]
     paras = [x for x in paras if x]
