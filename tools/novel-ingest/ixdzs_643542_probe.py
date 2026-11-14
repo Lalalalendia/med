@@ -69,7 +69,11 @@ def detect_split_links(html, n, current_url):
     soup = BeautifulSoup(html, "html.parser")
     found = set()
     current = urlsplit(current_url)
-    # Continuation is tied to the URL locator, which need not equal the chapter ordinal.\n    locator = PATH.fullmatch(current.path)\n    if not locator:\n        raise ValueError(f"Invalid chapter URL in split-page check: {current_url}")\n    pattern = re.compile(r"^/read/643542/p" + re.escape(locator.group(1)) + r"(?:[_-][0-9]+)\.html$")
+    # Continuation is tied to the URL locator, which need not equal the chapter ordinal.
+    locator = PATH.fullmatch(current.path)
+    if not locator:
+        raise ValueError(f"Invalid chapter URL in split-page check: {current_url}")
+    pattern = re.compile(r"^/read/643542/p" + re.escape(locator.group(1)) + r"(?:[_-][0-9]+)\.html$")
     for anchor in soup.select("a[href]"):
         url = urljoin(current_url, anchor.get("href", ""))
         target = urlsplit(url)
@@ -142,7 +146,11 @@ def audit(start, end, delay):
             result["state"] = "index_unavailable"
             return result
         links = extract_catalog(index.text, index.url, start, end)
-        result["catalog_links_in_range"] = len(links)\n        result["number_mismatches"] = [\n            {"chapter": k, "url_number": v["url_number"], "catalog_title": v["catalog_title"]}\n            for k, v in sorted(links.items()) if v["number_mismatch"]\n        ]
+        result["catalog_links_in_range"] = len(links)
+        result["number_mismatches"] = [
+            {"chapter": k, "url_number": v["url_number"], "catalog_title": v["catalog_title"]}
+            for k, v in sorted(links.items()) if v["number_mismatch"]
+        ]
         for n in range(start, end + 1):
             row = {"chapter": n}
             if n not in links:
