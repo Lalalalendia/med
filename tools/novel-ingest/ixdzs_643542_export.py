@@ -68,79 +68,97 @@ def check_robots(session):
     return rp
 
 
-def fetch_all(start, end, delay, session):
+def fetch_all(start, end, delay, session, first_locator, last_locator):
+    """Visit consecutive physical pages; do not assume pNNN is chapter N."""
     rp = check_robots(session)
-    response = session.get(INDEX, timeout=(8, 25))
-    response.raise_for_status()
-    if urlsplit(response.url).hostname != "ixdzs.tw":
-        raise ValueError("Catalog redirected to unexpected host")
-    catalog = extract_catalog(response.text, response.url, start, 999999)
-    backfill_missing_prefix(session, rp, catalog, start, end, delay)
-    catalog = {n: row for n, row in catalog.items() if start <= n <= end}
-    required = list(range(start, end + 1))
-    if len(catalog) != len(required):
-        raise ValueError(f"Catalog has {len(catalog)} chapters but {len(required)} required")
+    if first_locator < 1 or last_locator < first_locator or last_locator - first_locator > 3000:
+        raise ValueError("Invalid physical locator bounds")
     records = []
-    seen = set()
-    for num in required:
-        url = catalog[num]["url"]
+    seen_hashes = set()
+    seen_numbers = set()
+    for locator in range(first_locator, last_locator + 1):
+        url = f"https://ixdzs.tw/read/643542/p{locator}.html"
         if not rp.can_fetch(UA, url):
-            raise ValueError(f"Source chapter forbidden by robots: {num}")
+            raise ValueError(f"robots.txt forbids p{locator}")
         time.sleep(delay)
         page = session.get(url, timeout=(8, 25))
         if page.status_code in (403, 429, 503):
-            raise ValueError(f"Access limited at chapter {num}: {page.status_code}")
+            raise ValueError(f"Source limited access at p{locator}: HTTP {page.status_code}")
         page.raise_for_status()
-        parts = urlsplit(page.url)
-        match = PATH.fullmatch(parts.path)
-        if (parts.scheme != "https" or parts.netloc.lower() != "ixdzs.tw"
-                or not match or parts.path != urlsplit(url).path):
-            raise ValueError(f"Untrusted redirect or chapter URL at {num}")
-        title, text, cjk = parse_chapter(page.text, num, page.url)
-        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
-        if digest in seen:
-            raise ValueError(f"Duplicate chapter detected: {num}")
-        seen.add(digest)
-        records.append({
-            "number": num, "title": title, "url": page.url,
-            "url_number": int(match.group(1)), "catalog_title": catalog[num]["catalog_title"],
-            "cjk_chars": cjk, "sha256": digest, "text": text
-        })
-        print(f"Chapter {num}: verified {cjk} Chinese characters", flush=True)
+        dest = urlsplit(page.url)
+        if (dest.scheme != "https" or dest.netloc.lower() != "ixdzs.tw"
+                or dest.path != f"/read/643542/p{locator}.html"):
+            raise ValueError(f"Untrusted redirect at p{locator}: {page.url}")
+        soup = BeautifulSoup(page.text, "html.parser")
+        heading_el = soup.select_one("h1") or soup.title
+        heading = heading_el.get_text(" ", strip=True) if heading_el else ""
+        match = NUM.search(heading)
+        if not match:
+            raise ValueError(f"Chapter number unavailable at p{locator}: {heading[:100]}")
+        number = int(match.group(1))
+        if number < start or number > end:
+            raise ValueError(f"Unexpected chapter {number} at p{locator}; expected {start}-{end}")
+        if records and number < records[-1]["number"]:
+            raise ValueError(f"Chapter numbering regressed at p{locator}: {number}")
+        title, body, cjk = parse_chapter(page.text, number, page.url)
+        digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        if digest in seen_hashes:
+            raise ValueError(f"Duplicate body at p{locator}")
+        seen_hashes.add(digest)
+        duplicate_number = number in seen_numbers
+        seen_numbers.add(number)
+        records.append({"number": number, "url_number": locator, "url": page.url,
+                        "title": title, "cjk_chars": cjk, "sha256": digest,
+                        "duplicate_ordinal": duplicate_number, "text": body})
+        print(f"p{locator} -> {number}, {cjk} CJK, duplicate_number={duplicate_number}", flush=True)
+    missing = sorted(set(range(start, end + 1)) - seen_numbers)
+    if missing:
+        raise ValueError(f"Missing displayed chapter numbers: {missing}")
+    print(f"FULL_RANGE_VERIFIED {start}-{end}: pages={len(records)}, distinct={len(seen_numbers)}", flush=True)
     return records
+
+def chapter_filename(item):
+    return f"chapters/{item['number']:04d}_p{item['url_number']:04d}.txt"
 
 
 def write_zip(records, out_dir):
-    if len(records) != END - START + 1 or [r["number"] for r in records] != list(range(START, END + 1)):
-        raise ValueError("Incomplete chapter range: refusing export")
+    numbered = {r["number"] for r in records}
+    wanted = set(range(START, END + 1))
+    if not records or numbered != wanted:
+        raise ValueError(f"Incomplete chapter range: missing={sorted(wanted-numbered)} extra={sorted(numbered-wanted)}")
+    locators = [r["url_number"] for r in records]
+    if locators != list(range(min(locators), max(locators) + 1)):
+        raise ValueError("Nonconsecutive physical pages")
     out_dir.mkdir(parents=True, exist_ok=True)
     target = out_dir / f"ixdzs-643542-{START}-{END}-cn.zip"
     combined = []
     manifest = []
     with ZipFile(target, "w", compression=ZIP_DEFLATED) as zipped:
         for item in records:
-            label = f"第{item['number']}章 {item['title']}"
-            content = f"{label}\n\n{item['text']}\n"
-            zipped.writestr(f"chapters/{item['number']:04d}.txt", content)
+            content = f"{item['title']}\n\n{item['text']}\n"
+            zipped.writestr(chapter_filename(item), content)
             combined.append(content)
             manifest.append({k: v for k, v in item.items() if k != "text"})
         zipped.writestr("combined.txt", "\n\n".join(combined))
         zipped.writestr("manifest.json", json.dumps({
-            "source": INDEX,
-            "start": START, "end": END,
+            "source": INDEX, "start": START, "end": END,
+            "physical_pages": len(records), "unique_chapter_numbers": len(numbered),
+            "duplicate_numbered_pages": len(records) - len(numbered),
             "verified_utc": datetime.now(timezone.utc).isoformat(),
-            "chapters": manifest,
-            "rights_attested": True,
+            "chapters": manifest, "rights_attested": True,
         }, indent=2, ensure_ascii=False))
+    with ZipFile(target) as check:
+        if check.testzip() is not None or len(check.namelist()) != len(records) + 2:
+            raise ValueError("ZIP integrity check failed")
     return target
-
 
 def selftest():
     text = "這是一段測試文本。" * 80
     html = f"<h1>第660章 測試</h1><article><p>{text}</p></article>"
     title, body, n = parse_chapter(html, 660, "https://ixdzs.tw/read/643542/p660.html")
     assert title == "第660章 測試" and n >= 500 and text in body
-    assert "chapters/0660.txt" == f"chapters/{660:04d}.txt"
+    assert chapter_filename({"number": 660, "url_number": 648}) == "chapters/0660_p0648.txt"
+    assert chapter_filename({"number": 660, "url_number": 649}) != chapter_filename({"number": 660, "url_number": 648})
     try:
         parse_chapter("<h1>第660章</h1><article>短</article>", 660, INDEX + "p660.html")
     except ValueError:
@@ -158,32 +176,31 @@ def selftest():
 
 
 
-def discover_latest(session):
-    """Resolve the final chapter from the book's verified, contiguous catalog."""
+def discover_latest(session, delay):
+    """Find actual locator boundaries despite an index missing middle chapters."""
     rp = check_robots(session)
     res = session.get(INDEX, timeout=(8, 25))
     res.raise_for_status()
-    final = urlsplit(res.url)
-    if final.scheme != "https" or final.netloc.lower() != "ixdzs.tw" or final.path.rstrip("/") != "/read/643542":
-        raise ValueError(f"Unexpected catalog redirect: {res.url}")
+    dest = urlsplit(res.url)
+    if dest.scheme != "https" or dest.netloc.lower() != "ixdzs.tw" or dest.path.rstrip("/") != "/read/643542":
+        raise ValueError(f"Unexpected catalog URL: {res.url}")
     catalog = extract_catalog(res.text, res.url, START, 999999)
-    backfill_missing_prefix(session, rp, catalog, START, min(catalog), 2.0)
-    mismatches = [(n, row["url_number"]) for n, row in sorted(catalog.items()) if row["number_mismatch"]]
-    if mismatches:
-        print("CATALOG_URL_NUMBER_MISMATCHES", mismatches[:50], flush=True)
-    if not catalog or max(catalog) < START:
-        raise ValueError("Chapter 660 is not present in the index")
-    last = max(catalog)
-    if last - START + 1 > 3000:
-        raise ValueError(f"Too many chapters to collect in one safe run: {last - START + 1}")
-    missing = sorted(set(range(START, last + 1)).difference(catalog))
-    if missing:
-        raise ValueError(f"Missing chapters in index: {missing[:30]}")
-    for n in range(START, last + 1):
-        if not rp.can_fetch(UA, catalog[n]["url"]):
-            raise ValueError(f"robots.txt forbids chapter {n}")
-    print(f"CATALOG_COMPLETE start={START} end={last} count={last-START+1}", flush=True)
-    return last
+    if not catalog:
+        raise ValueError("No numbered chapters in source catalog")
+    end = max(catalog)
+    if end < START or end - START + 1 > 3000:
+        raise ValueError("Invalid final numbered chapter")
+    prefix = backfill_missing_prefix(session, rp, catalog, START, min(catalog), delay)
+    if START not in catalog:
+        raise ValueError("Could not locate chapter 660")
+    first_locator = catalog[START]["url_number"]
+    last_locator = catalog[end]["url_number"]
+    if last_locator < first_locator or last_locator - first_locator > 3000:
+        raise ValueError("Invalid locator range")
+    print("DISCOVERED", {"start_chapter": START, "first_url": first_locator,
+                         "last_chapter": end, "last_url": last_locator,
+                         "catalog_count": len(catalog), "prefix": prefix}, flush=True)
+    return end, first_locator, last_locator
 
 def main():
     global END
@@ -208,10 +225,11 @@ def main():
     session = requests.Session()
     session.headers["User-Agent"] = UA
     try:
-        END = args.end if args.end is not None else discover_latest(session)
-        if END < START or END - START + 1 > 3000:
-            raise ValueError("Invalid chapter count or final chapter number")
-        records = fetch_all(START, END, args.delay, session)
+        found_end, first_locator, last_locator = discover_latest(session, args.delay)
+        END = args.end if args.end is not None else found_end
+        if END != found_end:
+            raise ValueError("Use the full discovered range; partial export is not supported")
+        records = fetch_all(START, END, args.delay, session, first_locator, last_locator)
         archive = write_zip(records, args.out)
         report = {"source": INDEX, "start": START, "end": END, "count": len(records),
                   "archive": archive.name, "completed": True, "rights_confirmed": True}
