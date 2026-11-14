@@ -1,0 +1,39 @@
+{
+  "status": "partial-literary-edition",
+  "range": [
+    607,
+    756
+  ],
+  "chapter_count": 150,
+  "literary_checked_against_chinese": [
+    607,
+    690
+  ],
+  "literary_count": 84,
+  "newly_retranslated": [
+    681,
+    682,
+    683,
+    684,
+    685,
+    686,
+    687,
+    688,
+    689,
+    690
+  ],
+  "machine_draft_partially_mechanical": [
+    691,
+    756
+  ],
+  "machine_draft_count": 66,
+  "preserved_607_680": true,
+  "preserved_691_756": true,
+  "chinese_source_path": "novels/meiman-rule-horror/source/meiman-zh-607-756.txt",
+  "previous_revision": "PASS5-074",
+  "warnings": [
+    "Only chapters 607-690 source-checked literary rewriting, chapters 691-756 remain machine draft.",
+    "Chapter 756 does not conclude the novel.",
+    "Earlier chapter 226 is missing outside this range."
+  ]
+}
