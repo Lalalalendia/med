@@ -43,7 +43,7 @@ def get_html(url):
         raise RuntimeError(f"short HTML: {len(r.content)} bytes")
     if "/6783/" in url and not r.content.strip():
         raise RuntimeError("blank page bytes length=" + str(len(r.content)) + " status=" + str(r.status_code) + " url=" + str(r.url) + " content-type=" + str(r.headers.get("Content-Type")) + " byte_prefix=" + repr(r.content[:200]))
-    soup = BeautifulSoup(r.content, "lxml")
+    soup = BeautifulSoup(r.content.decode("gb18030", errors="replace"), "lxml")
     if "/6783/" in url and not soup.find():
         raise RuntimeError("NO_DOM response status=" + str(r.status_code) + " url=" + str(r.url) + " bytes=" + str(len(r.content)) + " firstbytes=" + repr(r.content[:350]))
     return soup
