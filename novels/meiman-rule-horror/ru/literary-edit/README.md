@@ -1,12 +1,10 @@
-# Marvel RU literary editing status (PASS11)
+# Marvel RU literary editing status (PASS12)
 
-- **607–740:** 134 chapters revised in Russian against the Chinese original; saved individually as `ru-607.txt` through `ru-740.txt` and in `combined-ru-607-740-LITERARY.txt`.
-- **741–756:** 16 machine-translation draft chapters, not publication-ready.
-- Mixed-status compilation: `combined-ru-607-756-EDITORIAL-PASS11-134.txt`.
-- Previous 607–730 and later 741–756 are unchanged compared with PASS10.
-- Original hero name localized to Silas Lane; existing character names Annie, Zhan Lan, Zhao Yingkong, Sadako and Freddy preserved.
-- Chapter 733: Death-word curse destroyed an avatar, not the primary ghost entity.
-- Chapter 739: Dark Void World is named as the possible refuge, location not yet found.
-- In chapters 736–737, ambiguous sexual material involving a youth-coded character is handled nonsexually while preserving plot-critical energy transformation.
-- See `editorial-report-pass11-134.json` for status and checks.
-- Chinese source chapter 756 is not the novel's conclusion; earlier chapter 226 remains missing outside the compilation.
+- **607–750:** 144 chapters literarily revised against the Chinese source, individual `ru-607.txt` to `ru-750.txt` plus `combined-ru-607-750-LITERARY.txt`.
+- **751–756:** 6 machine-translated chapters, not publication-ready.
+- Mixed compilation: `combined-ru-607-756-EDITORIAL-PASS12-144.txt`.
+- Chapters 607–740 and 751–756 preserved verbatim at chapter level from PASS11.
+- Chapter 743 numerical inconsistency: the original title says 53 suitable spirits; main text first claims 100 and then says 50 collected plus 3 later. Do not silently reconcile. See `editorial-report-pass12-144.json`.
+- Terminology: Silas Lane; Sadako; Freddy; Magneto; Professor X; Nine Heavens with Sky of Thunderclouds, Sky of Fire and Sky of Demonic Rains.
+- Chapter 750: Nine Heavens are derived from a nine-storey tower brought by the ghost god.
+- Chapter 756 is not the original novel's ending; earlier chapter 226 remains missing outside this range.

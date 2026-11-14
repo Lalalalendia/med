@@ -1,0 +1,57 @@
+{
+  "status": "partial-literary-edition",
+  "range": [
+    607,
+    756
+  ],
+  "chapter_count": 150,
+  "literary_checked_against_chinese": [
+    607,
+    750
+  ],
+  "literary_count": 144,
+  "newly_retranslated": [
+    741,
+    742,
+    743,
+    744,
+    745,
+    746,
+    747,
+    748,
+    749,
+    750
+  ],
+  "remaining_machine_draft": [
+    751,
+    756
+  ],
+  "machine_draft_count": 6,
+  "unchanged_earlier": [
+    607,
+    740
+  ],
+  "unchanged_later": [
+    751,
+    756
+  ],
+  "untouched_count": 140,
+  "previous_revision": "PASS11-134",
+  "chinese_source": "novels/meiman-rule-horror/source/meiman-zh-607-756.txt",
+  "checks": {
+    "all_chapters_contiguous": true,
+    "new_chapters_have_no_cjk": true,
+    "previous_134_chapters_unchanged": true,
+    "following_6_chapters_unchanged": true
+  },
+  "editorial_notes": [
+    "Chapter 743 source headline reads fifty-three eligible spirits. Body first states one hundred qualified, then describes selecting fifty and finding three more. Numerical inconsistency preserved and flagged for editorial decision; no silent normalization.",
+    "Maintain Silas Lane, Sadako, Professor X, Magneto, Captain America; translated the Nine Heavens names as Nebo Grozovykh Oblakov, Nebo Plameni, Nebo Demonicheskikh Dozhdey.",
+    "Chapter 750 reveals that the Nine Heavens originated as a nine-story tower imported by the ghost god."
+  ],
+  "warnings": [
+    "751-756 remain machine drafts, not publication-ready.",
+    "Chinese chapter 756 does not end the novel.",
+    "Earlier original chapter 226 is missing elsewhere."
+  ]
+}
