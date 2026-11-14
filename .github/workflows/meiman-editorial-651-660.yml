@@ -1,0 +1,36 @@
+name: Marvel Literary Editorial 651-660
+on:
+  push:
+    branches:
+      - translation/meiman-rule-horror-editorial-651-660-20261114
+    paths:
+      - .github/workflows/meiman-editorial-651-660.yml
+permissions:
+  contents: write
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: translation/meiman-rule-horror-editorial-651-660-20261114
+          persist-credentials: true
+      - name: Verify, assemble and archive translation
+        run: python3 novels/meiman-rule-horror/scripts/compile_editorial_651_660.py
+      - name: Save combined TXT and audit in editorial branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add novels/meiman-rule-horror/ru/literary-edit/combined-ru-607-660-LITERARY.txt
+          git add novels/meiman-rule-horror/ru/literary-edit/combined-ru-607-756-EDITORIAL-PASS3-054.txt
+          git add novels/meiman-rule-horror/ru/literary-edit/editorial-report-pass3-054.json
+          git diff --cached --quiet || (git commit -m "Build accepted Marvel 607-660 literary and partial 607-756 edition" && git push origin HEAD:refs/heads/translation/meiman-rule-horror-editorial-651-660-20261114)
+      - name: Upload verified TXT, ZIP and audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: marvel-ru-literary-607-660-pass3
+          path: marvel-literary-bundle/*
+          if-no-files-found: error
+          retention-days: 90
