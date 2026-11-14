@@ -1,0 +1,49 @@
+{
+  "status": "partial-literary-edition",
+  "range": [
+    607,
+    756
+  ],
+  "chapters": 150,
+  "literary_checked_against_chinese": [
+    607,
+    720
+  ],
+  "literary_count": 114,
+  "newly_retranslated": [
+    711,
+    712,
+    713,
+    714,
+    715,
+    716,
+    717,
+    718,
+    719,
+    720
+  ],
+  "machine_draft_partially_mechanical": [
+    721,
+    756
+  ],
+  "machine_draft_count": 36,
+  "preserved_607_710": true,
+  "preserved_721_756": true,
+  "source": "novels/meiman-rule-horror/source/meiman-zh-607-756.txt",
+  "previous_revision": "PASS8-104",
+  "checks": {
+    "chapter_order": "607..756 contiguous",
+    "new_chapters_chinese_characters": 0,
+    "preserved_unchanged_chapters": 140
+  },
+  "source_notes": [
+    "Author's chapter 719 uses the name Annie for the time-loop heroine; kept as written in source rather than silently normalizing to movie continuity.",
+    "Chapters 717-720 reference recognizable Infinite Terror names Zhan Lan, Zhao Yingkong and Zheng Zha; kept canonical transliterations.",
+    "Established Westernized names maintained for Silas Lane, Sharon, Julian Kane and others."
+  ],
+  "warnings": [
+    "Only chapters 607-720 have source-checked literary rewriting; 721-756 remain machine draft and are not publication-ready.",
+    "Source chapter 756 does not conclude the novel.",
+    "Original chapter 226 is missing outside this chapter range."
+  ]
+}
