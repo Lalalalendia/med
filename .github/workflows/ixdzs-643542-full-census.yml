@@ -1,0 +1,51 @@
+name: IXDZS 643542 complete source metadata census (660+)
+on:
+  push:
+    branches: [feat/ixdzs-643542-660-tail]
+    paths:
+      - "tools/novel-ingest/ixdzs_643542_full_census.py"
+      - ".github/workflows/ixdzs-643542-full-census.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ixdzs-643542-full-census-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full-metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install HTML parsing dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Offline parser and corpus-boundary tests
+        run: |
+          python tools/novel-ingest/ixdzs_643542_probe.py --selftest
+          python tools/novel-ingest/ixdzs_643542_export.py --selftest
+          python tools/novel-ingest/ixdzs_643542_full_census.py --selftest
+      - name: Scan printed chapters 660 to latest without storing book text
+        run: |
+          python tools/novel-ingest/ixdzs_643542_full_census.py \
+            --delay 2 --max-pages 500 \
+            --out out/ixdzs-643542-full-metadata
+      - name: Summarize metadata
+        if: always()
+        run: |
+          if [ -f out/ixdzs-643542-full-metadata/summary.md ]; then
+            cat out/ixdzs-643542-full-metadata/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload metadata-only manifest even if incomplete
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-643542-full-metadata-660-tail
+          path: out/ixdzs-643542-full-metadata/
+          if-no-files-found: error
+          retention-days: 14
