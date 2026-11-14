@@ -1,0 +1,123 @@
+name: IXDZS 643542 authorized full text export (660-891)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/ixdzs-643542-export-request.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ixdzs-643542-authorized-full-export
+  cancel-in-progress: false
+
+jobs:
+  authorized-full-export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate explicit scoped reproduction permission
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          request = json.loads(Path(".github/ixdzs-643542-export-request.json").read_text("utf-8"))
+          required = {
+              "requested": True,
+              "rights_confirmed": True,
+              "source_index": "https://ixdzs.tw/read/643542/",
+              "start": 660,
+              "end": 891,
+              "expected_physical_pages": 236,
+              "request_id": "ixdzs-643542-660-891-20261114",
+          }
+          for key, value in required.items():
+              if request.get(key) != value:
+                  raise SystemExit(f"Permission request does not match expected {key}")
+          print("Rights confirmation verified for exactly IXDZS 643542, chapters 660-891")
+          PY
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Offline validation tests
+        run: |
+          python tools/novel-ingest/ixdzs_643542_probe.py --selftest
+          python tools/novel-ingest/ixdzs_643542_export.py --selftest
+          python tools/novel-ingest/ixdzs_643542_full_census.py --selftest
+      - name: Collect permitted full chapter texts
+        run: |
+          python tools/novel-ingest/ixdzs_643542_export.py \
+            --rights-confirmed --start 660 --delay 2.0 \
+            --out out/authorized-ixdzs-643542
+      - name: Verify source pagination, content digests and ZIP
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          from zipfile import ZipFile
+          base = Path("out/authorized-ixdzs-643542")
+          archive = base / "ixdzs-643542-660-891-cn.zip"
+          assert archive.is_file(), f"Archive missing: {archive}"
+          with ZipFile(archive, "r") as zipped:
+              assert zipped.testzip() is None
+              metadata = json.loads(zipped.read("manifest.json"))
+              records = metadata["chapters"]
+              assert metadata["start"] == 660 and metadata["end"] == 891
+              assert len(records) == metadata["physical_pages"] == 236
+              assert [r["url_number"] for r in records] == list(range(648, 884))
+              expected = set(range(660, 892))
+              numbers = [r["number"] for r in records]
+              assert set(numbers) == expected
+              duplicates = {n for n in numbers if numbers.count(n) > 1}
+              assert duplicates == {684, 685, 791, 792}, duplicates
+              assert len(zipped.namelist()) == len(records) + 2
+              seen = set()
+              combined = []
+              for item in records:
+                  chapter_path = f'chapters/{item["number"]:04d}_p{item["url_number"]:04d}.txt'
+                  raw = zipped.read(chapter_path).decode("utf-8")
+                  heading, separator, rest = raw.partition("\n\n")
+                  assert separator and heading == item["title"]
+                  assert rest.endswith("\n")
+                  body = rest[:-1]
+                  digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+                  assert digest == item["sha256"], chapter_path
+                  assert digest not in seen, chapter_path
+                  seen.add(digest)
+                  combined.append(raw)
+              assert zipped.read("combined.txt").decode("utf-8") == "\n\n".join(combined)
+          archive_hash = hashlib.sha256(archive.read_bytes()).hexdigest()
+          result = {
+              "verified": True, "chapters_660_891": 232,
+              "physical_pages": 236, "unique_sha256": len(seen),
+              "duplicate_ordinals": sorted(duplicates),
+              "archive_sha256": archive_hash,
+              "archive_bytes": archive.stat().st_size
+          }
+          (base / "verification.json").write_text(json.dumps(result, ensure_ascii=False, indent=2)+"\n","utf-8")
+          print("EXPORT_VERIFIED", json.dumps(result, ensure_ascii=False), flush=True)
+          PY
+      - name: Record status and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-643542-660-891-export-status
+          path: |
+            out/authorized-ixdzs-643542/status.json
+            out/authorized-ixdzs-643542/verification.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Publish fully verified authorized TXT archive
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-643542-660-891-authorized-txt
+          path: out/authorized-ixdzs-643542/ixdzs-643542-660-891-cn.zip
+          if-no-files-found: error
+          retention-days: 30
