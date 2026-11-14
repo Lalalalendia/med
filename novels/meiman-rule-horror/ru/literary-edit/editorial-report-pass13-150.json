@@ -1,0 +1,45 @@
+{
+  "status": "literary-edit-complete-for-current-range",
+  "range": [
+    607,
+    756
+  ],
+  "total_chapters": 150,
+  "literary_edited_chapters": 150,
+  "translated_this_pass": [
+    751,
+    752,
+    753,
+    754,
+    755,
+    756
+  ],
+  "remaining_machine_drafts_in_range": 0,
+  "prior_chapters_unchanged": [
+    607,
+    750
+  ],
+  "prior_chapters_unchanged_count": 144,
+  "source": "novels/meiman-rule-horror/source/meiman-zh-607-756.txt",
+  "previous_revision": "PASS12-144",
+  "revision": "PASS13-150",
+  "checks": {
+    "chapters_contiguous": true,
+    "chapter_count": 150,
+    "new_chapters_have_no_cjk": true,
+    "new_chapters_have_no_replacement_char": true,
+    "previous_144_chapters_preserved_at_chapter_level": true,
+    "full_readback_pending": true
+  },
+  "editorial_notes": [
+    "751-756 reviewed against Chinese original, including title and final cliffhanger of 756.",
+    "In original Chinese chapter 755, protagonist name switches twice to 林岩 instead of 苏林. Treated as an apparent source typo and kept the established Silas Lane; do not silently alter original source file.",
+    "Original chapter 743 remains numerically inconsistent: headline 53 candidates, body states 100 then 50 selected plus 3 found later. Keep discrepancy noted; not resolved.",
+    "Nine Heavens: Sky of Thunderclouds, Sky of Flame, Sky of Demonic Rains, Sky of Thousandfold Weight, Sky of Dreams, Sky of Metal, Sky of Poisonous Trees, Sky of Wind Spirits, Sky of the Underworld."
+  ],
+  "warnings": [
+    "Chapter 756 is NOT the end of the original novel. This completes only the literary editing range 607-756.",
+    "Earlier chapter 226 is missing outside this collection.",
+    "Editorial QA does not establish publication rights or completeness beyond chapter 756."
+  ]
+}
