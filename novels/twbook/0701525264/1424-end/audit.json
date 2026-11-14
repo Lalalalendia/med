@@ -1,0 +1,12 @@
+{
+  "book_id": "0701525264",
+  "catalog_url": "https://www.twbook.cc/0701525264/dir",
+  "start_chapter": 1424,
+  "catalog_last_ordinal": 1472,
+  "expected_count": 49,
+  "collected_ok": 49,
+  "audited_files": 49,
+  "completed": true,
+  "checked_at_utc": "2026-11-12T17:58:01.521268+00:00",
+  "problems": []
+}
