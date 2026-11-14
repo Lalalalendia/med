@@ -1,8 +1,7 @@
-# Marvel RU 607–756 — editorial status
+# Marvel RU continuation — editorial status
 
-- Chapters 607–626 (20 chapters): independently rewritten in Russian and checked against the Chinese source. Saved in individual `ru-607.txt` through `ru-626.txt` and `combined-ru-607-626-LITERARY.txt`.
-- Chapters 627–756 (130 chapters): mechanical corrections to headings, typography, glossary, and some obvious errors only. **Not yet literary-proofread; not publication-ready.**
-- `combined-ru-607-756-EDITORIAL-PASS1.txt` contains both portions in one file, clearly a **partial literary edition**.
-- 150 chapter headings are present consecutively, 607–756. Source chapter 756 does not end the full work.
-- The parent branch containing the original machine draft is preserved. No change to `main`.
-- The previous novel chapters 1–606 are not changed.
+- **Chapters 607–650 (44 chapters)**: manually rewritten in Russian and compared against the Chinese source. Individual literary files: `ru-607.txt` through `ru-650.txt`; consolidated literary text: `combined-ru-607-650-LITERARY.txt`.
+- **Chapters 651–756 (106 chapters)**: machine draft only, with technical corrections to headings, selected terminology, and formatting; **not** semantically proofread or publication-ready.
+- `combined-ru-607-756-EDITORIAL-PASS2-044.txt` is a mixed-status 150-chapter compilation, not a fully literary edited book. See `editorial-report-pass2-044.json`.
+- The Chinese source ends during chapter 756, not at the end of the work.
+- Original machine-draft branch, earlier Russian 1–606, and `main` remain unchanged.
