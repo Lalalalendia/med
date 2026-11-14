@@ -1,9 +1,10 @@
-# Marvel RU literary editing status (PASS9)
+# Marvel RU literary editing status (PASS10)
 
-- **607-720:** 114 chapters literarily rewritten against the Chinese original, saved as `ru-607.txt` through `ru-720.txt` and in `combined-ru-607-720-LITERARY.txt`.
-- **721-756:** 36 machine-translated chapters, not publication-ready.
-- `combined-ru-607-756-EDITORIAL-PASS9-114.txt` combines revised chapters 607-720 with machine draft 721-756. See `editorial-report-pass9-114.json`.
-- Chapters **607-710** and **721-756** are preserved verbatim at chapter level from PASS8.
-- Source chapter 756 does not conclude the novel; chapter 226 is missing elsewhere.
-- Keep established Western names for original characters; preserve recognizable character names from borrowed fictional works.
-- The author's chapter 719 calls the time-loop heroine Annie. This is retained as written in the source.
+- **607–730:** 124 chapters source-checked and literarily revised; individual `ru-607.txt` to `ru-730.txt` and `combined-ru-607-730-LITERARY.txt`.
+- **731–756:** 26 machine-draft chapters, not ready for publication.
+- Mixed compilation: `combined-ru-607-756-EDITORIAL-PASS10-124.txt`.
+- Previous **607–720** and following **731–756** preserved verbatim at chapter level compared with PASS9.
+- See `editorial-report-pass10-124.json` for status and checks.
+- The original uses the name **Annie** for the time-loop heroine, retained despite the film being different.
+- Retain identifiable fictional names Zhan Lan, Zhao Yingkong, Zheng Zha, Freddy, and Sadako, and established Westernization of original characters.
+- Chinese source chapter 756 is not the novel's conclusion; earlier chapter 226 is missing outside this range.

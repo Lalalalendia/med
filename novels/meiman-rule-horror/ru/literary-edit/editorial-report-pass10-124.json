@@ -1,0 +1,58 @@
+{
+  "status": "partial-literary-edition",
+  "range": [
+    607,
+    756
+  ],
+  "chapter_count": 150,
+  "literary_checked_against_chinese": [
+    607,
+    730
+  ],
+  "literary_count": 124,
+  "newly_retranslated": [
+    721,
+    722,
+    723,
+    724,
+    725,
+    726,
+    727,
+    728,
+    729,
+    730
+  ],
+  "machine_draft": [
+    731,
+    756
+  ],
+  "machine_draft_count": 26,
+  "preserved_chapters_before": [
+    607,
+    720
+  ],
+  "preserved_chapters_after": [
+    731,
+    756
+  ],
+  "preserved_unmodified_chapter_count": 140,
+  "previous_revision": "PASS9-114",
+  "source": "novels/meiman-rule-horror/source/meiman-zh-607-756.txt",
+  "checks": {
+    "chapters_contiguous": true,
+    "new_chapters_have_no_cjk": true,
+    "new_chapters_have_no_replacement_char": true,
+    "previous_literary_matches_old_full": true
+  },
+  "editorial_notes": [
+    "Keep source's fictional name Annie, despite the source's allusion to the film Triangle where the heroine has a different name.",
+    "Keep Zhan Lan and Zhao Yingkong recognizable as Infinite Terror characters.",
+    "Chapters 725 and 728 describe adults spending a night together; rewrite without gratuitous erotic description, especially around the potentially underage Zhao Yingkong.",
+    "Source chapter 727 has a Freddy nightmare technique and chapter 728 a Sadako world assignment, both retained."
+  ],
+  "warnings": [
+    "Chapters 731-756 remain machine draft and are not publication-ready.",
+    "Chinese source chapter 756 is not the end of the original novel.",
+    "Missing earlier chapter 226 outside this compilation."
+  ]
+}
