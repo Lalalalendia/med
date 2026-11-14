@@ -126,6 +126,9 @@ def write_zip(records, out_dir):
     wanted = set(range(START, END + 1))
     if not records or records[0]["number"] != START or records[-1]["number"] != END:
         raise ValueError("Source endpoint headings are not the requested start/end")
+    missing = sorted(wanted - numbered)
+    if missing:
+        raise ValueError(f"Missing printed chapters in export: {missing}")
     locators = [r["url_number"] for r in records]
     if locators != list(range(min(locators), max(locators) + 1)):
         raise ValueError("Nonconsecutive physical pages")
