@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-14T09:23:18+00:00
+Run: 2026-11-15T09:52:38+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-14T09:23:18+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `116031` [Wizard Chronicle](https://wtr-lab.com/en/novel/116031/wizard-chronicle) — catalog
-- **wtr-lab** `116170` [Gao Wu: The Weakest Disassembler? I Can Dissect Gods](https://wtr-lab.com/en/novel/116170/gao-wu-the-weakest-disassembler-i-can-dissect-gods) — catalog
-- **wtr-lab** `116195` [Star Train World: It Does Seem a Bit Crazy](https://wtr-lab.com/en/novel/116195/star-train-world-it-does-seem-a-bit-crazy) — catalog
-- **wtr-lab** `116156` [Game Development: I Really Didn't Turn Evil!](https://wtr-lab.com/en/novel/116156/game-development-i-really-didnt-turn-evil) — catalog
-- **wtr-lab** `116192` [The World of Film and Television Begins with University Lecturers](https://wtr-lab.com/en/novel/116192/the-world-of-film-and-television-begins-with-university-lecturers) — catalog
-- **wtr-lab** `116136` [Tycoon System: I Want Money and Good Looks!!](https://wtr-lab.com/en/novel/116136/tycoon-system-i-want-money-and-good-looks) — catalog
-- **wtr-lab** `116171` [Huh? Do Angels Get Kissed Until They Cry Too?](https://wtr-lab.com/en/novel/116171/huh-do-angels-get-kissed-until-they-cry-too) — catalog
-- **wtr-lab** `115475` [Livestream: My Past and Present Lives, I'm the Backbone of the Nation!](https://wtr-lab.com/en/novel/115475/livestream-my-past-and-present-lives-im-the-backbone-of-the-nation) — catalog
-- **wtr-lab** `116186` [For Videos About Collapse World Impact 3rd, Please Check Out the Fan-made Content](https://wtr-lab.com/en/novel/116186/for-videos-about-collapse-world-impact-3rd-please-check-out-the-fan-made-content) — catalog
-- **wtr-lab** `116167` [The Box Office Was a Hit, But the Audience Was Left Depressed](https://wtr-lab.com/en/novel/116167/the-box-office-was-a-hit-but-the-audience-was-left-depressed) — catalog
-- **mtl-novel** `my-yandere-tentacle-wielding-girl-is-becoming-increasingly-perverted-towards-me` [My Yandere Tentacle-wielding Girl is Becoming Increasingly Perverted Towards Me](https://mtl-novel.com/novel/my-yandere-tentacle-wielding-girl-is-becoming-increasingly-perverted-towards-me/) — catalog
-- **mtl-novel** `im-driving-a-campervan-in-the-apocalypse` [I’m Driving a Campervan in the Apocalypse](https://mtl-novel.com/novel/im-driving-a-campervan-in-the-apocalypse/) — catalog
-- **mtl-novel** `a-timid-beauty-transmigrates-to-the-1970s-a-roguish-chieftain-is-busy-doting-on-his-wife` [A Timid Beauty Transmigrates to the 1970s; a Roguish Chieftain is Busy Doting on His Wife](https://mtl-novel.com/novel/a-timid-beauty-transmigrates-to-the-1970s-a-roguish-chieftain-is-busy-doting-on-his-wife/) — catalog
-- **mtl-novel** `daily-divination-from-a-rogue-cultivator-in-the-marketplace-to-an-immortal` [Daily Divination: From a Rogue Cultivator in the Marketplace to an Immortal](https://mtl-novel.com/novel/daily-divination-from-a-rogue-cultivator-in-the-marketplace-to-an-immortal/) — catalog
-- **mtl-novel** `bound-to-the-fate-of-the-nation-starting-as-the-swift-swordsman` [Bound to the Fate of the Nation: Starting As the Swift Swordsman](https://mtl-novel.com/novel/bound-to-the-fate-of-the-nation-starting-as-the-swift-swordsman/) — catalog
-- **mtl-novel** `martial-arts-crossover-supporting-the-waist-cherishing-the-stars-vigorously-supporting-the-moon` [Martial Arts Crossover: Supporting the Waist, Cherishing the Stars; Vigorously Supporting the Moon](https://mtl-novel.com/novel/martial-arts-crossover-supporting-the-waist-cherishing-the-stars-vigorously-supporting-the-moon/) — catalog
-- **mtl-novel** `transmigrated-as-a-top-male-side-character-the-whitewashing-system-bound-the-wrong-person` [Transmigrated As a Top Male Side Character, the Whitewashing System Bound the Wrong Person!](https://mtl-novel.com/novel/transmigrated-as-a-top-male-side-character-the-whitewashing-system-bound-the-wrong-person/) — catalog
-- **mtl-novel** `subway-survival-i-helped-the-comic-con-goddess-spread-her-seeds` [Subway Survival: I Helped the Comic Con Goddess Spread Her Seeds](https://mtl-novel.com/novel/subway-survival-i-helped-the-comic-con-goddess-spread-her-seeds/) — catalog
-- **mtl-novel** `pokemon-with-a-built-in-cheat-tool-i-choose-to-slack-off` [Pokémon: With a Built-in Cheat Tool, I Choose to Slack Off](https://mtl-novel.com/novel/pokemon-with-a-built-in-cheat-tool-i-choose-to-slack-off/) — catalog
-- **mtl-novel** `everyone-is-cultivating-immortals-in-the-wasteland-my-cave-is-full-of-goddesses` [Everyone is Cultivating Immortals in the Wasteland, My Cave is Full of Goddesses](https://mtl-novel.com/novel/everyone-is-cultivating-immortals-in-the-wasteland-my-cave-is-full-of-goddesses/) — catalog
+- **wtr-lab** `116510` [[movie Review] the Dark Side of the Great Tree King: The Tale of the Honmaru](https://wtr-lab.com/en/novel/116510/movie-review-the-dark-side-of-the-great-tree-king-the-tale-of-the-honmaru) — catalog
+- **wtr-lab** `116505` [Romance Variety Show: The Gentle Young Master and the Aloof Goddess are So Sweet!](https://wtr-lab.com/en/novel/116505/romance-variety-show-the-gentle-young-master-and-the-aloof-goddess-are-so-sweet) — catalog
+- **wtr-lab** `116460` [My Slacking-off Days at HP](https://wtr-lab.com/en/novel/116460/my-slacking-off-days-at-hp) — catalog
+- **wtr-lab** `116517` [Junior Sister is Incredibly Strong But Excessively Lazy](https://wtr-lab.com/en/novel/116517/junior-sister-is-incredibly-strong-but-excessively-lazy) — catalog
+- **wtr-lab** `116504` [All-people Lord: One God-tier Talent Every Day](https://wtr-lab.com/en/novel/116504/all-people-lord-one-god-tier-talent-every-day) — catalog
+- **wtr-lab** `116511` [Star Train World: The Good Son of the Hunt and Abundance](https://wtr-lab.com/en/novel/116511/star-train-world-the-good-son-of-the-hunt-and-abundance) — catalog
+- **wtr-lab** `116496` [Cultivating the Heaven-covering Emperor in Soul Land Continent](https://wtr-lab.com/en/novel/116496/cultivating-the-heaven-covering-emperor-in-soul-land-continent) — catalog
+- **wtr-lab** `116480` [The King's Avatar: A Girl's Professional Dream](https://wtr-lab.com/en/novel/116480/the-kings-avatar-a-girls-professional-dream) — catalog
+- **wtr-lab** `116486` [NBA: Starting Out As a Grammy-winning Producer](https://wtr-lab.com/en/novel/116486/nba-starting-out-as-a-grammy-winning-producer) — catalog
+- **wtr-lab** `116390` [Kamen Rider in the Card Duel World World](https://wtr-lab.com/en/novel/116390/kamen-rider-in-the-card-duel-world-world) — catalog
+- **mtl-novel** `he-takes-control-of-the-nine-tails-at-the-start-becoming-a-corrupted-naruto` [He Takes Control of the Nine-tails at the Start, Becoming a Corrupted Naruto](https://mtl-novel.com/novel/he-takes-control-of-the-nine-tails-at-the-start-becoming-a-corrupted-naruto/) — catalog
+- **mtl-novel** `clan-cultivation-i-am-the-clans-guardian-spirit-beast` [Clan Cultivation: I am the Clan’s Guardian Spirit Beast](https://mtl-novel.com/novel/clan-cultivation-i-am-the-clans-guardian-spirit-beast/) — catalog
+- **mtl-novel** `genshin-impact-a-detective-princess-and-a-vampire-girl` [Genshin Impact: A Detective Princess and a Vampire Girl](https://mtl-novel.com/novel/genshin-impact-a-detective-princess-and-a-vampire-girl/) — catalog
+- **mtl-novel** `apocalypse-starting-with-obtaining-a-rare-class` [Apocalypse: Starting with Obtaining a Rare Class](https://mtl-novel.com/novel/apocalypse-starting-with-obtaining-a-rare-class/) — catalog
+- **mtl-novel** `ark-rogue-mode-activated` [Ark Rogue Mode, Activated!](https://mtl-novel.com/novel/ark-rogue-mode-activated/) — catalog
+- **mtl-novel** `rise-of-empires-spain` [Rise of Empires: Spain](https://mtl-novel.com/novel/rise-of-empires-spain/) — catalog
+- **mtl-novel** `honghuang-i-am-the-great-emperor-of-longevity-in-the-south-pole` [Honghuang: I am the Great Emperor of Longevity in the South Pole](https://mtl-novel.com/novel/honghuang-i-am-the-great-emperor-of-longevity-in-the-south-pole/) — catalog
+- **mtl-novel** `online-martial-arts-game-get-a-golden-attribute-at-the-start` [Online Martial Arts Game: Get a Golden Attribute at the Start](https://mtl-novel.com/novel/online-martial-arts-game-get-a-golden-attribute-at-the-start/) — catalog
+- **mtl-novel** `douluo-blue-lightning-dominates-the-world-fist-suppresses-douluo` [Douluo: Blue Lightning Dominates the World, Fist Suppresses Douluo](https://mtl-novel.com/novel/douluo-blue-lightning-dominates-the-world-fist-suppresses-douluo/) — catalog
+- **mtl-novel** `douluo-dragon-king-reincarnated-as-tang-wulin-but-with-the-soft-bone-rabbit` [Douluo Dragon King: Reincarnated As Tang Wulin, But with the Soft Bone Rabbit](https://mtl-novel.com/novel/douluo-dragon-king-reincarnated-as-tang-wulin-but-with-the-soft-bone-rabbit/) — catalog
