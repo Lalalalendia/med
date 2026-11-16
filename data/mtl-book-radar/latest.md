@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-15T09:52:38+00:00
+Run: 2026-11-16T10:08:48+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-15T09:52:38+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `116510` [[movie Review] the Dark Side of the Great Tree King: The Tale of the Honmaru](https://wtr-lab.com/en/novel/116510/movie-review-the-dark-side-of-the-great-tree-king-the-tale-of-the-honmaru) — catalog
-- **wtr-lab** `116505` [Romance Variety Show: The Gentle Young Master and the Aloof Goddess are So Sweet!](https://wtr-lab.com/en/novel/116505/romance-variety-show-the-gentle-young-master-and-the-aloof-goddess-are-so-sweet) — catalog
-- **wtr-lab** `116460` [My Slacking-off Days at HP](https://wtr-lab.com/en/novel/116460/my-slacking-off-days-at-hp) — catalog
-- **wtr-lab** `116517` [Junior Sister is Incredibly Strong But Excessively Lazy](https://wtr-lab.com/en/novel/116517/junior-sister-is-incredibly-strong-but-excessively-lazy) — catalog
-- **wtr-lab** `116504` [All-people Lord: One God-tier Talent Every Day](https://wtr-lab.com/en/novel/116504/all-people-lord-one-god-tier-talent-every-day) — catalog
-- **wtr-lab** `116511` [Star Train World: The Good Son of the Hunt and Abundance](https://wtr-lab.com/en/novel/116511/star-train-world-the-good-son-of-the-hunt-and-abundance) — catalog
-- **wtr-lab** `116496` [Cultivating the Heaven-covering Emperor in Soul Land Continent](https://wtr-lab.com/en/novel/116496/cultivating-the-heaven-covering-emperor-in-soul-land-continent) — catalog
-- **wtr-lab** `116480` [The King's Avatar: A Girl's Professional Dream](https://wtr-lab.com/en/novel/116480/the-kings-avatar-a-girls-professional-dream) — catalog
-- **wtr-lab** `116486` [NBA: Starting Out As a Grammy-winning Producer](https://wtr-lab.com/en/novel/116486/nba-starting-out-as-a-grammy-winning-producer) — catalog
-- **wtr-lab** `116390` [Kamen Rider in the Card Duel World World](https://wtr-lab.com/en/novel/116390/kamen-rider-in-the-card-duel-world-world) — catalog
-- **mtl-novel** `he-takes-control-of-the-nine-tails-at-the-start-becoming-a-corrupted-naruto` [He Takes Control of the Nine-tails at the Start, Becoming a Corrupted Naruto](https://mtl-novel.com/novel/he-takes-control-of-the-nine-tails-at-the-start-becoming-a-corrupted-naruto/) — catalog
-- **mtl-novel** `clan-cultivation-i-am-the-clans-guardian-spirit-beast` [Clan Cultivation: I am the Clan’s Guardian Spirit Beast](https://mtl-novel.com/novel/clan-cultivation-i-am-the-clans-guardian-spirit-beast/) — catalog
-- **mtl-novel** `genshin-impact-a-detective-princess-and-a-vampire-girl` [Genshin Impact: A Detective Princess and a Vampire Girl](https://mtl-novel.com/novel/genshin-impact-a-detective-princess-and-a-vampire-girl/) — catalog
-- **mtl-novel** `apocalypse-starting-with-obtaining-a-rare-class` [Apocalypse: Starting with Obtaining a Rare Class](https://mtl-novel.com/novel/apocalypse-starting-with-obtaining-a-rare-class/) — catalog
-- **mtl-novel** `ark-rogue-mode-activated` [Ark Rogue Mode, Activated!](https://mtl-novel.com/novel/ark-rogue-mode-activated/) — catalog
-- **mtl-novel** `rise-of-empires-spain` [Rise of Empires: Spain](https://mtl-novel.com/novel/rise-of-empires-spain/) — catalog
-- **mtl-novel** `honghuang-i-am-the-great-emperor-of-longevity-in-the-south-pole` [Honghuang: I am the Great Emperor of Longevity in the South Pole](https://mtl-novel.com/novel/honghuang-i-am-the-great-emperor-of-longevity-in-the-south-pole/) — catalog
-- **mtl-novel** `online-martial-arts-game-get-a-golden-attribute-at-the-start` [Online Martial Arts Game: Get a Golden Attribute at the Start](https://mtl-novel.com/novel/online-martial-arts-game-get-a-golden-attribute-at-the-start/) — catalog
-- **mtl-novel** `douluo-blue-lightning-dominates-the-world-fist-suppresses-douluo` [Douluo: Blue Lightning Dominates the World, Fist Suppresses Douluo](https://mtl-novel.com/novel/douluo-blue-lightning-dominates-the-world-fist-suppresses-douluo/) — catalog
-- **mtl-novel** `douluo-dragon-king-reincarnated-as-tang-wulin-but-with-the-soft-bone-rabbit` [Douluo Dragon King: Reincarnated As Tang Wulin, But with the Soft Bone Rabbit](https://mtl-novel.com/novel/douluo-dragon-king-reincarnated-as-tang-wulin-but-with-the-soft-bone-rabbit/) — catalog
+- **wtr-lab** `116772` [Ninja World: Darkened Ninja World, I'll Change the World in Konoha](https://wtr-lab.com/en/novel/116772/ninja-world-darkened-ninja-world-ill-change-the-world-in-konoha) — catalog
+- **wtr-lab** `116629` [A Mystical Spring and a New Life: Farming and Raising Kids After My Husband’s Death](https://wtr-lab.com/en/novel/116629/a-mystical-spring-and-a-new-life-farming-and-raising-kids-after-my-husbands-death) — catalog
+- **wtr-lab** `109975` [Live-in Dragon Son-in-law: Eight Years of Endurance](https://wtr-lab.com/en/novel/109975/live-in-dragon-son-in-law-eight-years-of-endurance) — catalog
+- **wtr-lab** `116782` [Detective World: The Frail Beauty of the Matsuda Family is the Group's Darling](https://wtr-lab.com/en/novel/116782/detective-world-the-frail-beauty-of-the-matsuda-family-is-the-groups-darling) — catalog
+- **wtr-lab** `116558` [Why Did Nuomi Tianshi Turn Evil If He Didn't Follow the Script?](https://wtr-lab.com/en/novel/116558/why-did-nuomi-tianshi-turn-evil-if-he-didnt-follow-the-script) — catalog
+- **wtr-lab** `116777` [Mech Awakening: I Awaken Gundam ELS](https://wtr-lab.com/en/novel/116777/mech-awakening-i-awaken-gundam-els) — catalog
+- **wtr-lab** `116754` [Crossing Gundam 00 Awakening System](https://wtr-lab.com/en/novel/116754/crossing-gundam-00-awakening-system) — catalog
+- **wtr-lab** `115922` [Flash Marriage: The Real Heiress Married a Big-shot Warlord](https://wtr-lab.com/en/novel/115922/flash-marriage-the-real-heiress-married-a-big-shot-warlord) — catalog
+- **wtr-lab** `116767` [Crossover Anime: Starting with the Fusion of Mordkaiser with Touhou Project](https://wtr-lab.com/en/novel/116767/crossover-anime-starting-with-the-fusion-of-mordkaiser-with-touhou-project) — catalog
+- **wtr-lab** `116784` [Collapse World: Have I Become the Ruler of the Demon Makima?](https://wtr-lab.com/en/novel/116784/collapse-world-have-i-become-the-ruler-of-the-demon-makima) — catalog
+- **mtl-novel** `nagato-has-a-thin-waist` [Nagato has a thin waist](https://mtl-novel.com/novel/nagato-has-a-thin-waist/) — catalog
+- **mtl-novel** `zhutian-starting-from-the-era-of-the-wilderness-become-the-eternal-protagonist` [Zhutian: Starting from the Era of the Wilderness, Become the Eternal Protagonist](https://mtl-novel.com/novel/zhutian-starting-from-the-era-of-the-wilderness-become-the-eternal-protagonist/) — catalog
+- **mtl-novel** `holy-roman-empire` [Holy Roman Empire](https://mtl-novel.com/novel/holy-roman-empire/) — catalog
+- **mtl-novel** `one-person-all-that-i-use-is-forbidden-magic` [One Person: All That I Use is Forbidden Magic](https://mtl-novel.com/novel/one-person-all-that-i-use-is-forbidden-magic/) — catalog
+- **mtl-novel** `tiger-tank-commander` [Tiger Tank Commander](https://mtl-novel.com/novel/tiger-tank-commander/) — catalog
+- **mtl-novel** `reborn-marshal-of-the-republic-of-china` [Reborn Marshal of the Republic of China](https://mtl-novel.com/novel/reborn-marshal-of-the-republic-of-china/) — catalog
+- **mtl-novel** `bind-to-the-girl-of-destiny-all-the-women-will-become-respected-and-i-will-become-the-emperor` [Bind to the girl of destiny, all the women will become respected and I will become the emperor!](https://mtl-novel.com/novel/bind-to-the-girl-of-destiny-all-the-women-will-become-respected-and-i-will-become-the-emperor/) — catalog
+- **mtl-novel** `conjurer-i-the-warhammer-psyker` [Conjurer? I, the Warhammer Psyker](https://mtl-novel.com/novel/conjurer-i-the-warhammer-psyker/) — catalog
+- **mtl-novel** `this-top-influencer-only-wants-to-improve` [This Top Influencer Only Wants to Improve](https://mtl-novel.com/novel/this-top-influencer-only-wants-to-improve/) — catalog
+- **mtl-novel** `exiled-to-the-frigid-north-boost-production-in-the-greenhouse` [Exiled to the Frigid North? Boost Production in the Greenhouse!](https://mtl-novel.com/novel/exiled-to-the-frigid-north-boost-production-in-the-greenhouse/) — catalog
