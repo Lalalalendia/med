@@ -1,0 +1,74 @@
+
+name: Persist verified witch skill-tree RAW 500-942
+on:
+  push:
+    branches: [collect/wizard-skill-tree-500-tail-20261116]
+    paths:
+      - .github/workflows/witch-skill-tree-persist.yml
+permissions:
+  actions: read
+  contents: write
+jobs:
+  persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Retrieve previously verified original run
+        uses: actions/download-artifact@v4
+        with:
+          name: witch-skill-tree-500-tail-43857390899
+          run-id: 43857390899
+          repository: Lalalalendia/med
+          github-token: ${{ github.token }}
+          path: out/witch-skill-tree
+      - name: Verify all 443 files and stage permanent archive
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import shutil
+          import zipfile
+          from pathlib import Path
+
+          source=Path("out/witch-skill-tree")
+          manifest=json.loads((source/"manifest.json").read_text(encoding="utf-8"))
+          rows=manifest["chapters"]
+          numbers=[int(r["number"]) for r in rows]
+          assert numbers==list(range(500,943)), ("unexpected chapter range",numbers[:5],numbers[-5:])
+          assert not manifest["failures"],manifest["failures"]
+          hashes=[]
+          for row in rows:
+            rel=Path(row["file"])
+            assert rel.parts[0]=="raw" and len(rel.parts)==2,rel
+            p=source/rel
+            assert p.is_file(),p
+            data=p.read_bytes()
+            digest=hashlib.sha256(data).hexdigest()
+            assert digest==row["sha256"],(p,digest,row["sha256"])
+            hashes.append(digest)
+          assert len(set(hashes))==len(hashes)==443
+          for fn in ["combined.txt","manifest.json","summary.md","witch-skill-tree-raw.zip"]:
+            assert (source/fn).is_file(),fn
+          with zipfile.ZipFile(source/"witch-skill-tree-raw.zip") as z:
+            assert z.testzip() is None,"archive CRC failure"
+            assert len([p for p in z.namelist() if p.startswith("raw/") and p.endswith(".txt")])==443
+          target=Path("novels/witch-skill-tree")
+          assert not (target/"manifest.json").exists(),"permanent corpus already exists; refusing silent overwrite"
+          target.mkdir(parents=True,exist_ok=True)
+          shutil.copytree(source/"raw",target/"raw",dirs_exist_ok=False)
+          for fn in ["combined.txt","manifest.json","summary.md","witch-skill-tree-raw.zip"]:
+            shutil.copy2(source/fn,target/fn)
+          print("VERIFIED_AND_STAGED 443 chapters", "to",target)
+          PY
+      - name: Commit raw and manifest to the working branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add novels/witch-skill-tree
+          git diff --cached --check
+          git commit -m "Persist verified wizard skill-tree RAW 500-942 and integrity manifest"
+          git push origin HEAD:refs/heads/collect/wizard-skill-tree-500-tail-20261116
