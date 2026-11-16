@@ -42,20 +42,62 @@ never commits extracted novel text to the repository.
 - Fails without a SUCCESS manifest when any chapter is missing or invalid.
 - Never treats a partial extraction as a complete book.
 
-## Known limitation: large catalogs
+## Large catalogs and resumable batches
 
-The visible book card lists approximately 30 *latest* chapters plus the start
-link even when a book contains hundreds or thousands of chapters. The
-current collector intentionally refuses these incomplete lists. Before running
-mass collection, add a reliable full catalog mechanism or follow verified
-"next chapter" links from the first chapter, tracking each visited ID and
-verifying the final count. For very long books, implement resumable batches,
-not one time-limited GitHub Actions job.
+Book cards with thousands of chapters usually expose only ~30 latest links plus
+the first chapter. The **one-shot** collector intentionally refuses such
+incomplete catalogs. A separate **linked batch collector** follows verified
+"next chapter" links instead, using chapter headings and IDs in the reader.
+
+For a permitted book whose card has a truncated catalog:
+
+\`\`\`bash
+python tools/jiuxiao/linked_collector.py \
+  --book-url 'https://jiuxiaozw.com/sim/book/<BOOK_ID>' \
+  --limit 50 --delay 2 --out-dir out/book/batch01
+\`\`\`
+
+Every successful batch writes a receipt (\`manifest.json\`) with \`next_url\` and
+\`next_ordinal\`, source title, IDs, SHA-256, paragraphs and exact saved files.
+The batch has status \`BATCH_COMPLETE\`, **not** \`SUCCESS\` for a full book.
+
+Continue using the returned values as \`--start-url\` and \`--start-ordinal\`:
+
+\`\`\`bash
+python tools/jiuxiao/linked_collector.py \
+  --book-url 'https://jiuxiaozw.com/sim/book/<BOOK_ID>' \
+  --start-url '<NEXT_URL_FROM_PREVIOUS_MANIFEST>' \
+  --start-ordinal 51 --limit 50 --delay 2 \
+  --out-dir out/book/batch02
+\`\`\`
+
+After retrieving every batch:
+
+\`\`\`bash
+python tools/jiuxiao/assemble_batches.py \
+  out/book/batch01 out/book/batch02 \
+  --out-dir out/book/assembled
+\`\`\`
+
+Assembly rejects gaps, overlaps, wrong book IDs, broken cross-batch links,
+bad checksums, missing paragraphs and an incomplete final chapter. Only a
+fully verified book gets a \`SUCCESS\` assembled manifest.
+
+The linked navigation was checked against the first five chapters of the
+1,667-entry novel \`玄鉴仙族\` (31 chapter links visible on its book card).
+The two-batch workflow also re-collected the nine-chapter public-domain
+sample as 1–3 and 4–9, then reconstructed a **byte-identical book** with the
+same SHA-256 as the original one-shot collector.
+
+This is still **sequential** and intentionally rate-limited. Full 1,667-chapter
+collection requires multiple bounded runs. Automatic scheduling, persistent
+checkpoints outside artifacts, and runtime rechecking of book revisions are
+future improvements; do not claim them as implemented.
 
 ## Tests
 
 \`\`\`bash
-python -m unittest discover -s tools/jiuxiao -p test_collector.py -v
+python -m unittest discover -s tools/jiuxiao -p 'test_*.py' -v
 \`\`\`
 
 \`inspect_catalog.py\` and \`source_probe.py\` are metadata-only diagnostic
