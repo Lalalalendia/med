@@ -20,6 +20,9 @@ class JiuxiaoTests(unittest.TestCase):
     def test_incomplete_catalog_rejected(self):
         with self.assertRaisesRegex(ValueError,'Catalog incomplete'):
             parse_catalog(book_html(count=4),f'https://jiuxiaozw.com/sim/book/{BOOK_ID}')
+    def test_canonical_chapter_route_from_simplified_book(self):
+        result = chapter_url('/book/'+BOOK_ID+'/'+IDs[0],BOOK_ID)
+        self.assertEqual(result[1], 'https://jiuxiaozw.com/book/'+BOOK_ID+'/'+IDs[0])
     def test_blocked_offsite_url(self):
         self.assertIsNone(chapter_url('https://example.org/book/'+BOOK_ID+'/'+IDs[0],BOOK_ID))
     def test_paragraphs_are_separate(self):
