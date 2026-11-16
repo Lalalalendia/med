@@ -27,14 +27,12 @@ def soup_at(session, url):
 
 def page_id(url):
     path = urlparse(url).path
-    if path.endswith(f"/{STEM}.html"):
-        return 1
     match = re.search(rf"/{STEM}_(\d+)\.html$", path)
     return int(match.group(1)) if match else None
 
 
 def pages_in(soup):
-    links = {1: BASE}
+    links = {}
     for a in soup.select("a[href]"):
         url = urljoin(BASE, a["href"])
         number = page_id(url)
@@ -46,14 +44,14 @@ def pages_in(soup):
 def extract(soup):
     # Use the content-like region with the strongest real paragraph signal.
     candidates = []
-    for node in soup.select("#content, .content, .article, .read-content, .txt, .text, article, main, div"):
+    for node in soup.select("div#text.book_con, #text, .book_con"):
         if node.find_parent(["script", "footer", "nav", "header"]):
             continue
         paras = [p.get_text(" ", strip=True) for p in node.select("p")]
         paras = [p for p in paras if len(p) >= 12]
         text = "\n\n".join(paras)
         han = len(re.findall(r"[\u4e00-\u9fff]", text))
-        if han < 150:
+        if han < 70:
             continue
         link_han = sum(len(re.findall(r"[\u4e00-\u9fff]", a.get_text(" ", strip=True))) for a in node.select("a"))
         score = han - 4 * link_han
@@ -62,8 +60,8 @@ def extract(soup):
         raise ValueError("No substantial paragraph-based chapter text found; inspect DOM")
     candidates.sort(key=lambda x: x[0], reverse=True)
     _, han, text = candidates[0]
-    if han < 300:
-        raise ValueError(f"Suspiciously short chapter: {han} Chinese characters")
+    if han < 70:
+        raise ValueError(f"Suspiciously short page: {han} Chinese characters")
     return text
 
 
@@ -76,17 +74,17 @@ def run(args):
     urls = pages_in(index)
     if max(urls) <= 2:
         raise ValueError("No usable paginated catalogue discovered; needs DOM adapter")
-    expected = set(range(1, max(urls) + 1))
+    expected = set(range(2, max(urls) + 1))
     missing_links = sorted(expected - set(urls))
     if missing_links:
         raise ValueError(f"Catalogue has page-ID gaps: {missing_links[:30]}")
-    first, middle, last = 1, max(urls) // 2, max(urls)
+    first, middle, last = min(urls), (min(urls) + max(urls)) // 2, max(urls)
     pages = [first, middle, last] if args.probe else sorted(urls)
     records = []
     errors = {}
     for i, n in enumerate(dict.fromkeys(pages), 1):
         try:
-            page = index if n == 1 else soup_at(s, urls[n])
+            page = soup_at(s, urls[n])
             body = extract(page)
             digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
             records.append({"page": n, "url": urls[n], "chars": len(body),
