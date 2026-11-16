@@ -1,7 +1,7 @@
 name: Recover engshu chapters 2731-2732-2739
 on:
   push:
-    branches: [repair/engshu-2731-2732-2739-source-20261116]
+    branches: [repair/engshu-2731-2732-2739-20261116]
     paths: [.github/workflows/recover-engshu-2731-2732-2739.yml]
 permissions:
   contents: read
