@@ -1,0 +1,57 @@
+name: Witch skill tree - source diagnostics
+on:
+  push:
+    branches:
+      - collect/wizard-skill-tree-500-tail-20261116
+    paths:
+      - .github/workflows/witch-skill-tree-500-tail.yml
+      - tools/novel-ingest/witch_skill_tree.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests beautifulsoup4
+      - name: Probe catalog and body candidates
+        run: |
+          python - <<'PY'
+          import requests, re, time
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          urls = [
+            'https://twkan.com/book/90254/index.html',
+            'https://twkan.com/book/90254.html',
+            'https://www.jumeichai.com/',
+            'https://www.wxff.net/zdzdmu/',
+            'https://www.bqg000.cc/read/176663/',
+            'https://www.cmfu.cc/49/49309/',
+            'https://www.xiaoshuo.com.tw/885758/',
+            'https://sto55.com/book/62763/',
+          ]
+          s=requests.Session()
+          s.headers.update({'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36','Accept-Language':'zh-CN,zh;q=0.9'})
+          for url in urls:
+            print('\n###',url,flush=True)
+            try:
+              r=s.get(url,timeout=16);r.raise_for_status();r.encoding=r.apparent_encoding if not r.encoding or r.encoding.upper()=='ISO-8859-1' else r.encoding
+              soup=BeautifulSoup(r.text,'html.parser')
+              links=[]
+              for a in soup.select('a[href]'):
+                label=a.get_text(' ',strip=True)
+                if any(v in label for v in ('第五百','第500','第九百八','第984','第928','第930','目录','章節','下一頁','下一页')) or (url.endswith('jumeichai.com/') and '巫师：从技能树开始' in label):
+                  links.append((label[:75],urljoin(r.url,a.get('href'))))
+              print('STATUS',r.status_code,'BYTES',len(r.content),'HTML_TITLE',soup.title.get_text(' ',strip=True)[:100] if soup.title else '','A',len(soup.select('a[href]')),'LINKS_MATCHED',len(links))
+              for x in (links[:20]+links[-10:]):print('LINK',repr(x))
+              if 'twkan.com' in url:
+                for p in ['.read','ul','section','a.chapter','nav']:
+                  el=soup.select_one(p)
+                  if el:print('SELECTOR',p,'SAMPLE',el.get_text(' ',strip=True)[:220])
+            except Exception as e:print('ERROR',repr(e),flush=True)
+          PY
