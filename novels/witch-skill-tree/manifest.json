@@ -1,0 +1,3717 @@
+{
+  "book": "巫師：我有一棵技能樹",
+  "catalog_url": "https://sto55.com/book/62763/ajax_index.html",
+  "requested_start": 500,
+  "requested_end": 942,
+  "catalog_max": 942,
+  "catalog_entries": 942,
+  "ok": 443,
+  "failures": [],
+  "catalog_conflicts": {
+    "860": [
+      "https://sto55.com/book/62763/30867727.html"
+    ],
+    "861": [
+      "https://sto55.com/book/62763/30867732.html"
+    ],
+    "862": [
+      "https://sto55.com/book/62763/30867733.html"
+    ],
+    "863": [
+      "https://sto55.com/book/62763/30867736.html"
+    ],
+    "864": [
+      "https://sto55.com/book/62763/30867739.html"
+    ],
+    "865": [
+      "https://sto55.com/book/62763/30867740.html"
+    ],
+    "866": [
+      "https://sto55.com/book/62763/30867741.html"
+    ],
+    "867": [
+      "https://sto55.com/book/62763/30867961.html"
+    ],
+    "868": [
+      "https://sto55.com/book/62763/30867964.html"
+    ],
+    "869": [
+      "https://sto55.com/book/62763/30867965.html"
+    ],
+    "870": [
+      "https://sto55.com/book/62763/30867966.html"
+    ],
+    "871": [
+      "https://sto55.com/book/62763/30867967.html"
+    ],
+    "872": [
+      "https://sto55.com/book/62763/30867968.html"
+    ],
+    "873": [
+      "https://sto55.com/book/62763/30867969.html"
+    ],
+    "874": [
+      "https://sto55.com/book/62763/30868964.html"
+    ],
+    "875": [
+      "https://sto55.com/book/62763/30868969.html"
+    ],
+    "876": [
+      "https://sto55.com/book/62763/30868970.html"
+    ],
+    "877": [
+      "https://sto55.com/book/62763/30868971.html"
+    ],
+    "878": [
+      "https://sto55.com/book/62763/30868972.html"
+    ],
+    "879": [
+      "https://sto55.com/book/62763/30868973.html"
+    ],
+    "880": [
+      "https://sto55.com/book/62763/30868974.html"
+    ],
+    "881": [
+      "https://sto55.com/book/62763/30868975.html"
+    ],
+    "882": [
+      "https://sto55.com/book/62763/30868976.html"
+    ],
+    "883": [
+      "https://sto55.com/book/62763/30868977.html"
+    ],
+    "884": [
+      "https://sto55.com/book/62763/30868978.html"
+    ],
+    "885": [
+      "https://sto55.com/book/62763/30868979.html"
+    ],
+    "886": [
+      "https://sto55.com/book/62763/30868980.html"
+    ],
+    "887": [
+      "https://sto55.com/book/62763/30868981.html"
+    ],
+    "888": [
+      "https://sto55.com/book/62763/30868982.html"
+    ],
+    "889": [
+      "https://sto55.com/book/62763/30868983.html"
+    ],
+    "890": [
+      "https://sto55.com/book/62763/30868984.html"
+    ],
+    "891": [
+      "https://sto55.com/book/62763/30868985.html"
+    ],
+    "892": [
+      "https://sto55.com/book/62763/30868986.html"
+    ],
+    "893": [
+      "https://sto55.com/book/62763/30868987.html"
+    ],
+    "894": [
+      "https://sto55.com/book/62763/30868988.html"
+    ],
+    "895": [
+      "https://sto55.com/book/62763/30868989.html"
+    ],
+    "896": [
+      "https://sto55.com/book/62763/30868990.html"
+    ],
+    "897": [
+      "https://sto55.com/book/62763/30868991.html"
+    ],
+    "898": [
+      "https://sto55.com/book/62763/30868992.html"
+    ],
+    "899": [
+      "https://sto55.com/book/62763/30868994.html"
+    ],
+    "900": [
+      "https://sto55.com/book/62763/30868995.html"
+    ],
+    "901": [
+      "https://sto55.com/book/62763/30869007.html"
+    ],
+    "902": [
+      "https://sto55.com/book/62763/30869008.html"
+    ],
+    "903": [
+      "https://sto55.com/book/62763/30869009.html"
+    ],
+    "904": [
+      "https://sto55.com/book/62763/30869010.html"
+    ],
+    "905": [
+      "https://sto55.com/book/62763/30869012.html"
+    ],
+    "906": [
+      "https://sto55.com/book/62763/30869013.html"
+    ],
+    "907": [
+      "https://sto55.com/book/62763/30869014.html"
+    ],
+    "908": [
+      "https://sto55.com/book/62763/30869015.html"
+    ],
+    "909": [
+      "https://sto55.com/book/62763/30869017.html"
+    ],
+    "910": [
+      "https://sto55.com/book/62763/30869018.html"
+    ],
+    "911": [
+      "https://sto55.com/book/62763/30869019.html"
+    ],
+    "912": [
+      "https://sto55.com/book/62763/30869020.html"
+    ]
+  },
+  "chapters": [
+    {
+      "number": 500,
+      "title": "趕來",
+      "url": "https://sto55.com/book/62763/30864631.html",
+      "chars": 2177,
+      "sha256": "cee9b310edcf717ac9e19c8d6beaf700b3a78d0ad0be53b0a9b685b80f957359",
+      "file": "raw/0500.txt"
+    },
+    {
+      "number": 501,
+      "title": "情況",
+      "url": "https://sto55.com/book/62763/30864815.html",
+      "chars": 2165,
+      "sha256": "9df648bcf22f2d595ca3b50de55d4b3a3afaad68ff454ab1fac80f024468b92a",
+      "file": "raw/0501.txt"
+    },
+    {
+      "number": 502,
+      "title": "毀滅",
+      "url": "https://sto55.com/book/62763/30864823.html",
+      "chars": 2133,
+      "sha256": "ba2925f207dcd437c0bd55334a5e1fe599bec609927f7ad03c9fc37a0021ad5e",
+      "file": "raw/0502.txt"
+    },
+    {
+      "number": 503,
+      "title": "祈求",
+      "url": "https://sto55.com/book/62763/30864824.html",
+      "chars": 2138,
+      "sha256": "8a65acdff3abfbca8f2211cbba5ac3ecf77e8678e8299321601231337834bdc3",
+      "file": "raw/0503.txt"
+    },
+    {
+      "number": 504,
+      "title": "戰團",
+      "url": "https://sto55.com/book/62763/30864825.html",
+      "chars": 2146,
+      "sha256": "7125edeae0f346cc78ec0551eae7d64fca61ac2dd308858ac3371340c3e502bf",
+      "file": "raw/0504.txt"
+    },
+    {
+      "number": 505,
+      "title": "交易",
+      "url": "https://sto55.com/book/62763/30864826.html",
+      "chars": 2154,
+      "sha256": "d8021db4e127c6fffaf0a497aad2bf21a6a73100f0acb04aad1713318619c13e",
+      "file": "raw/0505.txt"
+    },
+    {
+      "number": 506,
+      "title": "部署",
+      "url": "https://sto55.com/book/62763/30864827.html",
+      "chars": 2148,
+      "sha256": "c7c5e37465ec374d3a055a14573f8f15efc1354c76e06d1a4a6c31e5d0a5b878",
+      "file": "raw/0506.txt"
+    },
+    {
+      "number": 507,
+      "title": "局勢",
+      "url": "https://sto55.com/book/62763/30864828.html",
+      "chars": 2140,
+      "sha256": "bd916a89ad70baf39b7d79809336eb60ce174c476a8e087755957c6ad68b003a",
+      "file": "raw/0507.txt"
+    },
+    {
+      "number": 508,
+      "title": "蟲潮",
+      "url": "https://sto55.com/book/62763/30864829.html",
+      "chars": 2163,
+      "sha256": "25aae2a6fa9616449099418f936d3eb5abbead20feb39de4641af1ec73b12eaf",
+      "file": "raw/0508.txt"
+    },
+    {
+      "number": 509,
+      "title": "堅守",
+      "url": "https://sto55.com/book/62763/30864849.html",
+      "chars": 2151,
+      "sha256": "dd7caf61d6a46947089386992dcb6dd12362f884768bf56939858c1b6b780cd4",
+      "file": "raw/0509.txt"
+    },
+    {
+      "number": 510,
+      "title": "母巢位置",
+      "url": "https://sto55.com/book/62763/30864850.html",
+      "chars": 2155,
+      "sha256": "1bc9dc9caf29c9df266788a0ffccc1dcc23f04ec767fe84e2c67d844737469ce",
+      "file": "raw/0510.txt"
+    },
+    {
+      "number": 511,
+      "title": "海底潛伏",
+      "url": "https://sto55.com/book/62763/30864851.html",
+      "chars": 2119,
+      "sha256": "190744de0d05d222e1987d2686bd8bf66200bb0371a71630b3520bde8b436755",
+      "file": "raw/0511.txt"
+    },
+    {
+      "number": 512,
+      "title": "蟲子",
+      "url": "https://sto55.com/book/62763/30864863.html",
+      "chars": 2107,
+      "sha256": "34f02079b3e7d60edd66e309cb062b33c8b01fa436e2650213634f2ebf7ea8ea",
+      "file": "raw/0512.txt"
+    },
+    {
+      "number": 513,
+      "title": "蟲族之心",
+      "url": "https://sto55.com/book/62763/30864864.html",
+      "chars": 2111,
+      "sha256": "0ad5147792d6989b42a6e7fde2adbeac159229938871d9a70b6221681e7f057a",
+      "file": "raw/0513.txt"
+    },
+    {
+      "number": 514,
+      "title": "退去",
+      "url": "https://sto55.com/book/62763/30864865.html",
+      "chars": 2147,
+      "sha256": "8337d510f0066d86fdca34a6452ac43f9fb8d1ae322ceb744bdc663633c94a04",
+      "file": "raw/0514.txt"
+    },
+    {
+      "number": 515,
+      "title": "清掃",
+      "url": "https://sto55.com/book/62763/30864868.html",
+      "chars": 2131,
+      "sha256": "d221d608abb0e7bb80037773f4aa476ea51aebff89a42732a2f73370c9c56dd8",
+      "file": "raw/0515.txt"
+    },
+    {
+      "number": 516,
+      "title": "揚名",
+      "url": "https://sto55.com/book/62763/30864869.html",
+      "chars": 2154,
+      "sha256": "19af3d86791ab35fcb6b2f68e5e218bcdc7724e99e89ea4b33299f751a6ffa16",
+      "file": "raw/0516.txt"
+    },
+    {
+      "number": 517,
+      "title": "世界樹種子復甦",
+      "url": "https://sto55.com/book/62763/30864870.html",
+      "chars": 2173,
+      "sha256": "cb39719c01b4596cf59539d64dfa7f4985db5e88888e852baca1b7184a92afac",
+      "file": "raw/0517.txt"
+    },
+    {
+      "number": 518,
+      "title": "簽署奴隸契約",
+      "url": "https://sto55.com/book/62763/30864874.html",
+      "chars": 2108,
+      "sha256": "0fbadc04c1a09a70634b03447e090bba17e84aa460cbab1451541262d6d02259",
+      "file": "raw/0518.txt"
+    },
+    {
+      "number": 519,
+      "title": "魔化武裝",
+      "url": "https://sto55.com/book/62763/30864875.html",
+      "chars": 2140,
+      "sha256": "b6acbe57fa156b25bf088e82b1edfd6cdbfbb74d6e6cac8ce42b835c5cf7e809",
+      "file": "raw/0519.txt"
+    },
+    {
+      "number": 520,
+      "title": "儀式",
+      "url": "https://sto55.com/book/62763/30864876.html",
+      "chars": 2122,
+      "sha256": "57aa52fa7804365bb3b448e8382d6bc08f52d06fffa2a74bb09a5d40acbb0029",
+      "file": "raw/0520.txt"
+    },
+    {
+      "number": 521,
+      "title": "覺醒者儀式",
+      "url": "https://sto55.com/book/62763/30864880.html",
+      "chars": 2194,
+      "sha256": "a5732647bd0a663777d63d7d49ae577527ba70fe8d7d8189b357e28581efcccc",
+      "file": "raw/0521.txt"
+    },
+    {
+      "number": 522,
+      "title": "命運喪鐘",
+      "url": "https://sto55.com/book/62763/30864881.html",
+      "chars": 2132,
+      "sha256": "ec48197abf77884ed6881ab8c3966593e9688eb8dceaeb2b4942f74bc1bba339",
+      "file": "raw/0522.txt"
+    },
+    {
+      "number": 523,
+      "title": "阿爾伯特",
+      "url": "https://sto55.com/book/62763/30864882.html",
+      "chars": 2132,
+      "sha256": "5eacab00a4672cdde7f27379fc97a9046ad2212273e00d189bd2e08c5774e346",
+      "file": "raw/0523.txt"
+    },
+    {
+      "number": 524,
+      "title": "合作",
+      "url": "https://sto55.com/book/62763/30864884.html",
+      "chars": 2139,
+      "sha256": "0e4093025a84afbc5718a1392ef4f84582cded91c3d07c7c336b8ad67979003e",
+      "file": "raw/0524.txt"
+    },
+    {
+      "number": 525,
+      "title": "接受",
+      "url": "https://sto55.com/book/62763/30864885.html",
+      "chars": 2143,
+      "sha256": "9f92891b397de4c18ed66e6b4f03548e603df9e1a028d53a60594eaf0514eb1e",
+      "file": "raw/0525.txt"
+    },
+    {
+      "number": 526,
+      "title": "莉莉",
+      "url": "https://sto55.com/book/62763/30864888.html",
+      "chars": 2112,
+      "sha256": "c22fa995c2fc10a2ed2157a359fa64ccfb84dce2fcc6c6a4f6a747f830edc63b",
+      "file": "raw/0526.txt"
+    },
+    {
+      "number": 527,
+      "title": "再見賽門",
+      "url": "https://sto55.com/book/62763/30864889.html",
+      "chars": 2154,
+      "sha256": "15b4ece41a9d9c2579613234298caac66bb75475f594e93eec2071ad66f18dce",
+      "file": "raw/0527.txt"
+    },
+    {
+      "number": 528,
+      "title": "行動",
+      "url": "https://sto55.com/book/62763/30864890.html",
+      "chars": 2168,
+      "sha256": "dbb62e584d59b58128d702a41959945f5537b2eb4bbb6096117569fd6f1ad67f",
+      "file": "raw/0528.txt"
+    },
+    {
+      "number": 529,
+      "title": "母巢群落",
+      "url": "https://sto55.com/book/62763/30864893.html",
+      "chars": 2128,
+      "sha256": "e958fbfd10dd3bf244fcfe8f19e0e7d266d6dcf834b954a1c549b2128474bb84",
+      "file": "raw/0529.txt"
+    },
+    {
+      "number": 530,
+      "title": "出動",
+      "url": "https://sto55.com/book/62763/30864894.html",
+      "chars": 2103,
+      "sha256": "de0c0bbefc75605024c1883ea26f84dd60dc2ce1f73bcd7004d6735ca2045417",
+      "file": "raw/0530.txt"
+    },
+    {
+      "number": 531,
+      "title": "圍攻",
+      "url": "https://sto55.com/book/62763/30864895.html",
+      "chars": 2121,
+      "sha256": "892ddd20082073cb50c54dfaa7f2549ecd79d6e711dbc5b2fea475800acbdf8a",
+      "file": "raw/0531.txt"
+    },
+    {
+      "number": 532,
+      "title": "淵獄主宰",
+      "url": "https://sto55.com/book/62763/30864951.html",
+      "chars": 2161,
+      "sha256": "d67c4ea2c33137cbb458cd85f7a1121d23e873b6053a332557da1bf429e3407d",
+      "file": "raw/0532.txt"
+    },
+    {
+      "number": 533,
+      "title": "待遇",
+      "url": "https://sto55.com/book/62763/30864955.html",
+      "chars": 2134,
+      "sha256": "cbb93251d38c2b708a773cfc1754038e7ef884f77a25674ced08a62245371901",
+      "file": "raw/0533.txt"
+    },
+    {
+      "number": 534,
+      "title": "瘋狂",
+      "url": "https://sto55.com/book/62763/30864956.html",
+      "chars": 2172,
+      "sha256": "4746289432155a8e2f9d5dfff1dc7c5766f0dfe24478676ec8082fa46e5e21ee",
+      "file": "raw/0534.txt"
+    },
+    {
+      "number": 535,
+      "title": "自毀",
+      "url": "https://sto55.com/book/62763/30864957.html",
+      "chars": 2095,
+      "sha256": "6d26b749d23e7116438769f542bfd355cb60984a9d67df433700001564e6bda6",
+      "file": "raw/0535.txt"
+    },
+    {
+      "number": 536,
+      "title": "尾聲",
+      "url": "https://sto55.com/book/62763/30864962.html",
+      "chars": 2145,
+      "sha256": "dfb193f179d7cf188d918c9aacc93f006384e529286c4931d0f96a6e03b64554",
+      "file": "raw/0536.txt"
+    },
+    {
+      "number": 537,
+      "title": "清掃",
+      "url": "https://sto55.com/book/62763/30864963.html",
+      "chars": 2134,
+      "sha256": "821fe2f84fe75bee4f561f5e52acc7555e303c285209a1bee9d8041c62879b14",
+      "file": "raw/0537.txt"
+    },
+    {
+      "number": 538,
+      "title": "庭院",
+      "url": "https://sto55.com/book/62763/30864964.html",
+      "chars": 2113,
+      "sha256": "cfa1258c5030b2e7bc57083f17c8eb67f6d6d1620942e1962580bbd053b6aa8c",
+      "file": "raw/0538.txt"
+    },
+    {
+      "number": 539,
+      "title": "餵養",
+      "url": "https://sto55.com/book/62763/30864971.html",
+      "chars": 2135,
+      "sha256": "cf311f71e4fea3606dad495012f43608a618218c145ad3c22332e239ca0615b7",
+      "file": "raw/0539.txt"
+    },
+    {
+      "number": 540,
+      "title": "水流溯影",
+      "url": "https://sto55.com/book/62763/30864972.html",
+      "chars": 2130,
+      "sha256": "0adc44a1ccdd53a05f362ec30c48dd3e3936dbce5f91d6ad6ab94ce9fab8e905",
+      "file": "raw/0540.txt"
+    },
+    {
+      "number": 541,
+      "title": "測試",
+      "url": "https://sto55.com/book/62763/30864973.html",
+      "chars": 2141,
+      "sha256": "1344b9be1b81438606105a4520e75db7439e6ba1e1cf3e3e376e0169960ec3d7",
+      "file": "raw/0541.txt"
+    },
+    {
+      "number": 542,
+      "title": "氣息",
+      "url": "https://sto55.com/book/62763/30864976.html",
+      "chars": 2175,
+      "sha256": "8925b3db0553bea41ef0ddb15637370cfc91b42497be6a58e7dc525c62a54715",
+      "file": "raw/0542.txt"
+    },
+    {
+      "number": 543,
+      "title": "尋寶",
+      "url": "https://sto55.com/book/62763/30864977.html",
+      "chars": 2129,
+      "sha256": "d9d7656a0a3f07cee3ccc5a153aa52ba3fe5abfcbc0e12ae529bb4f5409b25c7",
+      "file": "raw/0543.txt"
+    },
+    {
+      "number": 544,
+      "title": "源頭",
+      "url": "https://sto55.com/book/62763/30864978.html",
+      "chars": 2132,
+      "sha256": "84cdc762083034287ca872cdeee30ba889618df0c737ff1e0119bffa9f127f8c",
+      "file": "raw/0544.txt"
+    },
+    {
+      "number": 545,
+      "title": "美人貝",
+      "url": "https://sto55.com/book/62763/30864981.html",
+      "chars": 2139,
+      "sha256": "a0698ef7af98f8862d930632de17b1909537bf4e842ab9062cb9bb0351a7b897",
+      "file": "raw/0545.txt"
+    },
+    {
+      "number": 546,
+      "title": "返回",
+      "url": "https://sto55.com/book/62763/30864982.html",
+      "chars": 2144,
+      "sha256": "bc16aceaced9a9d404b8a8e1ee0c9b284515cac4cf65bd6c5c6cabaf6c59ba6b",
+      "file": "raw/0546.txt"
+    },
+    {
+      "number": 547,
+      "title": "皇室",
+      "url": "https://sto55.com/book/62763/30864983.html",
+      "chars": 2149,
+      "sha256": "34544cb5be361b056a0d4f10b288cfbc6bb4a6b17378deb2695ee3b3b6c923f0",
+      "file": "raw/0547.txt"
+    },
+    {
+      "number": 548,
+      "title": "瑟拉菲娜",
+      "url": "https://sto55.com/book/62763/30864986.html",
+      "chars": 2122,
+      "sha256": "b8658f338164a78dd935cb835aa55ca11dd3254fa4d6b97fdd7f34cf8e985cbf",
+      "file": "raw/0548.txt"
+    },
+    {
+      "number": 549,
+      "title": "時隙之核",
+      "url": "https://sto55.com/book/62763/30864987.html",
+      "chars": 2145,
+      "sha256": "59b1b10e2dd1d5484c465b61d50288ca8914c7b2ed73963ec80b480a57f5e785",
+      "file": "raw/0549.txt"
+    },
+    {
+      "number": 550,
+      "title": "多個法術滿級",
+      "url": "https://sto55.com/book/62763/30864989.html",
+      "chars": 2179,
+      "sha256": "18bd94088a1bc82099051ad20ffb8506bf7ca70e1c4c02411c50f746478ea829",
+      "file": "raw/0550.txt"
+    },
+    {
+      "number": 551,
+      "title": "局勢",
+      "url": "https://sto55.com/book/62763/30864990.html",
+      "chars": 2163,
+      "sha256": "2e13b9ce38a12f596aedb3d561ad96ef1155aa2d3728417f4574b51f197cf64f",
+      "file": "raw/0551.txt"
+    },
+    {
+      "number": 552,
+      "title": "反攻計劃",
+      "url": "https://sto55.com/book/62763/30864991.html",
+      "chars": 2135,
+      "sha256": "ef7f68d162606ccc49666f78e1a60e500e47ab98b2afe4f7da6d8b84a2ccc5ad",
+      "file": "raw/0552.txt"
+    },
+    {
+      "number": 553,
+      "title": "觀測者號",
+      "url": "https://sto55.com/book/62763/30864992.html",
+      "chars": 2130,
+      "sha256": "185dfacfb3fe242a83b7ec4f0e6a31d6b3e12905e6fb7152eb18f2d865a21d24",
+      "file": "raw/0553.txt"
+    },
+    {
+      "number": 554,
+      "title": "六級母巢",
+      "url": "https://sto55.com/book/62763/30864994.html",
+      "chars": 2127,
+      "sha256": "a2e146507c6bc789ac0e2f8d29121a612325d63aa0193bdf88d2ede898643f5a",
+      "file": "raw/0554.txt"
+    },
+    {
+      "number": 555,
+      "title": "恆星軌道炮",
+      "url": "https://sto55.com/book/62763/30864995.html",
+      "chars": 2133,
+      "sha256": "a116a24f4f57447b4e3b9a522ceb308d02ecabe15a1362adb11c79ea8b24acbd",
+      "file": "raw/0555.txt"
+    },
+    {
+      "number": 556,
+      "title": "星辰",
+      "url": "https://sto55.com/book/62763/30864996.html",
+      "chars": 2120,
+      "sha256": "29c416cd75aff4dd709e7d3df472d9bb345fb3919822ea2aa6b156098869bf4d",
+      "file": "raw/0556.txt"
+    },
+    {
+      "number": 557,
+      "title": "一擊即遁",
+      "url": "https://sto55.com/book/62763/30864999.html",
+      "chars": 2141,
+      "sha256": "8cddfed7462241f133c305f39f8fd4bf5ae175e4ae8ec3c7a5043cd4339e71af",
+      "file": "raw/0557.txt"
+    },
+    {
+      "number": 558,
+      "title": "海族使者",
+      "url": "https://sto55.com/book/62763/30865000.html",
+      "chars": 2107,
+      "sha256": "063f20d87ca3a82e54aad5c0257cc3e6645b612fc52bc5d71f9700099d97380d",
+      "file": "raw/0558.txt"
+    },
+    {
+      "number": 559,
+      "title": "貢獻度結算",
+      "url": "https://sto55.com/book/62763/30865001.html",
+      "chars": 2119,
+      "sha256": "3394f1b5b2af6685555dc24fd10ea3f9be0a53cda73a044c8c5d943565d66fb3",
+      "file": "raw/0559.txt"
+    },
+    {
+      "number": 560,
+      "title": "海族禮物",
+      "url": "https://sto55.com/book/62763/30865002.html",
+      "chars": 2216,
+      "sha256": "3819f38dc386d50a3c46f8660effc316d0309423f3c03111ac8d1944076ba249",
+      "file": "raw/0560.txt"
+    },
+    {
+      "number": 561,
+      "title": "任務結束",
+      "url": "https://sto55.com/book/62763/30865005.html",
+      "chars": 2105,
+      "sha256": "2a76601217fb1e712a5cc6e52a00640a8f23f6a11b3360af2f8b45e69a9930cb",
+      "file": "raw/0561.txt"
+    },
+    {
+      "number": 562,
+      "title": "返回",
+      "url": "https://sto55.com/book/62763/30865006.html",
+      "chars": 2133,
+      "sha256": "86de9aef6b8261d85d8ff42e01e0f6286453af837bc5e106d9f4d522123addf6",
+      "file": "raw/0562.txt"
+    },
+    {
+      "number": 563,
+      "title": "薇薇安小屋",
+      "url": "https://sto55.com/book/62763/30865007.html",
+      "chars": 2137,
+      "sha256": "334e378c99af90a47628b6a5005825642bb5f1dd87accaba484c383a914d900b",
+      "file": "raw/0563.txt"
+    },
+    {
+      "number": 564,
+      "title": "仇恨",
+      "url": "https://sto55.com/book/62763/30865013.html",
+      "chars": 2156,
+      "sha256": "5f39481adfc2a45d70b490832acd02e20feac750b3b30ae6d00b865c5a701320",
+      "file": "raw/0564.txt"
+    },
+    {
+      "number": 565,
+      "title": "學院島",
+      "url": "https://sto55.com/book/62763/30865014.html",
+      "chars": 2104,
+      "sha256": "966fc98dd2c8b92835d4ac6d437d39450012897affa253498048cb8c3aa1425f",
+      "file": "raw/0565.txt"
+    },
+    {
+      "number": 566,
+      "title": "回島",
+      "url": "https://sto55.com/book/62763/30865015.html",
+      "chars": 2130,
+      "sha256": "910b6d43aaf5c97095b6383d19f5a9ad24edec77b7abe0541ec6667c177d2c42",
+      "file": "raw/0566.txt"
+    },
+    {
+      "number": 567,
+      "title": "分紅",
+      "url": "https://sto55.com/book/62763/30865016.html",
+      "chars": 2115,
+      "sha256": "c57834175c194cb6bb046ead35a38e45416b54e87a56da6069816dc6eb43573d",
+      "file": "raw/0567.txt"
+    },
+    {
+      "number": 568,
+      "title": "黑帆分紅",
+      "url": "https://sto55.com/book/62763/30865017.html",
+      "chars": 2157,
+      "sha256": "1a2138bd398101ea10e8f955b6d305b1a0f5d330f1efa83bb3b178da1abc5684",
+      "file": "raw/0568.txt"
+    },
+    {
+      "number": 569,
+      "title": "能量井",
+      "url": "https://sto55.com/book/62763/30865018.html",
+      "chars": 2117,
+      "sha256": "4c76adde1621a890980cc8c02ba7259aacd3ff588b07d6aeb0ea98e0771639ed",
+      "file": "raw/0569.txt"
+    },
+    {
+      "number": 570,
+      "title": "法術研究",
+      "url": "https://sto55.com/book/62763/30865027.html",
+      "chars": 2255,
+      "sha256": "d9e199158273464f4032636df690a5c2e07a8a470c8b9c88fa9602348dd0e19b",
+      "file": "raw/0570.txt"
+    },
+    {
+      "number": 571,
+      "title": "現實",
+      "url": "https://sto55.com/book/62763/30865028.html",
+      "chars": 2149,
+      "sha256": "0960af50d5955e5a7ec3d814e9ca42b2b4656d7e7f795b7f8cd4d5796cefd68a",
+      "file": "raw/0571.txt"
+    },
+    {
+      "number": 572,
+      "title": "雲鯨號",
+      "url": "https://sto55.com/book/62763/30865029.html",
+      "chars": 2124,
+      "sha256": "b123a650dfc98e1a55fd068804d7927cc7f9338aa82baa16bf5eb9e02d16253b",
+      "file": "raw/0572.txt"
+    },
+    {
+      "number": 573,
+      "title": "上船",
+      "url": "https://sto55.com/book/62763/30865030.html",
+      "chars": 2179,
+      "sha256": "d0917a780fd2078f11b57796f13a616b493ff4af9263d41fde72a04e76d0efe1",
+      "file": "raw/0573.txt"
+    },
+    {
+      "number": 574,
+      "title": "任務",
+      "url": "https://sto55.com/book/62763/30865034.html",
+      "chars": 2184,
+      "sha256": "34f58886109110c1ced9d603d1ddcbd953c110cc878829db0d6910d6a106b813",
+      "file": "raw/0574.txt"
+    },
+    {
+      "number": 575,
+      "title": "洛朗伯爵",
+      "url": "https://sto55.com/book/62763/30865035.html",
+      "chars": 2106,
+      "sha256": "87992589b3dfd1d74485c91125582a1f5bb00930a84e248a618fc01e48b1d269",
+      "file": "raw/0575.txt"
+    },
+    {
+      "number": 576,
+      "title": "調查",
+      "url": "https://sto55.com/book/62763/30865036.html",
+      "chars": 2096,
+      "sha256": "98ea5cd51d81d014a0851af0f05b6423118558446e12862f4b852f61c69ff900",
+      "file": "raw/0576.txt"
+    },
+    {
+      "number": 577,
+      "title": "植物",
+      "url": "https://sto55.com/book/62763/30865043.html",
+      "chars": 2137,
+      "sha256": "c4c6c522aa3a3329b4a92693839a8475d966a92bc4c4d70552f0990e603373d2",
+      "file": "raw/0577.txt"
+    },
+    {
+      "number": 578,
+      "title": "夢魘位面",
+      "url": "https://sto55.com/book/62763/30865044.html",
+      "chars": 2118,
+      "sha256": "8eea23ead42d77b43bb68d2d2d6f4ff9161afb36bb902072ab08b6e5b66ba071",
+      "file": "raw/0578.txt"
+    },
+    {
+      "number": 579,
+      "title": "城堡",
+      "url": "https://sto55.com/book/62763/30865045.html",
+      "chars": 2095,
+      "sha256": "bc9817e49995aab19ebe0a90f44bfe1f9ac54c6d9e749c8a733c0485a4505b10",
+      "file": "raw/0579.txt"
+    },
+    {
+      "number": 580,
+      "title": "儀式",
+      "url": "https://sto55.com/book/62763/30865046.html",
+      "chars": 2132,
+      "sha256": "4d50b2f0ab7df1a646e6303918e74eb060855995d5ac8a22f6639fd99b3b9558",
+      "file": "raw/0580.txt"
+    },
+    {
+      "number": 581,
+      "title": "痕跡",
+      "url": "https://sto55.com/book/62763/30865049.html",
+      "chars": 2148,
+      "sha256": "77be51827a493bbe1dd9a9992932d8539911e049dc96ae4a696aaedfe9934758",
+      "file": "raw/0581.txt"
+    },
+    {
+      "number": 582,
+      "title": "暗裔形態",
+      "url": "https://sto55.com/book/62763/30865050.html",
+      "chars": 2131,
+      "sha256": "0b96de6a4fc4b30536bca7f2cbdfe77687fca2a411375190316fa9576f7c4f36",
+      "file": "raw/0582.txt"
+    },
+    {
+      "number": 583,
+      "title": "光與暗",
+      "url": "https://sto55.com/book/62763/30865051.html",
+      "chars": 2151,
+      "sha256": "4e7bc8363d6194ed4a7e393c8628cd6d31a4f751353a75be8e96355878d3c996",
+      "file": "raw/0583.txt"
+    },
+    {
+      "number": 584,
+      "title": "囈語",
+      "url": "https://sto55.com/book/62763/30865052.html",
+      "chars": 2124,
+      "sha256": "43ef93456460394c57cd261468daa7919e442ef8638d43a3f8f42f093fc324da",
+      "file": "raw/0584.txt"
+    },
+    {
+      "number": 585,
+      "title": "窺秘之眼",
+      "url": "https://sto55.com/book/62763/30865056.html",
+      "chars": 2156,
+      "sha256": "80059a8483fb1510f40e2cee9d22adc91786cfb2d068a91c317e50c81e75bed8",
+      "file": "raw/0585.txt"
+    },
+    {
+      "number": 586,
+      "title": "所謂貴族",
+      "url": "https://sto55.com/book/62763/30865057.html",
+      "chars": 2141,
+      "sha256": "ebbf0ae6a31a0f84e4347ede3a34287c5bec8f0cd9800d339c87f3d49ab9d9be",
+      "file": "raw/0586.txt"
+    },
+    {
+      "number": 587,
+      "title": "存續",
+      "url": "https://sto55.com/book/62763/30865058.html",
+      "chars": 2121,
+      "sha256": "5150ccacd3cd53d0be36708194fdad58f1cd7f5ccaf14afddaf6618a01fecd47",
+      "file": "raw/0587.txt"
+    },
+    {
+      "number": 588,
+      "title": "審查",
+      "url": "https://sto55.com/book/62763/30865093.html",
+      "chars": 2143,
+      "sha256": "6f975b7d8d4e65e3a2b1a8952badcb160b129e153f3fcc27adfa04913051a7fc",
+      "file": "raw/0588.txt"
+    },
+    {
+      "number": 589,
+      "title": "沒落",
+      "url": "https://sto55.com/book/62763/30865094.html",
+      "chars": 2134,
+      "sha256": "8732ce12b551f60143b5a720303e8d379bee5096c5cfc817d7d37db9d88d492e",
+      "file": "raw/0589.txt"
+    },
+    {
+      "number": 590,
+      "title": "戰技",
+      "url": "https://sto55.com/book/62763/30865095.html",
+      "chars": 2173,
+      "sha256": "e4ebead2b9b91ad1880a4572d7701d5b7ee52264faf23c85721d93dd40dfe5ed",
+      "file": "raw/0590.txt"
+    },
+    {
+      "number": 591,
+      "title": "吸收",
+      "url": "https://sto55.com/book/62763/30865096.html",
+      "chars": 2167,
+      "sha256": "734e1004a9ebc193c2884c1971a9dcf5081429196639426f5f077bb8cb1daef8",
+      "file": "raw/0591.txt"
+    },
+    {
+      "number": 592,
+      "title": "一級騎士",
+      "url": "https://sto55.com/book/62763/30865098.html",
+      "chars": 2144,
+      "sha256": "7f5100644bc7348e529958b9faf2c2f13745e4116d17d576d93b8100bf2175bc",
+      "file": "raw/0592.txt"
+    },
+    {
+      "number": 593,
+      "title": "掌握戰技",
+      "url": "https://sto55.com/book/62763/30865099.html",
+      "chars": 2190,
+      "sha256": "ea5ded5003de0a51ef3eb9637430cc755fa55d12ee9e0db0f36ed371dfc6db74",
+      "file": "raw/0593.txt"
+    },
+    {
+      "number": 594,
+      "title": "機械帝國",
+      "url": "https://sto55.com/book/62763/30865101.html",
+      "chars": 2170,
+      "sha256": "1766046cf2093553448757b124a4324ada053aa1db5c289906dc3437a7c5ce03",
+      "file": "raw/0594.txt"
+    },
+    {
+      "number": 595,
+      "title": "不同的世界",
+      "url": "https://sto55.com/book/62763/30865103.html",
+      "chars": 2165,
+      "sha256": "b314d0340a491792fcdd2b6638830bc670e6a53024453d54e9ba17b46ea8f0a1",
+      "file": "raw/0595.txt"
+    },
+    {
+      "number": 596,
+      "title": "了解",
+      "url": "https://sto55.com/book/62763/30865104.html",
+      "chars": 2136,
+      "sha256": "4d3a5ee43056f83b0f59dbabc528ffa46f3ad371c7647de7e33c8d2c9108acc4",
+      "file": "raw/0596.txt"
+    },
+    {
+      "number": 597,
+      "title": "巫陣模擬戰場",
+      "url": "https://sto55.com/book/62763/30865105.html",
+      "chars": 2118,
+      "sha256": "eec40cbf975b7eb0ecd2eb49b22a73536c2cbe5089b5853acfc23512ff351d27",
+      "file": "raw/0597.txt"
+    },
+    {
+      "number": 598,
+      "title": "體驗",
+      "url": "https://sto55.com/book/62763/30865106.html",
+      "chars": 2128,
+      "sha256": "2e337e7dd026e92abe0186e7f703018e767a1931ca2cea733e8931a2114da96d",
+      "file": "raw/0598.txt"
+    },
+    {
+      "number": 599,
+      "title": "暗影",
+      "url": "https://sto55.com/book/62763/30865108.html",
+      "chars": 2149,
+      "sha256": "c13f521a332967e0efeeb62e5f313467f8d82a63866caec70469efc6103b277c",
+      "file": "raw/0599.txt"
+    },
+    {
+      "number": 600,
+      "title": "十星挑戰",
+      "url": "https://sto55.com/book/62763/30865109.html",
+      "chars": 2172,
+      "sha256": "7432464547427352baaa844e4e2ba9ebd04f3aab2a7f812f040d5a9a4b07cafc",
+      "file": "raw/0600.txt"
+    },
+    {
+      "number": 601,
+      "title": "炎魔督軍",
+      "url": "https://sto55.com/book/62763/30865110.html",
+      "chars": 2126,
+      "sha256": "009e5c894a7157d44b98a6bcfbdd5b22ab230085311c8805e4ccb395d19bce95",
+      "file": "raw/0601.txt"
+    },
+    {
+      "number": 602,
+      "title": "挑戰",
+      "url": "https://sto55.com/book/62763/30865111.html",
+      "chars": 2152,
+      "sha256": "073072cb9405b59be921fd9888a3d028318af3c1ad52d21155a6f83ee676c17e",
+      "file": "raw/0602.txt"
+    },
+    {
+      "number": 603,
+      "title": "高強度作戰",
+      "url": "https://sto55.com/book/62763/30865112.html",
+      "chars": 2139,
+      "sha256": "cec4a1fe31959c1a9bcd93aab617316efa7b6dc63b682e3fd18a43fe421f80c0",
+      "file": "raw/0603.txt"
+    },
+    {
+      "number": 604,
+      "title": "破滅之龍·尼德霍格",
+      "url": "https://sto55.com/book/62763/30865113.html",
+      "chars": 2154,
+      "sha256": "447adbe00262066ed16e9dec2484165e6fcc545ab2096f21e0378a416ce1f81e",
+      "file": "raw/0604.txt"
+    },
+    {
+      "number": 605,
+      "title": "命運喪鐘·亘古壁壘",
+      "url": "https://sto55.com/book/62763/30865116.html",
+      "chars": 2154,
+      "sha256": "c5764bdcbcc4ea4914ac55f39773fa4d4c69c5f99e16ccf15deca3a256ab27ac",
+      "file": "raw/0605.txt"
+    },
+    {
+      "number": 606,
+      "title": "結束",
+      "url": "https://sto55.com/book/62763/30865117.html",
+      "chars": 2119,
+      "sha256": "c1dac10bcc1d2d786f5d4a8f1bba4e33f617d5a8411957569943c1e59798783f",
+      "file": "raw/0606.txt"
+    },
+    {
+      "number": 607,
+      "title": "獎勵",
+      "url": "https://sto55.com/book/62763/30865118.html",
+      "chars": 2145,
+      "sha256": "ccbe54e7a29126fa113784d964752db937b0a773ff99dddd790d1ac8af2acaad",
+      "file": "raw/0607.txt"
+    },
+    {
+      "number": 608,
+      "title": "思維樞核",
+      "url": "https://sto55.com/book/62763/30865119.html",
+      "chars": 2178,
+      "sha256": "959d5860afe3dd33645b477cbeb2fb5273eaca8fba52665503692c4cd7744116",
+      "file": "raw/0608.txt"
+    },
+    {
+      "number": 609,
+      "title": "計劃",
+      "url": "https://sto55.com/book/62763/30865120.html",
+      "chars": 2187,
+      "sha256": "7bdeaf4ba8c3d4ac6824563f8bcb959d9daf76544945c72fd65b23a2b8851b5a",
+      "file": "raw/0609.txt"
+    },
+    {
+      "number": 610,
+      "title": "肝到滿級",
+      "url": "https://sto55.com/book/62763/30865122.html",
+      "chars": 2196,
+      "sha256": "496608ee5cf2c8d3ca9a7f57556f2cee5e0b1f6913fb37b25d703ca6f16e1b00",
+      "file": "raw/0610.txt"
+    },
+    {
+      "number": 611,
+      "title": "象限爭奪戰",
+      "url": "https://sto55.com/book/62763/30865123.html",
+      "chars": 2186,
+      "sha256": "da50781696acdfdaf2299d7708b4c0ab8d6d9e2121ecdd520c542810d3c867ef",
+      "file": "raw/0611.txt"
+    },
+    {
+      "number": 612,
+      "title": "開始",
+      "url": "https://sto55.com/book/62763/30865124.html",
+      "chars": 2187,
+      "sha256": "05ea450db12e74000a532678cc7a3747ccc3704a14d6d188d389c1ca59d8b320",
+      "file": "raw/0612.txt"
+    },
+    {
+      "number": 613,
+      "title": "石頭",
+      "url": "https://sto55.com/book/62763/30865125.html",
+      "chars": 2142,
+      "sha256": "e4f2bdff2c7c54a9ec236b0b85550779c7f8bedbe17d2f3d953fd7666211091c",
+      "file": "raw/0613.txt"
+    },
+    {
+      "number": 614,
+      "title": "世界樹種子的指引",
+      "url": "https://sto55.com/book/62763/30865126.html",
+      "chars": 2132,
+      "sha256": "fe6a912108f7ea65499e7f356009f760956d2b396f06ed9a57a1fa3e6eb94788",
+      "file": "raw/0614.txt"
+    },
+    {
+      "number": 615,
+      "title": "生命之泉與蛇",
+      "url": "https://sto55.com/book/62763/30865127.html",
+      "chars": 2147,
+      "sha256": "313ce235e670f1f4d8afb622a24677cb5e908b0e6080d6431ef77ab7b309b683",
+      "file": "raw/0615.txt"
+    },
+    {
+      "number": 616,
+      "title": "全部挖走",
+      "url": "https://sto55.com/book/62763/30865128.html",
+      "chars": 2168,
+      "sha256": "e6134ba1f1e3b735de6e551fe8da6abb4d6dd15a38a4f377a0619e29d7a8b39e",
+      "file": "raw/0616.txt"
+    },
+    {
+      "number": 617,
+      "title": "觀察",
+      "url": "https://sto55.com/book/62763/30865129.html",
+      "chars": 2136,
+      "sha256": "2bc54b216d949e2d37af56e8a8d6d0bd419033deab98d6ecd1e157f0769045f1",
+      "file": "raw/0617.txt"
+    },
+    {
+      "number": 618,
+      "title": "服用",
+      "url": "https://sto55.com/book/62763/30865130.html",
+      "chars": 2170,
+      "sha256": "cdfb34a02cc788c5a3aa07717dbaadaabd1b25ad471bf33b288184f6973e64dd",
+      "file": "raw/0618.txt"
+    },
+    {
+      "number": 619,
+      "title": "增長",
+      "url": "https://sto55.com/book/62763/30865854.html",
+      "chars": 2161,
+      "sha256": "c31e2d6f15fe672243333ff5ecf78cdef6fb2e45a6532d442b7c029d3c19bc32",
+      "file": "raw/0619.txt"
+    },
+    {
+      "number": 620,
+      "title": "遺蹟",
+      "url": "https://sto55.com/book/62763/30865862.html",
+      "chars": 2184,
+      "sha256": "347552b832f936ba00a38f13d4330bf0f11346a8fe32f36da3590895dcee63ea",
+      "file": "raw/0620.txt"
+    },
+    {
+      "number": 621,
+      "title": "沙兵",
+      "url": "https://sto55.com/book/62763/30865863.html",
+      "chars": 2117,
+      "sha256": "833db6d7eac4172975f126e878cc31d6270fc0d5ac526cdb91cc660271274679",
+      "file": "raw/0621.txt"
+    },
+    {
+      "number": 622,
+      "title": "吞噬",
+      "url": "https://sto55.com/book/62763/30865864.html",
+      "chars": 2136,
+      "sha256": "31e112feb1623e3724993c4a4c04091eaf924a7f7871e03250792412359730b9",
+      "file": "raw/0622.txt"
+    },
+    {
+      "number": 623,
+      "title": "血色薔薇",
+      "url": "https://sto55.com/book/62763/30865865.html",
+      "chars": 2118,
+      "sha256": "29885c7227ff4f78d1bd09c58da2fc6d3c76c59283e1706f2ad8e761f4c9f46e",
+      "file": "raw/0623.txt"
+    },
+    {
+      "number": 624,
+      "title": "聯合",
+      "url": "https://sto55.com/book/62763/30865866.html",
+      "chars": 2149,
+      "sha256": "85c9b06ad9426e3c6373e22b313e8e649772771f1c22ada31fb15cd1409310fd",
+      "file": "raw/0624.txt"
+    },
+    {
+      "number": 625,
+      "title": "血祭",
+      "url": "https://sto55.com/book/62763/30865867.html",
+      "chars": 2173,
+      "sha256": "f552190acc8d728b67a000877d2ec596327d958d4a69e47ba8507204ee7a5dc0",
+      "file": "raw/0625.txt"
+    },
+    {
+      "number": 626,
+      "title": "元素轟炸",
+      "url": "https://sto55.com/book/62763/30865868.html",
+      "chars": 2120,
+      "sha256": "d932009ccb6a0fa730b931d89d0623e9b88697eddc8195a15af95482d69e1a24",
+      "file": "raw/0626.txt"
+    },
+    {
+      "number": 627,
+      "title": "覆滅",
+      "url": "https://sto55.com/book/62763/30865869.html",
+      "chars": 2136,
+      "sha256": "e5d82c47ec050baab41ee7199b224b3692b01952518e26e68ac1dca8d80cb192",
+      "file": "raw/0627.txt"
+    },
+    {
+      "number": 628,
+      "title": "古代石板",
+      "url": "https://sto55.com/book/62763/30865870.html",
+      "chars": 2149,
+      "sha256": "4e1f06078ac3d887a9b529ce8d38eb0cd308f0787d0e6de32bbb38bd74a16efd",
+      "file": "raw/0628.txt"
+    },
+    {
+      "number": 629,
+      "title": "挖走石板",
+      "url": "https://sto55.com/book/62763/30865871.html",
+      "chars": 2126,
+      "sha256": "6b0bc3112b16492aba544294b9bd1b6b945803b1270f944a3d1e5e847c0ed5c4",
+      "file": "raw/0629.txt"
+    },
+    {
+      "number": 630,
+      "title": "爭議",
+      "url": "https://sto55.com/book/62763/30865872.html",
+      "chars": 2146,
+      "sha256": "034d7c75be68663a316c760cd48ffd4caa9e6c9a432f49822181271e5899fba9",
+      "file": "raw/0630.txt"
+    },
+    {
+      "number": 631,
+      "title": "崩塌",
+      "url": "https://sto55.com/book/62763/30865873.html",
+      "chars": 2118,
+      "sha256": "77943ef067b22a024cc2c85d8a96a80d9911704e5246ae4c9cbd58b98540c872",
+      "file": "raw/0631.txt"
+    },
+    {
+      "number": 632,
+      "title": "暗影",
+      "url": "https://sto55.com/book/62763/30865874.html",
+      "chars": 2121,
+      "sha256": "41c406c34d13ec0371dfa205a44e58a7339b00cd7e56381b85fb29f0959b3adf",
+      "file": "raw/0632.txt"
+    },
+    {
+      "number": 633,
+      "title": "湖底",
+      "url": "https://sto55.com/book/62763/30865875.html",
+      "chars": 2122,
+      "sha256": "40941ce69276f484d3f6abcae2581140c52369bfa8f39a81ae1f6de9f0481f41",
+      "file": "raw/0633.txt"
+    },
+    {
+      "number": 634,
+      "title": "出手",
+      "url": "https://sto55.com/book/62763/30865876.html",
+      "chars": 2125,
+      "sha256": "94316818e4d4e889f8ed9bc997b4b87d73c86017a7136c46639c70adc925e66e",
+      "file": "raw/0634.txt"
+    },
+    {
+      "number": 635,
+      "title": "獵殺",
+      "url": "https://sto55.com/book/62763/30865877.html",
+      "chars": 2144,
+      "sha256": "1a6a31cd178900cf049f34feab0bd566a6d3eea15e7032c2a36408e549a0ba09",
+      "file": "raw/0635.txt"
+    },
+    {
+      "number": 636,
+      "title": "結算",
+      "url": "https://sto55.com/book/62763/30865878.html",
+      "chars": 2140,
+      "sha256": "ba1ae40f92c8df4ecaaa073f0e811cf37c6212ebb6cf318ec92d66d4440557b4",
+      "file": "raw/0636.txt"
+    },
+    {
+      "number": 637,
+      "title": "閱讀石板",
+      "url": "https://sto55.com/book/62763/30865879.html",
+      "chars": 2175,
+      "sha256": "59a90cd1a71f82f3ae2071ec37d5286303ba5bb4bb84a6b2d68da242d0e3883f",
+      "file": "raw/0637.txt"
+    },
+    {
+      "number": 638,
+      "title": "沙之僕從",
+      "url": "https://sto55.com/book/62763/30865880.html",
+      "chars": 2093,
+      "sha256": "6d45af8c0e47bcb97106d5aaf6e042651f26d70cd12f0babbed472af29c1fd93",
+      "file": "raw/0638.txt"
+    },
+    {
+      "number": 639,
+      "title": "資源送達",
+      "url": "https://sto55.com/book/62763/30865881.html",
+      "chars": 2138,
+      "sha256": "e0f99ebdf3565359e80d0f5814f93f50c770aa6b17368176e5168f75c517a434",
+      "file": "raw/0639.txt"
+    },
+    {
+      "number": 640,
+      "title": "拍賣",
+      "url": "https://sto55.com/book/62763/30865882.html",
+      "chars": 2167,
+      "sha256": "41ef417400047d18150b06590a8d41267ba5f1a5c63a99c08a00bec580adcdd9",
+      "file": "raw/0640.txt"
+    },
+    {
+      "number": 641,
+      "title": "青陽劍",
+      "url": "https://sto55.com/book/62763/30865883.html",
+      "chars": 2181,
+      "sha256": "e350dc6ee518152ec39a346bde3d49f87a61ff4774ed4a3759148c8cd71fd76f",
+      "file": "raw/0641.txt"
+    },
+    {
+      "number": 642,
+      "title": "到手",
+      "url": "https://sto55.com/book/62763/30865884.html",
+      "chars": 2168,
+      "sha256": "edcdcf4ee829c5790c49ad44b73a33fb31d42c39a3dcbffb7959dcf3c935c51a",
+      "file": "raw/0642.txt"
+    },
+    {
+      "number": 643,
+      "title": "青陽御氣真訣",
+      "url": "https://sto55.com/book/62763/30865885.html",
+      "chars": 2144,
+      "sha256": "94314521da3b1286b2b51cdcb67b131922f5ba060657d21c84118092e0621ae8",
+      "file": "raw/0643.txt"
+    },
+    {
+      "number": 644,
+      "title": "修行",
+      "url": "https://sto55.com/book/62763/30865886.html",
+      "chars": 2175,
+      "sha256": "80ca79a06ca77319f4b3f43f1ccfbed93ab03f28e1e4711ce4310fc1c086818c",
+      "file": "raw/0644.txt"
+    },
+    {
+      "number": 645,
+      "title": "御劍",
+      "url": "https://sto55.com/book/62763/30865887.html",
+      "chars": 2134,
+      "sha256": "956e26e2132c6dee85eb0456ee5a566a77a1b4db2514923b004004cf0e3962a3",
+      "file": "raw/0645.txt"
+    },
+    {
+      "number": 646,
+      "title": "果子",
+      "url": "https://sto55.com/book/62763/30865888.html",
+      "chars": 2123,
+      "sha256": "0bc362c3db5a556a2dd4ec7c40b654a2f79b228acf6a2b13be1928025e5a18ad",
+      "file": "raw/0646.txt"
+    },
+    {
+      "number": 647,
+      "title": "機械巫師",
+      "url": "https://sto55.com/book/62763/30865889.html",
+      "chars": 2230,
+      "sha256": "8628f37f0b09b6ef990bd7631d78f354f9d3aa904f9bc8c7d410cbdaf859453e",
+      "file": "raw/0647.txt"
+    },
+    {
+      "number": 648,
+      "title": "學習",
+      "url": "https://sto55.com/book/62763/30865890.html",
+      "chars": 2142,
+      "sha256": "f32d7a66e4b3dd819655b3f98343592619dfe85700f628a17066c566d4ab5d3b",
+      "file": "raw/0648.txt"
+    },
+    {
+      "number": 649,
+      "title": "星穹號",
+      "url": "https://sto55.com/book/62763/30865891.html",
+      "chars": 2125,
+      "sha256": "76c37d898f7d43a4cbcb4df72038fa2bf7df85e46924d8810d54d854afc238d0",
+      "file": "raw/0649.txt"
+    },
+    {
+      "number": 650,
+      "title": "光明女神像",
+      "url": "https://sto55.com/book/62763/30865892.html",
+      "chars": 2157,
+      "sha256": "b343a478460e65d1e5972c2552ce0cb018add48944c69257799d8e78a2d50be0",
+      "file": "raw/0650.txt"
+    },
+    {
+      "number": 651,
+      "title": "神格的變化",
+      "url": "https://sto55.com/book/62763/30865893.html",
+      "chars": 2164,
+      "sha256": "1ad2c1b8037ad6eb6b32b1f163baf22613e06ec8b0f6ffd9f2f38476c103ab8a",
+      "file": "raw/0651.txt"
+    },
+    {
+      "number": 652,
+      "title": "能量井",
+      "url": "https://sto55.com/book/62763/30865894.html",
+      "chars": 2104,
+      "sha256": "f3cb278184bceae15da939aedf0ebf7bf71a001955d73f90c721b47f744da88f",
+      "file": "raw/0652.txt"
+    },
+    {
+      "number": 653,
+      "title": "月亮井",
+      "url": "https://sto55.com/book/62763/30865895.html",
+      "chars": 2067,
+      "sha256": "726d47d72d8d6a1a1f9928c0fd69e16bfbe5147e62594487416d4de92048b698",
+      "file": "raw/0653.txt"
+    },
+    {
+      "number": 654,
+      "title": "暗夜精靈位面",
+      "url": "https://sto55.com/book/62763/30865896.html",
+      "chars": 2112,
+      "sha256": "c222a274c55c0dc654d47eb75745023bb3898576479bf170649a0e85baf7a06d",
+      "file": "raw/0654.txt"
+    },
+    {
+      "number": 655,
+      "title": "情報",
+      "url": "https://sto55.com/book/62763/30865897.html",
+      "chars": 2117,
+      "sha256": "dded6ddc7779422586dfd425d7ee989d2b43d4113dee81aa566037e2453c1826",
+      "file": "raw/0655.txt"
+    },
+    {
+      "number": 656,
+      "title": "集結",
+      "url": "https://sto55.com/book/62763/30865898.html",
+      "chars": 2095,
+      "sha256": "e0e34a353391a09a2605dffde9270c89a2102191eed5ca11779889f8ea97cc5b",
+      "file": "raw/0656.txt"
+    },
+    {
+      "number": 657,
+      "title": "三輪月亮",
+      "url": "https://sto55.com/book/62763/30865899.html",
+      "chars": 2123,
+      "sha256": "2018a2bf8e1231ec4e52a0f8cf7773592ff3ee701880ebcb6843f737c8d81420",
+      "file": "raw/0657.txt"
+    },
+    {
+      "number": 658,
+      "title": "暗月鎮",
+      "url": "https://sto55.com/book/62763/30865900.html",
+      "chars": 2149,
+      "sha256": "4aaaffadb287b80ab2f76c39dfbe0fceb57619b391eb7562f6c8ad2bea114bdc",
+      "file": "raw/0658.txt"
+    },
+    {
+      "number": 659,
+      "title": "小隊",
+      "url": "https://sto55.com/book/62763/30865901.html",
+      "chars": 2125,
+      "sha256": "5220c522480310e037b31ee49d7a7ead1461e3ab755d3c3069b37793745f6e6f",
+      "file": "raw/0659.txt"
+    },
+    {
+      "number": 660,
+      "title": "購買情報",
+      "url": "https://sto55.com/book/62763/30865902.html",
+      "chars": 2100,
+      "sha256": "1e5dbe7704449e5dd9a6800ab8bcf6e5c7a6978265978bda69a8a8bb93b83f49",
+      "file": "raw/0660.txt"
+    },
+    {
+      "number": 661,
+      "title": "偵察",
+      "url": "https://sto55.com/book/62763/30865903.html",
+      "chars": 2127,
+      "sha256": "4bb42a55c6542b489daf7eafeb62ff022eecb59a2a507ac3b31e6ba70a7a6cee",
+      "file": "raw/0661.txt"
+    },
+    {
+      "number": 662,
+      "title": "月相",
+      "url": "https://sto55.com/book/62763/30865904.html",
+      "chars": 2108,
+      "sha256": "bebd3e634a6b98678cc2e9020b0faed336f762cb3a0b02c255d0ee02e5732923",
+      "file": "raw/0662.txt"
+    },
+    {
+      "number": 663,
+      "title": "埋伏",
+      "url": "https://sto55.com/book/62763/30865905.html",
+      "chars": 2134,
+      "sha256": "45b68fae8e5ee99a69e8321c95b9a940c3e1b677f37ee9aae2fd75c7c3349ae3",
+      "file": "raw/0663.txt"
+    },
+    {
+      "number": 664,
+      "title": "襲殺",
+      "url": "https://sto55.com/book/62763/30865906.html",
+      "chars": 2132,
+      "sha256": "1fd413868c8101bf8a6e0d475e6056e8d9a88a14cc2c5ba93450ddc0660f0199",
+      "file": "raw/0664.txt"
+    },
+    {
+      "number": 665,
+      "title": "沙之僕從",
+      "url": "https://sto55.com/book/62763/30865907.html",
+      "chars": 2139,
+      "sha256": "5779f7918cf269ac242872f919547cffe59ed828a71ceb0b7997f3f47f110d41",
+      "file": "raw/0665.txt"
+    },
+    {
+      "number": 666,
+      "title": "沙之軍團",
+      "url": "https://sto55.com/book/62763/30865908.html",
+      "chars": 2137,
+      "sha256": "8117e74007835843a3f27987b22ecd5572667e880da1a54f5458c5124584458e",
+      "file": "raw/0666.txt"
+    },
+    {
+      "number": 667,
+      "title": "虛弱",
+      "url": "https://sto55.com/book/62763/30865909.html",
+      "chars": 2119,
+      "sha256": "5d8ab678ba2b43fdda050575e431413a3506937ef4e4cabb50e3360a40d5fe82",
+      "file": "raw/0667.txt"
+    },
+    {
+      "number": 668,
+      "title": "回程",
+      "url": "https://sto55.com/book/62763/30865910.html",
+      "chars": 2127,
+      "sha256": "676daebafe3a3dddf8a3a73127515162fe65535890bb776032d3826e514e27ab",
+      "file": "raw/0668.txt"
+    },
+    {
+      "number": 669,
+      "title": "霧歌氏族",
+      "url": "https://sto55.com/book/62763/30865911.html",
+      "chars": 2140,
+      "sha256": "55362f7dccccef4ab18a01058abe7d9946611fb9dbc3ca968a1e2532d2d6303c",
+      "file": "raw/0669.txt"
+    },
+    {
+      "number": 670,
+      "title": "聯合",
+      "url": "https://sto55.com/book/62763/30865912.html",
+      "chars": 2103,
+      "sha256": "322d672f5547bcf404b289900872c6d50b4a7b3eac5eb01ca7d216a53782fd5d",
+      "file": "raw/0670.txt"
+    },
+    {
+      "number": 671,
+      "title": "出動",
+      "url": "https://sto55.com/book/62763/30865913.html",
+      "chars": 2124,
+      "sha256": "7213fb3873c50cb44511ef8f0b89bcf914641143040b3aa0089033decf28b4b7",
+      "file": "raw/0671.txt"
+    },
+    {
+      "number": 672,
+      "title": "攔截",
+      "url": "https://sto55.com/book/62763/30865914.html",
+      "chars": 2147,
+      "sha256": "2b6dbb73ca166cf8f8bbd72f2fd19ad150f3b0e490f904fa24adb42793c93306",
+      "file": "raw/0672.txt"
+    },
+    {
+      "number": 673,
+      "title": "結束",
+      "url": "https://sto55.com/book/62763/30865915.html",
+      "chars": 2113,
+      "sha256": "6b29b8219d9695f71d98b7e0bfb378ff33eca8991f1452733ba2b620f0e4fc72",
+      "file": "raw/0673.txt"
+    },
+    {
+      "number": 674,
+      "title": "自由行動",
+      "url": "https://sto55.com/book/62763/30865916.html",
+      "chars": 2107,
+      "sha256": "25d890173ef2cae7dfad1d8b13e5590e81e36860458c4c83e1d58e3da938eedf",
+      "file": "raw/0674.txt"
+    },
+    {
+      "number": 675,
+      "title": "戰事結束",
+      "url": "https://sto55.com/book/62763/30865917.html",
+      "chars": 2093,
+      "sha256": "4867f883b5ad6c663a9bf3ac17d8bc05e3de03f57b34ab8abee34c26d28dba3b",
+      "file": "raw/0675.txt"
+    },
+    {
+      "number": 676,
+      "title": "刺殺",
+      "url": "https://sto55.com/book/62763/30865918.html",
+      "chars": 2144,
+      "sha256": "77bce3643a044cb8136c9777dbb022663f3187b07654b56f3cbac0146424726a",
+      "file": "raw/0676.txt"
+    },
+    {
+      "number": 677,
+      "title": "抽離",
+      "url": "https://sto55.com/book/62763/30865919.html",
+      "chars": 2153,
+      "sha256": "bba69ae12b5cfd3307467dbae6f496155382f3f56c18b85ce08709c8e1fa0ebf",
+      "file": "raw/0677.txt"
+    },
+    {
+      "number": 678,
+      "title": "戰後",
+      "url": "https://sto55.com/book/62763/30865920.html",
+      "chars": 2130,
+      "sha256": "ac9ca1b2367277323c3b120e048e60a5e452c13a3a72538f3adc4da3dbca0306",
+      "file": "raw/0678.txt"
+    },
+    {
+      "number": 679,
+      "title": "三個月",
+      "url": "https://sto55.com/book/62763/30865921.html",
+      "chars": 2160,
+      "sha256": "f699a3054ec600e552de13d0b7ef8f5b8806267a2c56f5e5eb531052f83ffbc7",
+      "file": "raw/0679.txt"
+    },
+    {
+      "number": 680,
+      "title": "任務",
+      "url": "https://sto55.com/book/62763/30865922.html",
+      "chars": 2128,
+      "sha256": "56013d833e8a0ed6a3c68c0d10848e75dc88e9d3b59a6853d54ccdfb64c6f24d",
+      "file": "raw/0680.txt"
+    },
+    {
+      "number": 681,
+      "title": "偽裝",
+      "url": "https://sto55.com/book/62763/30865923.html",
+      "chars": 2156,
+      "sha256": "31cdad377d0b0ab4917f1d11165ad7bc514a1b2e6d400688f05e569e9700a389",
+      "file": "raw/0681.txt"
+    },
+    {
+      "number": 682,
+      "title": "月痕氏族",
+      "url": "https://sto55.com/book/62763/30865924.html",
+      "chars": 2129,
+      "sha256": "955fbdeac29acc060379a4e941cd9cd6230bd51658e51a36985c292555b53c76",
+      "file": "raw/0682.txt"
+    },
+    {
+      "number": 683,
+      "title": "集訓",
+      "url": "https://sto55.com/book/62763/30865925.html",
+      "chars": 2176,
+      "sha256": "b3002042241851c866e47886bfb3a9985f69b9b747081256891ce4bf4f25c55e",
+      "file": "raw/0683.txt"
+    },
+    {
+      "number": 684,
+      "title": "選拔",
+      "url": "https://sto55.com/book/62763/30865926.html",
+      "chars": 2107,
+      "sha256": "422444f4be2340a9f0c5795b3a9b41d629d336745c6208c2397e71b2a9bfe427",
+      "file": "raw/0684.txt"
+    },
+    {
+      "number": 685,
+      "title": "三輪（二合一）",
+      "url": "https://sto55.com/book/62763/30866012.html",
+      "chars": 4309,
+      "sha256": "8ff8a8a09ffc95be485ca0f27a072015f51beea731002a65ab054c97ce418a00",
+      "file": "raw/0685.txt"
+    },
+    {
+      "number": 686,
+      "title": "進入（二合一）",
+      "url": "https://sto55.com/book/62763/30866014.html",
+      "chars": 4223,
+      "sha256": "a90692ba9b6218e11c65e17b726899eff82188fc1b86f190a5265a84f1f0b185",
+      "file": "raw/0686.txt"
+    },
+    {
+      "number": 687,
+      "title": "埋下信標（二合一）",
+      "url": "https://sto55.com/book/62763/30866016.html",
+      "chars": 4247,
+      "sha256": "2e93546f8004ecf4be798f74c57c2c95916f78f627c83f59e8224d17fa3d7a02",
+      "file": "raw/0687.txt"
+    },
+    {
+      "number": 688,
+      "title": "戰爭開始（二合一）",
+      "url": "https://sto55.com/book/62763/30866018.html",
+      "chars": 4227,
+      "sha256": "04593307ae89c4c861e46fc09a1a6532cca1bae41386edcfaf17d9969e21885d",
+      "file": "raw/0688.txt"
+    },
+    {
+      "number": 689,
+      "title": "逃離（二合一）",
+      "url": "https://sto55.com/book/62763/30866021.html",
+      "chars": 4203,
+      "sha256": "8291f2d0db513e5af84de24678cd2376b8e2bef703018225e5b6d47bdff642b4",
+      "file": "raw/0689.txt"
+    },
+    {
+      "number": 690,
+      "title": "神祗（二合一）",
+      "url": "https://sto55.com/book/62763/30866023.html",
+      "chars": 4251,
+      "sha256": "a8a11fcb882275f3867f19558e7bd177f048092bb78e6acaaa9b42e8daf8f87f",
+      "file": "raw/0690.txt"
+    },
+    {
+      "number": 691,
+      "title": "叛徒",
+      "url": "https://sto55.com/book/62763/30866025.html",
+      "chars": 4267,
+      "sha256": "b0a06b5ff418e607b6d676bc738efde69fe03d1a9f02b87446859fbc132b1f62",
+      "file": "raw/0691.txt"
+    },
+    {
+      "number": 692,
+      "title": "任務結算",
+      "url": "https://sto55.com/book/62763/30866027.html",
+      "chars": 4254,
+      "sha256": "19b4c0434cf692069091fc04417de0f927ef624c5d3521773d6c4d11e6b741bd",
+      "file": "raw/0692.txt"
+    },
+    {
+      "number": 693,
+      "title": "返回巫師位面",
+      "url": "https://sto55.com/book/62763/30866029.html",
+      "chars": 4259,
+      "sha256": "792980b003b503e5e0848d1552a8dd521cfcfdd0556be1fb861c476a0f0a8c01",
+      "file": "raw/0693.txt"
+    },
+    {
+      "number": 694,
+      "title": "移植月亮井",
+      "url": "https://sto55.com/book/62763/30866032.html",
+      "chars": 4229,
+      "sha256": "ceebaf347a3abe314964b31f46c74cdd9ba5ea8f165c25ea48c11487b10d5e1c",
+      "file": "raw/0694.txt"
+    },
+    {
+      "number": 695,
+      "title": "詢問",
+      "url": "https://sto55.com/book/62763/30866034.html",
+      "chars": 4225,
+      "sha256": "32ecb2d3b83fbff931fd02a73e420552110df5c3637bf33b3f02e1a283690500",
+      "file": "raw/0695.txt"
+    },
+    {
+      "number": 696,
+      "title": "離開東海岸",
+      "url": "https://sto55.com/book/62763/30866036.html",
+      "chars": 4224,
+      "sha256": "b7ad81a4758e359b90dbe149d37a2255839751041fe67ea2a7238b50de7ae65f",
+      "file": "raw/0696.txt"
+    },
+    {
+      "number": 697,
+      "title": "光明之種",
+      "url": "https://sto55.com/book/62763/30866038.html",
+      "chars": 4205,
+      "sha256": "b2464df910e5b77bdd2f420a8b8fbf67e0d351aa55f3d8f54e4f73bfe185f663",
+      "file": "raw/0697.txt"
+    },
+    {
+      "number": 698,
+      "title": "遺蹟",
+      "url": "https://sto55.com/book/62763/30866040.html",
+      "chars": 4271,
+      "sha256": "ed31af9502f81d836014fc918ee45fc0864efd289ed9f4569e5a5469533a5d10",
+      "file": "raw/0698.txt"
+    },
+    {
+      "number": 699,
+      "title": "潛入",
+      "url": "https://sto55.com/book/62763/30866042.html",
+      "chars": 4258,
+      "sha256": "e4cbde0946811fac724fddff67390c0434e8f3c8b580320dc7853ecf87020e42",
+      "file": "raw/0699.txt"
+    },
+    {
+      "number": 700,
+      "title": "結合",
+      "url": "https://sto55.com/book/62763/30866044.html",
+      "chars": 4252,
+      "sha256": "d8644299bcfe9916ad52bab70f79612818fd13fa0b11bf805c021bdd4e08d362",
+      "file": "raw/0700.txt"
+    },
+    {
+      "number": 701,
+      "title": "試探",
+      "url": "https://sto55.com/book/62763/30866046.html",
+      "chars": 4331,
+      "sha256": "e57e0e3a50d6d8e75946c54f325903f9eeac548748389d2bec133d2ebe9e2995",
+      "file": "raw/0701.txt"
+    },
+    {
+      "number": 702,
+      "title": "離開",
+      "url": "https://sto55.com/book/62763/30866048.html",
+      "chars": 4305,
+      "sha256": "514896d9146f7c345a233433b147c713bf7f67b7a71e881c157f573dc5f8d4a6",
+      "file": "raw/0702.txt"
+    },
+    {
+      "number": 703,
+      "title": "整理",
+      "url": "https://sto55.com/book/62763/30866050.html",
+      "chars": 4385,
+      "sha256": "cbd349d1b424e65b2f39ea77aabeedf4e3ef84bd8adb6b69d14470369f0563fa",
+      "file": "raw/0703.txt"
+    },
+    {
+      "number": 704,
+      "title": "回島",
+      "url": "https://sto55.com/book/62763/30866052.html",
+      "chars": 4233,
+      "sha256": "207ca22f9086c57d83d4f23ade5dac61a2a254979860c21c2e3900c5f380c434",
+      "file": "raw/0704.txt"
+    },
+    {
+      "number": 705,
+      "title": "薇薇安近況與資助",
+      "url": "https://sto55.com/book/62763/30866054.html",
+      "chars": 4289,
+      "sha256": "c64c38f1baf924b88f20c3be5c2cee7ff6951dee42e7d9723061672012788447",
+      "file": "raw/0705.txt"
+    },
+    {
+      "number": 706,
+      "title": "二級晉升方案",
+      "url": "https://sto55.com/book/62763/30866056.html",
+      "chars": 4316,
+      "sha256": "3c23d88e931d2e5f37c7ee9a29011456ab1c23345fc1f310766e5468752e79dc",
+      "file": "raw/0706.txt"
+    },
+    {
+      "number": 707,
+      "title": "蓄滿",
+      "url": "https://sto55.com/book/62763/30866058.html",
+      "chars": 4288,
+      "sha256": "95ed62a28ab36d7e25ad66c75e928556fa1fa4e4342bb571d9dd3bcf3215b15c",
+      "file": "raw/0707.txt"
+    },
+    {
+      "number": 708,
+      "title": "開始晉升",
+      "url": "https://sto55.com/book/62763/30866060.html",
+      "chars": 4329,
+      "sha256": "31eb9888cb04317f8fb618dbd8d9ce55d72ff3b9b3f25b7b9c0f20175083b6c6",
+      "file": "raw/0708.txt"
+    },
+    {
+      "number": 709,
+      "title": "幻象與低語",
+      "url": "https://sto55.com/book/62763/30866062.html",
+      "chars": 4346,
+      "sha256": "3afe0dd247ef830c215fda8b0d96404dc19c614288ff296015432cb9f1364950",
+      "file": "raw/0709.txt"
+    },
+    {
+      "number": 710,
+      "title": "二級元素巫師",
+      "url": "https://sto55.com/book/62763/30866064.html",
+      "chars": 4383,
+      "sha256": "a898ce42f69e98a3173df815fd4c2e46346cd9f644c09521a56129777704301c",
+      "file": "raw/0710.txt"
+    },
+    {
+      "number": 711,
+      "title": "訓練與測試",
+      "url": "https://sto55.com/book/62763/30866066.html",
+      "chars": 4253,
+      "sha256": "c6a4e99bbb6abacb95838581f93b992c4b080ed0d5ef2b32000231697b614dcb",
+      "file": "raw/0711.txt"
+    },
+    {
+      "number": 712,
+      "title": "元素化測試",
+      "url": "https://sto55.com/book/62763/30866068.html",
+      "chars": 4363,
+      "sha256": "2852b1fec23b7963bf46d9ed682bcf0986a97f5a0043f2b7b1bf5165cd12c31b",
+      "file": "raw/0712.txt"
+    },
+    {
+      "number": 713,
+      "title": "創造生命",
+      "url": "https://sto55.com/book/62763/30866070.html",
+      "chars": 4275,
+      "sha256": "c2ae76a52a7c2e0abf6569f0b30a8488135be6082c7e5d4d1c29699daf7ac099",
+      "file": "raw/0713.txt"
+    },
+    {
+      "number": 714,
+      "title": "二級法術",
+      "url": "https://sto55.com/book/62763/30866072.html",
+      "chars": 4257,
+      "sha256": "af497ceedf1262f9359cbc5c0b6cb77a320916f50c1faf1de3572c72421f38f5",
+      "file": "raw/0714.txt"
+    },
+    {
+      "number": 715,
+      "title": "試驗",
+      "url": "https://sto55.com/book/62763/30866074.html",
+      "chars": 4304,
+      "sha256": "87fe13818d9394511c5ba9134a8044da19506cae3bbcd26af382a21b854aa156",
+      "file": "raw/0715.txt"
+    },
+    {
+      "number": 716,
+      "title": "機會",
+      "url": "https://sto55.com/book/62763/30867176.html",
+      "chars": 4214,
+      "sha256": "72cb2c05a90a92cffdd6b69bb869c7ad69570f1cdae2370a49cb9dd24141a4c0",
+      "file": "raw/0716.txt"
+    },
+    {
+      "number": 717,
+      "title": "宴會",
+      "url": "https://sto55.com/book/62763/30867177.html",
+      "chars": 4472,
+      "sha256": "af9a451a6bbc0e8ce9dcb405879e4e53ea65b87fe34a7cbbf5bc9af3bbc737a5",
+      "file": "raw/0717.txt"
+    },
+    {
+      "number": 718,
+      "title": "中央群島",
+      "url": "https://sto55.com/book/62763/30867178.html",
+      "chars": 4418,
+      "sha256": "39683b8754ed7c74abc3f1da2920b27b8b45742ca70dc1554b425250cdba0f96",
+      "file": "raw/0718.txt"
+    },
+    {
+      "number": 719,
+      "title": "各方",
+      "url": "https://sto55.com/book/62763/30867179.html",
+      "chars": 4436,
+      "sha256": "103f970d08733f616564112ad21052202650ea93a5a5cd7f42db70f13b8eb83f",
+      "file": "raw/0719.txt"
+    },
+    {
+      "number": 720,
+      "title": "規矩",
+      "url": "https://sto55.com/book/62763/30867180.html",
+      "chars": 4337,
+      "sha256": "057a60f4be7d76e5a3d3c229750092342f9902a306030587260e667ef862196e",
+      "file": "raw/0720.txt"
+    },
+    {
+      "number": 721,
+      "title": "課程",
+      "url": "https://sto55.com/book/62763/30867181.html",
+      "chars": 4361,
+      "sha256": "a89946861efeee7d229475f8c82c54bd03d41410906406bf37aceeae4110660e",
+      "file": "raw/0721.txt"
+    },
+    {
+      "number": 722,
+      "title": "元素掌控",
+      "url": "https://sto55.com/book/62763/30867182.html",
+      "chars": 4310,
+      "sha256": "44cc845f147acf05b759667c262f4bf13b5e553729b51b0f34785d09a6b99058",
+      "file": "raw/0722.txt"
+    },
+    {
+      "number": 723,
+      "title": "報名魔藥課程",
+      "url": "https://sto55.com/book/62763/30867183.html",
+      "chars": 4425,
+      "sha256": "0bce86c6fe3b3c544a4b322b578d1f4d2edbff840e6781daeb44034880d601cf",
+      "file": "raw/0723.txt"
+    },
+    {
+      "number": 724,
+      "title": "魔藥",
+      "url": "https://sto55.com/book/62763/30867184.html",
+      "chars": 4487,
+      "sha256": "b25d80e126666f7ac03f5f5423e620d7a0b856d0a31f6dbe4e515fb6f65ecf0b",
+      "file": "raw/0724.txt"
+    },
+    {
+      "number": 725,
+      "title": "黃金龍血脈",
+      "url": "https://sto55.com/book/62763/30867185.html",
+      "chars": 4438,
+      "sha256": "8d376349f543a3fb07aa32cd53e744babb70b0ce349e4bb74ef5a54b3dda00ea",
+      "file": "raw/0725.txt"
+    },
+    {
+      "number": 726,
+      "title": "天空競技場",
+      "url": "https://sto55.com/book/62763/30867186.html",
+      "chars": 4366,
+      "sha256": "316a58d8d88b23665b51ef6f0ae8892b44417811a49b403461f3f92fc1baac9c",
+      "file": "raw/0726.txt"
+    },
+    {
+      "number": 727,
+      "title": "決鬥",
+      "url": "https://sto55.com/book/62763/30867187.html",
+      "chars": 4533,
+      "sha256": "1a3d20c8d48842296006bbb1ebe29174219ed2315e816d3edf8e6007dceab969",
+      "file": "raw/0727.txt"
+    },
+    {
+      "number": 728,
+      "title": "聖銀戰體",
+      "url": "https://sto55.com/book/62763/30867188.html",
+      "chars": 4512,
+      "sha256": "1cfac35732df757de109028d7720d6cfbf06db79fc24a3e0ffbeee86c2a6c971",
+      "file": "raw/0728.txt"
+    },
+    {
+      "number": 729,
+      "title": "莫里斯",
+      "url": "https://sto55.com/book/62763/30867189.html",
+      "chars": 4384,
+      "sha256": "53249520677704081f5efc0fbadec390db7f9dcea348f4de5985e5ccf8b6ba91",
+      "file": "raw/0729.txt"
+    },
+    {
+      "number": 730,
+      "title": "元素課程考核",
+      "url": "https://sto55.com/book/62763/30867190.html",
+      "chars": 4328,
+      "sha256": "632df2b86f62d1f4e2ce1ac112c82a6e2ca5e803096ce53247506327172086f1",
+      "file": "raw/0730.txt"
+    },
+    {
+      "number": 731,
+      "title": "結果",
+      "url": "https://sto55.com/book/62763/30867192.html",
+      "chars": 4509,
+      "sha256": "dc36af2bda6bef411a4736e434b0f62f3a4ced92e5f3b8e25eb371ad447a8ddf",
+      "file": "raw/0731.txt"
+    },
+    {
+      "number": 732,
+      "title": "魔藥考核",
+      "url": "https://sto55.com/book/62763/30867193.html",
+      "chars": 4410,
+      "sha256": "8c131f5e87664c7ba050fb95b341e1144f4f85ebf7b20e5c7698ccc805a78cde",
+      "file": "raw/0732.txt"
+    },
+    {
+      "number": 733,
+      "title": "煉製",
+      "url": "https://sto55.com/book/62763/30867194.html",
+      "chars": 4372,
+      "sha256": "cec5a2f1fe8467c934e0df45c88e4de45ad5017e88d8f05a2f40a4a2e0668cfe",
+      "file": "raw/0733.txt"
+    },
+    {
+      "number": 734,
+      "title": "圖書館",
+      "url": "https://sto55.com/book/62763/30867195.html",
+      "chars": 4564,
+      "sha256": "3214894f83b850f528059694b3c021eb290b553f99d7edaa7e8ad93b98f5aa08",
+      "file": "raw/0734.txt"
+    },
+    {
+      "number": 735,
+      "title": "二級禁忌法術",
+      "url": "https://sto55.com/book/62763/30867196.html",
+      "chars": 4409,
+      "sha256": "6b5363ba6ef6ad1ee611954319d4f189abdf4c2f06c5943dacf4968c20bb405d",
+      "file": "raw/0735.txt"
+    },
+    {
+      "number": 736,
+      "title": "幻境之塔",
+      "url": "https://sto55.com/book/62763/30867197.html",
+      "chars": 4334,
+      "sha256": "8bd0bd6fbd4f181eb43cedc8daee4685254f0c9425bf6b0a4766af48cd03b21b",
+      "file": "raw/0736.txt"
+    },
+    {
+      "number": 737,
+      "title": "排名",
+      "url": "https://sto55.com/book/62763/30867198.html",
+      "chars": 4688,
+      "sha256": "36c5d1e8353b49ae66ea5b3b709af27af7b24b3fa782bf0df8c9c72362bc2d6e",
+      "file": "raw/0737.txt"
+    },
+    {
+      "number": 738,
+      "title": "進塔",
+      "url": "https://sto55.com/book/62763/30867199.html",
+      "chars": 4382,
+      "sha256": "66417e1ad05309e50c387768334b9c22620da8df2f77b9d540f9055dd367b2e5",
+      "file": "raw/0738.txt"
+    },
+    {
+      "number": 739,
+      "title": "地爆天星",
+      "url": "https://sto55.com/book/62763/30867200.html",
+      "chars": 4366,
+      "sha256": "9166bde937a26c8d37aa21a1f19695fb265a523fcc132f17a43844e1ffd3a2b3",
+      "file": "raw/0739.txt"
+    },
+    {
+      "number": 740,
+      "title": "魔神降臨",
+      "url": "https://sto55.com/book/62763/30867201.html",
+      "chars": 4410,
+      "sha256": "299fcc61e18a8894f588a6b08939783c1489caf74f8bfa837cbd7aaa4c82cc72",
+      "file": "raw/0740.txt"
+    },
+    {
+      "number": 741,
+      "title": "獎勵",
+      "url": "https://sto55.com/book/62763/30867203.html",
+      "chars": 4411,
+      "sha256": "50316fac90b8e466819bf04f5245a96d51abcf574d8b1b91af353c04f0e9003f",
+      "file": "raw/0741.txt"
+    },
+    {
+      "number": 742,
+      "title": "三級巫器",
+      "url": "https://sto55.com/book/62763/30867204.html",
+      "chars": 4350,
+      "sha256": "d075ee2e9c20806043d4726ecb53c5c29241941a2e3ab5a872f0a2edebce5465",
+      "file": "raw/0742.txt"
+    },
+    {
+      "number": 743,
+      "title": "測試",
+      "url": "https://sto55.com/book/62763/30867206.html",
+      "chars": 4403,
+      "sha256": "78f03ae824c95d043f18c490dede0c00f370fc3e68d2bb61f6266a39c2938c73",
+      "file": "raw/0743.txt"
+    },
+    {
+      "number": 744,
+      "title": "古代妖精位面",
+      "url": "https://sto55.com/book/62763/30867207.html",
+      "chars": 4324,
+      "sha256": "64cf072cfb1ca49490e8bd926707ed40d90e2be567c174c088126df6a81d5947",
+      "file": "raw/0744.txt"
+    },
+    {
+      "number": 745,
+      "title": "據點",
+      "url": "https://sto55.com/book/62763/30867208.html",
+      "chars": 4384,
+      "sha256": "059829ebc0035fb07a29558f34ab6bec9ec4495c71372e402c65726244537381",
+      "file": "raw/0745.txt"
+    },
+    {
+      "number": 746,
+      "title": "古代妖精部族",
+      "url": "https://sto55.com/book/62763/30867209.html",
+      "chars": 4317,
+      "sha256": "a6d72655ea730a747d686b69dcda5fabed684c1d5cca19c178f91c05f245c893",
+      "file": "raw/0746.txt"
+    },
+    {
+      "number": 747,
+      "title": "襲擊",
+      "url": "https://sto55.com/book/62763/30867210.html",
+      "chars": 4405,
+      "sha256": "1715112942995a9422f824a05aa7cdafaf643f223e2de5142b4f87cf96b6658d",
+      "file": "raw/0747.txt"
+    },
+    {
+      "number": 748,
+      "title": "生命精華",
+      "url": "https://sto55.com/book/62763/30867211.html",
+      "chars": 4321,
+      "sha256": "912bac22ce7e18b6c2c37275ddd7ca48111e5bba0e9e3b78088aa8901fc5d7e1",
+      "file": "raw/0748.txt"
+    },
+    {
+      "number": 749,
+      "title": "青蓮",
+      "url": "https://sto55.com/book/62763/30867212.html",
+      "chars": 4397,
+      "sha256": "29cd475885de66c78e971f47fb9a60b7df8c5f2098ca415deaf12b9a54bd1f81",
+      "file": "raw/0749.txt"
+    },
+    {
+      "number": 750,
+      "title": "各自逃命",
+      "url": "https://sto55.com/book/62763/30867213.html",
+      "chars": 4397,
+      "sha256": "6a4bce7032b934892986db2b3ee251c3aa020c6fd796d733b62b140289e2e72c",
+      "file": "raw/0750.txt"
+    },
+    {
+      "number": 751,
+      "title": "移山",
+      "url": "https://sto55.com/book/62763/30867214.html",
+      "chars": 4398,
+      "sha256": "48a1553e4e47d0a3271e03bfd7d13bc1a111a260a92eebddcce779d830c6ba8f",
+      "file": "raw/0751.txt"
+    },
+    {
+      "number": 752,
+      "title": "偶遇奧德里奇",
+      "url": "https://sto55.com/book/62763/30867215.html",
+      "chars": 4410,
+      "sha256": "23da0041746e46377018c2ae95c9cff0a236f482992591110620209e9a00dec7",
+      "file": "raw/0752.txt"
+    },
+    {
+      "number": 753,
+      "title": "灰霧",
+      "url": "https://sto55.com/book/62763/30867216.html",
+      "chars": 4384,
+      "sha256": "797dba547399c33d4e7ad0274b8f6421886bfc2e86dab74a7552cb69f86ed48d",
+      "file": "raw/0753.txt"
+    },
+    {
+      "number": 754,
+      "title": "茶話會",
+      "url": "https://sto55.com/book/62763/30867217.html",
+      "chars": 4344,
+      "sha256": "1d0292a9e5918a251112f8c411f1e851a5e4998b06b0ba30b6c4101375db0f25",
+      "file": "raw/0754.txt"
+    },
+    {
+      "number": 755,
+      "title": "返回",
+      "url": "https://sto55.com/book/62763/30867218.html",
+      "chars": 4373,
+      "sha256": "12ef0ee1ca3ac6ddaad823d392c555600892e1f2a03d852b1dbd229716ae13a2",
+      "file": "raw/0755.txt"
+    },
+    {
+      "number": 756,
+      "title": "深淵惡魔",
+      "url": "https://sto55.com/book/62763/30867219.html",
+      "chars": 4373,
+      "sha256": "b9cedf8b2ba2f5583e544ff1fac3d2a5df3f16738c99f643aec74a0e34b09843",
+      "file": "raw/0756.txt"
+    },
+    {
+      "number": 757,
+      "title": "考核消息",
+      "url": "https://sto55.com/book/62763/30867220.html",
+      "chars": 4508,
+      "sha256": "6c20b1ced69f34f3cd35e4d59d056137593e6d6b23e2d0f3eb7b7f2f277d0c3e",
+      "file": "raw/0757.txt"
+    },
+    {
+      "number": 758,
+      "title": "開始",
+      "url": "https://sto55.com/book/62763/30867221.html",
+      "chars": 4382,
+      "sha256": "d9b2ff5995be26405f6c8d6ed30fe18f564e235a7d51b842587f746326702868",
+      "file": "raw/0758.txt"
+    },
+    {
+      "number": 759,
+      "title": "資源點",
+      "url": "https://sto55.com/book/62763/30867222.html",
+      "chars": 4347,
+      "sha256": "f33ee35bb3747d366df564c5d653cdae695a850446761f10179203f40361df45",
+      "file": "raw/0759.txt"
+    },
+    {
+      "number": 760,
+      "title": "安德烈",
+      "url": "https://sto55.com/book/62763/30867223.html",
+      "chars": 4357,
+      "sha256": "39f98e89b36c7964d46be0e3bf0ea6cec3333fddf70c1a8ab6baa6d355c40b39",
+      "file": "raw/0760.txt"
+    },
+    {
+      "number": 761,
+      "title": "漁翁得利",
+      "url": "https://sto55.com/book/62763/30867224.html",
+      "chars": 4350,
+      "sha256": "406107f99202e49e5a24bd23e5d6a2a0cc611c6b11838a23291cada76cc2997a",
+      "file": "raw/0761.txt"
+    },
+    {
+      "number": 762,
+      "title": "設伏",
+      "url": "https://sto55.com/book/62763/30867225.html",
+      "chars": 4435,
+      "sha256": "59a535278fef8f6c9efa97f1ec85aac3517573cb9206232c2eb5bb08e98a41eb",
+      "file": "raw/0762.txt"
+    },
+    {
+      "number": 763,
+      "title": "淘汰",
+      "url": "https://sto55.com/book/62763/30867226.html",
+      "chars": 4325,
+      "sha256": "236c5dd3d95e6b2ab299f7cc49b41c446aeca3e962cd83cf56d18d29dd959161",
+      "file": "raw/0763.txt"
+    },
+    {
+      "number": 764,
+      "title": "暴走的莫里斯",
+      "url": "https://sto55.com/book/62763/30867227.html",
+      "chars": 4445,
+      "sha256": "b24cd0f3cd20da28383ab19873e40c3f15f9a467be620ffcf69ecca54751911c",
+      "file": "raw/0764.txt"
+    },
+    {
+      "number": 765,
+      "title": "陵寢",
+      "url": "https://sto55.com/book/62763/30867228.html",
+      "chars": 4315,
+      "sha256": "3d50cec946d208304011240e15e09d2a8238b60f0782e2225ce7473c566cefce",
+      "file": "raw/0765.txt"
+    },
+    {
+      "number": 766,
+      "title": "薇拉",
+      "url": "https://sto55.com/book/62763/30867229.html",
+      "chars": 4331,
+      "sha256": "8d7c5f513f2a082b1424cebe6bd52d8e8ebe6a6d560ff32c9bb63a8c266ebc0a",
+      "file": "raw/0766.txt"
+    },
+    {
+      "number": 767,
+      "title": "第二層",
+      "url": "https://sto55.com/book/62763/30867230.html",
+      "chars": 4334,
+      "sha256": "809ff842ba736236f41a2bee29291956b35eeefd22834f2028f97ead371c65d9",
+      "file": "raw/0767.txt"
+    },
+    {
+      "number": 768,
+      "title": "棺槨",
+      "url": "https://sto55.com/book/62763/30867231.html",
+      "chars": 4348,
+      "sha256": "10d23d579e9864f2b19ae7d771224ccb29e166c8664e3470757553a8c41fa9ab",
+      "file": "raw/0768.txt"
+    },
+    {
+      "number": 769,
+      "title": "只活一人",
+      "url": "https://sto55.com/book/62763/30867232.html",
+      "chars": 4328,
+      "sha256": "3fba740e39bd1057d07e424b304dfbca5bc74a61ab21a9253f83f92d1955c13f",
+      "file": "raw/0769.txt"
+    },
+    {
+      "number": 770,
+      "title": "血脈真身",
+      "url": "https://sto55.com/book/62763/30867233.html",
+      "chars": 4352,
+      "sha256": "f6b09f96702cfbe32ab261df25018fd8054e22a6868ab81defd9b01b63b2a3d9",
+      "file": "raw/0770.txt"
+    },
+    {
+      "number": 771,
+      "title": "現身",
+      "url": "https://sto55.com/book/62763/30867234.html",
+      "chars": 4354,
+      "sha256": "cda94e92dc0c7e044e70cc09e2b0afe3991e96440b33685ef69665dde86b7d99",
+      "file": "raw/0771.txt"
+    },
+    {
+      "number": 772,
+      "title": "聯合",
+      "url": "https://sto55.com/book/62763/30867235.html",
+      "chars": 4326,
+      "sha256": "0fc5c237109aaf97dfa04a22db488970b63bac726993fb7b36d7aa88ea6dc925",
+      "file": "raw/0772.txt"
+    },
+    {
+      "number": 773,
+      "title": "斬落奧德里奇",
+      "url": "https://sto55.com/book/62763/30867236.html",
+      "chars": 4417,
+      "sha256": "b8c3194c22cf867cc3e8c2f8594f8b9eeba70fec7989a5f96417a0d4e289c390",
+      "file": "raw/0773.txt"
+    },
+    {
+      "number": 774,
+      "title": "元素聖體",
+      "url": "https://sto55.com/book/62763/30867237.html",
+      "chars": 4274,
+      "sha256": "412c15a2a174ffa84adf09305dd897d1f3f6043c43c746d2a5d493006db9cb72",
+      "file": "raw/0774.txt"
+    },
+    {
+      "number": 775,
+      "title": "考核結束",
+      "url": "https://sto55.com/book/62763/30867239.html",
+      "chars": 4470,
+      "sha256": "73c4680f28ee62a3a7b0d84200c59b166cfac4a10a46b24fa5cee7ebdebfbf5d",
+      "file": "raw/0775.txt"
+    },
+    {
+      "number": 776,
+      "title": "提取自動冥想特性",
+      "url": "https://sto55.com/book/62763/30867240.html",
+      "chars": 4316,
+      "sha256": "170eb1a0fb1e912cafaa9a2fdb919e3a50f0ce68fb3894c29ab89a797078ab2e",
+      "file": "raw/0776.txt"
+    },
+    {
+      "number": 777,
+      "title": "積分",
+      "url": "https://sto55.com/book/62763/30867241.html",
+      "chars": 4283,
+      "sha256": "31321d36c75802f6e703ccb70e34550eb0f80101b5873f509e052923e5e87c29",
+      "file": "raw/0777.txt"
+    },
+    {
+      "number": 778,
+      "title": "成果",
+      "url": "https://sto55.com/book/62763/30867242.html",
+      "chars": 4299,
+      "sha256": "1528c83c5d466fc43ced37e74d45ad7246f88b4d70c23ad9358820abd31b1905",
+      "file": "raw/0778.txt"
+    },
+    {
+      "number": 779,
+      "title": "晉升二級奧術師",
+      "url": "https://sto55.com/book/62763/30867243.html",
+      "chars": 4273,
+      "sha256": "1ac151a78dfe9ef73a05d00ff29465bac73fbb2263634987f5a47c17cf9f3ffb",
+      "file": "raw/0779.txt"
+    },
+    {
+      "number": 780,
+      "title": "奧術師月報的影響",
+      "url": "https://sto55.com/book/62763/30867244.html",
+      "chars": 4290,
+      "sha256": "c22bdf90a330b549818f88958fd4c892661a677ed4c870e85172c88f0b42a417",
+      "file": "raw/0780.txt"
+    },
+    {
+      "number": 781,
+      "title": "演示會",
+      "url": "https://sto55.com/book/62763/30867245.html",
+      "chars": 4393,
+      "sha256": "74eb284b00ed09090a4213215bb317893569e9e91571ce8a1cf1f6285f426902",
+      "file": "raw/0781.txt"
+    },
+    {
+      "number": 782,
+      "title": "分區授權合作",
+      "url": "https://sto55.com/book/62763/30867246.html",
+      "chars": 4315,
+      "sha256": "64d277a4402352a5532fb8c8403a09fd610f0b14954e1c70757ba9c812508731",
+      "file": "raw/0782.txt"
+    },
+    {
+      "number": 783,
+      "title": "事後",
+      "url": "https://sto55.com/book/62763/30867247.html",
+      "chars": 4351,
+      "sha256": "13a266d4c5d8cc860bda2649403c76c579a5a2a1e00eeaafcacceea66dffab8a",
+      "file": "raw/0783.txt"
+    },
+    {
+      "number": 784,
+      "title": "兩年後",
+      "url": "https://sto55.com/book/62763/30867248.html",
+      "chars": 4349,
+      "sha256": "8d0a8530d30a992a9c334a53322aa539f7c1ca0d9d671fe389f1cdd2a9db173a",
+      "file": "raw/0784.txt"
+    },
+    {
+      "number": 785,
+      "title": "黑帆",
+      "url": "https://sto55.com/book/62763/30867249.html",
+      "chars": 4399,
+      "sha256": "9ffc82bcf995d0b559513be17cead7699bc7fbd53857cae6385253569da67bc1",
+      "file": "raw/0785.txt"
+    },
+    {
+      "number": 786,
+      "title": "三階肉身",
+      "url": "https://sto55.com/book/62763/30867250.html",
+      "chars": 4326,
+      "sha256": "e2bbf5c59ee73b583f2e70ff120567a8fde419bf02fd71db9ad888659801e17a",
+      "file": "raw/0786.txt"
+    },
+    {
+      "number": 787,
+      "title": "神諭位面",
+      "url": "https://sto55.com/book/62763/30867251.html",
+      "chars": 4319,
+      "sha256": "b482da0e13900bd5549dcca77548cb2b2163f17369f1967a2969a4f35015af95",
+      "file": "raw/0787.txt"
+    },
+    {
+      "number": 788,
+      "title": "光明教派",
+      "url": "https://sto55.com/book/62763/30867253.html",
+      "chars": 4372,
+      "sha256": "60f8a1c9ff83708f5e705860b7a5f19105fd70b96830a08712045ab8aa00c064",
+      "file": "raw/0788.txt"
+    },
+    {
+      "number": 789,
+      "title": "石錘城",
+      "url": "https://sto55.com/book/62763/30867254.html",
+      "chars": 4249,
+      "sha256": "2436635e749f2989234e8021984b8e95bcdd61658f301e817c2b4bafcfbd09eb",
+      "file": "raw/0789.txt"
+    },
+    {
+      "number": 790,
+      "title": "光明之子",
+      "url": "https://sto55.com/book/62763/30867256.html",
+      "chars": 4295,
+      "sha256": "380049b2b8de115bfa48ffff5139a3d2157c8c95624a78a2180b4abe0326327b",
+      "file": "raw/0790.txt"
+    },
+    {
+      "number": 791,
+      "title": "以一敵四",
+      "url": "https://sto55.com/book/62763/30867257.html",
+      "chars": 4326,
+      "sha256": "845d6bb03234ebcfb22b382afc95f6ecbd800fc18d716b16dcf633e0265990fb",
+      "file": "raw/0791.txt"
+    },
+    {
+      "number": 792,
+      "title": "地盤",
+      "url": "https://sto55.com/book/62763/30867258.html",
+      "chars": 4397,
+      "sha256": "0900cd638887ddaedfa1dfaf41910d443edcbca8ddad8b3d62a1252f6e43b06f",
+      "file": "raw/0792.txt"
+    },
+    {
+      "number": 793,
+      "title": "暗影襲擊",
+      "url": "https://sto55.com/book/62763/30867260.html",
+      "chars": 4305,
+      "sha256": "eb7cfed1852d985c0307dfa34a4462bab81250388bb0dc864abd86461a8465d2",
+      "file": "raw/0793.txt"
+    },
+    {
+      "number": 794,
+      "title": "暗裔形態",
+      "url": "https://sto55.com/book/62763/30867261.html",
+      "chars": 4258,
+      "sha256": "5d54dc208b96d7f808a7a5e7d5cb21ce4882e0a205d4a44aca78f7bd4220f1e4",
+      "file": "raw/0794.txt"
+    },
+    {
+      "number": 795,
+      "title": "回到巫師位面",
+      "url": "https://sto55.com/book/62763/30867262.html",
+      "chars": 4301,
+      "sha256": "322120494228c4203374691f0e953b79779c4a946f1eba50c53ecbe618ca4924",
+      "file": "raw/0795.txt"
+    },
+    {
+      "number": 796,
+      "title": "六環高塔各部",
+      "url": "https://sto55.com/book/62763/30867263.html",
+      "chars": 4285,
+      "sha256": "eab99c477f1514659b50b65089cb4fffc7e082d691b2f985b256623c7a530de0",
+      "file": "raw/0796.txt"
+    },
+    {
+      "number": 797,
+      "title": "四靈元素位面",
+      "url": "https://sto55.com/book/62763/30867264.html",
+      "chars": 4283,
+      "sha256": "485181c737771f718c2f4d2bcde4bedc46eda532fe7d7219aa04e1fc6e1fa4cf",
+      "file": "raw/0797.txt"
+    },
+    {
+      "number": 798,
+      "title": "初臨",
+      "url": "https://sto55.com/book/62763/30867265.html",
+      "chars": 4238,
+      "sha256": "3055a79dc92824747f4150927f5935cbf19d894ff12e7b6f64b339fe8dc6e5e7",
+      "file": "raw/0798.txt"
+    },
+    {
+      "number": 799,
+      "title": "熔火之靈",
+      "url": "https://sto55.com/book/62763/30867266.html",
+      "chars": 4381,
+      "sha256": "ba48951634057a23623827110e743a5d42018b6b54b585d543374a4afe939997",
+      "file": "raw/0799.txt"
+    },
+    {
+      "number": 800,
+      "title": "戰前",
+      "url": "https://sto55.com/book/62763/30867267.html",
+      "chars": 4360,
+      "sha256": "48b9576d52bbc9685983648ad926fd1128b9b5c35f3af39b27fce2a8416af192",
+      "file": "raw/0800.txt"
+    },
+    {
+      "number": 801,
+      "title": "焦灼",
+      "url": "https://sto55.com/book/62763/30867268.html",
+      "chars": 4361,
+      "sha256": "201557ffbb953bd4ef5efe06b44abfa5d45023bd6c97c97634419799e7535ecc",
+      "file": "raw/0801.txt"
+    },
+    {
+      "number": 802,
+      "title": "搜刮城池",
+      "url": "https://sto55.com/book/62763/30867269.html",
+      "chars": 4238,
+      "sha256": "b01f3c49c5b0035ccf3026cc33d56c515b0ae91a320ceed5a6df66721038f772",
+      "file": "raw/0802.txt"
+    },
+    {
+      "number": 803,
+      "title": "四級騎士",
+      "url": "https://sto55.com/book/62763/30867270.html",
+      "chars": 4262,
+      "sha256": "21b23a605f044912512bc556d71792c2515f1f91834073d6a9e0827ca3032b21",
+      "file": "raw/0803.txt"
+    },
+    {
+      "number": 804,
+      "title": "目標",
+      "url": "https://sto55.com/book/62763/30867271.html",
+      "chars": 4291,
+      "sha256": "61e6006873b922bac9b86c585795f9c6fadb99911e1110816d8b2b42347657c1",
+      "file": "raw/0804.txt"
+    },
+    {
+      "number": 805,
+      "title": "拿下",
+      "url": "https://sto55.com/book/62763/30867272.html",
+      "chars": 4295,
+      "sha256": "a48a5dbfd957ee5d6cbc6a9e74a82a0686c29b7b9fcead5d99a5cdd1111a9f87",
+      "file": "raw/0805.txt"
+    },
+    {
+      "number": 806,
+      "title": "燼默",
+      "url": "https://sto55.com/book/62763/30867273.html",
+      "chars": 4335,
+      "sha256": "0ea313b4efdf04b5269894ccfba86707e38d1a6696155f6145bda32dd3feac82",
+      "file": "raw/0806.txt"
+    },
+    {
+      "number": 807,
+      "title": "逃離",
+      "url": "https://sto55.com/book/62763/30867274.html",
+      "chars": 4260,
+      "sha256": "5abbf6e07ca776212788f8c5a3e7718e650de4bb6b01d12fecbcdc866318cd46",
+      "file": "raw/0807.txt"
+    },
+    {
+      "number": 808,
+      "title": "所謂規則",
+      "url": "https://sto55.com/book/62763/30867275.html",
+      "chars": 4273,
+      "sha256": "f00ad57d80d95fe5f4cac7fb25a2c5967632912a2e1a01d82ac8148365e6479d",
+      "file": "raw/0808.txt"
+    },
+    {
+      "number": 809,
+      "title": "家底",
+      "url": "https://sto55.com/book/62763/30867276.html",
+      "chars": 4290,
+      "sha256": "b5020ebb96cf488413d45aee967e7f4868a74077ae5d2360be44a690950b6b1e",
+      "file": "raw/0809.txt"
+    },
+    {
+      "number": 810,
+      "title": "自爆",
+      "url": "https://sto55.com/book/62763/30867277.html",
+      "chars": 4282,
+      "sha256": "a7567834e258b3ba1d7e6e489b70a04cbea022ff29783e6142ab3bc90eda760c",
+      "file": "raw/0810.txt"
+    },
+    {
+      "number": 811,
+      "title": "規則之鑰到手",
+      "url": "https://sto55.com/book/62763/30867278.html",
+      "chars": 4374,
+      "sha256": "c022848729d188f0f1e7e60c3e609f7e09fe583f7fc29b7f7edd854fddde292c",
+      "file": "raw/0811.txt"
+    },
+    {
+      "number": 812,
+      "title": "幽魂之火",
+      "url": "https://sto55.com/book/62763/30867279.html",
+      "chars": 4237,
+      "sha256": "5b6df018d354112a43f195d50c6a30f0ebda7ffcfe29c7208321553f449ed4fb",
+      "file": "raw/0812.txt"
+    },
+    {
+      "number": 813,
+      "title": "返回巫師位面",
+      "url": "https://sto55.com/book/62763/30867280.html",
+      "chars": 4332,
+      "sha256": "f7b1e16cc99d178e756941304266211ca646c179f3edf77c755c9b60ce1574c1",
+      "file": "raw/0813.txt"
+    },
+    {
+      "number": 814,
+      "title": "籌備晉升",
+      "url": "https://sto55.com/book/62763/30867281.html",
+      "chars": 4229,
+      "sha256": "fc6681bff5c31248047ae5d397f7d0e81828f81d1c5725054c639077402d76c7",
+      "file": "raw/0814.txt"
+    },
+    {
+      "number": 815,
+      "title": "魔藥材料",
+      "url": "https://sto55.com/book/62763/30867282.html",
+      "chars": 4300,
+      "sha256": "e58b9bdb89dad28c27bba6d423aea12207c5613218932817eac673a7ae86e59f",
+      "file": "raw/0815.txt"
+    },
+    {
+      "number": 816,
+      "title": "再臨夢魘位面",
+      "url": "https://sto55.com/book/62763/30867283.html",
+      "chars": 4365,
+      "sha256": "2996064ef0f3f4ac09e31d72b814c7acb50eba551274d935f3b457e0ea1e20ea",
+      "file": "raw/0816.txt"
+    },
+    {
+      "number": 817,
+      "title": "磐石",
+      "url": "https://sto55.com/book/62763/30867284.html",
+      "chars": 4204,
+      "sha256": "73fb16c864135d8dd600769a4221292dc90788291a080d2b48b087c35be14630",
+      "file": "raw/0817.txt"
+    },
+    {
+      "number": 818,
+      "title": "採集",
+      "url": "https://sto55.com/book/62763/30867285.html",
+      "chars": 4222,
+      "sha256": "3949a0df55588bbd0b6a5ddd59b420d3ff2409859223db83230b399b6f697113",
+      "file": "raw/0818.txt"
+    },
+    {
+      "number": 819,
+      "title": "微光精靈",
+      "url": "https://sto55.com/book/62763/30867286.html",
+      "chars": 4305,
+      "sha256": "678e9727c51efdfb2dec094b40db4a18dde91700f679a0cb43c831b56e59b25d",
+      "file": "raw/0819.txt"
+    },
+    {
+      "number": 820,
+      "title": "回程",
+      "url": "https://sto55.com/book/62763/30867287.html",
+      "chars": 4224,
+      "sha256": "d26e3f25c07ef3b774a36d53ae1a46d37296a8f58aaf7b3247ad49da178f1ef9",
+      "file": "raw/0820.txt"
+    },
+    {
+      "number": 821,
+      "title": "永恆之冰",
+      "url": "https://sto55.com/book/62763/30867288.html",
+      "chars": 4210,
+      "sha256": "f811e0912934981cb9e0a12096044e9d896b6a5741f452ff0049200c452933fb",
+      "file": "raw/0821.txt"
+    },
+    {
+      "number": 822,
+      "title": "煉製魔藥",
+      "url": "https://sto55.com/book/62763/30867289.html",
+      "chars": 4185,
+      "sha256": "bdcd4d865245f60a474eeacbadbfe9d72e5999beb6820bae658b60e1536a43e6",
+      "file": "raw/0822.txt"
+    },
+    {
+      "number": 823,
+      "title": "魔藥到手",
+      "url": "https://sto55.com/book/62763/30867290.html",
+      "chars": 4326,
+      "sha256": "0ccd3d618204d0261703398c1972bb003f13f6bfe3e5c528f815e1e5c0116bc9",
+      "file": "raw/0823.txt"
+    },
+    {
+      "number": 824,
+      "title": "世界之臍，開始晉升",
+      "url": "https://sto55.com/book/62763/30867291.html",
+      "chars": 4218,
+      "sha256": "150339fab6d7f3a22e211670fdd18655332e3d4c6c845dc9112f46a213b2ee17",
+      "file": "raw/0824.txt"
+    },
+    {
+      "number": 825,
+      "title": "技能樹",
+      "url": "https://sto55.com/book/62763/30867292.html",
+      "chars": 4233,
+      "sha256": "ef622692a1d21c43b68a40055e6acb53bd0d0b606adde114123435dec8c4a357",
+      "file": "raw/0825.txt"
+    },
+    {
+      "number": 826,
+      "title": "晉升完成，三級巫師",
+      "url": "https://sto55.com/book/62763/30867293.html",
+      "chars": 4302,
+      "sha256": "ae5ad99fb692715707ee5d3bef7fd09a6c31a39f299efc137a6b0350c7381a6b",
+      "file": "raw/0826.txt"
+    },
+    {
+      "number": 827,
+      "title": "規則",
+      "url": "https://sto55.com/book/62763/30867294.html",
+      "chars": 4210,
+      "sha256": "a7ac4efc190721d282e0a5cb2719305665b99573ba47364b04fbb4a8d36a68af",
+      "file": "raw/0827.txt"
+    },
+    {
+      "number": 828,
+      "title": "解析光明神格與古代石板",
+      "url": "https://sto55.com/book/62763/30867295.html",
+      "chars": 4212,
+      "sha256": "691c6905c3e4f97f158336cec33d04272486bb5eba60e9a84fedd84d8a114239",
+      "file": "raw/0828.txt"
+    },
+    {
+      "number": 829,
+      "title": "暗裔血脈",
+      "url": "https://sto55.com/book/62763/30867296.html",
+      "chars": 4269,
+      "sha256": "43d1f2cc7dfcbc308e59db320d7b298a6cd826496493b3c18b2cc691bad5b0b0",
+      "file": "raw/0829.txt"
+    },
+    {
+      "number": 830,
+      "title": "真理之書",
+      "url": "https://sto55.com/book/62763/30867297.html",
+      "chars": 4364,
+      "sha256": "1185fc29350070608003a3b43800e9e61dc5a8f4563e32b74503e1833437a6ff",
+      "file": "raw/0830.txt"
+    },
+    {
+      "number": 831,
+      "title": "四規則融合",
+      "url": "https://sto55.com/book/62763/30867298.html",
+      "chars": 4253,
+      "sha256": "d61183ad15da1192d4d0dfba23f0aaf1b9830cc5fcec44da5b4b2718bf693f67",
+      "file": "raw/0831.txt"
+    },
+    {
+      "number": 832,
+      "title": "穩固實力",
+      "url": "https://sto55.com/book/62763/30867299.html",
+      "chars": 4492,
+      "sha256": "3ba2ef716da04e431bfc26baf365c063e4c965a0e0b3c6a6af3c5080d59a941a",
+      "file": "raw/0832.txt"
+    },
+    {
+      "number": 833,
+      "title": "神諭位面",
+      "url": "https://sto55.com/book/62763/30867300.html",
+      "chars": 4225,
+      "sha256": "23a6595711befaab4455c11faaed0550bb3bbdf53915f0827948df189b358138",
+      "file": "raw/0833.txt"
+    },
+    {
+      "number": 834,
+      "title": "火之教派",
+      "url": "https://sto55.com/book/62763/30867301.html",
+      "chars": 4202,
+      "sha256": "70608a83894b314e188ee64a4cab2059ddda3ef9fb0bb27bcaca1489141fb1fc",
+      "file": "raw/0834.txt"
+    },
+    {
+      "number": 835,
+      "title": "四色神光",
+      "url": "https://sto55.com/book/62763/30867302.html",
+      "chars": 4369,
+      "sha256": "896c0e40426d0da4072fb31fb927388ac48cadbe061b86908261ca70a36d4eb1",
+      "file": "raw/0835.txt"
+    },
+    {
+      "number": 836,
+      "title": "火之教派覆滅",
+      "url": "https://sto55.com/book/62763/30867303.html",
+      "chars": 4362,
+      "sha256": "e87b6e4234a73b239f59629c6ec25ec58643a65a2eef9883ad604eb98ff41b98",
+      "file": "raw/0836.txt"
+    },
+    {
+      "number": 837,
+      "title": "告知真相",
+      "url": "https://sto55.com/book/62763/30867304.html",
+      "chars": 4301,
+      "sha256": "317dd4254fa8781f4cb58c072bd19c3756bfae3d1741240dd10b636a471ed535",
+      "file": "raw/0837.txt"
+    },
+    {
+      "number": 838,
+      "title": "知識",
+      "url": "https://sto55.com/book/62763/30867305.html",
+      "chars": 4222,
+      "sha256": "c95d55c288debe1a8c4bcd4599e41d637c2678bb59853a53d2e7ded7e6eaebeb",
+      "file": "raw/0838.txt"
+    },
+    {
+      "number": 839,
+      "title": "合作",
+      "url": "https://sto55.com/book/62763/30867306.html",
+      "chars": 4294,
+      "sha256": "0ae18c75fcd33e2fac4f4e65889948e4a245de2c173e5ec9d41d570ea5cc5811",
+      "file": "raw/0839.txt"
+    },
+    {
+      "number": 840,
+      "title": "請教",
+      "url": "https://sto55.com/book/62763/30867307.html",
+      "chars": 4259,
+      "sha256": "d7097a24e94ee2439bb874f440d30687532b0e748eaa1feb21bccbad35198b91",
+      "file": "raw/0840.txt"
+    },
+    {
+      "number": 841,
+      "title": "返回",
+      "url": "https://sto55.com/book/62763/30867308.html",
+      "chars": 4311,
+      "sha256": "11c8a02c712722d499eaabc124f26d187352c91474a33fed5e2da1f16d3f5fde",
+      "file": "raw/0841.txt"
+    },
+    {
+      "number": 842,
+      "title": "暗影議會",
+      "url": "https://sto55.com/book/62763/30867309.html",
+      "chars": 4315,
+      "sha256": "7ca6177aa3b85a7b62e0a3df234b05bf7a003a58a5dbe8614ed2361aba866e27",
+      "file": "raw/0842.txt"
+    },
+    {
+      "number": 843,
+      "title": "多米尼克",
+      "url": "https://sto55.com/book/62763/30867310.html",
+      "chars": 4305,
+      "sha256": "cf8b62a87e502ca8d705334daec20dce19d2dac212ce3b1431e551d1830f25e6",
+      "file": "raw/0843.txt"
+    },
+    {
+      "number": 844,
+      "title": "降臨",
+      "url": "https://sto55.com/book/62763/30867311.html",
+      "chars": 4185,
+      "sha256": "2963120960195c71feae4b102b08d9c0707c15c5bebd203245db839b4ca29885",
+      "file": "raw/0844.txt"
+    },
+    {
+      "number": 845,
+      "title": "解決邪神",
+      "url": "https://sto55.com/book/62763/30867312.html",
+      "chars": 4211,
+      "sha256": "cb80058f6d2cdb842fe9d34c963a7adbfb81f82cd255fec02e1b3aeab4953b29",
+      "file": "raw/0845.txt"
+    },
+    {
+      "number": 846,
+      "title": "竊取信仰",
+      "url": "https://sto55.com/book/62763/30867314.html",
+      "chars": 4240,
+      "sha256": "5665757f3bfcc01be248935b28a62a3a26d43be18435bcd4c36d30ca97adb08d",
+      "file": "raw/0846.txt"
+    },
+    {
+      "number": 847,
+      "title": "雙胞胎姐妹",
+      "url": "https://sto55.com/book/62763/30867315.html",
+      "chars": 4264,
+      "sha256": "a03498fcd0aac98838eca580fd5997c24a010fd1223260f02770ee6f4211edfd",
+      "file": "raw/0847.txt"
+    },
+    {
+      "number": 848,
+      "title": "諭令",
+      "url": "https://sto55.com/book/62763/30867316.html",
+      "chars": 4232,
+      "sha256": "0508598e8c7e7090fb33309456758b395ba9a8e4e4cf01fc6f925840df3732cd",
+      "file": "raw/0848.txt"
+    },
+    {
+      "number": 849,
+      "title": "百萬噸魔法金屬",
+      "url": "https://sto55.com/book/62763/30867317.html",
+      "chars": 4249,
+      "sha256": "d905d324b24c020582be3427283c0b3816a47b6df450c18cc06dc8ca0548551b",
+      "file": "raw/0849.txt"
+    },
+    {
+      "number": 850,
+      "title": "巫師位面晉升的消息",
+      "url": "https://sto55.com/book/62763/30867318.html",
+      "chars": 4232,
+      "sha256": "4f86bfaa896f63dc98d14e618feddf6a4d224a4c5aaf375b346aa5c35b7b4d59",
+      "file": "raw/0850.txt"
+    },
+    {
+      "number": 851,
+      "title": "海族少女瑟拉菲娜",
+      "url": "https://sto55.com/book/62763/30867319.html",
+      "chars": 4242,
+      "sha256": "24968000b2cf3df3d56b58bfd0973d8099fc68f5a52a6406efe0e86f3c545b4e",
+      "file": "raw/0851.txt"
+    },
+    {
+      "number": 852,
+      "title": "美人貝的秘密",
+      "url": "https://sto55.com/book/62763/30867320.html",
+      "chars": 4233,
+      "sha256": "7fb444dbd596f9afb733e8e6db9add711f05085c096aae461806dbe5ec10ec80",
+      "file": "raw/0852.txt"
+    },
+    {
+      "number": 853,
+      "title": "海族與巫師",
+      "url": "https://sto55.com/book/62763/30867321.html",
+      "chars": 4152,
+      "sha256": "20d7308a119753a5912796ddd2a0bcdb8431b686347a7852e4409d326e61207f",
+      "file": "raw/0853.txt"
+    },
+    {
+      "number": 854,
+      "title": "告別",
+      "url": "https://sto55.com/book/62763/30867322.html",
+      "chars": 4159,
+      "sha256": "c6469c6393e9213e049dc342b8633cde5425db6cb58fdc11cf5fb4e9a95ed9c4",
+      "file": "raw/0854.txt"
+    },
+    {
+      "number": 855,
+      "title": "楓丘郡",
+      "url": "https://sto55.com/book/62763/30867323.html",
+      "chars": 4226,
+      "sha256": "e5a89a2cde9b081813645a445a7137dcb70e8798ec6b600d06217959f05016d8",
+      "file": "raw/0855.txt"
+    },
+    {
+      "number": 856,
+      "title": "薇薇安小屋",
+      "url": "https://sto55.com/book/62763/30867324.html",
+      "chars": 4222,
+      "sha256": "19ac8b0475a9b4c1b2630b78466995474d19f883f7f83562c2056c9d3cd591c1",
+      "file": "raw/0856.txt"
+    },
+    {
+      "number": 857,
+      "title": "臨別",
+      "url": "https://sto55.com/book/62763/30867325.html",
+      "chars": 4151,
+      "sha256": "ffe0166ba586d067960c25ea59f69dd55bf190e2330b9a12eaba97fa9e5fbb40",
+      "file": "raw/0857.txt"
+    },
+    {
+      "number": 858,
+      "title": "西海岸小聚",
+      "url": "https://sto55.com/book/62763/30867326.html",
+      "chars": 4263,
+      "sha256": "0db7bd69470ff72c85493a6c608263607a5db186f6ca7fd1de40f2c7d947bd8b",
+      "file": "raw/0858.txt"
+    },
+    {
+      "number": 859,
+      "title": "神啟之路",
+      "url": "https://sto55.com/book/62763/30867327.html",
+      "chars": 4263,
+      "sha256": "0c914538ef35eab45a2f3122312f954418a63d4608f0ed67671adbe697c08ec3",
+      "file": "raw/0859.txt"
+    },
+    {
+      "number": 860,
+      "title": "三級中階",
+      "url": "https://sto55.com/book/62763/30867328.html",
+      "chars": 4302,
+      "sha256": "104322c091801ab3ebc584659c094809f4082727e27d72cd4c957bfb0710a4f1",
+      "file": "raw/0860.txt"
+    },
+    {
+      "number": 861,
+      "title": "各方來人",
+      "url": "https://sto55.com/book/62763/30867329.html",
+      "chars": 4254,
+      "sha256": "4ec84a3a689809ca9048f351d024f66b962088e2bf602f7b217cc908c313e574",
+      "file": "raw/0861.txt"
+    },
+    {
+      "number": 862,
+      "title": "五大半神級",
+      "url": "https://sto55.com/book/62763/30867330.html",
+      "chars": 4162,
+      "sha256": "0ab422ce492be66c0652811d6db89cf2825ef30c893280c20876ad4b750cae5e",
+      "file": "raw/0862.txt"
+    },
+    {
+      "number": 863,
+      "title": "艾爾德蘭茲",
+      "url": "https://sto55.com/book/62763/30867331.html",
+      "chars": 4278,
+      "sha256": "46bc8958cf968e10a740a680649e799b8db2ba401b84992d7ac256d1ef3aa793",
+      "file": "raw/0863.txt"
+    },
+    {
+      "number": 864,
+      "title": "村子",
+      "url": "https://sto55.com/book/62763/30867332.html",
+      "chars": 4255,
+      "sha256": "11dff60fd30157e7b89ec3f866bc27a288ddbed63856491c280b8e99e66d6a04",
+      "file": "raw/0864.txt"
+    },
+    {
+      "number": 865,
+      "title": "魔物",
+      "url": "https://sto55.com/book/62763/30867333.html",
+      "chars": 4261,
+      "sha256": "4ddbda94f611603feb3cd09951d455b33fe8704890f26325f11c8ad45387c25a",
+      "file": "raw/0865.txt"
+    },
+    {
+      "number": 866,
+      "title": "出手",
+      "url": "https://sto55.com/book/62763/30867334.html",
+      "chars": 4250,
+      "sha256": "ec579631afce201b7689f6996a685fa03ba1d8d3b8e9dac52d45abcc6a3f8e34",
+      "file": "raw/0866.txt"
+    },
+    {
+      "number": 867,
+      "title": "石冠城",
+      "url": "https://sto55.com/book/62763/30867335.html",
+      "chars": 4249,
+      "sha256": "c6ded42b10dca3f39d56f8531f3bf9e82141f0fb590ac2910afbeb2417637907",
+      "file": "raw/0867.txt"
+    },
+    {
+      "number": 868,
+      "title": "伯爵",
+      "url": "https://sto55.com/book/62763/30867336.html",
+      "chars": 4269,
+      "sha256": "195a8d11fdba60caf002fe503f26b8d98cf3544c141147e2fdc2eb2b2282dd83",
+      "file": "raw/0868.txt"
+    },
+    {
+      "number": 869,
+      "title": "神祭",
+      "url": "https://sto55.com/book/62763/30867337.html",
+      "chars": 4333,
+      "sha256": "e85f52ea90e47fff407e63b90f67289780ad963a5d521a001f2e61f2e401192d",
+      "file": "raw/0869.txt"
+    },
+    {
+      "number": 870,
+      "title": "賢者之石",
+      "url": "https://sto55.com/book/62763/30867338.html",
+      "chars": 4194,
+      "sha256": "afe1640ed1be5c5b4537fd9f7291a4a54fca0323e6694d6fc9effb147414f449",
+      "file": "raw/0870.txt"
+    },
+    {
+      "number": 871,
+      "title": "寶庫",
+      "url": "https://sto55.com/book/62763/30867339.html",
+      "chars": 4341,
+      "sha256": "ce1e5164e280f6632d56f985a9e775c7f3885265df3b2403910992d4cf3866d5",
+      "file": "raw/0871.txt"
+    },
+    {
+      "number": 872,
+      "title": "世界樹發芽",
+      "url": "https://sto55.com/book/62763/30867340.html",
+      "chars": 4205,
+      "sha256": "0104da8d849ad8463224afbfe874d092ed9099a559fcb484d438ae2d3ed362c4",
+      "file": "raw/0872.txt"
+    },
+    {
+      "number": 873,
+      "title": "掌握生命規則",
+      "url": "https://sto55.com/book/62763/30867341.html",
+      "chars": 4216,
+      "sha256": "bbc30d335b51457ec8b7cb9b12b54f212c1d2973a1db5749a5117e04b629fa54",
+      "file": "raw/0873.txt"
+    },
+    {
+      "number": 874,
+      "title": "巡邏",
+      "url": "https://sto55.com/book/62763/30867342.html",
+      "chars": 4233,
+      "sha256": "b1c48e2c8ab3e199ae2ee7f68ace8387c768642450367b521823d2b8dfd02894",
+      "file": "raw/0874.txt"
+    },
+    {
+      "number": 875,
+      "title": "戰爭與獻祭",
+      "url": "https://sto55.com/book/62763/30867343.html",
+      "chars": 4220,
+      "sha256": "e324e7216a0e65bb7f6a2eb67460f2e89d2429700a4aced4dfcc9f76e7429858",
+      "file": "raw/0875.txt"
+    },
+    {
+      "number": 876,
+      "title": "城破",
+      "url": "https://sto55.com/book/62763/30867344.html",
+      "chars": 4269,
+      "sha256": "9f58bf5f87ba13ae6ff2eaece1f1ecc5301eab9ca29ca947ee6574fd9601951f",
+      "file": "raw/0876.txt"
+    },
+    {
+      "number": 877,
+      "title": "雕像成熟之時",
+      "url": "https://sto55.com/book/62763/30867345.html",
+      "chars": 4208,
+      "sha256": "ce4e17279b9a18cf39a218b99b204886d31fc91b693d288fcc10248616146efb",
+      "file": "raw/0877.txt"
+    },
+    {
+      "number": 878,
+      "title": "拿到第二層鑰匙",
+      "url": "https://sto55.com/book/62763/30867346.html",
+      "chars": 4282,
+      "sha256": "137b6ecf92515004ec5032d7dcf0cf7223c670ee94b8acac8b9839d374c49cbb",
+      "file": "raw/0878.txt"
+    },
+    {
+      "number": 879,
+      "title": "偶遇奧德里奇",
+      "url": "https://sto55.com/book/62763/30867347.html",
+      "chars": 4212,
+      "sha256": "82893628466428778e0bbda5510df30c03b1bf336a04dc410494029e65f9a717",
+      "file": "raw/0879.txt"
+    },
+    {
+      "number": 880,
+      "title": "王都",
+      "url": "https://sto55.com/book/62763/30867348.html",
+      "chars": 4256,
+      "sha256": "962d32e6889dc17debe648969a260588c57ead58118a9e2cccd40cc5edd1b4b3",
+      "file": "raw/0880.txt"
+    },
+    {
+      "number": 881,
+      "title": "奪寶",
+      "url": "https://sto55.com/book/62763/30867349.html",
+      "chars": 4200,
+      "sha256": "0fb96e2d3bad243b6d96abb4616fcab0329be7e8d887f1632206ce90308a9187",
+      "file": "raw/0881.txt"
+    },
+    {
+      "number": 882,
+      "title": "戰鬥",
+      "url": "https://sto55.com/book/62763/30867350.html",
+      "chars": 4286,
+      "sha256": "b155fd904530447893e42617a8679f132b2f8b7ff962522b52a8f7fd0adafd91",
+      "file": "raw/0882.txt"
+    },
+    {
+      "number": 883,
+      "title": "六色神光之威",
+      "url": "https://sto55.com/book/62763/30867351.html",
+      "chars": 4170,
+      "sha256": "2f6fe072aca2a8fafed2f4eab8e4fc6beca066947434b6e21d8f4fac92fa270f",
+      "file": "raw/0883.txt"
+    },
+    {
+      "number": 884,
+      "title": "四級巫器",
+      "url": "https://sto55.com/book/62763/30867352.html",
+      "chars": 4356,
+      "sha256": "1043d344844672743cf88566e98632d5648ae7510b2c7a6ba12c8028ab033010",
+      "file": "raw/0884.txt"
+    },
+    {
+      "number": 885,
+      "title": "賢者之石礦脈",
+      "url": "https://sto55.com/book/62763/30867353.html",
+      "chars": 4310,
+      "sha256": "e9c55dbbd776a6fb9a14f86e204e5820a0d515b44502550f6b4bbd5e5cc5abe8",
+      "file": "raw/0885.txt"
+    },
+    {
+      "number": 886,
+      "title": "部族衝突",
+      "url": "https://sto55.com/book/62763/30867354.html",
+      "chars": 4219,
+      "sha256": "64a6971f8b1a550ed34e700795217df8849c00cb914be6a652a1ce853cf96fac",
+      "file": "raw/0886.txt"
+    },
+    {
+      "number": 887,
+      "title": "偷取礦脈",
+      "url": "https://sto55.com/book/62763/30867355.html",
+      "chars": 4210,
+      "sha256": "b6a701ddf60633c6480c42fb9bab65c388d7b3314bdcbfbccf084fb404626719",
+      "file": "raw/0887.txt"
+    },
+    {
+      "number": 888,
+      "title": "一千八百萬積分",
+      "url": "https://sto55.com/book/62763/30867356.html",
+      "chars": 4355,
+      "sha256": "caa30cf1d8303c7ad791ffb733c04a6352067029f5c5993385f43f0ddb4946a4",
+      "file": "raw/0888.txt"
+    },
+    {
+      "number": 889,
+      "title": "半神級羅德里克",
+      "url": "https://sto55.com/book/62763/30867357.html",
+      "chars": 4297,
+      "sha256": "c6233b3244215332593faa13a4e040f3bcd2db63d542d376b0a50174b176d6da",
+      "file": "raw/0889.txt"
+    },
+    {
+      "number": 890,
+      "title": "干擾",
+      "url": "https://sto55.com/book/62763/30867358.html",
+      "chars": 4276,
+      "sha256": "d2762e17c8b019f0fc3eed921503b67f123da28329be4dad98d1fad719e703c3",
+      "file": "raw/0890.txt"
+    },
+    {
+      "number": 891,
+      "title": "得手",
+      "url": "https://sto55.com/book/62763/30867359.html",
+      "chars": 4224,
+      "sha256": "d978c84192014d2d151630649fccf66e0ab4b6840a38c7e5f4fa7a93e42e48f9",
+      "file": "raw/0891.txt"
+    },
+    {
+      "number": 892,
+      "title": "禍水東引",
+      "url": "https://sto55.com/book/62763/30867360.html",
+      "chars": 4283,
+      "sha256": "94231ebdfbb32d5f5092ede7fd735c57b593556b7f9a97ff27b818c32f46a48e",
+      "file": "raw/0892.txt"
+    },
+    {
+      "number": 893,
+      "title": "傳送",
+      "url": "https://sto55.com/book/62763/30867361.html",
+      "chars": 4214,
+      "sha256": "37d6ab536cee3be7ebd0a29dd9ae24e7dac041f889afa200af85636d3eb5896f",
+      "file": "raw/0893.txt"
+    },
+    {
+      "number": 894,
+      "title": "迷宮",
+      "url": "https://sto55.com/book/62763/30867362.html",
+      "chars": 4195,
+      "sha256": "041ad0b30c1ea87b7221868845e5f32a42a198fc5d8d1cd32481cd7c15286b9e",
+      "file": "raw/0894.txt"
+    },
+    {
+      "number": 895,
+      "title": "安全屋",
+      "url": "https://sto55.com/book/62763/30867363.html",
+      "chars": 4289,
+      "sha256": "fd3eff6f40ae9e379e3e1febfb878c1988c382bd8d02bd0cdb9e4a3a652d0cbb",
+      "file": "raw/0895.txt"
+    },
+    {
+      "number": 896,
+      "title": "四級變異生物",
+      "url": "https://sto55.com/book/62763/30867364.html",
+      "chars": 4296,
+      "sha256": "9d700238cd446429feb2ee5877e5e4ff8c9a0a8a0f38048fc9a80530c7964212",
+      "file": "raw/0896.txt"
+    },
+    {
+      "number": 897,
+      "title": "灰霧降臨",
+      "url": "https://sto55.com/book/62763/30867365.html",
+      "chars": 4206,
+      "sha256": "2e66e8a07a876eb65d6a00f18892986731a8c8e4ec5aaf8960acba07ba74e89f",
+      "file": "raw/0897.txt"
+    },
+    {
+      "number": 898,
+      "title": "薇拉",
+      "url": "https://sto55.com/book/62763/30867366.html",
+      "chars": 4191,
+      "sha256": "ea993792a458dd9462bb822d95a52c8a2359b3d8ed6b96de95a68b4e0e8f488e",
+      "file": "raw/0898.txt"
+    },
+    {
+      "number": 899,
+      "title": "瓦倫丁",
+      "url": "https://sto55.com/book/62763/30867367.html",
+      "chars": 4256,
+      "sha256": "692c7e56cb549b3739802e3f0a1b1faf68cf931937e20b51f6a7cde2d7d8c170",
+      "file": "raw/0899.txt"
+    },
+    {
+      "number": 900,
+      "title": "規則碎片",
+      "url": "https://sto55.com/book/62763/30867368.html",
+      "chars": 4233,
+      "sha256": "9385de096f483e04046336f40b0e30ce9bf677efb9526d8e2ec2b338a23fccc6",
+      "file": "raw/0900.txt"
+    },
+    {
+      "number": 901,
+      "title": "憤怒的巨龍",
+      "url": "https://sto55.com/book/62763/30867369.html",
+      "chars": 4232,
+      "sha256": "c3bf882776661e08d1ff36e3b1aa605bde908ecb3efbfcfebedc26b48b048bc8",
+      "file": "raw/0901.txt"
+    },
+    {
+      "number": 902,
+      "title": "空間系天才",
+      "url": "https://sto55.com/book/62763/30867371.html",
+      "chars": 4248,
+      "sha256": "227be808bad939f8c73845579e559fa59a32019096ba3fcba962b2863f7a257d",
+      "file": "raw/0902.txt"
+    },
+    {
+      "number": 903,
+      "title": "海倫娜",
+      "url": "https://sto55.com/book/62763/30867372.html",
+      "chars": 4249,
+      "sha256": "0b102fd655e78b5eb291594a6a06e1bf70f2dc6ba9a5209566e33110a9a6b0df",
+      "file": "raw/0903.txt"
+    },
+    {
+      "number": 904,
+      "title": "四王子",
+      "url": "https://sto55.com/book/62763/30867373.html",
+      "chars": 4349,
+      "sha256": "2731a625dd621afed80ffe7ec2332e87653b404453ff2e2fb6bd0f9767f1ed24",
+      "file": "raw/0904.txt"
+    },
+    {
+      "number": 905,
+      "title": "纏鬥",
+      "url": "https://sto55.com/book/62763/30867375.html",
+      "chars": 4338,
+      "sha256": "f914cc18b68d7e6a7c97e42f8d09bcdc94e3bc5bf9e1f799154168e0cb229970",
+      "file": "raw/0905.txt"
+    },
+    {
+      "number": 906,
+      "title": "晨星莊園",
+      "url": "https://sto55.com/book/62763/30867377.html",
+      "chars": 4337,
+      "sha256": "11abb8451e87b5174204fa9d858134ab11b6f6e119cf27284535dfb5a0cdc5d1",
+      "file": "raw/0906.txt"
+    },
+    {
+      "number": 907,
+      "title": "晚宴",
+      "url": "https://sto55.com/book/62763/30867378.html",
+      "chars": 4277,
+      "sha256": "8443c34602267504357d4fa85b7e795d7b4e4f7dc56a661f94f6bd1e176f321d",
+      "file": "raw/0907.txt"
+    },
+    {
+      "number": 908,
+      "title": "第三層關閉",
+      "url": "https://sto55.com/book/62763/30867379.html",
+      "chars": 4355,
+      "sha256": "27d8cd6da0335318efab35f9e9d9e0a946eb014e9a88bbf62858300934f7b82d",
+      "file": "raw/0908.txt"
+    },
+    {
+      "number": 909,
+      "title": "積分拍賣",
+      "url": "https://sto55.com/book/62763/30867380.html",
+      "chars": 4292,
+      "sha256": "86cd0a9e485d9fc01932cb3d7662b7f5db69a24b2aab6965a86dfe09fa43e03b",
+      "file": "raw/0909.txt"
+    },
+    {
+      "number": 910,
+      "title": "神啟之路結束",
+      "url": "https://sto55.com/book/62763/30867381.html",
+      "chars": 4229,
+      "sha256": "9cf3681105bc0261238d0c060ea5844645a41352ea49643461ef6fa2da8cc235",
+      "file": "raw/0910.txt"
+    },
+    {
+      "number": 911,
+      "title": "四級巫器解封",
+      "url": "https://sto55.com/book/62763/30867382.html",
+      "chars": 4258,
+      "sha256": "cdf0ef1f4a4a3327d8dfbca897caa6c0ee7ee3820b405b7c75cbdc97f664f968",
+      "file": "raw/0911.txt"
+    },
+    {
+      "number": 912,
+      "title": "消化資源",
+      "url": "https://sto55.com/book/62763/30867383.html",
+      "chars": 4382,
+      "sha256": "ac10e97e34f4992be50bcfdfcdb64bfd0244e2473ffe0eb2788b84df0bf02694",
+      "file": "raw/0912.txt"
+    },
+    {
+      "number": 913,
+      "title": "十年後，半神級",
+      "url": "https://sto55.com/book/62763/30874892.html",
+      "chars": 4411,
+      "sha256": "fdac6b8b7d7996a22835e81dbcab47e4283316f438cb3caf519349ef940c7a49",
+      "file": "raw/0913.txt"
+    },
+    {
+      "number": 914,
+      "title": "規則視界之瞳",
+      "url": "https://sto55.com/book/62763/30879507.html",
+      "chars": 4275,
+      "sha256": "4148efb20896b2b2239e5672a1ca4d6cb35bcc0b405f330ff870d9a8c38042d9",
+      "file": "raw/0914.txt"
+    },
+    {
+      "number": 915,
+      "title": "研究成果",
+      "url": "https://sto55.com/book/62763/30883604.html",
+      "chars": 4238,
+      "sha256": "98b5a9ab9c63616d4c4d223f7e538a0b87cc2c1fa9be74389125a90fc4f74e48",
+      "file": "raw/0915.txt"
+    },
+    {
+      "number": 916,
+      "title": "認證會",
+      "url": "https://sto55.com/book/62763/30909674.html",
+      "chars": 4224,
+      "sha256": "dd86f2d13fa789fa789217c38edc84ae7f67ba3a82011dde8c7325c26918eb14",
+      "file": "raw/0916.txt"
+    },
+    {
+      "number": 917,
+      "title": "授權合作",
+      "url": "https://sto55.com/book/62763/30919436.html",
+      "chars": 4276,
+      "sha256": "94a8a42b220e8fba059ef3d7ebbd4beaba7b40ff1367ef157184468ecdc453ae",
+      "file": "raw/0917.txt"
+    },
+    {
+      "number": 918,
+      "title": "變化",
+      "url": "https://sto55.com/book/62763/30923886.html",
+      "chars": 4298,
+      "sha256": "ac98e7fbe4e0a2402ccff301c2fb53ce22666d264b19831e5b95e6569e783645",
+      "file": "raw/0918.txt"
+    },
+    {
+      "number": 919,
+      "title": "一年",
+      "url": "https://sto55.com/book/62763/30928218.html",
+      "chars": 4433,
+      "sha256": "379799594be1860262aeaa0aa0dca1e80ec0506c82be9e1d78d774f8953ed377",
+      "file": "raw/0919.txt"
+    },
+    {
+      "number": 920,
+      "title": "布萊恩家族",
+      "url": "https://sto55.com/book/62763/30959776.html",
+      "chars": 4294,
+      "sha256": "316b2a9c2ba0adbb89ae188e121a0f34d58c9baa712c53799d84127ab0f8b613",
+      "file": "raw/0920.txt"
+    },
+    {
+      "number": 921,
+      "title": "黃金大陸",
+      "url": "https://sto55.com/book/62763/30972029.html",
+      "chars": 4245,
+      "sha256": "0bdf3b44e2c7f28f2558fc8efd549589f63ba2f805ef65c88850ebcb087e0061",
+      "file": "raw/0921.txt"
+    },
+    {
+      "number": 922,
+      "title": "拍賣會",
+      "url": "https://sto55.com/book/62763/30977730.html",
+      "chars": 4271,
+      "sha256": "7223a7478cf875bf97207cbca44cbdf94801803d4490984980646b0577e4ad19",
+      "file": "raw/0922.txt"
+    },
+    {
+      "number": 923,
+      "title": "虛蜉",
+      "url": "https://sto55.com/book/62763/30983258.html",
+      "chars": 4293,
+      "sha256": "697d43e83cb9cda58b41e5ed86602a70d07976f9a053a4190c507f1cfb78a86c",
+      "file": "raw/0923.txt"
+    },
+    {
+      "number": 924,
+      "title": "角斗場",
+      "url": "https://sto55.com/book/62763/30987930.html",
+      "chars": 4326,
+      "sha256": "dbf461b9070298c8112bb7be3130ab4b58041b406ea9f637d351df566bc5d6ba",
+      "file": "raw/0924.txt"
+    },
+    {
+      "number": 925,
+      "title": "神格拍賣",
+      "url": "https://sto55.com/book/62763/30993357.html",
+      "chars": 4302,
+      "sha256": "fea29e22d21891337e526875bc9d510ecde67112738d076630233ab8af3ccc61",
+      "file": "raw/0925.txt"
+    },
+    {
+      "number": 926,
+      "title": "位面開發權",
+      "url": "https://sto55.com/book/62763/30997537.html",
+      "chars": 4374,
+      "sha256": "c7fd4d3855dabeb2666c0a16f865d09b384fc97710c2bcf9836551f9ab50c55b",
+      "file": "raw/0926.txt"
+    },
+    {
+      "number": 927,
+      "title": "壽宴",
+      "url": "https://sto55.com/book/62763/31002007.html",
+      "chars": 4351,
+      "sha256": "81eb783f84ffc7ea75a500afa0d29270b8f25c28bd6ace2efd2e35122e101cbd",
+      "file": "raw/0927.txt"
+    },
+    {
+      "number": 928,
+      "title": "試煉招募",
+      "url": "https://sto55.com/book/62763/31009992.html",
+      "chars": 4386,
+      "sha256": "8a93896d65be964dfcbea728f4f4eacf99c2437d759745ffd5c4feb5fe2a5208",
+      "file": "raw/0928.txt"
+    },
+    {
+      "number": 929,
+      "title": "試煉",
+      "url": "https://sto55.com/book/62763/31015115.html",
+      "chars": 4304,
+      "sha256": "f7c91db30e82d1323f11fb6bb7b4c26731b45e92fe24ad326bc2f08b738bf697",
+      "file": "raw/0929.txt"
+    },
+    {
+      "number": 930,
+      "title": "準備",
+      "url": "https://sto55.com/book/62763/31020784.html",
+      "chars": 4250,
+      "sha256": "a270ca1da7eeddb777f3de8f465feccd03480db68b4ea104b0711ae0e02be4d7",
+      "file": "raw/0930.txt"
+    },
+    {
+      "number": 931,
+      "title": "中轉星",
+      "url": "https://sto55.com/book/62763/31026056.html",
+      "chars": 4252,
+      "sha256": "c818bd246ed36326e0a8c913deaa75d52467cbc24b4a2e58315cd53b9570983c",
+      "file": "raw/0931.txt"
+    },
+    {
+      "number": 932,
+      "title": "灰岸位面",
+      "url": "https://sto55.com/book/62763/31031266.html",
+      "chars": 4264,
+      "sha256": "556cb51e4fcf6e8bbabc74cdb0aba3f95c5b71b2c58fa8b7ed93402941eddfc5",
+      "file": "raw/0932.txt"
+    },
+    {
+      "number": 933,
+      "title": "衝突",
+      "url": "https://sto55.com/book/62763/31037115.html",
+      "chars": 4285,
+      "sha256": "28a5b2deac1195a7894bdea2177db2225f8e78d2cef4829d0738ef653f5c4e19",
+      "file": "raw/0933.txt"
+    },
+    {
+      "number": 934,
+      "title": "來自另一個世界",
+      "url": "https://sto55.com/book/62763/31040902.html",
+      "chars": 4260,
+      "sha256": "c989eef48b46d84b03a756f7511a9d5048ef84fc7beed02cf55664e1cc62e605",
+      "file": "raw/0934.txt"
+    },
+    {
+      "number": 935,
+      "title": "進攻",
+      "url": "https://sto55.com/book/62763/31045887.html",
+      "chars": 4260,
+      "sha256": "6562116e9062c0537777fffabb758a89220037ee18b7758605bb2409bbb8be0a",
+      "file": "raw/0935.txt"
+    },
+    {
+      "number": 936,
+      "title": "戰爭",
+      "url": "https://sto55.com/book/62763/31051627.html",
+      "chars": 4234,
+      "sha256": "f63e322d78d97f651adc049dc4f7fbd760d7c6bf04b5af058d282d0efc0eaf93",
+      "file": "raw/0936.txt"
+    },
+    {
+      "number": 937,
+      "title": "碾壓",
+      "url": "https://sto55.com/book/62763/31056104.html",
+      "chars": 4301,
+      "sha256": "2cad1077554b13710d3e83a84291144df945a334cf9edd656d2f2db92b799299",
+      "file": "raw/0937.txt"
+    },
+    {
+      "number": 938,
+      "title": "進入",
+      "url": "https://sto55.com/book/62763/31061701.html",
+      "chars": 4241,
+      "sha256": "b6551813893858e4b5403eac3d192faa13a4a841dc6a52a05148f02349b81dd4",
+      "file": "raw/0938.txt"
+    },
+    {
+      "number": 939,
+      "title": "援軍",
+      "url": "https://sto55.com/book/62763/31066590.html",
+      "chars": 4388,
+      "sha256": "db2fffba53550358a3d48f89a76428ac05987e186654cb1939ac6633c41ed8f9",
+      "file": "raw/0939.txt"
+    },
+    {
+      "number": 940,
+      "title": "天使",
+      "url": "https://sto55.com/book/62763/31073569.html",
+      "chars": 4346,
+      "sha256": "2dc5bf6cc451588d29f023ef3ba24109f80f280d6495c51dada82d940baf29ea",
+      "file": "raw/0940.txt"
+    },
+    {
+      "number": 941,
+      "title": "會議",
+      "url": "https://sto55.com/book/62763/31078617.html",
+      "chars": 4261,
+      "sha256": "1f7d05b9e9512a758c9771a703175a15264f5fbcad24de12640cea2b38ef7e01",
+      "file": "raw/0941.txt"
+    },
+    {
+      "number": 942,
+      "title": "指揮",
+      "url": "https://sto55.com/book/62763/31083181.html",
+      "chars": 4332,
+      "sha256": "30fdfabad5fb6c2d227da37742e98e4932329f510abffe11db6945a27ec255c9",
+      "file": "raw/0942.txt"
+    }
+  ]
+}
