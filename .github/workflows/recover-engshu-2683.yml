@@ -1,0 +1,99 @@
+name: Recover novel chapter 2683 from public alternate sources
+on:
+  push:
+    branches: [repair/engshu-2683-source-20261116]
+    paths: [.github/workflows/recover-engshu-2683.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests beautifulsoup4
+      - name: Probe alternative source catalogs and fetch exact chapter
+        run: |
+          mkdir -p out
+          python - <<'PY'
+          import json, re, time, pathlib
+          from urllib.parse import urljoin, urlparse
+          from urllib.robotparser import RobotFileParser
+          import requests
+          from bs4 import BeautifulSoup
+          out = pathlib.Path("out")
+          catalog = [
+              "https://www.ilwxs.com/shu/83239/",
+              "https://www.whrtdb.com/shu/7694.html",
+              "https://www.50sto.com/book/oucj.html",
+              "https://www.novel543.com/1010488925/dir",
+              "https://www.17moon.com/book/CQaW/",
+              "https://www.20moon.com/book/CQaW/",
+          ]
+          s=requests.Session()
+          s.headers.update({"User-Agent":"Mozilla/5.0 (compatible; textual-safety-corpus-repair/1.0)", "Accept-Language":"zh-CN,zh;q=0.9"})
+          result=[]
+          for url in catalog:
+              entry={"catalog":url, "candidates":[]}
+              try:
+                  p=urlparse(url); robots=urljoin(url,'/robots.txt')
+                  rr=s.get(robots,timeout=12)
+                  if rr.status_code==200:
+                      rp=RobotFileParser();rp.parse(rr.text.splitlines())
+                      if not rp.can_fetch(s.headers['User-Agent'],url):
+                          entry['status']='robots-denied';result.append(entry);continue
+                  elif rr.status_code!=404:
+                      entry['status']='robots-unavailable '+str(rr.status_code);result.append(entry);continue
+                  r=s.get(url,timeout=25)
+                  entry['status']=r.status_code
+                  if r.status_code!=200:result.append(entry);continue
+                  r.encoding=r.apparent_encoding if not r.encoding or r.encoding.lower()=='iso-8859-1' else r.encoding
+                  doc=BeautifulSoup(r.text,'html.parser')
+                  links=[]
+                  for a in doc.select("a[href]"):
+                      title=a.get_text(' ',strip=True)
+                      if ('2683' in title or '找到突破口' in title or '尋求出路' in title or '尋找突破口' in title):
+                          href=urljoin(r.url,a.get('href',''))
+                          if urlparse(href).hostname==p.hostname:
+                              links.append({"title":title,"url":href})
+                  entry['candidates']=links[:20]
+                  for i,link in enumerate(links[:3]):
+                      rr=s.get(link['url'],timeout=25); entry['content_status']=rr.status_code
+                      if rr.status_code!=200:continue
+                      rr.encoding=rr.apparent_encoding if not rr.encoding or rr.encoding.lower()=='iso-8859-1' else rr.encoding
+                      d=BeautifulSoup(rr.text,'html.parser')
+                      for el in d.select('script,style,nav,header,footer,form,aside,iframe'):el.decompose()
+                      body=None
+                      for selector in ('#content','#chaptercontent','#chapter-content','.read-content','.chapter-content','.content','#TextContent','.txtnav','article'):
+                          matches=d.select(selector)
+                          if matches:
+                              candidate=max(matches,key=lambda el:len(el.get_text()))
+                              if len(candidate.get_text())>500:body=candidate;break
+                      if body is None:body=d.body
+                      txt=body.get_text('\n',strip=True) if body else ''
+                      cjk=len(re.findall('[\\u3400-\\u9fff]',txt))
+                      flagged=sum(txt.count(token) for token in ('苏白','蘇白','凯雷','凱雷','战天星神','戰天星神','匠主','破晓','破曉'))
+                      entry.setdefault('readers',[]).append({'url':rr.url,'cjk':cjk,'flagged':flagged,'prefix':txt[:250]})
+                      (out/(f"source_{catalog.index(url)}_{i}.txt")).write_text("URL: "+rr.url+"\n\n"+txt,encoding='utf8')
+                      if cjk>950 and flagged>2:
+                          (out/'chapter_2683_recovered.txt').write_text(txt,encoding='utf8')
+                          entry['recovered']=True
+                          break
+              except Exception as exc:
+                  entry['error']=repr(exc)
+              result.append(entry)
+              print(entry,flush=True)
+              if any(x.get('recovered') for x in result):
+                  break
+              time.sleep(1.0)
+          (out/'report.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: engshu-2683-alternate-source-inspection
+          path: out/
+          retention-days: 7
+          if-no-files-found: warn
