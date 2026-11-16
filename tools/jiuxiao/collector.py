@@ -176,11 +176,30 @@ class RespectfulClient:
         parsed = urlparse(url)
         if parsed.scheme != "https" or parsed.hostname != HOST or not self.robots.can_fetch(USER_AGENT,url):
             raise RuntimeError("Host or robots.txt restriction rejects URL")
-        elapsed = time.monotonic()-self.last_request
-        if elapsed < self.wait:
-            time.sleep(self.wait-elapsed)
-        r = self.session.get(url,timeout=45)
-        self.last_request = time.monotonic()
+        r = None
+        for attempt in range(3):
+            elapsed = time.monotonic()-self.last_request
+            if elapsed < self.wait:
+                time.sleep(self.wait-elapsed)
+            try:
+                r = self.session.get(url,timeout=45)
+            except (requests.ConnectionError, requests.Timeout) as exc:
+                self.last_request = time.monotonic()
+                if attempt == 2:
+                    raise RuntimeError("Transient request failed after 3 attempts") from exc
+                time.sleep(2 ** (attempt+1))
+                print(f"TRANSIENT_RETRY attempt={attempt+1} reason=network",flush=True)
+                continue
+            self.last_request = time.monotonic()
+            if r.status_code in (502,503,504):
+                if attempt == 2:
+                    raise RuntimeError(f"Transient HTTP {r.status_code} after 3 attempts")
+                time.sleep(2 ** (attempt+1))
+                print(f"TRANSIENT_RETRY attempt={attempt+1} reason=http_{r.status_code}",flush=True)
+                continue
+            break
+        if r is None:
+            raise RuntimeError("No HTTP response received")
         if r.status_code != 200 or "html" not in r.headers.get("Content-Type","").lower():
             raise RuntimeError(f"Invalid HTTP status/content type: {r.status_code} {r.headers.get('Content-Type')}")
         if r.url.startswith("https://"+HOST+"/") is False:
