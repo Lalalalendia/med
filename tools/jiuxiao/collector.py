@@ -53,7 +53,7 @@ def chapter_url(url: str, book_id: str) -> tuple[str, str] | None:
     if u.hostname not in (HOST, "www." + HOST) or u.scheme != "https":
         return None
     m = CHAPTER_RE.fullmatch(u.path)
-    return (m.group(2), "https://" + HOST + "/sim/book/" + m.group(1) + "/" + m.group(2)) if m and m.group(1) == book_id else None
+    return (m.group(2), "https://" + HOST + "/book/" + m.group(1) + "/" + m.group(2)) if m and m.group(1) == book_id else None
 
 
 def parse_catalog(html: str, book_url: str) -> tuple[dict, list[Entry]]:
