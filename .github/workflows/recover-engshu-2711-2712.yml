@@ -47,7 +47,7 @@ jobs:
                 links=[]
                 for a in soup.select('a[href]'):
                   t=a.get_text(' ',strip=True)
-                  if re.search(r'第\\s*'+str(n)+r'\\s*章',t):
+                  if re.search(r'第\s*'+str(n)+r'\s*章',t):
                     link=urljoin(r.url,a.get('href',''))
                     if urlparse(link).hostname==parsed.hostname:links.append((t,link))
                 entry['candidate_count']=len(links)
@@ -62,13 +62,13 @@ jobs:
                     candidates.extend(sp.select(selector))
                   candidates=[el for el in candidates if len(el.get_text())>500]
                   body=max(candidates,key=lambda el:len(el.get_text())) if candidates else sp.body
-                  text=body.get_text('\\n',strip=True) if body else ''
-                  cjk=len(re.findall('[\\u3400-\\u9fff]',text))
+                  text=body.get_text('\n',strip=True) if body else ''
+                  cjk=len(re.findall('[\u3400-\u9fff]',text))
                   match=sum(text.count(x) for x in ('苏白','蘇白','星神','冉耀','星际机修店','星際機修店','战天','戰天','机甲','機甲'))
                   entry.update({'candidate_title':title,'characters':len(text),'chinese_characters':cjk,'topic_hits':match,'head':text[:150],'tail':text[-150:]})
                   if cjk>1750 and match>=5:
                     output=out/'chapters'/f'{n}.txt'
-                    output.write_text('第'+str(n)+'章 '+re.sub(r'^第\\s*'+str(n)+r'\\s*章\\s*','',title)+'\\n\\n'+text+'\\n',encoding='utf-8')
+                    output.write_text('第'+str(n)+'章 '+re.sub(r'^第\s*'+str(n)+r'\s*章\s*','',title)+'\n\n'+text+'\n',encoding='utf-8')
                     entry['sha256']=hashlib.sha256(output.read_bytes()).hexdigest()
                     entry['recovered']=True
                     recovered=output
