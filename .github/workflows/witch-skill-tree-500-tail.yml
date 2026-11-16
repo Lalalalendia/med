@@ -55,3 +55,30 @@ jobs:
                   if el:print('SELECTOR',p,'SAMPLE',el.get_text(' ',strip=True)[:220])
             except Exception as e:print('ERROR',repr(e),flush=True)
           PY
+      - name: Probe chapter bodies and complete index
+        run: |
+          python - <<'PY'
+          import requests,re
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          urls=[
+            'https://www.bqg000.cc/read/176663/510.html',
+            'https://www.bqg000.cc/read/176663/800.html',
+            'https://www.xiaoshuo.com.tw/885758/259566168.html',
+            'https://www.cmfu.cc/49/49309/810727.html',
+            'https://sto55.com/book/62763/ajax_index.html',
+            'https://www.wxff.net/zdzdmu/mulu_1.html'
+          ]
+          s=requests.Session();s.headers.update({'User-Agent':'Mozilla/5.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          for url in urls:
+            try:
+              r=s.get(url,timeout=20);r.raise_for_status()
+              soup=BeautifulSoup(r.content,'html.parser',from_encoding=r.apparent_encoding)
+              print('URL',url,'BYTES',len(r.content),'TITLE',soup.title.get_text(' ',strip=True)[:150] if soup.title else '')
+              for selector in ['#content','#chaptercontent','.content','.read-content','.txtnav','article','main','.chapter-content','#nr1']:
+                e=soup.select_one(selector)
+                if e:print('SELECTOR',selector,'LEN',len(e.get_text(' ',strip=True)),'BEGIN',e.get_text(' ',strip=True)[:190])
+              a=[(x.get_text(' ',strip=True)[:60],urljoin(r.url,x['href'])) for x in soup.select('a[href]') if re.search('第.{1,15}章',x.get_text(' ',strip=True))]
+              print('LINKS',len(a),'FIRST',a[:3],'LAST',a[-3:])
+            except Exception as exc:print('ERROR',url,repr(exc))
+          PY
