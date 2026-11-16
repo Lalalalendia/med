@@ -1,0 +1,35 @@
+{
+  "project": "witcher-wolf-school-600plus",
+  "title_zh": "猎魔人：狼学派的狩魔手记",
+  "author_zh": "铬先生",
+  "original_source": {
+    "name": "起点中文网 Qidian",
+    "url": "https://www.qidian.com/book/1038677367/",
+    "book_id": "1038677367"
+  },
+  "secondary_sources": [
+    {
+      "name": "九霄中文网 Jiuxiao",
+      "url": "https://jiuxiaozw.com/sim/book/6af8d3227d54a8afba082141",
+      "book_id": "6af8d3227d54a8afba082141",
+      "observed_latest_number": 1001,
+      "observed_book_catalog_entries": 1000,
+      "observed_as_of": "2026-11-16"
+    },
+    {
+      "name": "69书吧 (stale secondary source)",
+      "url": "https://www.69shuba.com/book/57998/",
+      "observed_latest_number_approx": 677
+    }
+  ],
+  "requested_author_chapter_from": 600,
+  "verification": {
+    "chapter_number_interpretation": "author number, not list position",
+    "reported_discrepancy": "69书吧 lists 第600章 兽吼之道唤龙; a different index labels 我们从正门进 as 第600章, while 69书吧 labels it 第601章",
+    "must_verify_title_and_url_before_collection": true,
+    "non_numbered_entries_may_shift_catalog_ordinals": true,
+    "latest_number_does_not_guarantee_all_intermediate_chapters": true
+  },
+  "collection_status": "SOURCE_IDENTIFIED_TEXT_NOT_COLLECTED",
+  "note": "Metadata index only. A full-text export requires rights/permission to reproduce the contemporary work, plus validated source numbering and access."
+}
