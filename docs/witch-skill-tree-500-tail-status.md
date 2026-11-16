@@ -1,12 +1,14 @@
 # 巫师：从技能树开始肝经验 / 巫师：我有一棵技能树 — RAW 500+
 
-Status on 2026-11-16: **500–942 collected; 943–984 unresolved.**
+Status on 2026-11-16: **500–942 collected and permanently committed to the collection branch; 943–984 unresolved.**
 
 - Author: 悠悠不吃草.
 - Collection branch: `collect/wizard-skill-tree-500-tail-20261116`
 - Collector: `tools/novel-ingest/witch_skill_tree.py`
 - Successful GitHub Actions run: https://github.com/Lalalalendia/med/actions/runs/43857390899
 - Artifact: `witch-skill-tree-500-tail-43857390899` (GitHub Actions ZIP).
+- Durable texts: `novels/witch-skill-tree/raw/` (443 files), `novels/witch-skill-tree/combined.txt` and `novels/witch-skill-tree/witch-skill-tree-raw.zip` (4,103,078 bytes).
+- Persistence run: https://github.com/Lalalalendia/med/actions/runs/43860343551 — SUCCESS, SHA-256 and ZIP CRC checked before commit.
 
 ## Verified collection
 
