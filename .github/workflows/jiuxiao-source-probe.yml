@@ -4,10 +4,12 @@ on:
   push:
     paths:
       - "tools/jiuxiao/source_probe.py"
+      - "tools/jiuxiao/inspect_catalog.py"
       - ".github/workflows/jiuxiao-source-probe.yml"
   pull_request:
     paths:
       - "tools/jiuxiao/source_probe.py"
+      - "tools/jiuxiao/inspect_catalog.py"
       - ".github/workflows/jiuxiao-source-probe.yml"
   workflow_dispatch:
 
@@ -25,6 +27,8 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Discover public-domain pilot and inspect catalog structure
+        run: python tools/jiuxiao/inspect_catalog.py
       - name: Probe public source metadata
         run: python tools/jiuxiao/source_probe.py --out-dir out/jiuxiao
       - name: Publish summary
