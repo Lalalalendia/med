@@ -1,0 +1,166 @@
+name: TWBook 0701525264 chapters 1424 to latest
+
+on:
+  push:
+    branches:
+      - data/twbook-0701525264-1424-1472-index-20261112
+    paths:
+      - ".github/workflows/twbook-0701525264-tail.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: twbook-0701525264-tail
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pytest
+
+      - name: Check TWBook decoder
+        run: pytest -q tools/twbook-public/test_twbook.py
+
+      - name: Collect from chapter 1424 through current catalog end
+        run: |
+          python tools/twbook-public/fetch_twbook.py \
+            --book-id 0701525264 \
+            --start 1424 \
+            --delay 0.8 \
+            --learn-attempts 6 \
+            --out-dir novels/twbook/0701525264/1424-end \
+            --allow-incomplete
+
+      - name: Validate all chapters, record audit result, update index
+        id: audit
+        if: always()
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          root = Path("novels/twbook/0701525264/1424-end")
+          index = Path("novels/twbook/0701525264/1424-1472-index.json")
+          manifest = root / "manifest.jsonl"
+          catalog = root / "catalog.tsv"
+          problems = []
+
+          if not manifest.exists() or not catalog.exists():
+              raise SystemExit("No valid manifest/catalog; collector failed before harvesting")
+
+          all_catalog = [line for line in catalog.read_text(encoding="utf-8").splitlines() if line.strip()]
+          entries = [json.loads(line) for line in manifest.read_text(encoding="utf-8").splitlines() if line.strip()]
+          last = len(all_catalog)
+          expected = set(range(1424, last + 1))
+          by_number = {}
+          for e in entries:
+              n = int(e["ordinal"])
+              if n in by_number:
+                  problems.append(f"Duplicate ordinal: {n}")
+              by_number[n] = e
+          missing = sorted(expected - set(by_number))
+          extra = sorted(set(by_number) - expected)
+          if missing:
+              problems.append(f"Missing ordinals: {missing}")
+          if extra:
+              problems.append(f"Unexpected ordinals: {extra}")
+
+          checked = []
+          for n in sorted(expected & set(by_number)):
+              e = by_number[n]
+              if e["status"] != "ok" or not e.get("file"):
+                  problems.append(f"{n}: {e['status']} / {e.get('note')}")
+                  continue
+              file = root / e["file"]
+              if not file.exists():
+                  problems.append(f"{n}: chapter file missing")
+                  continue
+              content = file.read_text(encoding="utf-8")
+              body = content.split("\n\n", 1)[-1]
+              hanzi = sum("\u3400" <= char <= "\u9fff" for char in body)
+              if len(body) < 300 or hanzi < 120:
+                  problems.append(f"{n}: body too short ({len(body)}, CJK={hanzi})")
+              if any("\uac00" <= char <= "\ud7a3" for char in body):
+                  problems.append(f"{n}: masked Hangul still present")
+              title = e.get("title") or ""
+              found = re.search(r"第\s*(\d+)\s*章", title)
+              if found and int(found.group(1)) != n:
+                  problems.append(f"{n}: title says chapter {found.group(1)}")
+              checked.append(n)
+
+          if last < 1424:
+              problems.append(f"Catalog only has {last} chapters")
+          combined = root / "combined.txt"
+          if not combined.exists() or combined.stat().st_size < 1000:
+              problems.append("Missing or empty combined.txt")
+
+          report = {
+              "book_id": "0701525264",
+              "catalog_url": "https://www.twbook.cc/0701525264/dir",
+              "start_chapter": 1424,
+              "catalog_last_ordinal": last,
+              "expected_count": len(expected),
+              "collected_ok": sum(e["status"] == "ok" for e in entries),
+              "audited_files": len(checked),
+              "completed": not problems,
+              "checked_at_utc": datetime.now(timezone.utc).isoformat(),
+              "problems": problems,
+          }
+          (root / "audit.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          meta = {
+              "book_id": "0701525264",
+              "title": "穿進後悔流？開局百抽，抽爽了！",
+              "author": "老陳醋春卷",
+              "catalog_url": report["catalog_url"],
+              "requested_first_chapter": 1424,
+              "last_chapter_listed_at_check": last,
+              "chapter_count": len(expected),
+              "last_chapter_is_confirmed_ending": False,
+              "contents_included": report["completed"],
+              "provenance": "Chapter text imported from public pages of TWBook with user-asserted permission.",
+              "audit_file": "1424-end/audit.json",
+              "chapters": [
+                  {"chapter": n, "status": by_number[n]["status"] if n in by_number else "missing",
+                   "source_url": by_number[n]["url"] if n in by_number else None}
+                  for n in range(1424, last + 1)
+              ],
+          }
+          index.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          if problems:
+              raise SystemExit(1)
+          PY
+
+      - name: Commit corpus and diagnostics to the PR branch
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A novels/twbook/0701525264
+          if ! git diff --cached --quiet; then
+            git commit -m "data: collect TWBook 0701525264 chapters 1424 onward"
+            git push origin "HEAD:refs/heads/data/twbook-0701525264-1424-1472-index-20261112"
+          else
+            echo "No corpus changes to commit"
+          fi
+
+      - name: Enforce complete collection
+        if: always()
+        env:
+          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+        run: test "$AUDIT_OUTCOME" = success
