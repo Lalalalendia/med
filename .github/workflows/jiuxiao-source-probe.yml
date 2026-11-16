@@ -2,6 +2,7 @@ name: Jiuxiao source compatibility probe
 
 on:
   push:
+    branches: [main]
     paths:
       - "tools/jiuxiao/source_probe.py"
       - "tools/jiuxiao/inspect_catalog.py"
