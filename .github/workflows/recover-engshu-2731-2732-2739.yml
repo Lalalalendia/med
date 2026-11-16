@@ -1,0 +1,91 @@
+name: Recover engshu chapters 2731-2732-2739
+on:
+  push:
+    branches: [repair/engshu-2731-2732-2739-source-20261116]
+    paths: [.github/workflows/recover-engshu-2731-2732-2739.yml]
+permissions:
+  contents: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests beautifulsoup4
+      - name: Recover two verified chapters
+        run: |
+          mkdir -p output/chapters
+          python - <<'PY'
+          import re,json,time,pathlib,hashlib
+          from urllib.parse import urljoin,urlparse
+          from urllib.robotparser import RobotFileParser
+          import requests
+          from bs4 import BeautifulSoup
+          out=pathlib.Path('output')
+          sources=['https://www.ilwxs.com/shu/83239/', 'https://www.50sto.com/book/oucj.html', 'https://www.20moon.com/book/CQaW/', 'https://www.17moon.com/book/CQaW/']
+          session=requests.Session()
+          session.headers.update({'User-Agent':'Mozilla/5.0 (compatible; research-source-verification/1.0)','Accept-Language':'zh-CN,zh;q=0.9'})
+          reports=[]
+          for n in (2731,2732,2739):
+            recovered=None
+            for url in sources:
+              entry={'chapter':n,'catalog':url}
+              try:
+                parsed=urlparse(url)
+                robots=urljoin(url,'/robots.txt')
+                rr=session.get(robots, timeout=12)
+                if rr.status_code==200:
+                  rp=RobotFileParser();rp.parse(rr.text.splitlines())
+                  if not rp.can_fetch(session.headers['User-Agent'],url):entry['status']='robots-blocked';reports.append(entry);continue
+                elif rr.status_code!=404:entry['status']='robots-unavailable';reports.append(entry);continue
+                r=session.get(url, timeout=25);entry['catalog_status']=r.status_code
+                if r.status_code!=200:reports.append(entry);continue
+                r.encoding=r.apparent_encoding if not r.encoding or r.encoding.lower()=='iso-8859-1' else r.encoding
+                soup=BeautifulSoup(r.text,'html.parser')
+                links=[]
+                for a in soup.select('a[href]'):
+                  t=a.get_text(' ',strip=True)
+                  if re.search(r'第\s*'+str(n)+r'\s*章',t):
+                    link=urljoin(r.url,a.get('href',''))
+                    if urlparse(link).hostname==parsed.hostname:links.append((t,link))
+                entry['candidate_count']=len(links)
+                for title,link in links[:3]:
+                  rr=session.get(link,timeout=25);entry['url']=rr.url;entry['status']=rr.status_code
+                  if rr.status_code!=200:continue
+                  rr.encoding=rr.apparent_encoding if not rr.encoding or rr.encoding.lower()=='iso-8859-1' else rr.encoding
+                  sp=BeautifulSoup(rr.text,'html.parser')
+                  for el in sp.select('script,style,nav,header,footer,form,aside,iframe'):el.decompose()
+                  candidates=[]
+                  for selector in ('#content','#chaptercontent','#chapter-content','.read-content','.chapter-content','.content','#TextContent','.txtnav','article'):
+                    candidates.extend(sp.select(selector))
+                  candidates=[el for el in candidates if len(el.get_text())>500]
+                  body=max(candidates,key=lambda el:len(el.get_text())) if candidates else sp.body
+                  text=body.get_text('\n',strip=True) if body else ''
+                  cjk=len(re.findall('[\u3400-\u9fff]',text))
+                  match=sum(text.count(x) for x in ('苏白','蘇白','星神','冉耀','星际机修店','星際機修店','战天','戰天','机甲','機甲'))
+                  entry.update({'candidate_title':title,'characters':len(text),'chinese_characters':cjk,'topic_hits':match,'head':text[:150],'tail':text[-150:]})
+                  if cjk>1750 and match>=5:
+                    output=out/'chapters'/f'{n}.txt'
+                    output.write_text('第'+str(n)+'章 '+re.sub(r'^第\s*'+str(n)+r'\s*章\s*','',title)+'\n\n'+text+'\n',encoding='utf-8')
+                    entry['sha256']=hashlib.sha256(output.read_bytes()).hexdigest()
+                    entry['recovered']=True
+                    recovered=output
+                    break
+                reports.append(entry)
+                if recovered:break
+              except Exception as exc:
+                entry['error']=repr(exc);reports.append(entry)
+              time.sleep(1)
+            print('CHAPTER',n,'RECOVERED',bool(recovered),flush=True)
+          (out/'report.json').write_text(json.dumps(reports,ensure_ascii=False,indent=2),encoding='utf-8')
+          assert all((out/'chapters'/f'{n}.txt').exists() for n in (2731,2732,2739)), 'One or more chapters could not be recovered'
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: repaired-engshu-2731-2732-2739
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
