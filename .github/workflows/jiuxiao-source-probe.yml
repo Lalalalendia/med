@@ -1,0 +1,41 @@
+name: Jiuxiao source compatibility probe
+
+on:
+  push:
+    paths:
+      - "tools/jiuxiao/source_probe.py"
+      - ".github/workflows/jiuxiao-source-probe.yml"
+  pull_request:
+    paths:
+      - "tools/jiuxiao/source_probe.py"
+      - ".github/workflows/jiuxiao-source-probe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe public source metadata
+        run: python tools/jiuxiao/source_probe.py --out-dir out/jiuxiao
+      - name: Publish summary
+        if: always()
+        run: |
+          if test -f out/jiuxiao/summary.md; then
+            cat out/jiuxiao/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jiuxiao-source-metadata
+          path: out/jiuxiao/
+          retention-days: 7
