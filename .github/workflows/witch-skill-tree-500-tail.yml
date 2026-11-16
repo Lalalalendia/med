@@ -82,3 +82,22 @@ jobs:
               print('LINKS',len(a),'FIRST',a[:3],'LAST',a[-3:])
             except Exception as exc:print('ERROR',url,repr(exc))
           PY
+
+      - name: Probe sto55 chapter bodies and tail
+        run: |
+          python - <<'PY'
+          import requests
+          from bs4 import BeautifulSoup
+          urls=['https://sto55.com/book/62763/31083181.html','https://sto55.com/book/62763/30141961.html','https://sto55.com/book/62763/31020784.html']
+          s=requests.Session();s.headers.update({'User-Agent':'Mozilla/5.0'})
+          for url in urls:
+            try:
+              r=s.get(url,timeout=25);r.raise_for_status()
+              p=BeautifulSoup(r.content,'html.parser',from_encoding=r.apparent_encoding)
+              print('URL',url,'TITLE',p.title.get_text(' ',strip=True) if p.title else '','BYTES',len(r.content))
+              for selector in ['#content','#chaptercontent','#nr1','.content','.read-content','.article-content','article','main','div.readcontent','div#read']:
+                x=p.select_one(selector)
+                if x:print('SELECTOR',selector,'LENGTH',len(x.get_text(' ',strip=True)),'START',x.get_text(' ',strip=True)[:320])
+              print('BODY',p.get_text(' ',strip=True)[:250])
+            except Exception as e:print('ERROR',url,repr(e))
+          PY
