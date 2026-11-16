@@ -21,8 +21,8 @@ from bs4 import BeautifulSoup
 
 BASE = "https://jiuxiaozw.com"
 BOOK_ID = "6aa28737ebce31446c4d1253"
-FIRST_ID = "6aa28738ebce31446c4d1258"
-LAST_ID = "6af630517245b7bf6fba0622"
+FIRST_ID = "6ae5ccb22b41a67a85d04009"
+LAST_ID = "6af0d53d2f6eef0597f98de9"
 BOOK_PATH = re.compile(r"^/(?:sim/)?book/[a-f0-9]{24}/?$")
 CHAPTER_PATH = re.compile(r"^/(?:sim/)?book/[a-f0-9]{24}/[a-f0-9]{24}/?$")
 UA = "Mozilla/5.0 (compatible; MED-Jiuxiao-Source-Probe/1.0)"
@@ -34,8 +34,8 @@ PAGES = [
     ("latest_simplified", "/sim/latest"),
     ("book_traditional", f"/book/{BOOK_ID}"),
     ("book_simplified", f"/sim/book/{BOOK_ID}"),
-    ("first_chapter", f"/book/{BOOK_ID}/{FIRST_ID}"),
-    ("last_chapter", f"/book/{BOOK_ID}/{LAST_ID}"),
+    ("chapter_1630", f"/book/{BOOK_ID}/{FIRST_ID}"),
+    ("chapter_1640", f"/book/{BOOK_ID}/{LAST_ID}"),
     ("terms", "/terms"),
 ]
 
