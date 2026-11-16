@@ -1,0 +1,82 @@
+name: Jiuxiao public-domain full-book pilot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/jiuxiao/collector.py"
+      - "tools/jiuxiao/test_collector.py"
+      - ".github/workflows/jiuxiao-public-domain-book.yml"
+  pull_request:
+    paths:
+      - "tools/jiuxiao/collector.py"
+      - "tools/jiuxiao/test_collector.py"
+      - ".github/workflows/jiuxiao-public-domain-book.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Test collector guards and parsing
+        run: python -m unittest discover -s tools/jiuxiao -p test_collector.py -v
+
+  full-book:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collect Lu Xun's public-domain story collection (9 chapters)
+        run: |
+          python tools/jiuxiao/collector.py \
+            --book-url "https://jiuxiaozw.com/sim/book/6ab99ea063213dfa71e9a016" \
+            --expected-title "故事新编" \
+            --delay 2 \
+            --out-dir out/jiuxiao/gushi-xinbian
+      - name: Verify full text output and manifest
+        run: |
+          python - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          out=Path("out/jiuxiao/gushi-xinbian")
+          d=json.loads((out/"manifest.json").read_text(encoding="utf-8"))
+          assert d["status"]=="SUCCESS"
+          assert d["announced_catalog_count"]==d["chapters_collected"]==9
+          assert len(d["chapter_rows"])==9
+          assert not d["missing"]
+          assert len(list((out/"chapters").glob("*.txt")))==9
+          text=(out/"book.txt").read_text(encoding="utf-8")
+          assert hashlib.sha256(text.encode("utf-8")).hexdigest()==d["sha256_book_txt"]
+          assert len(text)>10000
+          for row in d["chapter_rows"]:
+              part=(out/"chapters"/row["filename"]).read_text(encoding="utf-8")
+              assert hashlib.sha256(part.encode("utf-8")).hexdigest()==row["sha256"]
+              assert part.count("\n\n") >= 1
+          print("VERIFIED",d["title"],"chapters",len(d["chapter_rows"]),"characters",len(text))
+          PY
+      - name: Publish summary to run page
+        if: always()
+        run: |
+          if test -f out/jiuxiao/gushi-xinbian/SUMMARY.md; then
+            cat out/jiuxiao/gushi-xinbian/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: jiuxiao-gushi-xinbian-fulltext-public-domain
+          path: out/jiuxiao/gushi-xinbian/
+          retention-days: 7
