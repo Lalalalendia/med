@@ -1,19 +1,6 @@
 name: Jiuxiao source compatibility probe
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "tools/jiuxiao/source_probe.py"
-      - "tools/jiuxiao/inspect_catalog.py"
-      - "tools/jiuxiao/probe_large_catalog.py"
-      - ".github/workflows/jiuxiao-source-probe.yml"
-  pull_request:
-    paths:
-      - "tools/jiuxiao/source_probe.py"
-      - "tools/jiuxiao/inspect_catalog.py"
-      - "tools/jiuxiao/probe_large_catalog.py"
-      - ".github/workflows/jiuxiao-source-probe.yml"
   workflow_dispatch:
 
 permissions:

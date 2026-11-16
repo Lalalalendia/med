@@ -1,19 +1,6 @@
 name: Jiuxiao resumable batches and deterministic assembly
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "tools/jiuxiao/linked_collector.py"
-      - "tools/jiuxiao/assemble_batches.py"
-      - "tools/jiuxiao/test_linked.py"
-      - ".github/workflows/jiuxiao-batch-resume.yml"
-  pull_request:
-    paths:
-      - "tools/jiuxiao/linked_collector.py"
-      - "tools/jiuxiao/assemble_batches.py"
-      - "tools/jiuxiao/test_linked.py"
-      - ".github/workflows/jiuxiao-batch-resume.yml"
   workflow_dispatch:
 
 permissions:
