@@ -1,17 +1,6 @@
 name: Jiuxiao public-domain full-book pilot
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "tools/jiuxiao/collector.py"
-      - "tools/jiuxiao/test_collector.py"
-      - ".github/workflows/jiuxiao-public-domain-book.yml"
-  pull_request:
-    paths:
-      - "tools/jiuxiao/collector.py"
-      - "tools/jiuxiao/test_collector.py"
-      - ".github/workflows/jiuxiao-public-domain-book.yml"
   workflow_dispatch:
 
 permissions:
