@@ -1,0 +1,49 @@
+name: Witch skill tree latest tail audit
+on:
+  push:
+    branches:
+      - collect/wizard-skill-tree-500-tail-20261116
+    paths:
+      - .github/workflows/witch-skill-tree-tail-probe.yml
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests beautifulsoup4
+      - name: Inspect chapter listings and 943+ chapter bodies
+        run: |
+          python - <<'PY'
+          import re,requests
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          s=requests.Session();s.headers.update({'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36'})
+          index_pages=['https://www.wxff.net/zdzdmu/mulu_10.html','https://www.wxff.net/zdzdmu/mulu_9.html','https://www.wxff.net/zdzdmu/mulu_11.html','https://www.cmfu.cc/49/49309/','https://www.ppwx.net/49/49309/']
+          urls=[]
+          for url in index_pages:
+            try:
+              r=s.get(url,timeout=25);r.raise_for_status();soup=BeautifulSoup(r.content,'html.parser',from_encoding=r.apparent_encoding)
+              pairs=[]
+              for a in soup.select('a[href]'):
+                title=a.get_text(' ',strip=True)
+                if any(token in title for token in ('第九百四十','第九百五十','第九百六十','第九百七十','第九百八十')):
+                  pairs.append((title,urljoin(r.url,a['href'])))
+              print('INDEX',url,'STATUS',r.status_code,'MATCHES',len(pairs),'SAMPLE',pairs[:6], 'TAIL',pairs[-5:],flush=True)
+              urls += [v for name,v in pairs if '九百四十三章' in name or '九百五十二章' in name or '九百八十二章' in name]
+            except Exception as ex:print('INDEX_ERROR',url,repr(ex),flush=True)
+          for url in sorted(set(urls)):
+            try:
+              r=s.get(url,timeout=25);r.raise_for_status();soup=BeautifulSoup(r.content,'html.parser',from_encoding=r.apparent_encoding)
+              print('BODY_URL',url,'PAGE_TITLE',soup.title.get_text(' ',strip=True)[:130] if soup.title else '',flush=True)
+              for sel in ('#content','#chaptercontent','.content','.read-content','article','main'):
+                node=soup.select_one(sel)
+                if node:
+                  body=node.get_text(' ',strip=True)
+                  print('BODY_SELECTOR',sel,'LENGTH',len(body),'BEGIN',body[:330],flush=True)
+            except Exception as ex:print('BODY_ERROR',url,repr(ex),flush=True)
+          PY
