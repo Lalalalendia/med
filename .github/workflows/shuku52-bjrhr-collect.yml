@@ -1,0 +1,44 @@
+name: Shuku52 bjRHR - authorized full text archive
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Only verify first, middle, and last"
+        required: true
+        default: false
+        type: boolean
+  push:
+    branches:
+      - feat/shuku52-bjrhr-full-20261116
+    paths:
+      - tools/novel-ingest/shuku52_bjrhr.py
+      - .github/workflows/shuku52-bjrhr-collect.yml
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 lxml
+      - run: python -m py_compile tools/novel-ingest/shuku52_bjrhr.py
+      - name: Archive work and verify coverage
+        env:
+          PROBE: ${{ inputs.probe }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [ "$PROBE" = true ]; then args+=(--probe); fi
+          python -u tools/novel-ingest/shuku52_bjrhr.py --out out/shuku52-bjrhr "${args[@]}"
+      - name: Upload page archive and audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shuku52-bjrhr-archive
+          path: out/shuku52-bjrhr/**
+          if-no-files-found: warn
+          retention-days: 14
