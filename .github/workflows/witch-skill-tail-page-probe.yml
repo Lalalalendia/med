@@ -84,3 +84,28 @@ jobs:
             if any(n in t for n in ['第九百四十二章','第九百四十三章','第九百四十四章','第九百五十二章']):
               print('INDEX_LINK',t,a.get('href'),flush=True)
           PY
+
+      - name: Inspect additional licensed reader source
+        run: |
+          python - <<'PY'
+          import requests,re
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          url='https://www.idejian.com/book/13664849/'
+          s=requests.Session()
+          s.headers.update({'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36'})
+          try:
+            r=s.get(url,timeout=20)
+            print('IDEJIAN_STATUS',r.status_code,'LENGTH',len(r.content),'REDIRECT',r.url,flush=True)
+            soup=BeautifulSoup(r.content,'html.parser',from_encoding=r.apparent_encoding)
+            print('IDEJIAN_TITLE',soup.title.get_text(" ",strip=True)[:150] if soup.title else '',flush=True)
+            print('IDEJIAN_TEXT',soup.get_text(" ",strip=True)[:700],flush=True)
+            refs=[(a.get_text(" ",strip=True)[:50],urljoin(r.url,a['href'])) for a in soup.select('a[href]') if re.search('目录|章节|正文|阅读|943|942|953|986',a.get_text(" ",strip=True))]
+            print('IDEJIAN_REFS',refs[:40],flush=True)
+            for title,link in refs[:2]:
+              if not link.startswith('https://www.idejian.com/'):continue
+              rr=s.get(link,timeout=15)
+              ss=BeautifulSoup(rr.content,'html.parser',from_encoding=rr.apparent_encoding)
+              print('IDEJIAN_SUB',title,link,rr.status_code,len(rr.content),ss.get_text(" ",strip=True)[:350],flush=True)
+          except Exception as exc:print('IDEJIAN_ERROR',str(exc),flush=True)
+          PY
