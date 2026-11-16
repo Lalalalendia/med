@@ -1,0 +1,48 @@
+
+name: Witch skill-tree tail rendered-page diagnostics
+on:
+  push:
+    branches: [collect/wizard-skill-tree-500-tail-20261116]
+    paths: [.github/workflows/witch-skill-tail-page-probe.yml]
+permissions:
+  contents: read
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests beautifulsoup4
+      - run: |
+          python - <<'PY'
+          import requests,re
+          from urllib.parse import urljoin
+          from bs4 import BeautifulSoup
+          urls=[
+            "https://www.wxff.net/zdzdmu/waxwmavv.html",
+            "https://www.wxff.net/zdzdmu/waxwmavv_2.html",
+            "https://www.wxff.net/zdzdmu/waxwmavv_3.html",
+            "https://www.wxff.net/zdzdmu/waxwmamd.html",
+            "https://www.suduguu.com/2024/4878266.html"
+          ]
+          sess=requests.Session()
+          sess.headers.update({"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36"})
+          for url in urls:
+            try:
+              r=sess.get(url,timeout=20);r.raise_for_status()
+              p=BeautifulSoup(r.content,"html.parser",from_encoding=r.apparent_encoding)
+              print("URL",url,"STATUS",r.status_code,"SIZE",len(r.content),"TITLE",p.title.get_text(" ",strip=True)[:100] if p.title else "",flush=True)
+              for sel in ["#content",".content",".reading-content","div#chaptercontent","article","main"]:
+                for el in p.select(sel)[:1]:
+                  t=el.get_text(" ",strip=True)
+                  print("ELEMENT",sel,"LEN",len(t),"TEXT",t[:175],"HTML_START",str(el)[:300],flush=True)
+              nav=[(x.get_text(' ',strip=True)[:50],urljoin(r.url,x.get("href",""))) for x in p.select("a[href]") if "下一页" in x.get_text(" ",strip=True) or "上一章" in x.get_text(" ",strip=True)]
+              print("NAV",nav[:10],flush=True)
+              scripts=[x.get("src") or "INLINE:"+((x.get_text(" ",strip=True) or "")[:120]) for x in p.select("script")]
+              print("SCRIPTS",scripts[:10],flush=True)
+              print("BODY_CHARS",len(p.get_text(" ",strip=True)),flush=True)
+            except Exception as exc:print("ERROR",url,str(exc),flush=True)
+          PY
