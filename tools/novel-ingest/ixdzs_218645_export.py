@@ -7,6 +7,7 @@ is unavailable and robots.txt permits crawling. Outputs are temporary artifacts.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import hashlib
 import io
 import json
@@ -82,33 +83,58 @@ def decode_chinese(raw):
     raise ValueError("Unknown or unreadable Chinese text encoding")
 
 
-def validate(records, expected=NUMBERED):
+def validate(records, expected=NUMBERED, extras_expected=CATALOG_ENTRIES - NUMBERED):
     numbered = [r for r in records if r["number"] is not None]
+    extras = [r for r in records if r["number"] is None]
     numbers = [r["number"] for r in numbered]
     if numbers != list(range(1, expected + 1)):
         raise ValueError(f"Numbered chapter sequence invalid: count={len(numbers)}, "
                          f"first={numbers[:10]}, last={numbers[-10:]}")
+    if len(extras) != extras_expected or len(records) != expected + extras_expected:
+        raise ValueError(f"Incomplete catalog: {len(numbered)} numbered, "
+                         f"{len(extras)} extras, expected {expected}+{extras_expected}")
+    if expected == NUMBERED and extras_expected == 7:
+        wanted = Counter({"二戰風雲": 1, "變種人時代": 2, "復仇者聯盟": 1,
+                          "回來了": 1, "最後還是說兩句": 1, "新書：開局一個女超人": 1})
+        actual = Counter(r["title"] for r in extras)
+        if actual != wanted:
+            raise ValueError(f"Extras differ from source catalog: {actual}")
     fingerprints = [sha(r["text"].encode("utf-8")) for r in records]
     if len(fingerprints) != len(set(fingerprints)):
-        raise ValueError("Duplicate chapter bodies detected")
+        raise ValueError("Duplicate entry bodies detected")
     for r in records:
         cjk = len(CJK.findall(r["text"]))
         minimum = 25 if r["number"] in (79, 110) or r["number"] is None else 100
         if cjk < minimum:
-            raise ValueError(f"Short chapter {r['number'] or r['title']}: {cjk} CJK")
+            raise ValueError(f"Short entry {r['number'] or r['title']}: {cjk} CJK")
 
 
-def split_txt(content, expected=NUMBERED):
-    matches = list(HEADING.finditer(content))
+EXTRA_TITLES = ("二戰風雲", "變種人時代", "復仇者聯盟", "回來了",
+                "最後還是說兩句", "新書：開局一個女超人")
+EXTRA_PATTERN = "|".join(re.escape(title) for title in EXTRA_TITLES)
+ENTRY_LINE = re.compile(
+    rf"(?m)^(?P<title>第(?P<number>\d{{1,4}})章[^\r\n]{{0,110}}|{EXTRA_PATTERN})[ \t\u3000]*\r?$"
+)
+
+
+def split_txt(content, expected=NUMBERED, extras_expected=CATALOG_ENTRIES - NUMBERED):
+    # The official download has a front-matter metadata block and a closing
+    # website footer. Keep only the entries represented in the book catalog.
+    marker = "------章節內容開始-------"
+    if marker in content:
+        content = content.split(marker, 1)[1]
+    content = re.split(r"(?m)^=已完結=[ \t]*$", content, maxsplit=1)[0]
+    matches = list(ENTRY_LINE.finditer(content))
     records = []
-    for idx, match in enumerate(matches):
-        number = int(match.group(2))
-        body = content[match.end():matches[idx+1].start() if idx+1 < len(matches) else len(content)].strip()
-        records.append({"number": number, "title": match.group(1).strip(),
+    for index, match in enumerate(matches):
+        number = int(match.group("number")) if match.group("number") else None
+        start = match.end()
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(content)
+        body = content[start:end].strip()
+        records.append({"number": number, "title": match.group("title").strip(),
                         "text": body, "source_url": DOWNLOAD})
-    validate(records, expected)
+    validate(records, expected, extras_expected)
     return records
-
 
 def official_zip(session):
     raw, resolved_url = request_bytes(session, DOWNLOAD, {"down7.ixdzs8.tw"}, cap=60 * 1024 * 1024)
@@ -123,10 +149,9 @@ def official_zip(session):
         if sum(e.file_size for e in entries) > 90 * 1024 * 1024:
             raise ValueError("Official ZIP expands beyond 90 MiB")
         texts = [decode_chinese(source.read(e)) for e in entries]
-    combined = "\n\n".join(texts)
-    records = split_txt(combined)
+    records = split_txt("\n\n".join(texts))
+    combined = "\n\n".join(r["title"] + "\n\n" + r["text"] for r in records)
     return records, combined, raw, resolved_url
-
 
 def robots_policy(session):
     raw, _ = request_bytes(session, "https://ixdzs.tw/robots.txt", {"ixdzs.tw"}, cap=150000)
@@ -213,7 +238,7 @@ def package(records, combined, original_zip, original_url, out, method):
     chapter_meta = []
     with ZipFile(target, "w", ZIP_DEFLATED) as archive:
         for idx, row in enumerate(records, 1):
-            suffix = f"{row['number']:04d}" if row["number"] is not None else f"p{row['physical_locator']:04d}"
+            suffix = f"{row['number']:04d}" if row["number"] is not None else f"{idx:04d}"
             name = ("chapters" if row["number"] is not None else "extras") + "/" + suffix + ".txt"
             raw = (row["title"] + "\n\n" + row["text"] + "\n").encode("utf-8")
             archive.writestr(name, raw)
@@ -227,7 +252,8 @@ def package(records, combined, original_zip, original_url, out, method):
                     "original_download_url": original_url,
                     "catalog_entries_reported": CATALOG_ENTRIES,
                     "numbered_chapters_verified": NUMBERED,
-                    "extras_individually_verified": method == "chapter_pages",
+                    "extras_individually_verified": True,
+                    "extras_verified": sum(r["number"] is None for r in records),
                     "exported_records": len(records),
                     "combined_sha256": sha(combined_raw),
                     "rights_confirmed": True,
@@ -248,24 +274,37 @@ def package(records, combined, original_zip, original_url, out, method):
 
 
 def selftest():
-    sample = "".join("第%d章 測試%d\n%s\n" % (n, n, ("這是完整的測試正文%d。" % n) * 40)
-                     for n in (1, 2, 3))
-    records = split_txt(sample, 3)
-    assert [r["number"] for r in records] == [1, 2, 3]
+    base = "".join("第%d章 測試%d\n%s\n" % (n, n, ("這是完整的測試正文%d。" % n) * 40)
+                   for n in (1, 2, 3))
+    fixture = ("------章節內容開始-------\n"
+               + "二戰風雲\n" + "這是開場的獨立正文。" * 40 + "\n" + base
+               + "變種人時代\n" + "這是另一段獨立正文。" * 40 + "\n=已完結=\n網站字樣")
+    records = split_txt(fixture, 3, 2)
+    assert [r["number"] for r in records] == [None, 1, 2, 3, None]
+    assert [r["title"] for r in records if r["number"] is None] == ["二戰風雲", "變種人時代"]
+    assert "網站字樣" not in records[-1]["text"]
     try:
-        split_txt(sample.replace("第2章", "第4章"), 3)
+        split_txt(fixture.replace("第2章", "第4章"), 3, 2)
     except ValueError:
         pass
     else:
         raise AssertionError("Missing chapter was accepted")
+    try:
+        split_txt(fixture.replace("變種人時代\n", ""), 3, 2)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Missing extra entry was accepted")
     title, body = chapter_body("<h1>第1章 例子</h1><article><p>" + "測試正文" * 40 + "</p></article>", "第1章 例子")
     assert title == "第1章 例子" and len(CJK.findall(body)) >= 100
     with TemporaryDirectory() as d:
-        output, manifest = package(records, sample, None, None, Path(d), "chapter_pages")
+        combined = "\n\n".join(r["title"] + "\n\n" + r["text"] for r in records)
+        output, manifest = package(records, combined, None, None, Path(d), "chapter_pages")
         with ZipFile(output) as z:
-            assert z.testzip() is None and manifest["exported_records"] == 3
+            assert z.testzip() is None and manifest["exported_records"] == 5
+            assert "extras/0001.txt" in z.namelist()
+            assert "extras/0005.txt" in z.namelist()
     print("IXDZS_218645_OFFLINE_SELFTEST_PASS")
-
 
 def main():
     arg = argparse.ArgumentParser()
