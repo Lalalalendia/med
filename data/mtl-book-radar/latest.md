@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-16T10:08:48+00:00
+Run: 2026-11-17T11:05:36+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-16T10:08:48+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `116772` [Ninja World: Darkened Ninja World, I'll Change the World in Konoha](https://wtr-lab.com/en/novel/116772/ninja-world-darkened-ninja-world-ill-change-the-world-in-konoha) — catalog
-- **wtr-lab** `116629` [A Mystical Spring and a New Life: Farming and Raising Kids After My Husband’s Death](https://wtr-lab.com/en/novel/116629/a-mystical-spring-and-a-new-life-farming-and-raising-kids-after-my-husbands-death) — catalog
-- **wtr-lab** `109975` [Live-in Dragon Son-in-law: Eight Years of Endurance](https://wtr-lab.com/en/novel/109975/live-in-dragon-son-in-law-eight-years-of-endurance) — catalog
-- **wtr-lab** `116782` [Detective World: The Frail Beauty of the Matsuda Family is the Group's Darling](https://wtr-lab.com/en/novel/116782/detective-world-the-frail-beauty-of-the-matsuda-family-is-the-groups-darling) — catalog
-- **wtr-lab** `116558` [Why Did Nuomi Tianshi Turn Evil If He Didn't Follow the Script?](https://wtr-lab.com/en/novel/116558/why-did-nuomi-tianshi-turn-evil-if-he-didnt-follow-the-script) — catalog
-- **wtr-lab** `116777` [Mech Awakening: I Awaken Gundam ELS](https://wtr-lab.com/en/novel/116777/mech-awakening-i-awaken-gundam-els) — catalog
-- **wtr-lab** `116754` [Crossing Gundam 00 Awakening System](https://wtr-lab.com/en/novel/116754/crossing-gundam-00-awakening-system) — catalog
-- **wtr-lab** `115922` [Flash Marriage: The Real Heiress Married a Big-shot Warlord](https://wtr-lab.com/en/novel/115922/flash-marriage-the-real-heiress-married-a-big-shot-warlord) — catalog
-- **wtr-lab** `116767` [Crossover Anime: Starting with the Fusion of Mordkaiser with Touhou Project](https://wtr-lab.com/en/novel/116767/crossover-anime-starting-with-the-fusion-of-mordkaiser-with-touhou-project) — catalog
-- **wtr-lab** `116784` [Collapse World: Have I Become the Ruler of the Demon Makima?](https://wtr-lab.com/en/novel/116784/collapse-world-have-i-become-the-ruler-of-the-demon-makima) — catalog
-- **mtl-novel** `nagato-has-a-thin-waist` [Nagato has a thin waist](https://mtl-novel.com/novel/nagato-has-a-thin-waist/) — catalog
-- **mtl-novel** `zhutian-starting-from-the-era-of-the-wilderness-become-the-eternal-protagonist` [Zhutian: Starting from the Era of the Wilderness, Become the Eternal Protagonist](https://mtl-novel.com/novel/zhutian-starting-from-the-era-of-the-wilderness-become-the-eternal-protagonist/) — catalog
-- **mtl-novel** `holy-roman-empire` [Holy Roman Empire](https://mtl-novel.com/novel/holy-roman-empire/) — catalog
-- **mtl-novel** `one-person-all-that-i-use-is-forbidden-magic` [One Person: All That I Use is Forbidden Magic](https://mtl-novel.com/novel/one-person-all-that-i-use-is-forbidden-magic/) — catalog
-- **mtl-novel** `tiger-tank-commander` [Tiger Tank Commander](https://mtl-novel.com/novel/tiger-tank-commander/) — catalog
-- **mtl-novel** `reborn-marshal-of-the-republic-of-china` [Reborn Marshal of the Republic of China](https://mtl-novel.com/novel/reborn-marshal-of-the-republic-of-china/) — catalog
-- **mtl-novel** `bind-to-the-girl-of-destiny-all-the-women-will-become-respected-and-i-will-become-the-emperor` [Bind to the girl of destiny, all the women will become respected and I will become the emperor!](https://mtl-novel.com/novel/bind-to-the-girl-of-destiny-all-the-women-will-become-respected-and-i-will-become-the-emperor/) — catalog
-- **mtl-novel** `conjurer-i-the-warhammer-psyker` [Conjurer? I, the Warhammer Psyker](https://mtl-novel.com/novel/conjurer-i-the-warhammer-psyker/) — catalog
-- **mtl-novel** `this-top-influencer-only-wants-to-improve` [This Top Influencer Only Wants to Improve](https://mtl-novel.com/novel/this-top-influencer-only-wants-to-improve/) — catalog
-- **mtl-novel** `exiled-to-the-frigid-north-boost-production-in-the-greenhouse` [Exiled to the Frigid North? Boost Production in the Greenhouse!](https://mtl-novel.com/novel/exiled-to-the-frigid-north-boost-production-in-the-greenhouse/) — catalog
+- **wtr-lab** `117117` [After Being Threatened, I Became the Regent's Darling](https://wtr-lab.com/en/novel/117117/after-being-threatened-i-became-the-regents-darling) — catalog
+- **wtr-lab** `117296` [There are Gentlemen in the Three Kingdoms](https://wtr-lab.com/en/novel/117296/there-are-gentlemen-in-the-three-kingdoms) — catalog
+- **wtr-lab** `117088` [My Secret Marriage to an Austere Factory Director—thrilling!](https://wtr-lab.com/en/novel/117088/my-secret-marriage-to-an-austere-factory-director-thrilling) — catalog
+- **wtr-lab** `117034` [Monthly Plan: Suburban Suicide Squad!](https://wtr-lab.com/en/novel/117034/monthly-plan-suburban-suicide-squad) — catalog
+- **wtr-lab** `117097` [Ninja World: Suspected Leaked Official Version - Darkened Ninja World](https://wtr-lab.com/en/novel/117097/ninja-world-suspected-leaked-official-version-darkened-ninja-world) — catalog
+- **wtr-lab** `117252` [Soul Land: I Must Do Daily Check-ins to Stay Invincible, Starting by Making Yu Xiaogang Wear Xiao Wu’s Skirt](https://wtr-lab.com/en/novel/117252/soul-land-i-must-do-daily-check-ins-to-stay-invincible-starting-by-making-yu-xiaogang-wear-xiao-wus-skirt) — catalog
+- **wtr-lab** `117071` [Journey to the West: I, the Great Sage Yellow Wind, Have Become a Disciple of Bodhisattva Lingji](https://wtr-lab.com/en/novel/117071/journey-to-the-west-i-the-great-sage-yellow-wind-have-become-a-disciple-of-bodhisattva-lingji) — catalog
+- **wtr-lab** `117108` [Immortal Sects Lack Spiritual Roots, While Martial Arts Pave the Way to Immortality](https://wtr-lab.com/en/novel/117108/immortal-sects-lack-spiritual-roots-while-martial-arts-pave-the-way-to-immortality) — catalog
+- **wtr-lab** `116196` [Primordial Human Race Farming, I Stole Nuwa's Mud](https://wtr-lab.com/en/novel/116196/primordial-human-race-farming-i-stole-nuwas-mud) — catalog
+- **wtr-lab** `117298` [A Wandering Disciple of the Heavenly Secrets Pavilion, and You Want Me to Be a Background Bystander?](https://wtr-lab.com/en/novel/117298/a-wandering-disciple-of-the-heavenly-secrets-pavilion-and-you-want-me-to-be-a-background-bystander) — catalog
+- **mtl-novel** `become-a-god-in-douluo` [Become a God in Douluo](https://mtl-novel.com/novel/become-a-god-in-douluo/) — catalog
+- **mtl-novel** `perfect-world-open-via-group-chat` [Perfect World: Open Via Group Chat](https://mtl-novel.com/novel/perfect-world-open-via-group-chat/) — catalog
+- **mtl-novel** `called-off-the-engagement-right-from-the-start-then-ill-go-find-your-mother-to-collect-interest` [Called Off the Engagement Right from the Start? Then I’ll Go Find Your Mother to Collect Interest!](https://mtl-novel.com/novel/called-off-the-engagement-right-from-the-start-then-ill-go-find-your-mother-to-collect-interest/) — catalog
+- **mtl-novel** `in-order-to-pay-off-the-national-debt-the-government-started-to-defraud-billions-of-arms-orders` [In Order to Pay Off the National Debt, the Government Started to Defraud Billions of Arms Orders](https://mtl-novel.com/novel/in-order-to-pay-off-the-national-debt-the-government-started-to-defraud-billions-of-arms-orders/) — catalog
+- **mtl-novel** `dont-laugh-junior-sister-is-actually-very-serious` [Don’t Laugh, Junior Sister is Actually Very Serious!](https://mtl-novel.com/novel/dont-laugh-junior-sister-is-actually-very-serious/) — catalog
+- **mtl-novel** `ultraman-tregears-twin-sons` [Ultraman: Tregear’s Twin Sons](https://mtl-novel.com/novel/ultraman-tregears-twin-sons/) — catalog
+- **mtl-novel** `i-run-a-hotel-in-the-apocalypse-using-a-merge-game` [I Run a Hotel in the Apocalypse Using a Merge Game](https://mtl-novel.com/novel/i-run-a-hotel-in-the-apocalypse-using-a-merge-game/) — catalog
+- **mtl-novel** `the-alchemy-god-who-defies-fate` [The Alchemy God Who Defies Fate](https://mtl-novel.com/novel/the-alchemy-god-who-defies-fate/) — catalog
+- **mtl-novel** `springtime-farming-a-happy-wife-at-home` [Springtime Farming: A Happy Wife At Home](https://mtl-novel.com/novel/springtime-farming-a-happy-wife-at-home/) — catalog
+- **mtl-novel** `demon-hunter-school-of-the-wolf` [Demon Hunter: School of the Wolf](https://mtl-novel.com/novel/demon-hunter-school-of-the-wolf/) — catalog
