@@ -34,6 +34,19 @@ def find_catalog(html):
         p = urlsplit(url)
         if p.scheme=="https" and p.hostname in ("www.biquge.tw","biquge.tw") and p.path.startswith("/book/5195354/"):
             entries.setdefault(n, (title, url))
+    # Source typo: chapter 1036 is labelled "10360" in both index and heading.
+    # Correct it only when its URL is exactly between 1035 and 1037.
+    if 1036 not in entries and 10360 in entries and 1035 in entries and 1037 in entries:
+        urls = [entries[n][1] for n in (1035, 10360, 1037)]
+        ids = []
+        for url in urls:
+            m = re.fullmatch(r"https://www\.biquge\.tw/book/5195354/(\d+)\.html", url)
+            if not m:
+                break
+            ids.append(int(m.group(1)))
+        if len(ids) == 3 and ids[0] + 1 == ids[1] and ids[1] + 1 == ids[2]:
+            original, url = entries.pop(10360)
+            entries[1036] = (re.sub(r"第\s*10360\s*章", "第1036章", original, count=1), url)
     return entries
 
 def parse(html, expected):
@@ -41,8 +54,11 @@ def parse(html, expected):
     head = soup.select_one("h1")
     title = head.get_text(" ", strip=True) if head else ""
     m = CHAPTER.search(title)
-    if not m or int(m.group(1)) != expected:
+    if not m or (int(m.group(1)) != expected and not (expected == 1036 and int(m.group(1)) == 10360)):
         raise ValueError(f"chapter heading mismatch at {expected}: {title[:100]}")
+    if expected == 1036 and int(m.group(1)) == 10360:
+        title = re.sub(r"第\s*10360\s*章", "第1036章", title, count=1)
+    title = re.sub(r"\s*（\s*1\s*/\s*1\s*）\s*$", "", title)
     nodes = [soup.select_one(s) for s in ROOTS]
     nodes = [n for n in nodes if n is not None]
     if not nodes: raise ValueError(f"missing content container: {expected}")
@@ -87,6 +103,8 @@ def main():
         if not entries:raise ValueError("No numbered links in catalog")
         end=args.end or max(entries)
         report["catalog_max"]=max(entries);report["end"]=end
+        if 1036 in entries and entries[1036][1].endswith("/84279264.html"):
+            report["normalized_source_label"] = {"chapter":1036,"source_label":"10360","source_url":entries[1036][1]}
         missing=[n for n in range(args.start,end+1) if n not in entries]
         if missing:raise ValueError(f"catalog missing chapter ordinals: {missing[:20]} (total {len(missing)})")
         rows=[];seen=set()
