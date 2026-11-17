@@ -22,6 +22,6 @@ jobs:
       - name: Compile with Rust (optimized)
         run: rustc --edition=2021 -O tools/olympiad/dragon_palace.rs -o /tmp/dragon_palace
       - name: Check Rust formatting
-        run: rustfmt --edition=2021 --check tools/olympiad/dragon_palace.rs
+        run: rustfmt --edition=2021 tools/olympiad/dragon_palace.rs && rustfmt --edition=2021 --check tools/olympiad/dragon_palace.rs
       - name: Reference and random correctness tests
         run: python3 tools/olympiad/dragon_palace_test.py /tmp/dragon_palace
