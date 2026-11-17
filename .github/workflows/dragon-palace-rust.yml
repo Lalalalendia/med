@@ -1,0 +1,27 @@
+name: Dragon Palace Rust verification
+
+on:
+  push:
+    branches: [test/dragon-palace-rust-20261117]
+  pull_request:
+    paths:
+      - 'tools/olympiad/dragon_palace.rs'
+      - 'tools/olympiad/dragon_palace_test.py'
+      - '.github/workflows/dragon-palace-rust.yml'
+  workflow_dispatch:
+
+jobs:
+  dragon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - name: Compile with Rust (optimized)
+        run: rustc --edition=2021 -O tools/olympiad/dragon_palace.rs -o /tmp/dragon_palace
+      - name: Check Rust formatting
+        run: rustfmt --edition=2021 --check tools/olympiad/dragon_palace.rs
+      - name: Reference and random correctness tests
+        run: python3 tools/olympiad/dragon_palace_test.py /tmp/dragon_palace
