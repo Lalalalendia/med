@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - tools/jiuxiao/witcher_catalog_discovery.py
+      - tools/jiuxiao/witcher_full_catalog.py
       - .github/workflows/witcher-catalog-discovery.yml
   workflow_dispatch:
 
@@ -20,4 +21,11 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install requests beautifulsoup4
-      - run: python tools/jiuxiao/witcher_catalog_discovery.py
+      - name: Retrieve versioned full chapter catalog
+        run: python tools/jiuxiao/witcher_full_catalog.py
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: witcher-jiuxiao-full-catalog
+          path: out/witcher-full-catalog.json
+          retention-days: 7
