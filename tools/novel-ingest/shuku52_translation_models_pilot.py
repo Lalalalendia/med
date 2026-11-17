@@ -55,6 +55,7 @@ def call(paragraphs):
         "Content-Type":"application/json",
     },json=payload,timeout=130)
     print("HTTP", r.status_code, "model", MODEL, "raw_response_bytes", len(r.content), flush=True)
+    print("CONTENT_TYPE",r.headers.get("Content-Type"),"BODY_HEAD",repr(r.text[:500]),"FINAL_URL",r.url,flush=True)
     if r.status_code>=400:
         print("FAIL",r.text[:850])
         r.raise_for_status()
