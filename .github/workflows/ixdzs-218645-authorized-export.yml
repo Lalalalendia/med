@@ -1,0 +1,67 @@
+name: IXDZS 218645 authorized book collection
+
+on:
+  push:
+    branches:
+      - feat/ixdzs-218645-full-20261117
+    paths:
+      - tools/novel-ingest/ixdzs_218645_export.py
+      - .github/workflows/ixdzs-218645-authorized-export.yml
+  workflow_dispatch:
+    inputs:
+      rights_confirmed:
+        description: "Permission to copy the complete Chinese book"
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ixdzs-218645-authorized-full-export
+  cancel-in-progress: false
+
+jobs:
+  full-export:
+    if: github.event_name == 'push' || inputs.rights_confirmed == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Offline tests
+        run: python tools/novel-ingest/ixdzs_218645_export.py --selftest
+      - name: Download and validate authorized Chinese source
+        run: |
+          python tools/novel-ingest/ixdzs_218645_export.py \
+            --rights-confirmed --delay 2.0 \
+            --out out/authorized-ixdzs-218645
+      - name: Record collection status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-218645-collection-status
+          path: out/authorized-ixdzs-218645/status.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Publish verified full-text ZIP
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-218645-authorized-chinese-txt
+          path: out/authorized-ixdzs-218645/ixdzs-218645-authorized-cn.zip
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish original official archive when available
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-218645-original-official-zip
+          path: out/authorized-ixdzs-218645/original-official-download.zip
+          if-no-files-found: ignore
+          retention-days: 30
