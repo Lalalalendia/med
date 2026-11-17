@@ -12,9 +12,11 @@
       "name": "九霄中文网 Jiuxiao",
       "url": "https://jiuxiaozw.com/sim/book/6af8d3227d54a8afba082141",
       "book_id": "6af8d3227d54a8afba082141",
-      "observed_latest_number": 1001,
-      "observed_book_catalog_entries": 1000,
-      "observed_as_of": "2026-11-16"
+      "observed_latest_number": 1003,
+      "observed_book_catalog_entries": 1002,
+      "observed_as_of": "2026-11-17",
+      "catalog_version": "4",
+      "catalog_api": "https://jiuxiaozw.com/api/books/6af8d3227d54a8afba082141/catalog?offset=0&limit=128&version=4"
     },
     {
       "name": "69书吧 (stale secondary source)",
@@ -28,8 +30,21 @@
     "reported_discrepancy": "69书吧 lists 第600章 兽吼之道唤龙; a different index labels 我们从正门进 as 第600章, while 69书吧 labels it 第601章",
     "must_verify_title_and_url_before_collection": true,
     "non_numbered_entries_may_shift_catalog_ordinals": true,
-    "latest_number_does_not_guarantee_all_intermediate_chapters": true
+    "latest_number_does_not_guarantee_all_intermediate_chapters": true,
+    "title_numbering": "Use the numeral in the chapter title; API chapter_number is shifted by one relative to title near chapter 600. Chinese-written numerals occur near 901–955.",
+    "catalog_verified_full": true,
+    "catalog_run": "https://github.com/Lalalalendia/med/actions/runs/44051337987"
   },
-  "collection_status": "SOURCE_IDENTIFIED_TEXT_NOT_COLLECTED",
-  "note": "Metadata index only. A full-text export requires rights/permission to reproduce the contemporary work, plus validated source numbering and access."
+  "collection_status": "RAW_600_609_VERIFIED_REMAINDER_RUNNING",
+  "note": "Permission to reproduce explicitly confirmed in chat. Chapters 600–609 exported with verified SHA-256 and paragraphs; complete range pending current GitHub Actions run.",
+  "requested_author_chapter_through_catalog_snapshot": 1003,
+  "requested_author_chapter_count": 404,
+  "first_chapter_600": {
+    "title": "第600章 我们从正门进",
+    "id": "6af8d3237d54a8afba0823cd",
+    "url": "https://jiuxiaozw.com/book/6af8d3227d54a8afba082141/6af8d3237d54a8afba0823cd",
+    "catalog_index_1based": 599,
+    "api_chapter_number": 599
+  },
+  "collection_run": "https://github.com/Lalalalendia/med/actions/runs/44052379300"
 }
