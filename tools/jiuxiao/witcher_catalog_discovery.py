@@ -58,3 +58,12 @@ for i,script in enumerate(scripts[:55]):
         if len(matches)>=18:break
     summary.append({"i":i,"src":urlparse(script).path,"bytes":len(js),"score":score,"strings":matches})
 print("JS_SUMMARY",json.dumps([x for x in summary if x.get('score',{}).get('catalog',0) or x.get('score',{}).get('chapter',0) or x.get('score',{}).get('目录',0)],ensure_ascii=False,indent=2)[:24000])
+# Read source implementation of the public catalog interface; no novel text.
+for source in scripts:
+    if "1ei8qzrisx2k" not in source:
+        continue
+    js=get(source)
+    for needle in ("catalog/version", "catalog?"):
+        pos=js.find(needle)
+        print("CATALOG_API_CODE",needle,"at",pos,js[max(0,pos-2300):pos+1200] if pos>=0 else "")
+
