@@ -1,11 +1,6 @@
 name: Witcher authorized RAW from chapter 600
 
 on:
-  pull_request:
-    paths:
-      - "tools/jiuxiao/witcher_collect_text.py"
-      - "tools/jiuxiao/test_witcher_collect.py"
-      - ".github/workflows/witcher-raw-600.yml"
   workflow_dispatch:
 
 permissions:
