@@ -121,19 +121,20 @@ for test_id in range(1200):
 
 print("Reference tests: sample, edges, 1200 random cases PASS")
 
-# Worst permitted number of time-expanded nodes and many road traversals.
-# n*t <= 10000 and m <= 10000.
+# Dense time-expanded graph, but only one tourist per minute can enter the sink.
+# Ensures execution continues through the closing time instead of exiting early.
 n, t, k = 100, 100, 10000
-roads = [(i, i+1, 1, 1) for i in range(99)]
-used = {(i, i+1) for i in range(99)}
+roads = [(98, 99, 1, 1)]
+used = {(98, 99)}
 while len(roads) < 9000:
-    u, v = random.randrange(n), random.randrange(n)
+    u, v = random.randrange(99), random.randrange(99)
     if u == v or (u, v) in used:
         continue
     used.add((u, v))
-    roads.append((u, v, random.randint(1, 200), random.randint(1, 3000)))
+    roads.append((u, v, 1, random.randint(1, 3000)))
 start = time.perf_counter()
 got = run(n, roads, k, t, timeout=25)
 duration = time.perf_counter() - start
 print(f"Stress: n={n}, m={len(roads)}, t={t}, k={k}, result={got}, wall={duration:.3f}s")
+assert 9900 <= got <= 10000
 assert duration < 15, "Very slow execution"
