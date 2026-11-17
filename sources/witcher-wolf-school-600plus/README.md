@@ -28,6 +28,19 @@ The verified catalog had version `4` and 1,002 indexed chapters. Author
 chapter numbers 600 through 1003 form 404 entries, with no gaps in the parsed
 author numbering in the selected range.
 
+## Verified full export (2026-11-17)
+
+The approved [GitHub Actions run](https://github.com/Lalalalendia/med/actions/runs/44052379300)
+completed **404 of 404 author chapters, 600–1003**, preserving **1,832,179**
+UTF-8 characters and **61,089** source paragraphs. An independent post-download
+check passed ZIP CRC and every chapter's SHA-256; the entire combined text has
+SHA-256 `63300a7a08078e5a62d8b0af583b020cc88f7fcbedb87377c701f10fe6106045`.
+
+The complete archive was uploaded as GitHub Actions artifact
+`witcher-600-plus-raw-and-progress` (artifact ID `14316020416`).
+The long workflow is now **workflow_dispatch only**, to avoid repeatedly
+re-copying 404 chapters on unrelated pull request updates.
+
 ## Export and QA
 
 [GitHub workflow](https://github.com/Lalalalendia/med/actions/workflows/witcher-raw-600.yml)
