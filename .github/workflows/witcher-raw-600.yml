@@ -25,7 +25,7 @@ jobs:
         run: python -m unittest discover -s tools/jiuxiao -p 'test_*.py' -v
       - name: Retrieve versioned full catalogue for snapshot
         run: python tools/jiuxiao/witcher_full_catalog.py
-      - name: Pilot: collect the first ten chapters from 600
+      - name: Pilot - collect first ten chapters from 600
         run: |
           python tools/jiuxiao/witcher_collect_text.py \
             --catalog out/witcher-full-catalog.json \
