@@ -1,0 +1,102 @@
+name: Witcher authorized RAW from chapter 600
+
+on:
+  pull_request:
+    paths:
+      - "tools/jiuxiao/witcher_collect_text.py"
+      - "tools/jiuxiao/test_witcher_collect.py"
+      - ".github/workflows/witcher-raw-600.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Verify author-number parsing and resume safety
+        run: python -m unittest discover -s tools/jiuxiao -p 'test_*.py' -v
+      - name: Retrieve versioned full catalogue for snapshot
+        run: python tools/jiuxiao/witcher_full_catalog.py
+      - name: Pilot: collect the first ten chapters from 600
+        run: |
+          python tools/jiuxiao/witcher_collect_text.py \
+            --catalog out/witcher-full-catalog.json \
+            --start 600 --max-new 10 --delay 2 \
+            --out-dir out/witcher-600-plus
+          python - <<'PY'
+          import json, pathlib
+          d=json.loads(pathlib.Path('out/witcher-600-plus/progress.json').read_text(encoding='utf-8'))
+          assert d['status']=='PARTIAL' and len(d['chapters'])==10,d
+          assert [x['number'] for x in d['chapters']]==list(range(600,610))
+          print('PILOT_VERIFIED 600-609')
+          PY
+      - name: Save independently useful pilot as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: witcher-600-609-text-pilot
+          path: |
+            out/witcher-full-catalog.json
+            out/witcher-600-plus/
+          retention-days: 7
+      - name: Resume and collect all remaining chapters from 600 through snapshot latest
+        run: |
+          python tools/jiuxiao/witcher_collect_text.py \
+            --catalog out/witcher-full-catalog.json \
+            --start 600 --delay 2 \
+            --out-dir out/witcher-600-plus
+      - name: Verify the complete text, SHA-256 and exact chapter count
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('out/witcher-600-plus')
+          d=json.loads((p/'manifest.json').read_text(encoding='utf-8'))
+          assert d['status']=='RANGE_COMPLETE',d['status']
+          assert d['start_author_chapter']==600
+          assert d['chapters_collected']==d['expected_chapters']
+          assert d['chapters_collected']>=400
+          assert [r['number'] for r in d['chapters']]==list(range(600,d['end_author_chapter']+1))
+          assert len(list((p/'chapters').glob('*.txt')))==d['chapters_collected']
+          text=(p/'book-600-plus.txt').read_text(encoding='utf-8')
+          assert hashlib.sha256(text.encode('utf-8')).hexdigest()==d['sha256_book_txt']
+          for row in d['chapters']:
+              t=(p/'chapters'/row['filename']).read_text(encoding='utf-8')
+              assert hashlib.sha256(t.encode('utf-8')).hexdigest()==row['sha256']
+              assert t.count('\n\n')>=1
+          print('VERIFIED_ALL',d['chapters_collected'],d['end_author_chapter'],d['text_characters'],d['sha256_book_txt'])
+          PY
+      - name: Final source verification summary
+        if: always()
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          from pathlib import Path
+          import json
+          print('# Witcher authorized RAW 600+ collection\n')
+          m=Path('out/witcher-600-plus/manifest.json')
+          p=Path('out/witcher-600-plus/progress.json')
+          if m.exists():
+              j=json.loads(m.read_text(encoding='utf-8'))
+              print(f'COMPLETE: chapters 600-{j["end_author_chapter"]}: {j["chapters_collected"]}, text characters: {j["text_characters"]}.')
+              print(f'Full book SHA-256: {j["sha256_book_txt"]}')
+          elif p.exists():
+              j=json.loads(p.read_text(encoding='utf-8'))
+              print(f'PARTIAL: {len(j["chapters"])} chapters saved; resume using progress.json and same catalog.')
+          else:
+              print('No content verified.')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: witcher-600-plus-raw-and-progress
+          path: |
+            out/witcher-full-catalog.json
+            out/witcher-600-plus/
+          retention-days: 7
