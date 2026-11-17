@@ -99,6 +99,14 @@ def validate(records, expected=NUMBERED, extras_expected=CATALOG_ENTRIES - NUMBE
         actual = Counter(r["title"] for r in extras)
         if actual != wanted:
             raise ValueError(f"Extras differ from source catalog: {actual}")
+        expected_positions = [
+            (1, "二戰風雲"), (74, "變種人時代"), (113, "變種人時代"),
+            (163, "復仇者聯盟"), (169, "回來了"),
+            (196, "最後還是說兩句"), (197, "新書：開局一個女超人"),
+        ]
+        observed_positions = [(i, r["title"]) for i, r in enumerate(records, 1) if r["number"] is None]
+        if observed_positions != expected_positions:
+            raise ValueError(f"Extra item positions changed: {observed_positions}")
     fingerprints = [sha(r["text"].encode("utf-8")) for r in records]
     if len(fingerprints) != len(set(fingerprints)):
         raise ValueError("Duplicate entry bodies detected")
