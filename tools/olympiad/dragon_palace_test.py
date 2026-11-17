@@ -113,7 +113,7 @@ for test_id in range(1200):
     random.shuffle(candidates)
     roads = [
         (u, v, random.randrange(1, 5), random.randrange(1, 6))
-        for u, v in candidates[:random.randrange(1, min(len(candidates), 12) + 1)]
+        for u, v in candidates[:random.randrange(0, min(len(candidates), 12) + 1)]
     ]
     actual = run(n, roads, k, t)
     expected = reference(n, roads, k, t)
