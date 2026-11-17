@@ -122,6 +122,31 @@ struct Road {
     capacity: i32,
 }
 
+fn delivered(n: usize, roads: &[Road], k: i32, deadline: usize) -> i32 {
+    let sink = (deadline + 1) * n;
+    let mut flow = Dinic::new(
+        sink + 1,
+        0,
+        sink,
+        roads.len() * (deadline + 1) + n * deadline + deadline + 1,
+    );
+
+    for time in 0..=deadline {
+        if time > 0 {
+            for v in 0..n {
+                flow.add_edge((time - 1) * n + v, time * n + v, k);
+            }
+        }
+        for r in roads {
+            if time + r.time <= deadline {
+                flow.add_edge(time * n + r.from, (time + r.time) * n + r.to, r.capacity);
+            }
+        }
+        flow.add_edge(time * n + n - 1, sink, k);
+    }
+    flow.max_flow(k)
+}
+
 fn main() {
     let mut input = String::new();
     io::stdin().read_to_string(&mut input).unwrap();
@@ -169,41 +194,21 @@ fn main() {
         return;
     }
 
-    let sink = (t + 1) * n;
-    let mut flow = Dinic::new(
-        sink + 1,
-        0,
-        sink,
-        m * (t + 1) + n * t + t + 1,
-    );
-    let mut sent = 0;
+    let full = delivered(n, &roads, k, t);
+    if full < k {
+        println!("{}", k - full);
+        return;
+    }
 
-    for time in 0..=t {
-        if time > 0 {
-            // Unlimited waiting on viewing platforms.
-            for v in 0..n {
-                flow.add_edge((time - 1) * n + v, time * n + v, k);
-            }
-            // A road can be started at time - travel_time.
-            for r in &roads {
-                if r.time <= time {
-                    flow.add_edge(
-                        (time - r.time) * n + r.from,
-                        time * n + r.to,
-                        r.capacity,
-                    );
-                }
-            }
-        }
-
-        if time >= dist[n - 1] {
-            flow.add_edge(time * n + n - 1, sink, k);
-            sent += flow.max_flow(k - sent);
-            if sent == k {
-                println!("{time}");
-                return;
-            }
+    let mut low = dist[n - 1];
+    let mut high = t;
+    while low < high {
+        let mid = low + (high - low) / 2;
+        if delivered(n, &roads, k, mid) == k {
+            high = mid;
+        } else {
+            low = mid + 1;
         }
     }
-    println!("{}", k - sent);
+    println!("{low}");
 }
