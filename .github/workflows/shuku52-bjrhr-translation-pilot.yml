@@ -1,0 +1,42 @@
+name: Shuku52 Russian translation - GitHub Models pilot
+on:
+  push:
+    branches:
+      - feat/shuku52-bjrhr-ru-026-035-20261117
+    paths:
+      - .github/workflows/shuku52-bjrhr-translation-pilot.yml
+      - tools/novel-ingest/shuku52_translation_models_pilot.py
+
+permissions:
+  contents: read
+  actions: read
+  models: read
+
+jobs:
+  translate-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: shuku52-bjrhr-verified-full
+          repository: Lalalalendia/med
+          run-id: 43931365742
+          github-token: ${{ github.token }}
+          path: out/shuku52/source
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests
+      - name: Translate 20 Chinese paragraphs, check completeness
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -u tools/novel-ingest/shuku52_translation_models_pilot.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shuku52-bjrhr-ru-026-pilot
+          path: out/shuku52-ru-probe/
+          retention-days: 14
+          if-no-files-found: warn
