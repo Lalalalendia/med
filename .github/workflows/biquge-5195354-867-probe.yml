@@ -1,0 +1,101 @@
+name: Biquge 5195354 chapters 867+ access probe
+on:
+  push:
+    branches: ["feat/biquge-5195354-867-tail-20261117"]
+    paths: [".github/workflows/biquge-5195354-867-probe.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-access-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe robots, catalog, and chapters 867 and 868 without storing prose
+        run: |
+          python - <<'PY'
+          import json, re, sys
+          from pathlib import Path
+          from urllib.parse import urljoin, urlsplit
+          from urllib.robotparser import RobotFileParser
+          import requests
+          from bs4 import BeautifulSoup
+          out=Path("out/biquge-probe")
+          out.mkdir(parents=True,exist_ok=True)
+          url="https://www.biquge.tw/book/5195354/"
+          ua="MEDAuthorizedNovelProbe/1.0 (+https://github.com/Lalalalendia/med)"
+          s=requests.Session()
+          s.headers.update({"User-Agent":ua,"Accept-Language":"zh-CN,zh;q=0.9"})
+          result={"index":url,"chapter_start":867,"steps":[]}
+          def fetch(label,u):
+              try:
+                  r=s.get(u,timeout=(10,30),allow_redirects=False)
+                  result["steps"].append({"step":label,"url":u,"http_status":r.status_code,"content_type":r.headers.get("Content-Type",""),"bytes":len(r.content),"location":r.headers.get("Location","")})
+                  return r
+              except requests.RequestException as e:
+                  result["steps"].append({"step":label,"error":type(e).__name__})
+                  raise
+          try:
+              rob=fetch("robots","https://www.biquge.tw/robots.txt")
+              if rob.status_code==200 and "<html" not in rob.text[:200].lower():
+                  rp=RobotFileParser()
+                  rp.parse(rob.text.splitlines())
+              elif rob.status_code in (404,410):
+                  rp=RobotFileParser()
+                  rp.parse(["User-agent: *","Allow: /"])
+              else:
+                  raise RuntimeError("Cannot verify robots policy")
+              if not rp.can_fetch(ua,url):
+                  raise RuntimeError("robots forbids catalog")
+              page=fetch("catalog",url)
+              if page.status_code!=200:
+                  raise RuntimeError("catalog HTTP "+str(page.status_code))
+              page.encoding=page.apparent_encoding or "utf-8"
+              soup=BeautifulSoup(page.text,"html.parser")
+              entries={}
+              for a in soup.find_all("a",href=True):
+                  title=a.get_text(" ",strip=True)
+                  m=re.search(r"第\s*(\d+)\s*章",title)
+                  if not m: continue
+                  n=int(m.group(1))
+                  target=urljoin(url,a["href"])
+                  if 1<=n<=1300 and urlsplit(target).hostname in ("www.biquge.tw","biquge.tw"):
+                      entries.setdefault(n,target)
+              result["catalog_entries"]=len(entries)
+              result["last_ordinal"]=max(entries) if entries else None
+              result["has_867"]=867 in entries
+              result["has_868"]=868 in entries
+              if not (867 in entries and 868 in entries):
+                  raise RuntimeError("catalog lacks requested start")
+              for n in (867,868):
+                  target=entries[n]
+                  if not rp.can_fetch(ua,target):
+                      raise RuntimeError("robots forbids chapter "+str(n))
+                  r=fetch("chapter_"+str(n),target)
+                  if r.status_code!=200:
+                      raise RuntimeError("chapter "+str(n)+" HTTP "+str(r.status_code))
+                  r.encoding=r.apparent_encoding or "utf-8"
+                  html=BeautifulSoup(r.text,"html.parser")
+                  heading=html.select_one("h1")
+                  result["steps"][-1]["heading"]=heading.get_text(" ",strip=True)[:180] if heading else ""
+                  result["steps"][-1]["han_count_document"]=len(re.findall(r"[\u3400-\u9fff]",r.text))
+              result["status"]="PROBE_PASS"
+          except Exception as e:
+              result["status"]="PROBE_BLOCKED"
+              result["reason"]=type(e).__name__+": "+str(e)[:250]
+          (out/"result.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(result,ensure_ascii=False,indent=2),flush=True)
+          if result["status"]!="PROBE_PASS": sys.exit(1)
+          PY
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: biquge-5195354-access-probe
+          path: out/biquge-probe/result.json
+          retention-days: 14
+          if-no-files-found: warn
