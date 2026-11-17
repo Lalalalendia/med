@@ -1,0 +1,63 @@
+{
+  "project": "witcher-wolf-school-600plus",
+  "title_zh": "猎魔人：狼学派的狩魔手记",
+  "author_zh": "铬先生",
+  "original_source": {
+    "name": "起点中文网 Qidian",
+    "url": "https://www.qidian.com/book/1038677367/",
+    "book_id": "1038677367"
+  },
+  "secondary_sources": [
+    {
+      "name": "九霄中文网 Jiuxiao",
+      "url": "https://jiuxiaozw.com/sim/book/6af8d3227d54a8afba082141",
+      "book_id": "6af8d3227d54a8afba082141",
+      "observed_latest_number": 1003,
+      "observed_book_catalog_entries": 1002,
+      "observed_as_of": "2026-11-17",
+      "catalog_version": "4",
+      "catalog_api": "https://jiuxiaozw.com/api/books/6af8d3227d54a8afba082141/catalog?offset=0&limit=128&version=4"
+    },
+    {
+      "name": "69书吧 (stale secondary source)",
+      "url": "https://www.69shuba.com/book/57998/",
+      "observed_latest_number_approx": 677
+    }
+  ],
+  "requested_author_chapter_from": 600,
+  "verification": {
+    "chapter_number_interpretation": "author number, not list position",
+    "reported_discrepancy": "69书吧 lists 第600章 兽吼之道唤龙; a different index labels 我们从正门进 as 第600章, while 69书吧 labels it 第601章",
+    "must_verify_title_and_url_before_collection": true,
+    "non_numbered_entries_may_shift_catalog_ordinals": true,
+    "latest_number_does_not_guarantee_all_intermediate_chapters": true,
+    "title_numbering": "Use the numeral in the chapter title; API chapter_number is shifted by one relative to title near chapter 600. Chinese-written numerals occur near 901–955.",
+    "catalog_verified_full": true,
+    "catalog_run": "https://github.com/Lalalalendia/med/actions/runs/44051337987"
+  },
+  "collection_status": "RAW_600_1003_COMPLETE_VERIFIED",
+  "note": "User explicitly confirmed permission to copy. Chapters 600–1003 collected and verified independently after downloading GitHub Actions artifact. Full RAW is in the expiring Actions artifact, not committed to Git.",
+  "requested_author_chapter_through_catalog_snapshot": 1003,
+  "requested_author_chapter_count": 404,
+  "first_chapter_600": {
+    "title": "第600章 我们从正门进",
+    "id": "6af8d3237d54a8afba0823cd",
+    "url": "https://jiuxiaozw.com/book/6af8d3227d54a8afba082141/6af8d3237d54a8afba0823cd",
+    "catalog_index_1based": 599,
+    "api_chapter_number": 599
+  },
+  "collection_run": "https://github.com/Lalalalendia/med/actions/runs/44052379300",
+  "final_output": {
+    "start": 600,
+    "end": 1003,
+    "chapters": 404,
+    "characters": 1832179,
+    "paragraphs": 61089,
+    "sha256_book_txt": "63300a7a08078e5a62d8b0af583b020cc88f7fcbedb87377c701f10fe6106045",
+    "github_actions_run": "https://github.com/Lalalalendia/med/actions/runs/44052379300",
+    "github_artifact_id": 14316020416,
+    "verified_zip_crc": true,
+    "verified_every_chapter_sha256": true,
+    "verified_no_missing_author_numbers": true
+  }
+}

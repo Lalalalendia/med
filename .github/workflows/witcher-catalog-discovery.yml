@@ -1,0 +1,31 @@
+name: Jiuxiao Witcher catalogue structure discovery
+
+on:
+  pull_request:
+    paths:
+      - tools/jiuxiao/witcher_catalog_discovery.py
+      - tools/jiuxiao/witcher_full_catalog.py
+      - .github/workflows/witcher-catalog-discovery.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install requests beautifulsoup4
+      - name: Retrieve versioned full chapter catalog
+        run: python tools/jiuxiao/witcher_full_catalog.py
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: witcher-jiuxiao-full-catalog
+          path: out/witcher-full-catalog.json
+          retention-days: 7
