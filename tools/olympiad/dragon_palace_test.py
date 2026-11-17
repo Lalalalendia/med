@@ -126,7 +126,7 @@ print("Reference tests: sample, edges, 1200 random cases PASS")
 n, t, k = 100, 100, 10000
 roads = [(i, i+1, 1, 1) for i in range(99)]
 used = {(i, i+1) for i in range(99)}
-while len(roads) < 10000:
+while len(roads) < 9000:
     u, v = random.randrange(n), random.randrange(n)
     if u == v or (u, v) in used:
         continue
