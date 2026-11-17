@@ -35,8 +35,8 @@
     "catalog_verified_full": true,
     "catalog_run": "https://github.com/Lalalalendia/med/actions/runs/44051337987"
   },
-  "collection_status": "RAW_600_609_VERIFIED_REMAINDER_RUNNING",
-  "note": "Permission to reproduce explicitly confirmed in chat. Chapters 600–609 exported with verified SHA-256 and paragraphs; complete range pending current GitHub Actions run.",
+  "collection_status": "RAW_600_1003_COMPLETE_VERIFIED",
+  "note": "User explicitly confirmed permission to copy. Chapters 600–1003 collected and verified independently after downloading GitHub Actions artifact. Full RAW is in the expiring Actions artifact, not committed to Git.",
   "requested_author_chapter_through_catalog_snapshot": 1003,
   "requested_author_chapter_count": 404,
   "first_chapter_600": {
@@ -46,5 +46,18 @@
     "catalog_index_1based": 599,
     "api_chapter_number": 599
   },
-  "collection_run": "https://github.com/Lalalalendia/med/actions/runs/44052379300"
+  "collection_run": "https://github.com/Lalalalendia/med/actions/runs/44052379300",
+  "final_output": {
+    "start": 600,
+    "end": 1003,
+    "chapters": 404,
+    "characters": 1832179,
+    "paragraphs": 61089,
+    "sha256_book_txt": "63300a7a08078e5a62d8b0af583b020cc88f7fcbedb87377c701f10fe6106045",
+    "github_actions_run": "https://github.com/Lalalalendia/med/actions/runs/44052379300",
+    "github_artifact_id": 14316020416,
+    "verified_zip_crc": true,
+    "verified_every_chapter_sha256": true,
+    "verified_no_missing_author_numbers": true
+  }
 }
