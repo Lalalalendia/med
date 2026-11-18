@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Dependencies
-        run: python -m pip install --disable-pip-version-check requests
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
       - name: Offline parser and ZIP tests
         run: python tools/novel-ingest/ixdzs_530822_tail.py --selftest
       - name: Collect and verify permissioned source 680-1456
