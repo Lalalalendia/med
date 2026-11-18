@@ -41,7 +41,7 @@ jobs:
         run: |
           python -u tools/novel-ingest/slime_true_immortal.py collect \
             --rights-confirmed --start "$START" --end "$END" \
-            --delay 1.2 --min-chars 350 --out out/slime-"$START"-"$END"
+            --delay 1.2 --min-chars 1300 --out out/slime-"$START"-"$END"
       - name: Publish verified RAW and failure receipts
         if: always()
         uses: actions/upload-artifact@v4
