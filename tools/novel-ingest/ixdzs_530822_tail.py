@@ -315,28 +315,41 @@ def package(records: list[dict], raw: bytes, source_url: str, members: list[str]
         "title": TITLE, "author": AUTHOR, "book_id": BOOK,
         "source_catalog": INDEX, "source_zip": source_url, "source_zip_sha256": digest(raw),
         "source_members": members, "start": records[0]["number"], "end": records[-1]["number"],
-        "expected_chapters": END - START + 1, "verified_chapters": len(records),
+        "expected_numbers": END - START + 1,
+        "verified_numbers": len({r["number"] for r in records}),
+        "verified_entries": len(records), "expected_entries": END - START + 2,
+        "source_anomalies": {
+            "1155": "Missing 章 marker in source heading; split from 1154",
+            "1269": "Two distinct chapters share number 1269; preserved as 1269 and 1269b",
+            "1304-1305": "Restored from Biquge 1398304; checked against Fanqie catalog",
+        },
         "complete": True, "rights_confirmed": True,
         "verified_utc": datetime.now(timezone.utc).isoformat(),
         "combined_sha256": digest(combined.encode("utf-8")), "chapters": []
     }
     with ZipFile(archive_path, "w", ZIP_DEFLATED, compresslevel=7) as target:
+        seen = set()
         for record in records:
-            name = f"chapters/{record['number']:04d}.txt"
-            body = (record["title"] + "\n\n" + record["body"] + "\n").encode("utf-8")
-            target.writestr(name, body)
-            metadata["chapters"].append({"number": record["number"], "title": record["title"],
-                                         "han": record["han"], "path": name, "sha256": digest(body)})
+            num = record["number"]
+            suffix = "b" if num in seen else ""
+            seen.add(num)
+            name = f"chapters/{num:04d}{suffix}.txt"
+            content = (record["title"] + "\n\n" + record["body"] + "\n").encode("utf-8")
+            target.writestr(name, content)
+            metadata["chapters"].append({
+                "number": num, "title": record["title"],
+                "source_title": record["source_title"], "source_url": record["source_url"],
+                "han": record["han"], "path": name, "sha256": digest(content)})
         target.writestr("combined.txt", combined)
         target.writestr("manifest.json", json.dumps(metadata, ensure_ascii=False, indent=2) + "\n")
     with ZipFile(archive_path) as target:
         if target.testzip() is not None or len(target.namelist()) != len(records) + 2:
-            raise ValueError("Output archive CRC/count failed")
+            raise ValueError("Output ZIP CRC/count mismatch")
         if digest(target.read("combined.txt")) != metadata["combined_sha256"]:
-            raise ValueError("Combined file checksum mismatch")
+            raise ValueError("Combined SHA-256 mismatch")
         for item in metadata["chapters"]:
             if digest(target.read(item["path"])) != item["sha256"]:
-                raise ValueError(f"Output chapter checksum mismatch: {item['number']}")
+                raise ValueError(f"Chapter SHA-256 mismatch at {item['number']}")
     return {"archive": archive_name, "archive_sha256": digest(archive_path.read_bytes()),
             "archive_bytes": archive_path.stat().st_size, "manifest": metadata}
 
@@ -389,9 +402,11 @@ def main() -> int:
         status['original_zip_sha256'] = digest(raw)
         status['original_zip_bytes'] = len(raw)
         text, members = zip_text(raw)
-        records = numbered_sections(text, START, END)
+        records = numbered_sections(text, START, END, allowed_missing=(1304, 1305))
+        recovered = recover_biquge(session, (1304, 1305))
+        records = reconcile(records, recovered)
         packed = package(records, raw, final_url, members, args.out)
-        status.update({"complete": True, "verified_chapters": len(records),
+        status.update({"complete": True, "verified_numbers": len({r["number"] for r in records}), "verified_entries": len(records),
                        "archive": packed["archive"], "archive_sha256": packed["archive_sha256"],
                        "archive_bytes": packed["archive_bytes"],
                        "source_sha256": digest(raw), "members": members})
