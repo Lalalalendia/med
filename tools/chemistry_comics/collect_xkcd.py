@@ -7,7 +7,6 @@ the images, with source links and license attribution.
 from __future__ import annotations
 
 import argparse
-import base64
 import hashlib
 import html
 import json
@@ -150,7 +149,7 @@ def build(items: list[dict], destination: Path, fetch=get_image) -> dict:
         "КОМИКСЫ О ХИМИИ · xkcd · ЛИЧНЫЙ ЧИТАТЕЛЬСКИЙ НАБОР\n\n"
         "Откройте index.html в браузере. Внутри оригинальные картинки и русские переводы рядом.\n"
         "Автор рисунков: Randall Munroe. Оригинал: https://xkcd.com\n"
-        "Лицензия оригинальных рисунков: Creative Commons BY-NC 2.5:\n"
+        "Лицензия оригинальных рисунков: Creative Commons CC BY-NC 2.5:\n"
         "https://xkcd.com/license.html\n"
         "Адаптация предназначена для личного некоммерческого чтения.\n", encoding="utf-8")
     return manifest
