@@ -1,0 +1,34 @@
+name: FIPI chemistry official documents audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/fipi-oge-chemistry-46-20261119]
+    paths:
+      - "tools/fipi_official_docs_audit.py"
+      - ".github/workflows/fipi-official-documents.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PDF parser and HTTP client
+        run: python -m pip install --disable-pip-version-check requests pymupdf
+      - name: Check FIPI official documents (not the interactive bank)
+        run: python tools/fipi_official_docs_audit.py
+      - name: Export independent provenance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fipi-official-documents-audit
+          path: artifacts/fipi-official-document-audit/
+          if-no-files-found: warn
+          retention-days: 30
