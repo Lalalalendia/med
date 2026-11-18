@@ -68,6 +68,13 @@ def diagnose():
                 if chars>=100:
                     candidates.append((chars,node.name,node.get('id'),node.get('class')))
             print('LONG_NODES',name,sorted(candidates,reverse=True,key=lambda x:x[0])[:15])
+            for css in ('.con','.container','main','.read'):
+                node=soup.select_one(css)
+                if node:
+                    print('NODE_SAMPLE',name,css,'text=',repr(node.get_text(' ',strip=True)[:650]))
+                    print('NODE_CHILDREN',name,css,[(k.name,k.get('id'),k.get('class'),
+                        len(k.get_text(' ',strip=True))) for k in node.find_all(recursive=False)][:30])
+            print('SCRIPT_INFO',name,[(q.get('src'),len(q.get_text())) for q in soup.select('script')][:12])
         except Exception as exc:
             print('ERROR',name,type(exc).__name__,str(exc)[:220])
 
