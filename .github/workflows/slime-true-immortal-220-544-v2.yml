@@ -3,11 +3,12 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feat/slime-true-immortal-220-544-20261119
+      - main
+      - feat/slime-true-immortal-220-545-20261119
     paths:
       - tools/novel-ingest/slime_true_immortal.py
       - tools/novel-ingest/test_slime_true_immortal.py
-      - .github/workflows/slime-true-immortal-220-544.yml
+      - .github/workflows/slime-true-immortal-220-544-v2.yml
 permissions:
   contents: read
 jobs:
