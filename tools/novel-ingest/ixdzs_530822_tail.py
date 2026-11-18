@@ -181,6 +181,131 @@ def check_unique_bodies(records: list[dict]) -> None:
         hashes[sha] = record["number"]
 
 
+def checked_biquge_html(session: requests.Session, url: str, max_bytes=8_000_000) -> str:
+    response = session.get(url, timeout=(10, 45), stream=True, allow_redirects=False)
+    try:
+        parts = urlsplit(response.url)
+        if parts.scheme != "https" or parts.hostname not in ("www.biquge.tw", "biquge.tw"):
+            raise RuntimeError("Untrusted Biquge redirect/URL")
+        if response.status_code in (401, 403, 429, 503):
+            raise RuntimeError(f"Biquge access restricted: HTTP {response.status_code}")
+        if response.status_code != 200:
+            raise RuntimeError(f"Biquge HTTP {response.status_code}")
+        data = io.BytesIO()
+        for chunk in response.iter_content(65536):
+            data.write(chunk)
+            if data.tell() > max_bytes:
+                raise ValueError("Mirror response exceeds cap")
+        response._content = data.getvalue()
+        response.encoding = response.apparent_encoding or "utf-8"
+        html = response.text
+        if any(flag in html[:5000].lower() for flag in BLOCKED):
+            raise RuntimeError("Biquge returned an anti-bot challenge")
+        return html
+    finally:
+        response.close()
+
+
+def parse_mirror_chapter(html: str, number: int, expected: tuple[str, ...]) -> tuple[str, str, int]:
+    soup = BeautifulSoup(html, "html.parser")
+    head = soup.select_one("h1")
+    title = head.get_text(" ", strip=True) if head else ""
+    match = CHAPTER_LINK.search(title)
+    if not match or int(match.group(1)) != number:
+        raise ValueError(f"Mirror chapter header invalid for {number}: {title[:95]}")
+    if not any(piece in title for piece in expected):
+        raise ValueError(f"Mirror title mismatch at {number}: {title[:95]}")
+    roots = [soup.select_one(sel) for sel in MIRROR_ROOTS]
+    roots = [x for x in roots if x is not None]
+    if not roots:
+        raise ValueError(f"Mirror chapter {number}: missing prose root")
+    root = max(roots, key=lambda x: len(x.get_text(" ", strip=True)))
+    for tag in root.select("script,style,iframe,form,nav,header,footer,aside,button,.ad,.ads,.page,.pagination,.read-page"):
+        tag.decompose()
+    for br in root.select("br"):
+        br.replace_with("\n")
+    lines = [re.sub(r"[ \t\xa0]+", " ", line).strip()
+             for line in root.get_text("\n", strip=True).splitlines()]
+    lines = [line for line in lines if line and line != title and
+             not re.search(r"上一章|下一章|返回目录|加入书架", line)]
+    body = "\n\n".join(lines)
+    han = len(HAN.findall(body))
+    if han < 350:
+        raise ValueError(f"Mirror chapter {number}: too short ({han} Han)")
+    if re.search(r"[（(]\s*1\s*/\s*[2-9]\s*[）)]", title) or re.search(r"本章未完.{0,15}下一页", html):
+        raise ValueError(f"Mirror chapter {number}: split page detected")
+    if any(flag in body[:500].lower() for flag in BLOCKED):
+        raise RuntimeError(f"Mirror chapter {number}: access placeholder")
+    return title, body, han
+
+
+def recover_biquge(session: requests.Session, missing: tuple[int, ...]) -> list[dict]:
+    if set(missing) != {1304, 1305}:
+        raise ValueError(f"Unrecognized mirror recovery request: {missing}")
+    policy = session.get("https://www.biquge.tw/robots.txt", timeout=(10, 30),
+                         allow_redirects=False)
+    parser = RobotFileParser()
+    if policy.status_code == 200 and "<html" not in policy.text[:200].lower():
+        parser.parse(policy.text.splitlines())
+    elif policy.status_code in (404, 410):
+        parser.parse(["User-agent: *", "Allow: /"])
+    else:
+        raise RuntimeError(f"Cannot verify Biquge robots policy: HTTP {policy.status_code}")
+    if not parser.can_fetch(MIRROR_UA, MIRROR_INDEX):
+        raise RuntimeError("Biquge robots disallows index")
+    session.headers.update({"User-Agent": MIRROR_UA, "Accept-Language": "zh-CN,zh;q=0.9"})
+    soup = BeautifulSoup(checked_biquge_html(session, MIRROR_INDEX), "html.parser")
+    links = {}
+    for anchor in soup.select("a[href]"):
+        label = anchor.get_text(" ", strip=True)
+        match = CHAPTER_LINK.search(label)
+        if not match:
+            continue
+        number = int(match.group(1))
+        if number not in missing or not any(
+                title in label for title in EXPECTED_MIRROR_TITLES[number]):
+            continue
+        url = urljoin(MIRROR_INDEX, anchor["href"])
+        bits = urlsplit(url)
+        if bits.scheme == "https" and bits.hostname in ("www.biquge.tw", "biquge.tw") and MIRROR_PATH.fullmatch(bits.path):
+            links.setdefault(number, set()).add(url)
+    if set(links) != set(missing) or any(len(links[n]) != 1 for n in missing):
+        raise ValueError(f"Biquge index lacks unambiguous chapter links: {links}")
+    print("MIRROR_LINKS", json.dumps({n: next(iter(links[n])) for n in missing}), flush=True)
+    recovered = []
+    for number in sorted(missing):
+        url = next(iter(links[number]))
+        if not parser.can_fetch(MIRROR_UA, url):
+            raise RuntimeError(f"Robots disallows Biquge chapter {number}")
+        time.sleep(max(1.5, float(parser.crawl_delay(MIRROR_UA) or 0)))
+        title, body, han = parse_mirror_chapter(
+            checked_biquge_html(session, url), number, EXPECTED_MIRROR_TITLES[number])
+        recovered.append({"number": number, "title": title, "source_title": title,
+                          "source_url": url, "body": body, "han": han})
+        print("MIRROR_VERIFIED", number, han, digest(body.encode("utf-8"))[:14], flush=True)
+    return recovered
+
+
+def reconcile(records: list[dict], additions: list[dict], start=START, end=END) -> list[dict]:
+    merged = sorted(records + additions, key=lambda r: r["number"])
+    expected = set(range(start, end + 1))
+    present = {r["number"] for r in merged}
+    if present != expected:
+        raise ValueError(f"Number audit missing: {sorted(expected - present)}")
+    counts = {}
+    for row in merged:
+        counts[row["number"]] = counts.get(row["number"], 0) + 1
+    repeated = {n: c for n, c in counts.items() if c > 1}
+    if repeated != ({1269: 2} if 1269 in expected else {}):
+        raise ValueError(f"Unexpected duplicate chapter labels: {repeated}")
+    if len(merged) != len(expected) + (1 if 1269 in expected else 0):
+        raise ValueError("Unexpected chapter entry count")
+    check_unique_bodies(merged)
+    if end == END and "回家" not in merged[-1]["title"] and "回家" not in merged[-1]["body"][-1200:]:
+        raise ValueError("Final chapter 1456 does not match expected ending")
+    return merged
+
+
 def package(records: list[dict], raw: bytes, source_url: str, members: list[str], out: Path) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     archive_name = f"ixdzs-{BOOK}-{records[0]['number']}-{records[-1]['number']}-cn.zip"
