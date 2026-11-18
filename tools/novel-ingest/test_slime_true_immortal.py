@@ -61,7 +61,7 @@ class SlimeCollectorTest(unittest.TestCase):
             class Args: pass
             a=Args(); a.rights_confirmed=True; a.inputs=str(inp); a.out=str(Path(td)/"merged")
             self.assertEqual(mod.merge(a),2)
-            with ZipFile(Path(a.out)/"slime_220-545_cn.zip") as z:
+            with ZipFile(Path(a.out)/"slime_220-544_cn.zip") as z:
                 self.assertEqual(len([x for x in z.namelist() if x.startswith("chapters/")]),1)
                 self.assertIsNone(z.testzip())
 
