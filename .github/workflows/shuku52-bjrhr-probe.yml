@@ -1,0 +1,55 @@
+name: Shuku52 bjRHR HTML structure probe
+
+on:
+  push:
+    branches:
+      - feat/shuku52-bjrhr-full-20261116
+    paths:
+      - .github/workflows/shuku52-bjrhr-probe.yml
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 lxml
+      - name: Probe live catalog and page structures
+        run: |
+          python - <<'PY'
+          import re, requests
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          base = 'https://www.52shuku.net/yanqing/06_b/bjRHR.html'
+          urls = [base] + [base.replace('.html', f'_{n}.html') for n in (2, 201, 451)]
+          s = requests.Session()
+          s.headers.update({'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36', 'Accept-Language': 'zh-CN,zh;q=0.9'})
+          for url in urls:
+              try:
+                  r = s.get(url, timeout=30)
+                  print('PAGE', url, 'HTTP', r.status_code, 'BYTES', len(r.content), 'CTYPE', r.headers.get('Content-Type'), flush=True)
+                  r.raise_for_status()
+                  soup = BeautifulSoup(r.content, 'lxml')
+                  if url == base:
+                      ids = sorted({int(m.group(1)) for a in soup.select('a[href]') if (m:=re.search(r'bjRHR_(\d+)\.html$', a.get('href', '')))})
+                      print('INDEX', len(ids), ids[:5], ids[-5:], 'GAPS', [n for n in range(min(ids), max(ids)+1) if n not in ids][:20], flush=True)
+                  cand = []
+                  for tag in soup.select('div, article, section, main'):
+                      text = tag.get_text(' ', strip=True)
+                      han = len(re.findall('[\u4e00-\u9fff]', text))
+                      links = sum(len(a.get_text(' ', strip=True)) for a in tag.select('a'))
+                      if han >= 30:
+                          cand.append((han, round(links/max(len(text),1),3),len(tag.select('p')),tag.name, tag.get('id',''), ' '.join(tag.get('class',[]))))
+                  for c in sorted(cand, reverse=True)[:18]:
+                      print('CAND', c, flush=True)
+                  print('BODY_P', len(soup.select('p')), 'H1',len(soup.select('h1')), flush=True)
+              except Exception as e:
+                  print('ERROR', repr(e), flush=True)
+                  raise
+          PY

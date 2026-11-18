@@ -1,0 +1,43 @@
+name: Shuku52 bjRHR - recover missing pages and audit
+on:
+  push:
+    branches:
+      - feat/shuku52-bjrhr-full-20261116
+    paths:
+      - .github/workflows/shuku52-bjrhr-recover.yml
+      - tools/novel-ingest/shuku52_bjrhr_recover.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download 449-page partial archive from prior run
+        uses: actions/download-artifact@v4
+        with:
+          name: shuku52-bjrhr-archive
+          run-id: 43929625539
+          github-token: ${{ github.token }}
+          repository: Lalalalendia/med
+          path: out/shuku52-bjrhr
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 lxml
+      - run: python -m py_compile tools/novel-ingest/shuku52_bjrhr_recover.py tools/novel-ingest/shuku52_bjrhr.py
+      - name: Recover missing page and verify all 450 pages
+        run: python -u tools/novel-ingest/shuku52_bjrhr_recover.py --out out/shuku52-bjrhr
+      - name: Upload complete text, individual pages and integrity manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shuku52-bjrhr-verified-full
+          path: out/shuku52-bjrhr/**
+          if-no-files-found: warn
+          retention-days: 30
