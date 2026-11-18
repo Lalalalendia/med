@@ -70,6 +70,13 @@ def probe(name,index):
     length,selector,text=candidates[0]
    else:
     length,selector,text=0,'NONE',''
+   if name=='biquge2026':
+    for node in doc.find_all(['main','div','section','article']):
+     cc=cjk(node.get_text(' ',strip=True))
+     if cc>1500:
+      print('STRUCTURE',node.name,node.get('id'),node.get('class'),'CJK',cc,
+            'children',[(child.name,child.get('id'),child.get('class'),cjk(child.get_text(' ',strip=True)))
+                        for child in node.find_all(recursive=False)][:15],flush=True)
    flags=[x for x in BLOCK if x.lower() in r.text.lower()]
    print(name,'chapter',label,'url',urlsplit(u).path,'htmlbytes',len(r.content),
          'max_text_CJK',length,'selector',selector,'flags',flags,
