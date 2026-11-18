@@ -1,13 +1,13 @@
-name: Slime True Immortal - collect verified CN 220-545
+name: Slime True Immortal - collect verified CN 220-544
 on:
   workflow_dispatch:
   push:
     branches:
-      - feat/slime-true-immortal-220-545-20261119
+      - feat/slime-true-immortal-220-544-20261119
     paths:
       - tools/novel-ingest/slime_true_immortal.py
       - tools/novel-ingest/test_slime_true_immortal.py
-      - .github/workflows/slime-true-immortal-220-545.yml
+      - .github/workflows/slime-true-immortal-220-544.yml
 permissions:
   contents: read
 jobs:
@@ -22,7 +22,7 @@ jobs:
           - {start: 220, end: 299}
           - {start: 300, end: 379}
           - {start: 380, end: 459}
-          - {start: 460, end: 545}
+          - {start: 460, end: 544}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -84,7 +84,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: slime-cn-220-545-combined
+          name: slime-cn-220-544-combined
           path: out/merged/
           if-no-files-found: warn
           retention-days: 7
