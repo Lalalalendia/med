@@ -355,27 +355,56 @@ def package(records: list[dict], raw: bytes, source_url: str, members: list[str]
 
 
 def selftest() -> None:
-    seed = "\u4e2d\u6587\u6d4b\u8bd5\u6b63\u6587" * 65
-    sample = "Header\n------\u7ae0\u7bc0\u5167\u5bb9\u958b\u59cb-------\n"
-    sample += f"\u7b2c680\u7ae0 \u5f00\u59cb\n\u7b2c680\u7ae0 \u5f00\u59cb\n{seed}\n"
-    sample += f"\u7b2c681\u7ae0 \u7ee7\u7eed\n{seed}11\n"
-    sample += f"\u7b2c682\u7ae0 \u7ed3\u675f\n{seed}22\n"
-    sample += "=\u5df2\u5b8c\u7d50=\n"
+    seed = "中文测试正文" * 65
+    sample = "Header\n------章節內容開始-------\n"
+    sample += f"第680章 开始\n第680章 开始\n{seed}\n"
+    sample += f"第681章 继续\n{seed}11\n"
+    sample += f"第682章 结束\n{seed}22\n"
+    sample += "=已完結=\n"
     records = numbered_sections(sample, 680, 682)
     assert [r["number"] for r in records] == [680, 681, 682]
-    for modified in (sample.replace("\u7b2c681\u7ae0", "\u7b2c683\u7ae0"),
+    for modified in (sample.replace("第681章", "第683章"),
                      sample.replace(f"{seed}11", seed)):
         try:
             numbered_sections(modified, 680, 682)
         except ValueError:
             pass
         else:
-            raise AssertionError("Missing/duplicate chapter accepted")
-    buff = io.BytesIO()
-    with ZipFile(buff, "w", ZIP_DEFLATED) as z:
+            raise AssertionError("Missing or duplicated chapter accepted")
+    buf = io.BytesIO()
+    with ZipFile(buf, "w", ZIP_DEFLATED) as z:
         z.writestr("source.txt", sample.encode("utf-8"))
-    extracted, members = zip_text(buff.getvalue())
+    extracted, members = zip_text(buf.getvalue())
     assert members == ["source.txt"] and numbered_sections(extracted, 680, 682) == records
+
+    malformed = (f"第1154章 口吐芬芳\n{seed}甲\n"
+                 f"第1155看哥們表演就完事了！\n{seed}乙\n"
+                 f"第1156章 死戰\n{seed}丙\n")
+    pieces = numbered_sections(malformed, 1154, 1156)
+    assert [x["number"] for x in pieces] == [1154, 1155, 1156]
+    assert pieces[1]["title"] == "第1155章 看哥們表演就完事了！"
+    double = (f"第1269章 老鬼人\n{seed}甲\n"
+              f"第1269章 寶藏墓穴！\n{seed}乙\n")
+    copies = numbered_sections(double, 1269, 1269)
+    assert len(reconcile(copies, [], 1269, 1269)) == 2
+    wrong = double.replace("寶藏墓穴", "老鬼人")
+    try:
+        numbered_sections(wrong, 1269, 1269)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Unexpected duplicate number accepted")
+
+    mirror = '<h1>第1304章 千亿资源……</h1><div id="chaptercontent"><p>' + seed + '</p></div>'
+    title, body, han = parse_mirror_chapter(mirror, 1304, EXPECTED_MIRROR_TITLES[1304])
+    assert title.startswith("第1304章") and han >= 350 and len(body) > 350
+    for bad in (mirror.replace("1304", "1305"), mirror.replace(seed, "blank")):
+        try:
+            parse_mirror_chapter(bad, 1304, EXPECTED_MIRROR_TITLES[1304])
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("Bad mirror text was accepted")
     print("IXDZS_530822_OFFLINE_SELFTEST_PASS", flush=True)
 
 
