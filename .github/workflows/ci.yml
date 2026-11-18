@@ -21,3 +21,40 @@ jobs:
         run: cargo fmt --all -- --check
       - name: Clippy
         run: cargo clippy --workspace --all-targets -- -D warnings
+
+  chemistry-reader:
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feat/chemistry-xkcd-reader-20261119' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline collector test
+        run: python tools/chemistry_comics/collect_xkcd.py --selftest
+      - name: Download originals and build Russian reader
+        run: python tools/chemistry_comics/collect_xkcd.py --out out/chemistry-xkcd-reader
+      - name: Check archive contents
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('out/chemistry-xkcd-reader')
+          m=json.loads((p/'manifest.json').read_text(encoding='utf-8'))
+          assert len(m['comics']) == 10
+          for c in m['comics']:
+              assert (p/c['original_path']).is_file()
+              assert (p/c['translation_path']).is_file()
+          print('PASS: ten originals and ten translations')
+          PY
+      - name: Archive results
+        run: |
+          cd out
+          zip -qr chemistry-xkcd-reader-ru.zip chemistry-xkcd-reader
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chemistry-xkcd-reader-ru
+          path: out/chemistry-xkcd-reader-ru.zip
+          retention-days: 30
+          if-no-files-found: error
