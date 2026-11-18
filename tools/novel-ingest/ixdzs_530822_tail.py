@@ -15,6 +15,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit
+from urllib.robotparser import RobotFileParser
+from bs4 import BeautifulSoup
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import requests
@@ -27,14 +29,22 @@ AUTHOR = "\u4e09\u98a811"
 UA = "MEDAuthorizedIXDZS/1.0 (+https://github.com/Lalalalendia/med)"
 HAN = re.compile(r"[\u3400-\u9fff]")
 HEADING = re.compile(
-    r"(?m)^[ \t\u3000\ufeff]*\u7b2c[ \t\u3000]*(?P<num>[0-9\uff10-\uff19]{1,5})"
-    r"[ \t\u3000]*\u7ae0[ \t\u3000]*(?P<title>[^\r\n]{0,125})[ \t\u3000]*$"
+    r"(?m)^[ \t\u3000\ufeff]*第[ \t\u3000]*(?P<num>[0-9０-９]{1,5})"
+    r"[ \t\u3000]*(?P<marker>章|(?=看哥[們们]表演就完事了[！!]))"
+    r"[ \t\u3000]*(?P<title>[^\r\n]{0,125})[ \t\u3000]*$"
 )
 BLOCKED = ("captcha", "just a moment", "verify you are human", "access denied",
            "\u4eba\u6a5f\u9a57\u8b49", "\u5b89\u5168\u9a57\u8b49")
 START, END = 680, 1456
 MAX_ZIP = 70 * 1024 * 1024
 MAX_EXPANDED = 110 * 1024 * 1024
+MIRROR_BOOK = "1398304"
+MIRROR_INDEX = f"https://www.biquge.tw/book/{MIRROR_BOOK}/"
+MIRROR_UA = "MEDAuthorizedNovelCollector/1.0 (+https://github.com/Lalalalendia/med)"
+EXPECTED_MIRROR_TITLES = {1304: ("千亿资源", "千億資源"), 1305: ("培育鬼奴",)}
+MIRROR_ROOTS = ("#chaptercontent", "#content", "#contentbox", "#txtcontent", ".content", ".chapter-content", ".read-content", "article")
+CHAPTER_LINK = re.compile(r"第\s*(\d{1,5})\s*章")
+MIRROR_PATH = re.compile(r"^/book/1398304/\d+\.html$")
 
 
 def digest(raw: bytes) -> str:
