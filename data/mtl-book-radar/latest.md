@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-17T11:05:36+00:00
+Run: 2026-11-18T10:40:58+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-17T11:05:36+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `117117` [After Being Threatened, I Became the Regent's Darling](https://wtr-lab.com/en/novel/117117/after-being-threatened-i-became-the-regents-darling) — catalog
-- **wtr-lab** `117296` [There are Gentlemen in the Three Kingdoms](https://wtr-lab.com/en/novel/117296/there-are-gentlemen-in-the-three-kingdoms) — catalog
-- **wtr-lab** `117088` [My Secret Marriage to an Austere Factory Director—thrilling!](https://wtr-lab.com/en/novel/117088/my-secret-marriage-to-an-austere-factory-director-thrilling) — catalog
-- **wtr-lab** `117034` [Monthly Plan: Suburban Suicide Squad!](https://wtr-lab.com/en/novel/117034/monthly-plan-suburban-suicide-squad) — catalog
-- **wtr-lab** `117097` [Ninja World: Suspected Leaked Official Version - Darkened Ninja World](https://wtr-lab.com/en/novel/117097/ninja-world-suspected-leaked-official-version-darkened-ninja-world) — catalog
-- **wtr-lab** `117252` [Soul Land: I Must Do Daily Check-ins to Stay Invincible, Starting by Making Yu Xiaogang Wear Xiao Wu’s Skirt](https://wtr-lab.com/en/novel/117252/soul-land-i-must-do-daily-check-ins-to-stay-invincible-starting-by-making-yu-xiaogang-wear-xiao-wus-skirt) — catalog
-- **wtr-lab** `117071` [Journey to the West: I, the Great Sage Yellow Wind, Have Become a Disciple of Bodhisattva Lingji](https://wtr-lab.com/en/novel/117071/journey-to-the-west-i-the-great-sage-yellow-wind-have-become-a-disciple-of-bodhisattva-lingji) — catalog
-- **wtr-lab** `117108` [Immortal Sects Lack Spiritual Roots, While Martial Arts Pave the Way to Immortality](https://wtr-lab.com/en/novel/117108/immortal-sects-lack-spiritual-roots-while-martial-arts-pave-the-way-to-immortality) — catalog
-- **wtr-lab** `116196` [Primordial Human Race Farming, I Stole Nuwa's Mud](https://wtr-lab.com/en/novel/116196/primordial-human-race-farming-i-stole-nuwas-mud) — catalog
-- **wtr-lab** `117298` [A Wandering Disciple of the Heavenly Secrets Pavilion, and You Want Me to Be a Background Bystander?](https://wtr-lab.com/en/novel/117298/a-wandering-disciple-of-the-heavenly-secrets-pavilion-and-you-want-me-to-be-a-background-bystander) — catalog
-- **mtl-novel** `become-a-god-in-douluo` [Become a God in Douluo](https://mtl-novel.com/novel/become-a-god-in-douluo/) — catalog
-- **mtl-novel** `perfect-world-open-via-group-chat` [Perfect World: Open Via Group Chat](https://mtl-novel.com/novel/perfect-world-open-via-group-chat/) — catalog
-- **mtl-novel** `called-off-the-engagement-right-from-the-start-then-ill-go-find-your-mother-to-collect-interest` [Called Off the Engagement Right from the Start? Then I’ll Go Find Your Mother to Collect Interest!](https://mtl-novel.com/novel/called-off-the-engagement-right-from-the-start-then-ill-go-find-your-mother-to-collect-interest/) — catalog
-- **mtl-novel** `in-order-to-pay-off-the-national-debt-the-government-started-to-defraud-billions-of-arms-orders` [In Order to Pay Off the National Debt, the Government Started to Defraud Billions of Arms Orders](https://mtl-novel.com/novel/in-order-to-pay-off-the-national-debt-the-government-started-to-defraud-billions-of-arms-orders/) — catalog
-- **mtl-novel** `dont-laugh-junior-sister-is-actually-very-serious` [Don’t Laugh, Junior Sister is Actually Very Serious!](https://mtl-novel.com/novel/dont-laugh-junior-sister-is-actually-very-serious/) — catalog
-- **mtl-novel** `ultraman-tregears-twin-sons` [Ultraman: Tregear’s Twin Sons](https://mtl-novel.com/novel/ultraman-tregears-twin-sons/) — catalog
-- **mtl-novel** `i-run-a-hotel-in-the-apocalypse-using-a-merge-game` [I Run a Hotel in the Apocalypse Using a Merge Game](https://mtl-novel.com/novel/i-run-a-hotel-in-the-apocalypse-using-a-merge-game/) — catalog
-- **mtl-novel** `the-alchemy-god-who-defies-fate` [The Alchemy God Who Defies Fate](https://mtl-novel.com/novel/the-alchemy-god-who-defies-fate/) — catalog
-- **mtl-novel** `springtime-farming-a-happy-wife-at-home` [Springtime Farming: A Happy Wife At Home](https://mtl-novel.com/novel/springtime-farming-a-happy-wife-at-home/) — catalog
-- **mtl-novel** `demon-hunter-school-of-the-wolf` [Demon Hunter: School of the Wolf](https://mtl-novel.com/novel/demon-hunter-school-of-the-wolf/) — catalog
+- **wtr-lab** `117457` [A Succubus Boy Mixed in with the Harem](https://wtr-lab.com/en/novel/117457/a-succubus-boy-mixed-in-with-the-harem) — catalog
+- **wtr-lab** `117371` [Star Train World: I am the Dragon Lord](https://wtr-lab.com/en/novel/117371/star-train-world-i-am-the-dragon-lord) — catalog
+- **wtr-lab** `117456` [Phoenix Sunset, a Brand New Day](https://wtr-lab.com/en/novel/117456/phoenix-sunset-a-brand-new-day) — catalog
+- **wtr-lab** `117360` [Infinite Begins from Becoming Nurarihyon](https://wtr-lab.com/en/novel/117360/infinite-begins-from-becoming-nurarihyon) — catalog
+- **wtr-lab** `117414` [The Ninth-rank Spirit Chef in Another World](https://wtr-lab.com/en/novel/117414/the-ninth-rank-spirit-chef-in-another-world) — catalog
+- **wtr-lab** `117363` [Starting with an Azure Lotus Seed, I Cultivated the World of Cultivation Into a True Immortal Realm](https://wtr-lab.com/en/novel/117363/starting-with-an-azure-lotus-seed-i-cultivated-the-world-of-cultivation-into-a-true-immortal-realm) — catalog
+- **wtr-lab** `117411` [Sky Island Survival, Ten Thousand Times Amplification Talent](https://wtr-lab.com/en/novel/117411/sky-island-survival-ten-thousand-times-amplification-talent) — catalog
+- **wtr-lab** `117377` [Football: As a Player, You're Giving Me a Coaching System?](https://wtr-lab.com/en/novel/117377/football-as-a-player-youre-giving-me-a-coaching-system) — catalog
+- **wtr-lab** `117368` [In the Apocalypse, He Self-destructed His Crystal Core and Opened His Eyes to Find Himself in a Secret Realm](https://wtr-lab.com/en/novel/117368/in-the-apocalypse-he-self-destructed-his-crystal-core-and-opened-his-eyes-to-find-himself-in-a-secret-realm) — catalog
+- **wtr-lab** `117458` [Your Majesty, I Have Offended You](https://wtr-lab.com/en/novel/117458/your-majesty-i-have-offended-you) — catalog
+- **mtl-novel** `immortal-cultivation-simulation-tongtian-sword-master` [Immortal Cultivation Simulation: Tongtian Sword Master](https://mtl-novel.com/novel/immortal-cultivation-simulation-tongtian-sword-master/) — catalog
+- **mtl-novel** `i-open-a-farm-in-the-world-of-cultivation` [I open a farm in the world of cultivation](https://mtl-novel.com/novel/i-open-a-farm-in-the-world-of-cultivation/) — catalog
+- **mtl-novel** `evolution-from-the-big-tree` [Evolution from the Big Tree](https://mtl-novel.com/novel/evolution-from-the-big-tree/) — catalog
+- **mtl-novel** `daqin-start-to-become-stronger-and-live-longer-by-picking-up-attributes-from-the-battlefield` [Daqin: Start to become stronger and live longer by picking up attributes from the battlefield](https://mtl-novel.com/novel/daqin-start-to-become-stronger-and-live-longer-by-picking-up-attributes-from-the-battlefield/) — catalog
+- **mtl-novel** `they-promised-me-immortality-and-cultivation-but-instead-they-forced-my-physical-body-to-explode` [They Promised Me Immortality and Cultivation, But Instead They Forced My Physical Body to Explode?](https://mtl-novel.com/novel/they-promised-me-immortality-and-cultivation-but-instead-they-forced-my-physical-body-to-explode/) — catalog
+- **mtl-novel** `hostile-to-the-uchiha-dont-regret-the-clans-relocation` [Hostile to the Uchiha? Don’t Regret the Clan’s Relocation](https://mtl-novel.com/novel/hostile-to-the-uchiha-dont-regret-the-clans-relocation/) — catalog
+- **mtl-novel** `the-professor-asked-you-to-treat-me` [The Professor Asked You to Treat Me](https://mtl-novel.com/novel/the-professor-asked-you-to-treat-me/) — catalog
+- **mtl-novel** `are-you-this-kind-of-senior` [Are You This Kind of Senior?](https://mtl-novel.com/novel/are-you-this-kind-of-senior/) — catalog
+- **mtl-novel** `douluo-continent-online-shopping-system-starting-with-the-seven-kill-sword` [Douluo Continent: Online Shopping System, Starting with the Seven Kill Sword](https://mtl-novel.com/novel/douluo-continent-online-shopping-system-starting-with-the-seven-kill-sword/) — catalog
+- **mtl-novel** `to-avoid-getting-caught-in-a-chaotic-situation-sora-builds-the-starry-sky-railway` [To Avoid Getting Caught in a Chaotic Situation, Sora Builds the Starry Sky Railway](https://mtl-novel.com/novel/to-avoid-getting-caught-in-a-chaotic-situation-sora-builds-the-starry-sky-railway/) — catalog
