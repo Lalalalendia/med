@@ -18,6 +18,8 @@ URLS = {
     "fipi_2026_training": "https://doc.fipi.ru/navigator-podgotovki/navigator-oge/hi-9_tren.pdf",
     "fipi_2027_official": "https://doc.fipi.ru/oge/demoversii-specifikacii-kodifikatory/2027/hi_9_2027.zip",
     "fipi_site": "https://fipi.ru/oge/demoversii-specifikacii-kodifikatory",
+    "gdzotvet_qids": "https://gdzotvet.ru/oge-ege/himiya/672-zadanie-1-oge-po-khimii-s-otvetami-fipi-utverzhdeniya-ob-elementakh-veshchestvakh",
+    "multiurok_qids": "https://multiurok.ru/files/podbor-zadanii-7-k-oge-po-khimii.html",
 }
 
 def main() -> None:
