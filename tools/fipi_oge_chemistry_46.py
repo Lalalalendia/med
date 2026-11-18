@@ -84,7 +84,7 @@ def request_once(session: requests.Session, qid: str):
     payload = {"proj": PROJECT, "page": "0", "pagesize": "10",
                "crtm": str(int(time.time())), "qid": qid,
                "search": "1"}
-    r = session.post(BASE + "questions.php", data=payload, timeout=32)
+    r = session.post(BASE + "questions.php", data=payload, timeout=10)
     r.raise_for_status()
     doc = decode_response(r)
     seen = blocks(doc)
@@ -94,7 +94,7 @@ def request_once(session: requests.Session, qid: str):
     # The qid filter is not guaranteed to work in all versions of the bank.
     r = session.get(BASE + "questions.php",
                     params={"proj": PROJECT, "qid": qid, "page": "0", "pagesize": "10"},
-                    timeout=32)
+                    timeout=10)
     r.raise_for_status()
     doc2 = decode_response(r)
     more = blocks(doc2)
@@ -115,12 +115,13 @@ def collect(outdir: Path, sleep_seconds: float, limit: int):
     for path, params in [("index.php", None), ("index.php", {"proj": PROJECT}),
                          ("questions.php", {"proj": PROJECT, "page": "0", "pagesize": "5"})]:
         try:
-            r = s.get(BASE + path, params=params, timeout=32)
+            r = s.get(BASE + path, params=params, timeout=10)
             r.raise_for_status()
         except Exception as exc:
             setup_errors.append(f"warmup {path}: {type(exc).__name__}: {exc}")
 
     records = []
+    connectivity_failures = 0
     for line, *qids in QIDS:
         for qid in qids:
             if len(records) >= limit:
@@ -138,6 +139,10 @@ def collect(outdir: Path, sleep_seconds: float, limit: int):
                     error = f"{type(exc).__name__}: {exc}"
                 if attempt == 0:
                     time.sleep(2.0)
+            if detail is None and ("Timeout" in error or "ConnectionError" in error or "ProxyError" in error):
+                connectivity_failures += 1
+            else:
+                connectivity_failures = 0
             record = {"line": line, "qid": qid,
                       "fipi_url": f"{BASE}index.php?proj={PROJECT}&qid={qid}",
                       "status": "verified_exact_qid" if detail else "unverified",
@@ -149,7 +154,10 @@ def collect(outdir: Path, sleep_seconds: float, limit: int):
             records.append(record)
             print(f"{line}/{qid}: {record['status']} ({len(record.get('condition_text',''))} chars) {error[:110]}", flush=True)
             time.sleep(sleep_seconds)
-        if len(records) >= limit:
+            if connectivity_failures >= 2:
+                print("NETWORK_BLOCKER: two consecutive qids failed due to connectivity; stopping to avoid long unproductive retries", flush=True)
+                break
+        if len(records) >= limit or connectivity_failures >= 2:
             break
 
     (outdir / "questions.json").write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding="utf-8")
