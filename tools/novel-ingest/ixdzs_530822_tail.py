@@ -135,7 +135,7 @@ def numbered_sections(text: str, start: int, end: int) -> list[dict]:
         if any(flag in body[:500].lower() for flag in BLOCKED):
             raise RuntimeError(f"Chapter {num}: access placeholder")
         if num in found:
-            raise ValueError(f"Repeated chapter {num} with body in source TXT")
+            raise ValueError(f"Repeated chapter {num} with body in source TXT: previous_len={len(found[num]['body'])} previous_sha={digest(found[num]['body'].encode('utf-8'))[:14]} new_len={len(body)} new_sha={digest(body.encode('utf-8'))[:14]} old_title={found[num]['title'][:70]!r} new_title={title[:70]!r}")
         found[num] = {"number": num, "title": title, "body": body, "han": count}
     missing = sorted(set(range(start, end + 1)) - set(found))
     if missing:
