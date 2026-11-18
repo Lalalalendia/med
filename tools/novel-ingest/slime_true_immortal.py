@@ -188,8 +188,8 @@ def source_pool():
 
 def collect(args):
     if not args.rights_confirmed: raise SystemExit('--rights-confirmed required')
-    if not 220<=args.start<=args.end<=545 or args.end-args.start>99:
-        raise SystemExit('allowed local range 220..545 (100 per job)')
+    if not 220<=args.start<=args.end<=544 or args.end-args.start>99:
+        raise SystemExit('allowed local range 220..544 (100 per job)')
     if args.delay<1: raise SystemExit('delay must be >=1s')
     out=Path(args.out)
     if out.exists() and any(out.iterdir()):
@@ -270,18 +270,18 @@ def merge(args):
                 raise SystemExit(f'conflicting text for chapter {n}')
             docs[n]=body
     missing=[n for n in range(220,546) if n not in docs]
-    with ZipFile(out/'slime_220-545_cn.zip','w',ZIP_DEFLATED) as z:
+    with ZipFile(out/'slime_220-544_cn.zip','w',ZIP_DEFLATED) as z:
         for n in sorted(docs):
             z.writestr(f'chapters/{n:04d}.txt',docs[n])
         z.writestr('combined.txt','\n\n'.join(docs[n].rstrip() for n in sorted(docs))+'\n')
-    result={'local_range':[220,545],'verified_count':len(docs),'expected':326,
+    result={'local_range':[220,544],'verified_count':len(docs),'expected':325,
             'missing':missing,'status':'PASS' if not missing else 'PARTIAL',
             'sha256':{str(n):hashlib.sha256(docs[n].encode('utf-8')).hexdigest()
                       for n in sorted(docs)}}
     (out/'manifest.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n','utf-8')
     (out/'summary.md').write_text(
-        f'# 史莱姆真仙 220–545\n\nVerified {len(docs)}/326; missing: {missing}.\n','utf-8')
-    with ZipFile(out/'slime_220-545_cn.zip') as z:
+        f'# 史莱姆真仙 220–544\n\nVerified {len(docs)}/325; missing: {missing}.\n','utf-8')
+    with ZipFile(out/'slime_220-544_cn.zip') as z:
         if z.testzip() is not None: raise SystemExit('ZIP CRC failure')
     print('MERGE',result['status'],len(docs),len(missing),flush=True)
     return 0 if not missing else 2
