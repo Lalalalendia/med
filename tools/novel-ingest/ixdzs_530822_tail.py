@@ -216,6 +216,7 @@ def parse_mirror_chapter(html: str, number: int, expected: tuple[str, ...]) -> t
         raise ValueError(f"Mirror chapter header invalid for {number}: {title[:95]}")
     if not any(piece in title for piece in expected):
         raise ValueError(f"Mirror title mismatch at {number}: {title[:95]}")
+    title = re.sub(r"\s*[（(]\s*1\s*/\s*1\s*[）)]\s*$", "", title).strip()
     roots = [soup.select_one(sel) for sel in MIRROR_ROOTS]
     roots = [x for x in roots if x is not None]
     if not roots:
@@ -396,9 +397,9 @@ def selftest() -> None:
     else:
         raise AssertionError("Unexpected duplicate number accepted")
 
-    mirror = '<h1>第1304章 千亿资源……</h1><div id="chaptercontent"><p>' + seed + '</p></div>'
+    mirror = '<h1>第1304章 千亿资源……（1 / 1）</h1><div id="chaptercontent"><p>' + seed + '</p></div>'
     title, body, han = parse_mirror_chapter(mirror, 1304, EXPECTED_MIRROR_TITLES[1304])
-    assert title.startswith("第1304章") and han >= 350 and len(body) > 350
+    assert title == "第1304章 千亿资源……" and han >= 350 and len(body) > 350
     for bad in (mirror.replace("1304", "1305"), mirror.replace(seed, "blank")):
         try:
             parse_mirror_chapter(bad, 1304, EXPECTED_MIRROR_TITLES[1304])
