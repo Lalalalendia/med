@@ -42,7 +42,7 @@ MAX_EXPANDED = 110 * 1024 * 1024
 MIRROR_BOOK = "1398304"
 MIRROR_INDEX = f"https://www.biquge.tw/book/{MIRROR_BOOK}/"
 MIRROR_UA = "MEDAuthorizedNovelCollector/1.0 (+https://github.com/Lalalalendia/med)"
-EXPECTED_MIRROR_TITLES = {1304: ("千亿资源", "千億資源"), 1305: ("培育鬼奴",)}
+EXPECTED_MIRROR_TITLES = {961: ("一言不合就开干", "一言不合就開幹"), 1304: ("千亿资源", "千億資源"), 1305: ("培育鬼奴",)}
 MIRROR_ROOTS = ("#chaptercontent", "#content", "#contentbox", "#txtcontent", ".content", ".chapter-content", ".read-content", "article")
 CHAPTER_LINK = re.compile(r"第\s*(\d{1,5})\s*章")
 MIRROR_PATH = re.compile(r"^/book/1398304/\d+\.html$")
@@ -242,7 +242,7 @@ def parse_mirror_chapter(html: str, number: int, expected: tuple[str, ...]) -> t
 
 
 def recover_biquge(session: requests.Session, missing: tuple[int, ...]) -> list[dict]:
-    if set(missing) != {1304, 1305}:
+    if not missing or not set(missing).issubset(set(EXPECTED_MIRROR_TITLES)):
         raise ValueError(f"Unrecognized mirror recovery request: {missing}")
     policy = session.get("https://www.biquge.tw/robots.txt", timeout=(10, 30),
                          allow_redirects=False)
@@ -324,6 +324,7 @@ def package(records: list[dict], raw: bytes, source_url: str, members: list[str]
             "1155": "Missing 章 marker in source heading; split from 1154",
             "1269": "Two distinct chapters share number 1269; preserved as 1269 and 1269b",
             "1304-1305": "Restored from Biquge 1398304; checked against Fanqie catalog",
+            "961": "IXDZS chapter replaced by external downloader announcement; recovered from Biquge 1398304",
         },
         "complete": True, "rights_confirmed": True,
         "verified_utc": datetime.now(timezone.utc).isoformat(),
@@ -434,7 +435,11 @@ def main() -> int:
         status['original_zip_bytes'] = len(raw)
         text, members = zip_text(raw)
         records = numbered_sections(text, START, END, allowed_missing=(1304, 1305))
-        recovered = recover_biquge(session, (1304, 1305))
+        chapter961 = next(r for r in records if r["number"] == 961)
+        if not ("API" in chapter961["body"] and "番茄" in chapter961["body"] and "QQ群" in chapter961["body"]):
+            raise ValueError("Unknown chapter 961 content: source repair requires review")
+        records = [r for r in records if r["number"] != 961]
+        recovered = recover_biquge(session, (961, 1304, 1305))
         records = reconcile(records, recovered)
         packed = package(records, raw, final_url, members, args.out)
         status.update({"complete": True, "verified_numbers": len({r["number"] for r in records}), "verified_entries": len(records),
