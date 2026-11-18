@@ -29,6 +29,7 @@ BLOCK = ('captcha','verify you are human','checking your browser',
          'access denied','enable javascript','正在验证浏览器','验证码',
          '登录后阅读','购买本章','加入书架才能阅读','订阅后阅读','本章为vip章节')
 SOURCES = (
+    ('biquge2026','https://www.biquge2026.com/book/shilaimuzhenxian/','shilaimuzhenxian'),
     ('sudugu','https://www.sudugu520.com/978/','978'),
     ('kanqun','https://www.kanqun.com/114/114159/','114159'),
     ('dzb8','https://www.dzb8.com/dzb-52-13761372/','13761372'),
@@ -294,7 +295,7 @@ def main():
     a.add_argument('--end',type=int,required=True)
     a.add_argument('--out',required=True)
     a.add_argument('--delay',type=float,default=1.1)
-    a.add_argument('--min-chars',type=int,default=350)
+    a.add_argument('--min-chars',type=int,default=1300)
     a.add_argument('--rights-confirmed',action='store_true')
     b=sub.add_parser('merge')
     b.add_argument('--inputs',required=True)
