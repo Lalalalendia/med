@@ -1,0 +1,51 @@
+name: IXDZS 530822 authorized chapters 680-1456
+on:
+  push:
+    branches: ["feat/ixdzs-530822-680-1456-20261118"]
+    paths:
+      - tools/novel-ingest/ixdzs_530822_tail.py
+      - .github/workflows/ixdzs-530822-680-tail.yml
+  workflow_dispatch:
+    inputs:
+      rights_confirmed:
+        description: "Permission to reproduce chapters 680-1456"
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: ixdzs-530822-authorized-680-1456
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: github.event_name == 'push' || inputs.rights_confirmed == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Dependencies
+        run: python -m pip install --disable-pip-version-check requests
+      - name: Offline parser and ZIP tests
+        run: python tools/novel-ingest/ixdzs_530822_tail.py --selftest
+      - name: Collect and verify permissioned source 680-1456
+        run: python tools/novel-ingest/ixdzs_530822_tail.py --rights-confirmed --out out/ixdzs-530822-tail
+      - name: Save status even when collection fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-530822-tail-status
+          path: out/ixdzs-530822-tail/status.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Publish full verified text only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ixdzs-530822-680-1456-cn
+          path: out/ixdzs-530822-tail/ixdzs-530822-680-1456-cn.zip
+          if-no-files-found: error
+          retention-days: 30
