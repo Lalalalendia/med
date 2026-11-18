@@ -111,6 +111,10 @@ def numbered_sections(text: str, start: int, end: int) -> list[dict]:
         text = text.split(marker, 1)[1]
     text = re.split(r"(?m)^=\u5df2\u5b8c\u7d50=[ \t]*$", text, maxsplit=1)[0]
     headings = list(HEADING.finditer(text))
+    sequence = [(int(h.group("num").translate(str.maketrans("０１２３４５６７８９", "0123456789"))), h.group(0).strip()) for h in headings]
+    print("SOURCE_NEAR_1269", json.dumps([v for v in sequence if 1265 <= v[0] <= 1275], ensure_ascii=False), flush=True)
+    numbers_seen = {v[0] for v in sequence}
+    print("SOURCE_MISSING", [n for n in range(start, end + 1) if n not in numbers_seen][:60], flush=True)
     if not headings:
         raise ValueError("No numbered chapter headings found in TXT")
     found = {}
