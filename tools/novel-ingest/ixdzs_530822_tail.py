@@ -115,55 +115,70 @@ def zip_text(raw: bytes) -> tuple[str, list[str]]:
         return "\n\n".join(texts), [info.filename for info in files]
 
 
-def numbered_sections(text: str, start: int, end: int) -> list[dict]:
-    marker = "------\u7ae0\u7bc0\u5167\u5bb9\u958b\u59cb-------"
+def chapter_num(heading) -> int:
+    return int(heading.group("num").translate(str.maketrans("０１２３４５６７８９", "0123456789")))
+
+
+def numbered_sections(text: str, start: int, end: int, allowed_missing=()) -> list[dict]:
+    marker = "------章節內容開始-------"
     if marker in text:
         text = text.split(marker, 1)[1]
-    text = re.split(r"(?m)^=\u5df2\u5b8c\u7d50=[ \t]*$", text, maxsplit=1)[0]
+    text = re.split(r"(?m)^=已完結=[ \t]*$", text, maxsplit=1)[0]
     headings = list(HEADING.finditer(text))
-    sequence = [(int(h.group("num").translate(str.maketrans("０１２３４５６７８９", "0123456789"))), h.group(0).strip()) for h in headings]
-    print("SOURCE_NEAR_1269", json.dumps([v for v in sequence if 1265 <= v[0] <= 1275], ensure_ascii=False), flush=True)
-    numbers_seen = {v[0] for v in sequence}
-    print("SOURCE_MISSING", [n for n in range(start, end + 1) if n not in numbers_seen][:60], flush=True)
     if not headings:
-        raise ValueError("No numbered chapter headings found in TXT")
-    found = {}
+        raise ValueError("No numbered chapter headings in source TXT")
+    records = []
+    last_number = 0
     for i, heading in enumerate(headings):
-        num = int(heading.group("num").translate(
-            str.maketrans("\uff10\uff11\uff12\uff13\uff14\uff15\uff16\uff17\uff18\uff19", "0123456789")))
+        num = chapter_num(heading)
+        if not heading.group("marker"):
+            if num != 1155 or "看哥" not in heading.group("title"):
+                raise ValueError(f"Unrecognized malformed heading {heading.group(0)!r}")
+        if num < last_number:
+            raise ValueError(f"Source chapter order regressed from {last_number} to {num}")
+        last_number = num
         if not start <= num <= end:
             continue
         title = heading.group(0).strip()
+        if not heading.group("marker"):
+            title = "第1155章 " + heading.group("title").strip()
         limit = headings[i + 1].start() if i + 1 < len(headings) else len(text)
         body = text[heading.end():limit].strip()
-        # The site's TXT format may put the same chapter heading twice in
-        # succession. The first has no actual chapter prose; omit only it.
-        if len(HAN.findall(body)) < 30 and i + 1 < len(headings):
-            next_num = int(headings[i + 1].group("num").translate(
-                str.maketrans("\uff10\uff11\uff12\uff13\uff14\uff15\uff16\uff17\uff18\uff19", "0123456789")))
-            if next_num == num:
-                continue
         count = len(HAN.findall(body))
+        if count < 30 and i + 1 < len(headings) and chapter_num(headings[i + 1]) == num:
+            continue
+        if num == END:
+            body = re.split(r"(?m)^(?:『還在連載中|更多電子書請訪問)", body, maxsplit=1)[0].strip()
+            count = len(HAN.findall(body))
         if count < 140:
-            raise ValueError(f"Chapter {num}: too short ({count} Han)")
+            raise ValueError(f"Chapter {num}: suspiciously short ({count} Han)")
         if any(flag in body[:500].lower() for flag in BLOCKED):
-            raise RuntimeError(f"Chapter {num}: access placeholder")
-        if num in found:
-            raise ValueError(f"Repeated chapter {num} with body in source TXT: previous_len={len(found[num]['body'])} previous_sha={digest(found[num]['body'].encode('utf-8'))[:14]} new_len={len(body)} new_sha={digest(body.encode('utf-8'))[:14]} old_title={found[num]['title'][:70]!r} new_title={title[:70]!r}")
-        found[num] = {"number": num, "title": title, "body": body, "han": count}
-    missing = sorted(set(range(start, end + 1)) - set(found))
-    if missing:
-        raise ValueError(f"Missing {len(missing)} numbered chapters; first: {missing[:25]}")
-    records = [found[n] for n in range(start, end + 1)]
-    seen = {}
+            raise RuntimeError(f"Chapter {num}: source access placeholder")
+        records.append({"number": num, "title": title, "source_title": heading.group(0).strip(),
+                        "body": body, "han": count, "source_url": DOWNLOAD})
+    numbers = {r["number"] for r in records}
+    missing = sorted(set(range(start, end + 1)) - numbers)
+    if set(missing) != set(allowed_missing):
+        raise ValueError(f"Unexpected source numbering gaps: {missing}; allowed={list(allowed_missing)}")
+    repeated = {}
+    for record in records:
+        repeated.setdefault(record["number"], []).append(record)
+    repeated = {n: group for n, group in repeated.items() if len(group) > 1}
+    if repeated and (set(repeated) != {1269} or len(repeated[1269]) != 2 or
+                     "老鬼人" not in repeated[1269][0]["title"] or
+                     not any(x in repeated[1269][1]["title"] for x in ("寶藏墓穴", "宝藏墓穴"))):
+        raise ValueError("Unexpected duplicated source chapter number")
+    check_unique_bodies(records)
+    return records
+
+
+def check_unique_bodies(records: list[dict]) -> None:
+    hashes = {}
     for record in records:
         sha = digest(record["body"].encode("utf-8"))
-        if sha in seen:
-            raise ValueError(f"Duplicate chapter body: {seen[sha]} and {record['number']}")
-        seen[sha] = record["number"]
-    if end == END and "\u56de\u5bb6" not in records[-1]["title"] and "\u56de\u5bb6" not in records[-1]["body"][-1200:]:
-        raise ValueError("Final chapter ending does not match published chapter 1456")
-    return records
+        if sha in hashes:
+            raise ValueError(f"Duplicate chapter content: {hashes[sha]} and {record['number']}")
+        hashes[sha] = record["number"]
 
 
 def package(records: list[dict], raw: bytes, source_url: str, members: list[str], out: Path) -> dict:
