@@ -1,0 +1,47 @@
+name: MED chemistry xkcd personal reader
+on:
+  push:
+    branches:
+      - feat/chemistry-xkcd-reader-20261119
+    paths:
+      - tools/chemistry_comics/**
+      - .github/workflows/chemistry-xkcd-reader.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-reader:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline builder smoke tests
+        run: python tools/chemistry_comics/collect_xkcd.py --selftest
+      - name: Download xkcd PNGs and generate Russian reader
+        run: python tools/chemistry_comics/collect_xkcd.py --out out/chemistry-xkcd-reader
+      - name: Verify manifest and four originals
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("out/chemistry-xkcd-reader")
+          m=json.loads((p/"manifest.json").read_text(encoding="utf-8"))
+          assert len(m["comics"])==4
+          for c in m["comics"]:
+              assert (p/c["original_path"]).is_file()
+              assert (p/c["translation_path"]).is_file()
+          print("PASS: 4 comics, 4 originals, 4 translations")
+          PY
+      - name: Pack portable collection
+        run: |
+          cd out
+          zip -qr chemistry-xkcd-reader-ru.zip chemistry-xkcd-reader
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chemistry-xkcd-reader-ru
+          path: out/chemistry-xkcd-reader-ru.zip
+          retention-days: 30
+          if-no-files-found: error
