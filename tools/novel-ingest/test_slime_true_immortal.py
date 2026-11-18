@@ -47,6 +47,17 @@ class SlimeCollectorTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"heading mismatch"):
             mod.parse_prose(html,219,"战争开启",minimum=100)
 
+
+    def test_biquge_full_chapter_container(self):
+        prose="史莱姆真仙进入城墙，精灵和骑士共同迎战。"*170
+        page=("<html><h1>第219章 战争开启</h1><main>"
+              '<div class="bookname">第219章 战争开启</div>'
+              '<div id="chaptercontent"><p>'+prose+'</p></div>'
+              '<div class="recommend">无关书籍推荐</div></main></html>')
+        text=mod.parse_prose(page,219,"战争开启",minimum=1300)
+        self.assertEqual(text,prose)
+        self.assertNotIn("无关书籍推荐",text)
+
     def test_merge_detects_missing(self):
         with tempfile.TemporaryDirectory() as td:
             inp=Path(td)/"inputs";shard=inp/"part";shard.mkdir(parents=True)
