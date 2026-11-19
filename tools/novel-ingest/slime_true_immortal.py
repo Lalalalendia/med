@@ -177,6 +177,80 @@ def parse_prose(html,number,title,minimum=350):
     if cjk(body)<minimum: raise ValueError('no body after heading cleanup')
     return body
 
+
+# Sudugu splits public numbered chapters into /NN.html, /NN-2.html, etc.
+# End of a chapter is identified by absence of in-chapter "下一页".
+SUDUGU_MAX_PAGES = 8
+PAGE_CONTROL = frozenset(('上一章','上一页','上一頁','目录','目錄','下一章',
+                          '下一页','下一頁','设置','設置'))
+
+
+def sudugu_part(html, number, title):
+    soup = BeautifulSoup(html, 'html.parser')
+    node = soup.select_one('.container')
+    if node is None:
+        raise ValueError('Sudugu page lacks chapter container')
+    node = BeautifulSoup(str(node), 'html.parser')
+    for tag in node.select('script,style,nav,aside,header,footer,iframe,form,button'):
+        tag.decompose()
+    lines = [v.strip() for v in node.get_text('\n', strip=True).splitlines()
+             if v.strip()]
+    pattern = re.compile(r'^第\s*' + re.escape(str(number)) + r'\s*章\s*')
+    hits = [i for i, value in enumerate(lines[:18])
+            if pattern.match(value) and clean_title(title) in clean_title(value)]
+    if not hits:
+        raise ValueError('Sudugu chapter number/title mismatch')
+    prose_lines = lines[hits[-1] + 1:]
+    while prose_lines and prose_lines[-1] in PAGE_CONTROL:
+        prose_lines.pop()
+    while prose_lines and prose_lines[0] in PAGE_CONTROL:
+        prose_lines.pop(0)
+    body = normalized('\n'.join(prose_lines))
+    if cjk(body) < 150:
+        raise ValueError('Sudugu part has no meaningful prose')
+    if any(marker in body.lower() for marker in BLOCK):
+        raise ValueError('Sudugu access-block marker')
+    next_refs = [a.get('href') for a in soup.select('a[href]')
+                 if a.get_text(' ',strip=True) in ('下一页','下一頁')]
+    if len(set(next_refs)) > 1:
+        raise ValueError('ambiguous Sudugu next-page links')
+    return body, (next_refs[0] if next_refs else None)
+
+
+def exact_sudugu_part(first_url, candidate, part):
+    start, target = urlsplit(first_url), urlsplit(candidate)
+    return (2 <= part <= SUDUGU_MAX_PAGES
+            and start.scheme == target.scheme == 'https'
+            and start.netloc == target.netloc
+            and start.path.endswith('.html')
+            and not target.query and not target.fragment
+            and target.path == start.path[:-5] + f'-{part}.html')
+
+
+def paginated_sudugu_prose(source, url, number, title, minimum=2500):
+    parts, seen = [], set()
+    current = url
+    for part in range(1, SUDUGU_MAX_PAGES + 1):
+        body, next_ref = sudugu_part(fetch_html(current, source), number, title)
+        checksum = hashlib.sha256(body.encode('utf-8')).hexdigest()
+        if checksum in seen:
+            raise ValueError('duplicate Sudugu part')
+        seen.add(checksum)
+        parts.append(body)
+        if next_ref is None:
+            output = '\n\n'.join(parts)
+            if not minimum <= cjk(output) <= 40000:
+                raise ValueError('incomplete Sudugu chapter CJK=' + str(cjk(output)))
+            return output, len(parts)
+        next_url = urljoin(current, next_ref)
+        if not exact_sudugu_part(url, next_url, part + 1):
+            raise ValueError('Sudugu pagination escaped chapter')
+        if source.robots and not source.robots.can_fetch(UA,next_url):
+            raise ValueError('Sudugu next page disallowed by robots.txt')
+        current = next_url
+        time.sleep(1.0)
+    raise ValueError('Sudugu pagination exceeded page limit')
+
 def source_pool():
     out=[]
     for name,index,key in SOURCES:
@@ -215,7 +289,13 @@ def collect(args):
                 continue
             url,title=src.entries[actual]
             try:
-                body=parse_prose(fetch_html(url,src),actual,title,args.min_chars)
+                if src.name == 'sudugu':
+                    body, parts = paginated_sudugu_prose(src, url, actual, title,
+                                                         args.min_chars)
+                else:
+                    body = parse_prose(fetch_html(url,src), actual, title,
+                                       args.min_chars)
+                    parts = 1
                 content_hash=hashlib.sha256(body.encode('utf-8')).hexdigest()
                 if content_hash in hashes:
                     raise ValueError(f'duplicate body of #{hashes[content_hash]}')
@@ -226,7 +306,7 @@ def collect(args):
                 manifest['chapters'].append({'local_number':n,
                     'source_number':actual,'source':src.name,
                     'title':title,'url':url,'cjk_chars':cjk(body),
-                    'file':path,'sha256':hashlib.sha256(payload.encode('utf-8')).hexdigest(),
+                    'pagination_parts':parts,'file':path,'sha256':hashlib.sha256(payload.encode('utf-8')).hexdigest(),
                     'status':'ok'})
                 print(f'CHAPTER {n}: PASS {src.name} {actual} {cjk(body)} CJK',flush=True)
                 break
