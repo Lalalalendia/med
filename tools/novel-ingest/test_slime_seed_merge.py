@@ -130,8 +130,10 @@ class ResumeMergeTests(unittest.TestCase):
     def test_gap_cannot_hide_an_existing_chapter(self):
         docs = {}
         m.load_strict_seed(docs, self.seed_zip, self.seed_manifest)
+        # Even the one documented numbering gap may not conceal real content.
+        docs[294] = payload(294)
         with self.assertRaisesRegex(ValueError, "already has chapter"):
-            m.assemble(self.root / "merged", docs, [220])
+            m.assemble(self.root / "merged", docs, [294])
 
     def test_missing_numbers_remain_explicit_without_gap_declaration(self):
         docs = {}
