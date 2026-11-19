@@ -20,7 +20,7 @@ class CleanCandidateTests(unittest.TestCase):
     def test_removes_only_explicit_markers(self):
         original = (
             "=== 第220章 测试 ===\n\n一句正文。\n\n"
-            "101看书 101 看书网小广告\n\n"
+            "101看书 101 看书网超顺畅 全手打无错站\n\n"
             "97\n\n结尾正文。\n\n>\n"
         ).encode()
         sanitized, changes = mod.transform(original, 220)
