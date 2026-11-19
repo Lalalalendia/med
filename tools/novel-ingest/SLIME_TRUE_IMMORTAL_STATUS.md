@@ -97,3 +97,32 @@ CI: https://github.com/Lalalalendia/med/actions/runs/44490502046 (SUCCESS).
 "сохранены с замечаниями к качеству", а не безусловно "полный RAW".
 При последующей публикации текста нужно сохранить отдельный журнал
 исправлений с хешами исходника и производной версии.
+
+
+### Отдельный CLEAN_CANDIDATE без изменения RAW
+
+Создана производная копия архива:
+https://drive.google.com/file/d/1NOQchA5zsnuPONGirWvZN2p4zG4ynC5h/view
+
+Дополнительно в той же исходной папке:
+- отчёт аудита: https://drive.google.com/file/d/16JcGypNpMx5WKPBlkBlKjpcnFY1eMtrf/view
+- машинный аудит: https://drive.google.com/file/d/1RT_snOrD0gwy4rrNxQLQlgl3x6DPJlnW/view
+- манифест производной копии: https://drive.google.com/file/d/1TWfTgWT--7gZwSx0exO2io4hU9zrOPmN/view
+- журнал изменений и новых SHA: https://drive.google.com/file/d/18-5QCsoDHxZJH2UHsbstyUY4BQSASYhK/view
+
+Очистка ограничена 73 одиночными ">" в конце глав и 21
+явной рекламной вставкой 101看书. Затронуто 85 глав;
+остальные 144 файла побайтно совпадают с исходным ZIP.
+После очистки в 44 главах остаются сигналы QA;
+9 подозрительных окончаний не исправлены.
+Источник и его контрольные суммы не менялись.
+Название CLEAN_CANDIDATE намеренно не означает готовность к публикации.
+
+Код воспроизведения: tools/novel-ingest/slime_clean_candidate.py.
+Тесты: https://github.com/Lalalalendia/med/actions/runs/44491654991 (SUCCESS).
+
+Команда для создания аналогичной копии из сохранённого RAW:
+    python tools/novel-ingest/slime_clean_candidate.py --zip slime_220-544_cn_STRICT_229.zip --manifest manifest_STRICT_229.json --out out/slime-clean
+
+Приоритет — сверка 9 подозрительных концов и доступность оригинала 450–544.
+Не заменять проблемные места придуманным продолжением.
