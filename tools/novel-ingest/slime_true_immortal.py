@@ -195,12 +195,22 @@ def sudugu_part(html, number, title):
         tag.decompose()
     lines = [v.strip() for v in node.get_text('\n', strip=True).splitlines()
              if v.strip()]
-    pattern = re.compile(r'^第\s*' + re.escape(str(number)) + r'\s*章\s*')
-    hits = [i for i, value in enumerate(lines[:18])
-            if pattern.match(value) and clean_title(title) in clean_title(value)]
-    if not hits:
-        raise ValueError('Sudugu chapter number/title mismatch')
-    prose_lines = lines[hits[-1] + 1:]
+    pattern = re.compile(r'第\s*' + re.escape(str(number)) + r'\s*章')
+    title_key = clean_title(title)
+    matches = []
+    for i, value in enumerate(lines[:18]):
+        if pattern.search(value):
+            if title_key in clean_title(value):
+                matches.append((i, i + 1))
+            elif title_key in clean_title(' '.join(lines[i:i + 3])):
+                matches.append((i, i + 3))
+    if not matches:
+        markers = [i for i, value in enumerate(lines[:18])
+                   if pattern.search(value)]
+        raise ValueError('Sudugu chapter number/title mismatch; number_markers='
+                         + str(markers) + ', index_title_chars='
+                         + str(len(title_key)))
+    prose_lines = lines[matches[-1][1]:]
     while prose_lines and prose_lines[-1] in PAGE_CONTROL:
         prose_lines.pop()
     while prose_lines and prose_lines[0] in PAGE_CONTROL:

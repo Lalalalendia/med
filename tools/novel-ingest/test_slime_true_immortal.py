@@ -88,6 +88,20 @@ class SlimeCollectorTest(unittest.TestCase):
         self.assertNotIn("目录",body)
         self.assertNotIn("设置",body)
 
+    def test_sudugu_header_split_into_html_nodes(self):
+        html = (
+            '<div class="container">'
+            '<div>设置</div>'
+            '<div>&gt; 第450章 <span>工业城市雏形</span></div>'
+            '<div>第450章</div><div>工业城市雏形</div>'
+            '<p>' + ("史莱姆与魔法师正在研究新法术。" * 100) + '</p>'
+            '<a href="1116259-2.html">下一页</a></div>'
+        )
+        body, ref = mod.sudugu_part(html,450,"工业城市雏形")
+        self.assertGreater(mod.cjk(body),500)
+        self.assertNotIn("第450章",body)
+        self.assertEqual(ref,"1116259-2.html")
+
     def test_sudugu_page_scope_rejects_adjacent_chapter(self):
         first="https://www.sudugu520.com/978/1116259.html"
         self.assertTrue(mod.exact_sudugu_part(
