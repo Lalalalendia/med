@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-18T10:40:58+00:00
+Run: 2026-11-19T10:43:45+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-18T10:40:58+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `117457` [A Succubus Boy Mixed in with the Harem](https://wtr-lab.com/en/novel/117457/a-succubus-boy-mixed-in-with-the-harem) — catalog
-- **wtr-lab** `117371` [Star Train World: I am the Dragon Lord](https://wtr-lab.com/en/novel/117371/star-train-world-i-am-the-dragon-lord) — catalog
-- **wtr-lab** `117456` [Phoenix Sunset, a Brand New Day](https://wtr-lab.com/en/novel/117456/phoenix-sunset-a-brand-new-day) — catalog
-- **wtr-lab** `117360` [Infinite Begins from Becoming Nurarihyon](https://wtr-lab.com/en/novel/117360/infinite-begins-from-becoming-nurarihyon) — catalog
-- **wtr-lab** `117414` [The Ninth-rank Spirit Chef in Another World](https://wtr-lab.com/en/novel/117414/the-ninth-rank-spirit-chef-in-another-world) — catalog
-- **wtr-lab** `117363` [Starting with an Azure Lotus Seed, I Cultivated the World of Cultivation Into a True Immortal Realm](https://wtr-lab.com/en/novel/117363/starting-with-an-azure-lotus-seed-i-cultivated-the-world-of-cultivation-into-a-true-immortal-realm) — catalog
-- **wtr-lab** `117411` [Sky Island Survival, Ten Thousand Times Amplification Talent](https://wtr-lab.com/en/novel/117411/sky-island-survival-ten-thousand-times-amplification-talent) — catalog
-- **wtr-lab** `117377` [Football: As a Player, You're Giving Me a Coaching System?](https://wtr-lab.com/en/novel/117377/football-as-a-player-youre-giving-me-a-coaching-system) — catalog
-- **wtr-lab** `117368` [In the Apocalypse, He Self-destructed His Crystal Core and Opened His Eyes to Find Himself in a Secret Realm](https://wtr-lab.com/en/novel/117368/in-the-apocalypse-he-self-destructed-his-crystal-core-and-opened-his-eyes-to-find-himself-in-a-secret-realm) — catalog
-- **wtr-lab** `117458` [Your Majesty, I Have Offended You](https://wtr-lab.com/en/novel/117458/your-majesty-i-have-offended-you) — catalog
-- **mtl-novel** `immortal-cultivation-simulation-tongtian-sword-master` [Immortal Cultivation Simulation: Tongtian Sword Master](https://mtl-novel.com/novel/immortal-cultivation-simulation-tongtian-sword-master/) — catalog
-- **mtl-novel** `i-open-a-farm-in-the-world-of-cultivation` [I open a farm in the world of cultivation](https://mtl-novel.com/novel/i-open-a-farm-in-the-world-of-cultivation/) — catalog
-- **mtl-novel** `evolution-from-the-big-tree` [Evolution from the Big Tree](https://mtl-novel.com/novel/evolution-from-the-big-tree/) — catalog
-- **mtl-novel** `daqin-start-to-become-stronger-and-live-longer-by-picking-up-attributes-from-the-battlefield` [Daqin: Start to become stronger and live longer by picking up attributes from the battlefield](https://mtl-novel.com/novel/daqin-start-to-become-stronger-and-live-longer-by-picking-up-attributes-from-the-battlefield/) — catalog
-- **mtl-novel** `they-promised-me-immortality-and-cultivation-but-instead-they-forced-my-physical-body-to-explode` [They Promised Me Immortality and Cultivation, But Instead They Forced My Physical Body to Explode?](https://mtl-novel.com/novel/they-promised-me-immortality-and-cultivation-but-instead-they-forced-my-physical-body-to-explode/) — catalog
-- **mtl-novel** `hostile-to-the-uchiha-dont-regret-the-clans-relocation` [Hostile to the Uchiha? Don’t Regret the Clan’s Relocation](https://mtl-novel.com/novel/hostile-to-the-uchiha-dont-regret-the-clans-relocation/) — catalog
-- **mtl-novel** `the-professor-asked-you-to-treat-me` [The Professor Asked You to Treat Me](https://mtl-novel.com/novel/the-professor-asked-you-to-treat-me/) — catalog
-- **mtl-novel** `are-you-this-kind-of-senior` [Are You This Kind of Senior?](https://mtl-novel.com/novel/are-you-this-kind-of-senior/) — catalog
-- **mtl-novel** `douluo-continent-online-shopping-system-starting-with-the-seven-kill-sword` [Douluo Continent: Online Shopping System, Starting with the Seven Kill Sword](https://mtl-novel.com/novel/douluo-continent-online-shopping-system-starting-with-the-seven-kill-sword/) — catalog
-- **mtl-novel** `to-avoid-getting-caught-in-a-chaotic-situation-sora-builds-the-starry-sky-railway` [To Avoid Getting Caught in a Chaotic Situation, Sora Builds the Starry Sky Railway](https://mtl-novel.com/novel/to-avoid-getting-caught-in-a-chaotic-situation-sora-builds-the-starry-sky-railway/) — catalog
+- **wtr-lab** `117604` [Taking the Blame Makes Me Stronger? I Did All of This!](https://wtr-lab.com/en/novel/117604/taking-the-blame-makes-me-stronger-i-did-all-of-this) — catalog
+- **wtr-lab** `117617` [The National Youth Team Didn't Want Him? He Turned Around and Became the First Mate of the Portuguese Team](https://wtr-lab.com/en/novel/117617/the-national-youth-team-didnt-want-him-he-turned-around-and-became-the-first-mate-of-the-portuguese-team) — catalog
+- **wtr-lab** `117616` [Football: From the Streets of Portugal to the Treble](https://wtr-lab.com/en/novel/117616/football-from-the-streets-of-portugal-to-the-treble) — catalog
+- **wtr-lab** `117615` [Football: From Relegation Team Analyst to World-class Manager](https://wtr-lab.com/en/novel/117615/football-from-relegation-team-analyst-to-world-class-manager) — catalog
+- **wtr-lab** `117828` [Soul Land Dragon King: I Became the Divinity of Games, Legendary Fighters from All Three Soul Land Eras Battle in My Cosmic Arena](https://wtr-lab.com/en/novel/117828/soul-land-dragon-king-i-became-the-divinity-of-games-legendary-fighters-from-all-three-soul-land-eras-battle-in-my-cosmic-arena) — catalog
+- **wtr-lab** `117633` [Kashimo, the Loan King](https://wtr-lab.com/en/novel/117633/kashimo-the-loan-king) — catalog
+- **wtr-lab** `117586` [Day in Magic Card](https://wtr-lab.com/en/novel/117586/day-in-magic-card) — catalog
+- **wtr-lab** `117592` [After Detoxifying His Beautiful Master, He Awakened His Sacred Body and Dao Embryo](https://wtr-lab.com/en/novel/117592/after-detoxifying-his-beautiful-master-he-awakened-his-sacred-body-and-dao-embryo) — catalog
+- **wtr-lab** `117608` [Armor: Terrifying, This Xing Tian is Too Ruthless](https://wtr-lab.com/en/novel/117608/armor-terrifying-this-xing-tian-is-too-ruthless) — catalog
+- **wtr-lab** `117588` [I Turned My Traditional Chinese Medicine Hospital Into a Holiday Resort](https://wtr-lab.com/en/novel/117588/i-turned-my-traditional-chinese-medicine-hospital-into-a-holiday-resort) — catalog
+- **mtl-novel** `douluo-everyone-in-my-chat-group-is-the-original` [Douluo: Everyone in My Chat Group is the Original](https://mtl-novel.com/novel/douluo-everyone-in-my-chat-group-is-the-original/) — catalog
+- **mtl-novel** `douluo-dragon-king-nine-dragons-break-the-abyss` [Douluo Dragon King: Nine Dragons Break the Abyss](https://mtl-novel.com/novel/douluo-dragon-king-nine-dragons-break-the-abyss/) — catalog
+- **mtl-novel** `courtyard-house-daily-intelligence-system-punishing-the-scoundrels` [Courtyard House: Daily Intelligence System, Punishing the Scoundrels](https://mtl-novel.com/novel/courtyard-house-daily-intelligence-system-punishing-the-scoundrels/) — catalog
+- **mtl-novel** `fantasy-how-can-you-get-a-10000-fold-return-for-robbing-an-opportunity` [Fantasy: How Can You Get a 10,000-fold Return for Robbing an Opportunity?](https://mtl-novel.com/novel/fantasy-how-can-you-get-a-10000-fold-return-for-robbing-an-opportunity/) — catalog
+- **mtl-novel** `traveling-through-australia-in-1858` [Traveling Through Australia in 1858](https://mtl-novel.com/novel/traveling-through-australia-in-1858/) — catalog
+- **mtl-novel** `uncover-the-quilt` [Uncover the Quilt](https://mtl-novel.com/novel/uncover-the-quilt/) — catalog
+- **mtl-novel** `kindness-makes-you-stronger-fairy-dont-move-let-me-handle-this` [Kindness Makes You Stronger? Fairy, Don’t Move, Let Me Handle This](https://mtl-novel.com/novel/kindness-makes-you-stronger-fairy-dont-move-let-me-handle-this/) — catalog
+- **mtl-novel** `the-villainous-young-lady-malfoy-is-picking-a-fight-again-today` [The Villainous Young Lady Malfoy is Picking a Fight Again Today](https://mtl-novel.com/novel/the-villainous-young-lady-malfoy-is-picking-a-fight-again-today/) — catalog
+- **mtl-novel** `high-level-martial-era-starting-with-comprehension-amplified-by-100000-times` [High-Level Martial Era: Starting With Comprehension Amplified by 100,000 Times](https://mtl-novel.com/novel/high-level-martial-era-starting-with-comprehension-amplified-by-100000-times/) — catalog
+- **mtl-novel** `i-became-an-internet-sensation-across-the-entire-intergalactic-world-through-food-livestreaming` [I Became an Internet Sensation Across the Entire Intergalactic World Through Food Livestreaming](https://mtl-novel.com/novel/i-became-an-internet-sensation-across-the-entire-intergalactic-world-through-food-livestreaming/) — catalog
