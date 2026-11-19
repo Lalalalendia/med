@@ -270,7 +270,7 @@ def merge(args):
             if n in docs and docs[n]!=body:
                 raise SystemExit(f'conflicting text for chapter {n}')
             docs[n]=body
-    missing=[n for n in range(220,546) if n not in docs]
+    missing=[n for n in range(220,545) if n not in docs]
     with ZipFile(out/'slime_220-544_cn.zip','w',ZIP_DEFLATED) as z:
         for n in sorted(docs):
             z.writestr(f'chapters/{n:04d}.txt',docs[n])
