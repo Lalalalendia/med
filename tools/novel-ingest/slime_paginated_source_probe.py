@@ -16,13 +16,13 @@ from bs4 import BeautifulSoup
 
 UA = "MedNovelCollector/1.0 (public chapter QA, no evasion)"
 HEAD = re.compile(r"^第\s*(\d{1,4})\s*章\s*(.*)$")
-SAMPLES = (218, 219, 438, 449, 450, 451, 535, 539)
+SAMPLES = (218, 219, 438, 449, 450, 451, 535, 539, 540)
 SELECTORS = (
     "#chaptercontent", "#chapterContent", "#content", "#article",
     ".chaptercontent", ".chapter-content", ".chapter_content",
     ".read-content", ".reading-content", ".txtnav", ".content",
     ".article-content", ".novel-content", ".bookcontent", ".book-content",
-    "article",
+    "article", ".container",
 )
 BLOCK = ("captcha", "验证码", "正在验证浏览器", "access denied",
          "订阅后阅读", "登录后阅读", "verify you are human")
@@ -40,6 +40,7 @@ SITES = (
     Site("sudugu_org", "https://www.sudugu.org/3245/", "/3245/"),
     Site("lmshu", "https://www.lmshu.com/shilaimuzhenxian/",
          "/shilaimuzhenxian/"),
+    Site("sudugu520", "https://www.sudugu520.com/978/", "/978/"),
 )
 
 
@@ -178,8 +179,14 @@ def probe(site: Site) -> None:
                     page_code, next_html = read_html(session, next_url)
                     if next_html:
                         extra, second_selector, _ = content_diagnostic(next_html)
+                        next_heading = BeautifulSoup(next_html, "html.parser").select_one("h1")
+                        next_label = next_heading.get_text(" ", strip=True) if next_heading else ""
+                        next_match = HEAD.search(next_label)
                         print("SECOND_PAGE", site.name, number, "CJK", extra,
                               "selector", second_selector, "HTTP", page_code,
+                              "heading_number", int(next_match.group(1)) if next_match else None,
+                              "same_chapter", bool(next_match and int(next_match.group(1)) == number),
+                              "next_path", urlsplit(next_url).path,
                               flush=True)
                     else:
                         print("SECOND_PAGE", site.name, number,
@@ -190,5 +197,5 @@ def probe(site: Site) -> None:
 
 if __name__ == "__main__":
     for site in SITES:
-        if site.name == "lmshu":
+        if site.name == "sudugu520":
             probe(site)
