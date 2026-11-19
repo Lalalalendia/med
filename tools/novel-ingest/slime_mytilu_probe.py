@@ -152,9 +152,8 @@ def sample() -> int:
                           "http", r.status_code, "bytes", len(r.content), flush=True)
                     continue
                 r.encoding = r.apparent_encoding or r.encoding
-                if any(marker in r.text.lower() for marker in ACCESS_MARKERS):
-                    print("SAMPLE", number, "BLOCKED access marker", flush=True)
-                    continue
+                hits = [marker for marker in ACCESS_MARKERS
+                        if marker in r.text.lower()]
                 length, selector = body_stats(r.text)
                 heading = BeautifulSoup(r.text, "html.parser").select_one("h1")
                 header = heading.get_text(" ", strip=True) if heading else ""
@@ -162,7 +161,8 @@ def sample() -> int:
                 heading_ok = matched is not None and int(matched.group(1)) == number
                 print("SAMPLE", number, "CJK", length,
                       "selector", selector, "heading_ok", heading_ok,
-                      "approx_full", length >= 2500, flush=True)
+                      "approx_full", length >= 2500, "access_markers", hits,
+                      "htmlbytes", len(r.content), flush=True)
             except requests.RequestException as exc:
                 print("SAMPLE", number, "UNAVAILABLE", type(exc).__name__, flush=True)
         return 0
