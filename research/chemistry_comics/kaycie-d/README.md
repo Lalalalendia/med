@@ -42,3 +42,25 @@ The user wants personal learning materials. If a licensed source file is provide
 ## Scope
 
 This is a correction and source record only; **no original artwork is collected in med**. No deployment or migration.
+
+## Private-use permission and workflow
+
+The project owner states that the artist has given individual permission for **personal, non-public use**, including comics and related material. This is narrower than a grant to publish original artwork on public digital platforms. The original source images and translations must remain in the owner's private storage. Individual permission is user-provided information and is not a public license for other repository visitors.
+
+The previous generic usage-boundary warning must not be interpreted as an unconditional ban on the owner's private collection. The artwork itself is absent from this public repository.
+
+### Source availability
+
+The artist confirms there are 118 characters, but the public Tumblr landing page shows a limited selection, with the remainder available through separate products. A permission grant does not itself make the original PDF bytes available. Do not mislabel a partial 12-image or 28-image dataset as the complete 118.
+
+### Local importer
+
+Install \`Pillow\` and \`PyMuPDF\`, then run:
+
+\`\`\`sh
+python tools/chemistry_comics/import_kaycie_private.py --source /private/kaycie-elements.pdf --output /private/elements-reader --expect-full
+\`\`\`
+
+For numbered image files, use \`--source /private/cards\` with image filenames beginning with the atomic number such as \`024-chromium.png\`. For a PDF with title/extra pages, use \`--first-page\`, \`--start-element\`, and \`--count\` as appropriate; verify the page-to-element mapping manually. The tool refuses to mark an incomplete collection as full. Only private local files are read; the script never downloads images or sends them to GitHub Actions. The CI tests use generated blank synthetic images.
+
+A personal-use pilot for the user-supplied montage was prepared separately: 12 cards corresponding to elements 24–35, original pictures preserved, Russian translations/chemical comments outside each picture. The ZIP is in the owner's private Google Drive, **not the repo**.
