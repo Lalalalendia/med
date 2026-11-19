@@ -15,6 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 
 INDEX = "https://www.mytilu.com/tilu/37613761350/"
+CHAPTER_PREFIX = "/tilub/37613761350/"
 UA = "MedNovelCollector/1.0 (metadata diagnostics; no evasion)"
 SOURCE_NUMBERS = (448, 449, 450, 539, 543)
 HEAD = re.compile(r"^第\s*(\d{1,4})\s*章\s*(.*)$")
@@ -38,7 +39,7 @@ def cjk(text: str) -> int:
 def safe_url(url: str) -> bool:
     a, b = urlsplit(url), urlsplit(INDEX)
     return (a.scheme == "https" and a.netloc == b.netloc
-            and a.path.startswith(b.path) and not a.username and not a.password)
+            and a.path.startswith(CHAPTER_PREFIX) and not a.username and not a.password)
 
 
 def catalog_entries(html: str) -> dict[int, tuple[str, str]]:
