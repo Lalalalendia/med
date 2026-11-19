@@ -1,0 +1,26 @@
+name: Slime - public alternate source metadata probe
+on:
+  push:
+    branches:
+      - feat/slime-true-immortal-220-545-20261119
+    paths:
+      - tools/novel-ingest/slime_mytilu_probe.py
+      - tools/novel-ingest/test_slime_mytilu_probe.py
+      - .github/workflows/slime-mytilu-metadata-probe.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Offline HTML parser tests
+        run: python -m unittest tools/novel-ingest/test_slime_mytilu_probe.py -v
+      - name: Bounded metadata-only source diagnostic
+        run: python -u tools/novel-ingest/slime_mytilu_probe.py
