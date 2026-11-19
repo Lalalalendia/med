@@ -19,6 +19,25 @@ from slime_archive_quality import inspect
 PROMO = re.compile(r"101\s*看\s*书|更新不易，记得分享\s*101")
 
 
+def standalone_site_promo(line: str) -> bool:
+    """Remove an advertisement only when its entire line matches a known template.
+
+    The mere presence of a URL, brand name, or the literal 101看书 inside dialogue
+    is NOT enough to discard the containing prose line.
+    """
+    line = line.strip()
+    if not PROMO.search(line):
+        return False
+    return (
+        (line.startswith("本书首发")
+         and "提供给你无错章节，无乱序章节的阅读体验" in line)
+        or (line.startswith("101看书") and "全手打无错站" in line)
+        or (line == "更新不易，记得分享101看书网")
+        or (line.startswith("【写到这里我希望读者记一下我们域名")
+            and line.endswith("】"))
+    )
+
+
 def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -28,7 +47,7 @@ def transform(data: bytes, number: int) -> tuple[bytes, list[dict]]:
     kept = []
     changes = []
     for line_number, line in enumerate(lines, 1):
-        if PROMO.search(line):
+        if standalone_site_promo(line):
             changes.append({"operation": "remove_site_ad", "line": line_number})
         else:
             kept.append((line_number, line))

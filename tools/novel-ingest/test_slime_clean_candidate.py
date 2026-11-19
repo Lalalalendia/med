@@ -33,6 +33,29 @@ class CleanCandidateTests(unittest.TestCase):
         self.assertEqual(repeated, sanitized)
         self.assertEqual(other, [])
 
+    def test_brand_mentioned_in_prose_is_never_deleted(self):
+        original = (
+            "=== 第220章 测试 ===\n\n"
+            "他说：我在101看书网也没找到这本书。\n\n"
+            "另一段故事继续。\n"
+        ).encode()
+        result, changes = mod.transform(original, 220)
+        self.assertEqual(result, original)
+        self.assertEqual(changes, [])
+
+    def test_standalone_ad_templates_only(self):
+        self.assertTrue(mod.standalone_site_promo(
+            "本书首发 看书就来 101 看书网，.超靠谱 ,提供给你无错章节，无乱序章节的阅读体验"
+        ))
+        self.assertTrue(mod.standalone_site_promo("101看书 101 看书网超顺畅 全手打无错站"))
+        self.assertTrue(mod.standalone_site_promo("更新不易，记得分享101看书网"))
+        self.assertTrue(mod.standalone_site_promo(
+            "【写到这里我希望读者记一下我们域名 找书就去 101 看书网 】"
+        ))
+        self.assertFalse(mod.standalone_site_promo(
+            "战士说，101看书网也无法解释这件事。"
+        ))
+
     def test_clean_chapter_unchanged(self):
         original = "=== 第220章 测试 ===\n\n正常正文。\n".encode()
         result, changed = mod.transform(original, 220)
