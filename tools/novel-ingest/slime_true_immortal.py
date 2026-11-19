@@ -202,7 +202,9 @@ def sudugu_part(html, number, title):
         if pattern.search(value):
             if title_key in clean_title(value):
                 matches.append((i, i + 1))
-            elif title_key in clean_title(' '.join(lines[i:i + 3])):
+            elif i + 1 < len(lines) and title_key in clean_title(lines[i + 1]):
+                matches.append((i, i + 2))
+            elif i + 2 < len(lines) and title_key in clean_title(lines[i + 2]):
                 matches.append((i, i + 3))
     if not matches:
         markers = [i for i, value in enumerate(lines[:18])
