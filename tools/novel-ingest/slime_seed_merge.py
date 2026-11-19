@@ -17,6 +17,8 @@ from zipfile import ZIP_DEFLATED, ZipFile
 FIRST = 220
 LAST = 544
 EXPECTED = LAST - FIRST + 1
+MIN_NEW_SHARD_CJK = 2500
+MAX_NEW_SHARD_CJK = 40000
 CHAPTER_PATH = re.compile(r"^chapters/(\d{4})\.txt$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
@@ -33,7 +35,8 @@ def check_number(value: int) -> int:
 
 
 def add_verified(docs: dict[int, bytes], number: int, payload: bytes,
-                 expected_sha: str, origin: str) -> None:
+                 expected_sha: str, origin: str,
+                 min_cjk: int = 0) -> None:
     check_number(number)
     if not isinstance(expected_sha, str) or not SHA256.fullmatch(expected_sha):
         raise ValueError(f"invalid SHA256 for {number} from {origin}")
@@ -41,6 +44,15 @@ def add_verified(docs: dict[int, bytes], number: int, payload: bytes,
         raise ValueError(f"SHA256 mismatch for {number} from {origin}")
     if not payload.startswith(f"=== 第{number}章 ".encode("utf-8")):
         raise ValueError(f"chapter heading mismatch for {number} from {origin}")
+    if min_cjk:
+        # A self-consistent SHA-256 does not prove that a chapter is complete.
+        text = payload.decode("utf-8", errors="strict")
+        header, separator, prose = text.partition("\n\n")
+        if not separator:
+            raise ValueError(f"chapter {number} has no body separator")
+        size = sum("\u3400" <= ch <= "\u9fff" for ch in prose)
+        if not min_cjk <= size <= MAX_NEW_SHARD_CJK:
+            raise ValueError(f"chapter {number} invalid CJK length {size}")
     if number in docs and docs[number] != payload:
         raise ValueError(f"conflicting version of chapter {number} from {origin}")
     docs[number] = payload
@@ -101,7 +113,7 @@ def load_shards(docs: dict[int, bytes], root: Path) -> int:
                 raise ValueError(f"unsafe or unexpected path for {number}")
             data = (manifest_file.parent / relative).read_bytes()
             add_verified(docs, number, data, record["sha256"],
-                         str(manifest_file))
+                         str(manifest_file), min_cjk=MIN_NEW_SHARD_CJK)
             processed += 1
     return processed
 

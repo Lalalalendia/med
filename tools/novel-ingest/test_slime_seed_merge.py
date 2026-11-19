@@ -46,7 +46,7 @@ class ResumeMergeTests(unittest.TestCase):
     def test_verified_seed_and_new_shard_keep_existing_bytes(self):
         shards = self.root / "shards" / "part"
         (shards / "raw").mkdir(parents=True)
-        later = payload(450, "增量章节内容。")
+        later = payload(450, "增量章节内容。" * 400)
         (shards / "raw" / "0450.txt").write_bytes(later)
         (shards / "manifest.json").write_text(json.dumps({
             "chapters": [{
@@ -79,6 +79,24 @@ class ResumeMergeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "SHA256 mismatch"):
             m.load_strict_seed({}, self.seed_zip, self.seed_manifest)
 
+    def test_short_shard_rejected_even_with_correct_sha(self):
+        shards = self.root / "shards" / "part"
+        (shards / "raw").mkdir(parents=True)
+        short = payload(450, "一段过短的文字。")
+        (shards / "raw" / "0450.txt").write_bytes(short)
+        (shards / "manifest.json").write_text(json.dumps({
+            "chapters": [{
+                "local_number": 450,
+                "file": "raw/0450.txt",
+                "sha256": hashlib.sha256(short).hexdigest(),
+                "status": "ok",
+            }]
+        }), encoding="utf-8")
+        docs = {}
+        m.load_strict_seed(docs, self.seed_zip, self.seed_manifest)
+        with self.assertRaisesRegex(ValueError, "invalid CJK length"):
+            m.load_shards(docs, shards.parent)
+
     def test_conflicting_shard_text_rejected(self):
         docs = {}
         m.load_strict_seed(docs, self.seed_zip, self.seed_manifest)
@@ -86,6 +104,12 @@ class ResumeMergeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "conflicting version"):
             m.add_verified(docs, 220, different,
                            hashlib.sha256(different).hexdigest(), "test")
+
+    def test_invalid_utf8_shard_rejected(self):
+        bad = b"=== " + "第450章 测试".encode("utf-8") + b" ===\n\n\xff"
+        with self.assertRaises(UnicodeDecodeError):
+            m.add_verified({}, 450, bad, hashlib.sha256(bad).hexdigest(),
+                           "test", min_cjk=m.MIN_NEW_SHARD_CJK)
 
     def test_gap_cannot_hide_an_existing_chapter(self):
         docs = {}
