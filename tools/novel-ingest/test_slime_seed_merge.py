@@ -46,7 +46,7 @@ class ResumeMergeTests(unittest.TestCase):
     def test_verified_seed_and_new_shard_keep_existing_bytes(self):
         shards = self.root / "shards" / "part"
         (shards / "raw").mkdir(parents=True)
-        later = payload(450, "增量章节内容。" * 400)
+        later = payload(450, "增量章节内容。" * 500)
         (shards / "raw" / "0450.txt").write_bytes(later)
         (shards / "manifest.json").write_text(json.dumps({
             "chapters": [{
