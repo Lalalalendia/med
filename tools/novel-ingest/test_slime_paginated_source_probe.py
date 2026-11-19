@@ -23,7 +23,7 @@ class MetadataTests(unittest.TestCase):
               '<a href="/114/114150/44.html">第450章 工业城市雏形</a>')
         self.assertEqual(sorted(m.entries(s,html)),[449,450])
     def test_detect_pagination_and_body_without_nav(self):
-        html=('<div id="content">'+('天空充满光芒。'*360)+'</div>'
+        html=('<div id="content">'+('天空充满光芒。'*500)+'</div>'
               '<nav><a href="abc-2.html">下一页</a></nav>')
         size, selector, next_rel=m.content_diagnostic(html)
         self.assertGreater(size,2500)
