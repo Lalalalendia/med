@@ -58,6 +58,53 @@ class SlimeCollectorTest(unittest.TestCase):
         self.assertEqual(text,prose)
         self.assertNotIn("无关书籍推荐",text)
 
+
+    def test_sudugu_pagination_joins_four_parts_without_navigation(self):
+        import requests
+        from unittest.mock import patch
+        src=mod.Source("sudugu","https://www.sudugu520.com/978/","978",
+                       requests.Session())
+        root="https://www.sudugu520.com/978/1116259"
+        pages={}
+        for part in range(1,5):
+            uri=root+("" if part==1 else f"-{part}")+".html"
+            next_anchor=(f'<a href="1116259-{part+1}.html">下一页</a>'
+                         if part<4 else "")
+            prose=("史莱姆与骑士在森林里研究魔法。"*130) + str(part)
+            pages[uri]=(f'<div class="container"><p>设置</p>'
+                        f'<p>第450章 工业城市雏形</p><p>{prose}</p>'
+                        f'<p>目录</p>{next_anchor}</div>')
+        def fake_fetch(uri, source):
+            if uri not in pages:
+                raise AssertionError("unexpected URL "+uri)
+            return pages[uri]
+        with patch.object(mod,"fetch_html",side_effect=fake_fetch), \
+             patch.object(mod.time,"sleep",return_value=None):
+            body,parts=mod.paginated_sudugu_prose(
+                src,root+".html",450,"工业城市雏形",minimum=2500)
+        self.assertEqual(parts,4)
+        self.assertGreater(mod.cjk(body),2500)
+        self.assertNotIn("下一页",body)
+        self.assertNotIn("目录",body)
+        self.assertNotIn("设置",body)
+
+    def test_sudugu_page_scope_rejects_adjacent_chapter(self):
+        first="https://www.sudugu520.com/978/1116259.html"
+        self.assertTrue(mod.exact_sudugu_part(
+            first,"https://www.sudugu520.com/978/1116259-2.html",2))
+        self.assertFalse(mod.exact_sudugu_part(
+            first,"https://www.sudugu520.com/978/1116260.html",2))
+        self.assertFalse(mod.exact_sudugu_part(
+            first,"https://evil.example/978/1116259-2.html",2))
+        self.assertFalse(mod.exact_sudugu_part(
+            first,"https://www.sudugu520.com/978/1116259-3.html",2))
+
+    def test_sudugu_wrong_chapter_title_is_rejected(self):
+        html=('<div class="container"><p>第451章 另一个标题</p>'
+              '<p>'+('魔法森林正在复苏。'*180)+'</p></div>')
+        with self.assertRaisesRegex(ValueError,"number/title mismatch"):
+            mod.sudugu_part(html,450,"工业城市雏形")
+
     def test_merge_detects_missing(self):
         with tempfile.TemporaryDirectory() as td:
             inp=Path(td)/"inputs";shard=inp/"part";shard.mkdir(parents=True)
