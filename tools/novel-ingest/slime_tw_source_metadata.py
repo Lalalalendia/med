@@ -39,6 +39,7 @@ class Site:
 
 SITES = (
     Site("xsw_tw", "https://m.xsw.tw/1758307/", "/1758307/"),
+    Site("xsw_www", "https://www.xsw.tw/book/1758307.html", "/book/1758307/"),
     Site("shu_tw", "https://shu.tw/book/shilaimuzhenxian/index.html",
          "/book/shilaimuzhenxian/"),
 )
