@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 
 UA = "MedNovelCollector/1.0 (public chapter QA, no evasion)"
 HEAD = re.compile(r"^第\s*(\d{1,4})\s*章\s*(.*)$")
-SAMPLES = (218, 219, 438, 449, 450, 539)
+SAMPLES = (218, 219, 438, 449, 450, 451, 535, 539)
 SELECTORS = (
     "#chaptercontent", "#chapterContent", "#content", "#article",
     ".chaptercontent", ".chapter-content", ".chapter_content",
@@ -38,6 +38,8 @@ class Site:
 SITES = (
     Site("znwx", "https://www.znwx.cc/114/114150/", "/114/114150/"),
     Site("sudugu_org", "https://www.sudugu.org/3245/", "/3245/"),
+    Site("lmshu", "https://www.lmshu.com/shilaimuzhenxian/",
+         "/shilaimuzhenxian/"),
 )
 
 
@@ -188,4 +190,5 @@ def probe(site: Site) -> None:
 
 if __name__ == "__main__":
     for site in SITES:
-        probe(site)
+        if site.name == "lmshu":
+            probe(site)
