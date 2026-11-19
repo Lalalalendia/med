@@ -114,6 +114,24 @@ def sample() -> int:
         entries = catalog_entries(response.text)
         print("CATALOG_ENTRIES", len(entries), "max", max(entries, default=0),
               flush=True)
+        if not entries:
+            soup = BeautifulSoup(response.text, "html.parser")
+            matches = []
+            for node in soup.select("a[href]"):
+                label = " ".join(node.get_text(" ", strip=True).split())
+                if HEAD.match(label) or any(t in label for t in ("工业城市雏形", "银霜仙子", "天地之阵")):
+                    target = urljoin(INDEX, node["href"])
+                    matches.append({
+                        "label": label[:55],
+                        "path": urlsplit(target).path[:100],
+                        "host": urlsplit(target).hostname,
+                        "in_scope": safe_url(target),
+                    })
+            print("INDEX_LINK_DIAGNOSTIC", "total_anchors",
+                  len(soup.select("a[href]")), "likely_chapters",
+                  len(matches), "sample", matches[:8], flush=True)
+            print("ENCODING", response.encoding, "apparent",
+                  response.apparent_encoding, flush=True)
         for number in SOURCE_NUMBERS:
             if number not in entries:
                 print("SAMPLE", number, "UNAVAILABLE missing from catalog",
