@@ -17,6 +17,9 @@ from zipfile import ZIP_DEFLATED, ZipFile
 FIRST = 220
 LAST = 544
 EXPECTED = LAST - FIRST + 1
+# The author catalogue has no chapter #293; local #294 includes the extra note
+# in the user-provided 1-219 volume. No other missing number is an approved gap.
+DOCUMENTED_NUMBERING_GAPS = frozenset({294})
 MIN_NEW_SHARD_CJK = 2500
 MAX_NEW_SHARD_CJK = 40000
 CHAPTER_PATH = re.compile(r"^chapters/(\d{4})\.txt$")
@@ -125,6 +128,8 @@ def assemble(out: Path, docs: dict[int, bytes],
         raise ValueError("duplicate numbering-gap argument")
     for number in excluded:
         check_number(number)
+        if number not in DOCUMENTED_NUMBERING_GAPS:
+            raise ValueError(f"unapproved numbering gap {number}; only 294 is documented")
         if number in docs:
             raise ValueError(f"numbering gap {number} already has chapter content")
     missing = [n for n in range(FIRST, LAST + 1)
@@ -152,11 +157,17 @@ def assemble(out: Path, docs: dict[int, bytes],
         "explicit_numbering_gaps_not_in_archive": sorted(excluded),
         "expected_after_numbering_gaps": EXPECTED - len(excluded),
         "missing_chapters": missing,
-        "status": "COMPLETE" if not missing else "PARTIAL",
+        # Filling every slot does not prove that the text is unabridged or clean.
+        # No success status without separately checked editorial provenance.
+        "collection_status": "COMPLETE" if not missing else "PARTIAL",
+        "editorial_status": "REVIEW_REQUIRED",
+        "status": "COLLECTED_QA_PENDING" if not missing else "PARTIAL",
         "sha256": {str(n): digest(docs[n]) for n in sorted(docs)},
         "note": ("A numbering gap is explicit metadata, not an invented chapter. "
                  "Length thresholds and hashes verify file integrity, "
-                 "not independent editorial completeness.")
+                 "not independent editorial completeness. "
+                 "A collected archive remains QA_PENDING until a separate "
+                 "authoritative source comparison is recorded.")
     }
     (out / "manifest.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n",
@@ -192,7 +203,8 @@ def main() -> int:
     print(f"RESUME {result['status']}: "
           f"{result['verified_chapters']}/{result['expected_after_numbering_gaps']} "
           f"verified; missing={len(result['missing_chapters'])}")
-    return 0 if result["status"] == "COMPLETE" else 2
+    # Exit 2 deliberately communicates that an archive is not editorially ready.
+    return 0 if result["status"] == "READY" else 2
 
 
 if __name__ == "__main__":

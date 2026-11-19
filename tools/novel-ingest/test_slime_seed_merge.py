@@ -111,6 +111,22 @@ class ResumeMergeTests(unittest.TestCase):
             m.add_verified({}, 450, bad, hashlib.sha256(bad).hexdigest(),
                            "test", min_cjk=m.MIN_NEW_SHARD_CJK)
 
+    def test_unapproved_gap_cannot_hide_missing_chapters(self):
+        docs = {}
+        m.load_strict_seed(docs, self.seed_zip, self.seed_manifest)
+        with self.assertRaisesRegex(ValueError, "unapproved numbering gap"):
+            m.assemble(self.root / "merged", docs, [450])
+
+    def test_numeric_completeness_never_claims_editorial_approval(self):
+        # One known author-catalogue gap; all 324 other numbered slots present.
+        docs = {n: payload(n) for n in range(220, 545) if n != 294}
+        result = m.assemble(self.root / "all_numbers", docs, [294])
+        self.assertEqual(result["verified_chapters"], 324)
+        self.assertEqual(result["missing_chapters"], [])
+        self.assertEqual(result["collection_status"], "COMPLETE")
+        self.assertEqual(result["editorial_status"], "REVIEW_REQUIRED")
+        self.assertEqual(result["status"], "COLLECTED_QA_PENDING")
+
     def test_gap_cannot_hide_an_existing_chapter(self):
         docs = {}
         m.load_strict_seed(docs, self.seed_zip, self.seed_manifest)
