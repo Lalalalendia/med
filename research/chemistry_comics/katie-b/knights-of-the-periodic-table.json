@@ -1,0 +1,40 @@
+{
+  "id": "katie-b-knights-of-the-periodic-table",
+  "title_en": "The Knights of the Periodic Table",
+  "title_ru": "Рыцари периодической таблицы",
+  "creator": "Katie Brookoff (Katie B. Cartoons)",
+  "source": "https://katiebcartoons.com/cartoon/the-knights-of-the-periodic-table/",
+  "original_image": "https://s.katiebcartoons.com/media/cartoons/the-knights-of-the-periodic-table-cartoon-pun.webp",
+  "source_type": "externally hosted original; image not stored in public repository",
+  "tagline_ru": "Но благородны среди этих рыцарей далеко не все.",
+  "visible_characters": [
+    {
+      "label_en": "Sir Iron",
+      "label_ru": "Сэр Железо",
+      "symbol": "Fe",
+      "visual": "магниты на доспехах"
+    },
+    {
+      "label_en": "Sir Potassium",
+      "label_ru": "Сэр Калий",
+      "symbol": "K",
+      "visual": "банан"
+    },
+    {
+      "label_en": "Sir Neon",
+      "label_ru": "Сэр Неон",
+      "symbol": "Ne",
+      "visual": "неоновое свечение"
+    },
+    {
+      "label_en": "Sir Helium",
+      "label_ru": "Сэр Гелий",
+      "symbol": "He",
+      "visual": "воздушные шарики"
+    }
+  ],
+  "teaching_point": "Игра слов: noble knights и noble gases; гелий и неон — благородные газы",
+  "ru_document": "https://docs.google.com/document/d/1EU9jzhaap0m7TzSIVHahDYorpj_cFife2mbaWo7TjmQ/edit?usp=drivesdk",
+  "copyright_note": "The original artwork is © Katie B. Cartoons. Attribution and source link retained; no redistribution of image in this public repo.",
+  "source_verified_by": "Katie B. Cartoons science-pun index; source image confirmed by the site's image link, not downloaded"
+}
