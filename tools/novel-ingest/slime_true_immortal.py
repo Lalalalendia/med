@@ -295,7 +295,7 @@ def main():
     a.add_argument('--end',type=int,required=True)
     a.add_argument('--out',required=True)
     a.add_argument('--delay',type=float,default=1.1)
-    a.add_argument('--min-chars',type=int,default=1300)
+    a.add_argument('--min-chars',type=int,default=2500)
     a.add_argument('--rights-confirmed',action='store_true')
     b=sub.add_parser('merge')
     b.add_argument('--inputs',required=True)
