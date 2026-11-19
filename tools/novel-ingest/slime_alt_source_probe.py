@@ -12,6 +12,8 @@ SITES=[
  ('biquge2026','https://www.biquge2026.com/book/shilaimuzhenxian/'),
  ('xiaoshuo_tw','https://www.xiaoshuo.com.tw/882005/'),
  ('tacapro','https://www.tacapro.com/novel/15902172219/'),
+ ('hanbosy','https://www.hanbosy.com/hanbo/0237613761350/'),
+ ('biquge432','https://www.biquge432.com/ebooks/222779/'),
  ('readnovel','https://www.readnovel.com/bookquery/qbcliqpekgyc'),
 ]
 HEAD=re.compile(r'第\s*(\d+)\s*章\s*[\s：:]*(.*)')
@@ -46,7 +48,7 @@ def probe(name,index):
   targets={}
   for a in soup.select('a[href]'):
    label=re.sub(r'\s+',' ',a.get_text(' ',strip=True))
-   if any(x in label for x in ('惊人谋划','战争开启','艰难的推进')):
+   if any(x in label for x in ('惊人谋划','战争开启','艰难的推进','工业城市雏形','大道法宝','天地之阵')):
     url=urljoin(index,a['href'])
     if allowed(index,url):
      targets[label]=(url,label)
@@ -70,7 +72,7 @@ def probe(name,index):
     length,selector,text=candidates[0]
    else:
     length,selector,text=0,'NONE',''
-   if name=='biquge2026':
+   if name in ('biquge2026','hanbosy','biquge432'):
     for node in doc.find_all(['main','div','section','article']):
      cc=cjk(node.get_text(' ',strip=True))
      if cc>1500:
