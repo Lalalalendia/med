@@ -17,6 +17,21 @@ class MetadataTests(unittest.TestCase):
         self.assertFalse(m.scoped("http://www.znwx.cc/114/114150/1.html",s))
         self.assertFalse(m.scoped("https://www.znwx.cc/114/else/1.html",s))
         self.assertFalse(m.scoped("https://evil.example/114/114150/1.html",s))
+    def test_follow_only_same_chapter_numbered_parts(self):
+        first = "https://www.sudugu520.com/978/1116259.html"
+        self.assertTrue(m.same_chapter_part(
+            first, "https://www.sudugu520.com/978/1116259-2.html", 2))
+        self.assertTrue(m.same_chapter_part(
+            first, "https://www.sudugu520.com/978/1116259-3.html", 3))
+        self.assertFalse(m.same_chapter_part(
+            first, "https://www.sudugu520.com/978/1116260.html", 2))
+        self.assertFalse(m.same_chapter_part(
+            first, "https://evil.example/978/1116259-2.html", 2))
+        self.assertFalse(m.same_chapter_part(
+            first, "https://www.sudugu520.com/978/1116259-3.html", 2))
+        self.assertFalse(m.same_chapter_part(
+            first, "https://www.sudugu520.com/978/1116259-2.html?download=1", 2))
+
     def test_catalog_titles(self):
         s=m.SITES[0]
         html=('<a href="/114/114150/43.html">第449章 银霜仙子</a>'

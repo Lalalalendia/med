@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 
 UA = "MedNovelCollector/1.0 (public chapter QA, no evasion)"
 HEAD = re.compile(r"^第\s*(\d{1,4})\s*章\s*(.*)$")
-SAMPLES = (218, 219, 438, 449, 450, 451, 535, 539, 540)
+SAMPLES = (449, 450, 451, 535, 539, 540)
 SELECTORS = (
     "#chaptercontent", "#chapterContent", "#content", "#article",
     ".chaptercontent", ".chapter-content", ".chapter_content",
@@ -123,6 +123,20 @@ def robots_policy(session: requests.Session, site: Site) -> RobotFileParser | No
         return None
 
 
+
+def same_chapter_part(first_url: str, candidate: str, page: int) -> bool:
+    """Only numbered suffixes of the exact first-page URL may be followed."""
+    seed, target = urlsplit(first_url), urlsplit(candidate)
+    if page < 2 or page > 8 or not seed.path.endswith(".html"):
+        return False
+    return (
+        target.scheme == seed.scheme
+        and target.netloc == seed.netloc
+        and not target.query and not target.fragment
+        and target.path == seed.path[:-5] + f"-{page}.html"
+    )
+
+
 def probe(site: Site) -> None:
     session = requests.Session()
     session.headers.update({"User-Agent": UA, "Accept-Language": "zh-CN,zh;q=0.9"})
@@ -172,25 +186,39 @@ def probe(site: Site) -> None:
                   bool(match and int(match.group(1)) == number),
                   "blocked", bool(block), "has_next_page", bool(next_rel),
                   "html_bytes", len(html.encode("utf-8")), flush=True)
-            if next_rel:
-                next_url = urljoin(url, next_rel)
-                if next_url != url and scoped(next_url, site) and rp.can_fetch(UA, next_url):
-                    time.sleep(1.2)
-                    page_code, next_html = read_html(session, next_url)
-                    if next_html:
-                        extra, second_selector, _ = content_diagnostic(next_html)
-                        next_heading = BeautifulSoup(next_html, "html.parser").select_one("h1")
-                        next_label = next_heading.get_text(" ", strip=True) if next_heading else ""
-                        next_match = HEAD.search(next_label)
-                        print("SECOND_PAGE", site.name, number, "CJK", extra,
-                              "selector", second_selector, "HTTP", page_code,
-                              "heading_number", int(next_match.group(1)) if next_match else None,
-                              "same_chapter", bool(next_match and int(next_match.group(1)) == number),
-                              "next_path", urlsplit(next_url).path,
-                              flush=True)
-                    else:
-                        print("SECOND_PAGE", site.name, number,
-                              "UNAVAILABLE", page_code, flush=True)
+            total = size
+            current_url = url
+            for part in range(2, 9):
+                if not next_rel:
+                    print("TOTAL", site.name, number, "parts", part - 1,
+                          "cjk_including_markup", total,
+                          "pagination_end", True, flush=True)
+                    break
+                next_url = urljoin(current_url, next_rel)
+                if not same_chapter_part(url, next_url, part):
+                    print("TOTAL", site.name, number, "parts", part - 1,
+                          "cjk_including_markup", total,
+                          "pagination_end", False, "next_rejected", True, flush=True)
+                    break
+                if not scoped(next_url, site) or not rp.can_fetch(UA, next_url):
+                    print("TOTAL", site.name, number, "SKIP next blocked", flush=True)
+                    break
+                time.sleep(1.2)
+                page_code, next_html = read_html(session, next_url)
+                if not next_html:
+                    print("PAGEPART", site.name, number, part,
+                          "UNAVAILABLE", page_code, flush=True)
+                    break
+                extra, selector2, next_rel = content_diagnostic(next_html)
+                total += extra
+                print("PAGEPART", site.name, number, part,
+                      "CJK", extra, "selector", selector2,
+                      "cumulative", total, "has_next", bool(next_rel),
+                      "html_bytes", len(next_html.encode("utf-8")), flush=True)
+                current_url = next_url
+            else:
+                print("TOTAL", site.name, number, "parts_at_least", 8,
+                      "cjk_including_markup", total, "TRUNCATED_DIAGNOSTIC", flush=True)
     except requests.RequestException as e:
         print("SITE", site.name, "ERROR", type(e).__name__, flush=True)
 
