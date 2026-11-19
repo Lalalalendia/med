@@ -1,14 +1,7 @@
 name: Slime True Immortal - collect verified CN 220-544
+# Manual full recollection only. Use the targeted continuation job for 450–544.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - feat/slime-true-immortal-220-545-20261119
-    paths:
-      - tools/novel-ingest/slime_true_immortal.py
-      - tools/novel-ingest/test_slime_true_immortal.py
-      - .github/workflows/slime-true-immortal-220-544-v2.yml
 permissions:
   contents: read
 jobs:
