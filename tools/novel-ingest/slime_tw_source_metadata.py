@@ -145,7 +145,17 @@ def probe(site: Site) -> None:
                     break
             print("INDEX_DIAGNOSTIC", site.name, "anchors", len(all_links),
                   "chapter_like", examples, flush=True)
-        for number in SAMPLES:
+        if site.name == "xsw_www":
+            links = []
+            for a in BeautifulSoup(response.text, "html.parser").select("a[href]"):
+                label = " ".join(a.get_text(" ", strip=True).split())
+                if any(key in label for key in ("全部章", "更多章", "目錄", "目录", "章節", "章节")):
+                    dest = urljoin(site.catalog, a["href"])
+                    links.append((label[:45], urlsplit(dest).hostname,
+                                  urlsplit(dest).path[:95]))
+            print("CATALOG_NAV", site.name, links[:12], flush=True)
+        samples = sorted(set(SAMPLES) | set(sorted(entries)[-2:]))
+        for number in samples:
             if number not in entries:
                 continue
             url, _ = entries[number]
