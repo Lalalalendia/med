@@ -273,6 +273,18 @@ def source_pool():
         out.append(src)
     return out
 
+
+def source_number_for_local(source, local_number):
+    """Use source-title calibration at the 449/450 boundary, not just #219.
+
+    Sudugu #448 is "主人，你的蛋动了" (local #449),
+    Sudugu #449 is "银霜仙子" (local #450).
+    """
+    if source.name == 'sudugu' and local_number >= 450:
+        return local_number - 1
+    return local_number - source.offset
+
+
 def collect(args):
     if not args.rights_confirmed: raise SystemExit('--rights-confirmed required')
     if not 220<=args.start<=args.end<=544 or args.end-args.start>99:
@@ -295,7 +307,7 @@ def collect(args):
         errors=[]
         for src in sources:
             if src.error or src.offset is None or not src.entries: continue
-            actual=n-src.offset
+            actual=source_number_for_local(src,n)
             if actual not in src.entries:
                 errors.append(f'{src.name}: absent {actual}')
                 continue

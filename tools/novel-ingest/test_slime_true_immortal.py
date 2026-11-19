@@ -59,6 +59,15 @@ class SlimeCollectorTest(unittest.TestCase):
         self.assertNotIn("无关书籍推荐",text)
 
 
+    def test_sudugu_late_local_number_calibration(self):
+        import requests
+        s=mod.Source("sudugu", "https://www.sudugu520.com/978/", "978",
+                     requests.Session())
+        s.offset=0
+        self.assertEqual(mod.source_number_for_local(s,450),449)
+        self.assertEqual(mod.source_number_for_local(s,451),450)
+        self.assertEqual(mod.source_number_for_local(s,540),539)
+
     def test_sudugu_pagination_joins_four_parts_without_navigation(self):
         import requests
         from unittest.mock import patch
