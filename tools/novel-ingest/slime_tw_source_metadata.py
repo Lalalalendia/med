@@ -179,6 +179,19 @@ def probe(site: Site) -> None:
                       bool(match and int(match.group(1)) == number),
                       "markers", markers, "html_bytes", len(page.content),
                       flush=True)
+                if site.name == "xsw_www" and count < 2500:
+                    ranked = []
+                    for node in soup.find_all(["div", "main", "article", "section", "p"]):
+                        raw = node.get_text(" ", strip=True)
+                        chars = sum("\u3400" <= c <= "\u9fff" for c in raw)
+                        if chars > 100:
+                            ranked.append((chars, node.name, node.get("id"),
+                                           node.get("class"), len(raw)))
+                    ranked.sort(key=lambda x: x[0], reverse=True)
+                    print("STRUCTURE", site.name, number,
+                          "page_cjk", sum("\u3400" <= c <= "\u9fff"
+                                          for c in soup.get_text(" ", strip=True)),
+                          "long_nodes", ranked[:8], flush=True)
             except requests.RequestException as exc:
                 print("SAMPLE", site.name, number, "UNAVAILABLE",
                       type(exc).__name__, flush=True)
