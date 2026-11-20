@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-19T10:43:45+00:00
+Run: 2026-11-20T10:26:32+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-19T10:43:45+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `117604` [Taking the Blame Makes Me Stronger? I Did All of This!](https://wtr-lab.com/en/novel/117604/taking-the-blame-makes-me-stronger-i-did-all-of-this) — catalog
-- **wtr-lab** `117617` [The National Youth Team Didn't Want Him? He Turned Around and Became the First Mate of the Portuguese Team](https://wtr-lab.com/en/novel/117617/the-national-youth-team-didnt-want-him-he-turned-around-and-became-the-first-mate-of-the-portuguese-team) — catalog
-- **wtr-lab** `117616` [Football: From the Streets of Portugal to the Treble](https://wtr-lab.com/en/novel/117616/football-from-the-streets-of-portugal-to-the-treble) — catalog
-- **wtr-lab** `117615` [Football: From Relegation Team Analyst to World-class Manager](https://wtr-lab.com/en/novel/117615/football-from-relegation-team-analyst-to-world-class-manager) — catalog
-- **wtr-lab** `117828` [Soul Land Dragon King: I Became the Divinity of Games, Legendary Fighters from All Three Soul Land Eras Battle in My Cosmic Arena](https://wtr-lab.com/en/novel/117828/soul-land-dragon-king-i-became-the-divinity-of-games-legendary-fighters-from-all-three-soul-land-eras-battle-in-my-cosmic-arena) — catalog
-- **wtr-lab** `117633` [Kashimo, the Loan King](https://wtr-lab.com/en/novel/117633/kashimo-the-loan-king) — catalog
-- **wtr-lab** `117586` [Day in Magic Card](https://wtr-lab.com/en/novel/117586/day-in-magic-card) — catalog
-- **wtr-lab** `117592` [After Detoxifying His Beautiful Master, He Awakened His Sacred Body and Dao Embryo](https://wtr-lab.com/en/novel/117592/after-detoxifying-his-beautiful-master-he-awakened-his-sacred-body-and-dao-embryo) — catalog
-- **wtr-lab** `117608` [Armor: Terrifying, This Xing Tian is Too Ruthless](https://wtr-lab.com/en/novel/117608/armor-terrifying-this-xing-tian-is-too-ruthless) — catalog
-- **wtr-lab** `117588` [I Turned My Traditional Chinese Medicine Hospital Into a Holiday Resort](https://wtr-lab.com/en/novel/117588/i-turned-my-traditional-chinese-medicine-hospital-into-a-holiday-resort) — catalog
-- **mtl-novel** `douluo-everyone-in-my-chat-group-is-the-original` [Douluo: Everyone in My Chat Group is the Original](https://mtl-novel.com/novel/douluo-everyone-in-my-chat-group-is-the-original/) — catalog
-- **mtl-novel** `douluo-dragon-king-nine-dragons-break-the-abyss` [Douluo Dragon King: Nine Dragons Break the Abyss](https://mtl-novel.com/novel/douluo-dragon-king-nine-dragons-break-the-abyss/) — catalog
-- **mtl-novel** `courtyard-house-daily-intelligence-system-punishing-the-scoundrels` [Courtyard House: Daily Intelligence System, Punishing the Scoundrels](https://mtl-novel.com/novel/courtyard-house-daily-intelligence-system-punishing-the-scoundrels/) — catalog
-- **mtl-novel** `fantasy-how-can-you-get-a-10000-fold-return-for-robbing-an-opportunity` [Fantasy: How Can You Get a 10,000-fold Return for Robbing an Opportunity?](https://mtl-novel.com/novel/fantasy-how-can-you-get-a-10000-fold-return-for-robbing-an-opportunity/) — catalog
-- **mtl-novel** `traveling-through-australia-in-1858` [Traveling Through Australia in 1858](https://mtl-novel.com/novel/traveling-through-australia-in-1858/) — catalog
-- **mtl-novel** `uncover-the-quilt` [Uncover the Quilt](https://mtl-novel.com/novel/uncover-the-quilt/) — catalog
-- **mtl-novel** `kindness-makes-you-stronger-fairy-dont-move-let-me-handle-this` [Kindness Makes You Stronger? Fairy, Don’t Move, Let Me Handle This](https://mtl-novel.com/novel/kindness-makes-you-stronger-fairy-dont-move-let-me-handle-this/) — catalog
-- **mtl-novel** `the-villainous-young-lady-malfoy-is-picking-a-fight-again-today` [The Villainous Young Lady Malfoy is Picking a Fight Again Today](https://mtl-novel.com/novel/the-villainous-young-lady-malfoy-is-picking-a-fight-again-today/) — catalog
-- **mtl-novel** `high-level-martial-era-starting-with-comprehension-amplified-by-100000-times` [High-Level Martial Era: Starting With Comprehension Amplified by 100,000 Times](https://mtl-novel.com/novel/high-level-martial-era-starting-with-comprehension-amplified-by-100000-times/) — catalog
-- **mtl-novel** `i-became-an-internet-sensation-across-the-entire-intergalactic-world-through-food-livestreaming` [I Became an Internet Sensation Across the Entire Intergalactic World Through Food Livestreaming](https://mtl-novel.com/novel/i-became-an-internet-sensation-across-the-entire-intergalactic-world-through-food-livestreaming/) — catalog
+- **wtr-lab** `118025` [Transmigrated Into the Noblewoman of a Historical Novel](https://wtr-lab.com/en/novel/118025/transmigrated-into-the-noblewoman-of-a-historical-novel) — catalog
+- **wtr-lab** `118047` [Magic Academy- I Refuse to Take the Blame So I Blew Up Dumstrang](https://wtr-lab.com/en/novel/118047/magic-academy-i-refuse-to-take-the-blame-so-i-blew-up-dumstrang) — catalog
+- **wtr-lab** `118124` [Soul Land Continent: Twin Angels, Conquering the Female Lead with Talismans](https://wtr-lab.com/en/novel/118124/soul-land-continent-twin-angels-conquering-the-female-lead-with-talismans) — catalog
+- **wtr-lab** `115827` [I Owed 30 Billion, So I Fled to the Qin State to Become a Eunuch](https://wtr-lab.com/en/novel/115827/i-owed-30-billion-so-i-fled-to-the-qin-state-to-become-a-eunuch) — catalog
+- **wtr-lab** `117590` [Recreating the Glorious Tang Dynasty Starts with Summoning Players](https://wtr-lab.com/en/novel/117590/recreating-the-glorious-tang-dynasty-starts-with-summoning-players) — catalog
+- **wtr-lab** `118019` [Element World: Liuyun Second Disciple , Max Out Stat from Beginning](https://wtr-lab.com/en/novel/118019/element-world-liuyun-second-disciple-max-out-stat-from-beginning) — catalog
+- **wtr-lab** `117986` [Time Travel to Film and Television: Starting with Ode to Joy Completed Male-oriented](https://wtr-lab.com/en/novel/117986/time-travel-to-film-and-television-starting-with-ode-to-joy-completed-male-oriented) — catalog
+- **wtr-lab** `118037` [After the Apocalypse, a Group of Beautiful Celebrities Came Knocking](https://wtr-lab.com/en/novel/118037/after-the-apocalypse-a-group-of-beautiful-celebrities-came-knocking) — catalog
+- **wtr-lab** `118029` [Dragon World: Starting As Super Saiyan 4, God-level Selection System](https://wtr-lab.com/en/novel/118029/dragon-world-starting-as-super-saiyan-4-god-level-selection-system) — catalog
+- **wtr-lab** `117915` [Oh No, I’m Being Monitored by My Yandere Older Sister](https://wtr-lab.com/en/novel/117915/oh-no-im-being-monitored-by-my-yandere-older-sister) — catalog
+- **mtl-novel** `heavens-start-from-the-world-of-mixed-martial-arts` [Heavens: Start from the World of Mixed Martial Arts](https://mtl-novel.com/novel/heavens-start-from-the-world-of-mixed-martial-arts/) — catalog
+- **mtl-novel** `players-please-take-your-positions-infinite` [Players, Please Take Your Positions [infinite]](https://mtl-novel.com/novel/players-please-take-your-positions-infinite/) — catalog
+- **mtl-novel** `titan-journey-of-azeroth` [Titan Journey of Azeroth](https://mtl-novel.com/novel/titan-journey-of-azeroth/) — catalog
+- **mtl-novel** `muzan-my-daughter-cant-possibly-be-this-weak` [Muzan: My Daughter Can’t Possibly Be This Weak!](https://mtl-novel.com/novel/muzan-my-daughter-cant-possibly-be-this-weak/) — catalog
+- **mtl-novel** `douluo-dalu-i-awakened-blue-silver-grass-but-my-heaven-defying-comprehension-turned-me-into-a-divine-king` [Douluo Dalu: I Awakened Blue Silver Grass, But My Heaven-defying Comprehension Turned Me Into a Divine King](https://mtl-novel.com/novel/douluo-dalu-i-awakened-blue-silver-grass-but-my-heaven-defying-comprehension-turned-me-into-a-divine-king/) — catalog
+- **mtl-novel** `oh-no-the-villainess-accidentally-became-the-saintess` [Oh No! The Villainess Accidentally Became the Saintess?!](https://mtl-novel.com/novel/oh-no-the-villainess-accidentally-became-the-saintess/) — catalog
+- **mtl-novel** `after-entering-into-a-contractual-marriage-he-was-pampered-like-a-treasure-by-a-disabled-tycoon` [After Entering Into a Contractual Marriage, He Was Pampered Like a Treasure by a Disabled Tycoon!](https://mtl-novel.com/novel/after-entering-into-a-contractual-marriage-he-was-pampered-like-a-treasure-by-a-disabled-tycoon/) — catalog
+- **mtl-novel** `infinite-loop-stats-ascending-by-stepping-on-my-own-feet-i-shatter-stars-with-a-single-punch` [Infinite Loop Stats: Ascending by Stepping on My Own Feet, I Shatter Stars with a Single Punch!](https://mtl-novel.com/novel/infinite-loop-stats-ascending-by-stepping-on-my-own-feet-i-shatter-stars-with-a-single-punch/) — catalog
+- **mtl-novel** `siheyuan-i-am-a-level-10-worker-who-makes-all-the-beasts-angry` [Siheyuan: I am a Level 10 Worker Who Makes All the Beasts Angry](https://mtl-novel.com/novel/siheyuan-i-am-a-level-10-worker-who-makes-all-the-beasts-angry/) — catalog
+- **mtl-novel** `apocalyptic-disasters-i-stockpiled-billions-worth-of-supplies-and-sit-back-to-watch-the-show` [Apocalyptic Disasters: I Stockpiled Billions Worth of Supplies and Sit Back to Watch the Show](https://mtl-novel.com/novel/apocalyptic-disasters-i-stockpiled-billions-worth-of-supplies-and-sit-back-to-watch-the-show/) — catalog
