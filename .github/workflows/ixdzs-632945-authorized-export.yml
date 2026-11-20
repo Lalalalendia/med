@@ -53,8 +53,8 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
   export:
-    # One-time authorized collection on the PR branch; manual dispatch remains rights-gated.
-    if: (github.event_name == 'workflow_dispatch' && inputs.rights_confirmed == true) || (github.event_name == 'push' && github.ref == 'refs/heads/feat/ixdzs-632945-authorized-20261120')
+    # A future export is manual only; do not recrawl the book on every code change.
+    if: github.event_name == 'workflow_dispatch' && inputs.rights_confirmed == true
     needs: selftest
     runs-on: ubuntu-latest
     timeout-minutes: 45
