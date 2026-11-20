@@ -285,18 +285,35 @@ def catalog_only(outdir: Path) -> dict:
         if number < 1 or number > TOTAL:
             continue
         title = anchor.get_text(" ", strip=True)
-        if not title:
+        # A page may be linked from both navigation and table of contents.
+        # Only the numbered chapter label is catalog evidence.
+        heading = re.search(r"第\\s*(\\d{1,4})\\s*章", title)
+        if not heading:
             continue
+        heading_number = int(heading.group(1))
         prior = entries.get(number)
-        if prior and prior["title"] != title:
-            raise ValueError(f"Catalog conflict at p{number}")
-        entries[number] = {"number": number, "title": title, "url": f"{INDEX}p{number}.html"}
+        if prior:
+            if prior["heading_number"] != heading_number:
+                raise ValueError(
+                    f"Conflicting chapter identities at p{number}: "
+                    f"{prior['heading_number']} and {heading_number}"
+                )
+            if len(prior["title"]) >= len(title):
+                continue
+        entries[number] = {
+            "number": number, "heading_number": heading_number,
+            "title": title, "url": f"{INDEX}p{number}.html"
+        }
     missing = sorted(set(range(1, TOTAL + 1)) - set(entries))
+    heading_numbers = [entry["heading_number"] for entry in entries.values()]
+    duplicated_headings = sorted(n for n in set(heading_numbers) if heading_numbers.count(n) > 1)
     result = {
         "book_id": BOOK, "title": "兄弟们，我又带着恐怖片来了",
         "author": "思妻念妻不见妻", "source": INDEX,
         "source_declared_count": TOTAL, "discovered_count": len(entries),
-        "unlisted_numbers": missing, "status": "CATALOG_COMPLETE" if not missing else "CATALOG_PARTIAL",
+        "unlisted_numbers": missing,
+        "repeated_heading_numbers": duplicated_headings,
+        "status": "CATALOG_COMPLETE" if not missing else "CATALOG_PARTIAL",
         "no_story_text_collected": True,
         "utc": datetime.now(timezone.utc).isoformat(),
         "chapters": [entries[n] for n in sorted(entries)]
