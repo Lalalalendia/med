@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 UA="MedAuthorizedBookSourceProbe/1.0 (+https://github.com/Lalalalendia/med)"
 ROOT="https://www.novel543.com/0514657436/"
 OTHER="https://fanqienovel.com/page/7519894716356250686"
-NUM=re.compile(r"第\\s*(36[0-8])\\s*章")
+NUM=re.compile(r"第\s*(36[0-8])\s*章")
 CHALLENGE=("verify you are human","captcha","access denied","just a moment","人机验证","正在验证")
 def fetch(session,url):
     try:
