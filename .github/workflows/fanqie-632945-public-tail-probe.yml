@@ -1,0 +1,28 @@
+name: Fanqie 632945 uncredentialed tail metadata pilot
+on:
+  push:
+    branches: [feat/ixdzs-632945-fanqie-public-tail-20261120]
+    paths:
+      - "tools/novel-ingest/fanqie_632945_public_tail_probe.py"
+      - ".github/workflows/fanqie-632945-public-tail-probe.yml"
+permissions:
+  contents: read
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe authorized uncredentialed source for two chapters, do not persist text
+        run: python tools/novel-ingest/fanqie_632945_public_tail_probe.py
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fanqie-632945-uncredentialed-tail-probe
+          path: out/fanqie-632945-public-pilot.json
+          retention-days: 7
+          if-no-files-found: warn
