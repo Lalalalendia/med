@@ -108,6 +108,35 @@ def main():
                 "chapter_368_title_in_page": ("第368章" in html),
                 "chapter_365_title_in_page": ("第365章" in html)
             }
+    if report.get("fanqie_page_metadata"):
+        samples={
+            360:"7667618429049782809",
+            361:"7668540476518629913",
+            368:"7700230285949944345",
+        }
+        report["fanqie_reader_probe"]={}
+        for number, ident in samples.items():
+            url=f"https://fanqienovel.com/reader/{ident}"
+            r, html=fetch(s,url)
+            if html:
+                soup=BeautifulSoup(html,"html.parser")
+                r["h1"] = soup.h1.get_text(" ",strip=True)[:120] if soup.h1 else ""
+                r["candidate_lengths"]={
+                    sel:len(soup.select_one(sel).get_text(" ",strip=True))
+                    for sel in ("#reader", ".chapter-content", ".read-content",
+                                "article",".reader-content", "#content",".content",
+                                ".muye-reader-content")
+                    if soup.select_one(sel)
+                }
+                copy=BeautifulSoup(html,"html.parser")
+                for node in copy.select("script,style,head,nav,footer,header"):
+                    node.decompose()
+                visible=copy.get_text(" ",strip=True)
+                r["visible_han_chars"] = len(re.findall(r"[\u3400-\u9fff]",visible))
+                r["has_vip_notice"] = any(x in visible for x in ("SVIP","VIP","开通会员","请前往番茄小说APP"))
+                r["has_book_character"] = "李旦" in visible
+                r["script_ids"]=[x.get("id","")[:90] for x in soup.select("script[id]")][:15]
+            report["fanqie_reader_probe"][str(number)]=r
     for n in (360,361,368):
         rec=report["chapters"].get(str(n))
         if not rec:
@@ -124,6 +153,7 @@ def main():
     p.parent.mkdir(parents=True,exist_ok=True)
     p.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
     print("FANQIE_METADATA",json.dumps(report.get("fanqie_page_metadata",{}),ensure_ascii=False),flush=True)
+    print("FANQIE_READERS",json.dumps(report.get("fanqie_reader_probe",{}),ensure_ascii=False),flush=True)
     print("ROBOTS_AUDIT",json.dumps(report["alternate_robots_audit"],ensure_ascii=False),flush=True)
     print("SOURCE_PROBE",json.dumps({ "pages":report["pages"],"chapters":report["chapters"]},ensure_ascii=False),flush=True)
 if __name__=="__main__":
