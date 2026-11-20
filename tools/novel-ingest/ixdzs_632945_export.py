@@ -29,7 +29,7 @@ TOTAL = 360
 INDEX = f"https://ixdzs8.com/read/{BOOK}/"
 DOWNLOAD = f"https://down7.ixdzs8.com/{BOOK}.zip"
 USER_AGENT = "MedAuthorizedBookExport/1.0 (+https://github.com/Lalalalendia/med)"
-HEAD = re.compile(r"^\ufeff?\s*第\s*(\d{1,3})\s*章[^\r\n]{0,100}\s*$", re.M)
+HEAD = re.compile(r"(?m)^[\ufeff \t\u3000]*第[ \t\u3000]*(\d{1,4})[ \t\u3000]*(?:章|[:：])[^\r\n]{0,125}[ \t\u3000]*$")
 PAGE = re.compile(rf"^/read/{BOOK}/p(\d+)\.html$")
 CHINESE = re.compile(r"[\u3400-\u9fff]")
 CHALLENGE = ("captcha", "cloudflare", "verify you are human", "just a moment",
@@ -112,18 +112,39 @@ def decode_text(value: bytes) -> str:
     raise ValueError("TXT is unreadable Chinese text (UTF-8/GB18030/Big5)")
 
 
+def expected_source_number(ordinal: int) -> int:
+    """Verified source-label irregularities; export filenames use physical order."""
+    if 204 <= ordinal <= 259:
+        return ordinal - 1
+    if 330 <= ordinal <= 333:
+        return ordinal - 2
+    return ordinal
+
+
 def split_text(content: str, expected: int = TOTAL) -> list[dict]:
     matches = list(HEAD.finditer(content))
+    if len(matches) != expected:
+        raise ValueError(f"Expected {expected} physical chapter sections, found {len(matches)}")
     records = []
     for index, match in enumerate(matches):
-        number = int(match.group(1))
+        # The source itself misnumbers 60 headings, but its physical order is
+        # complete and verified. Keep both identities; never silently rewrite.
+        number = index + 1
+        source_number = int(match.group(1))
+        expected_label = expected_source_number(number)
+        if source_number != expected_label:
+            raise ValueError(
+                f"Unexpected heading at physical chapter {number}: "
+                f"source={source_number}, expected={expected_label}"
+            )
         start = match.end()
         end = matches[index + 1].start() if index + 1 < len(matches) else len(content)
         body = content[start:end].strip()
         title = match.group(0).strip()
         if len(CHINESE.findall(body)) < 200:
             raise ValueError(f"Empty or truncated chapter {number}: only {len(CHINESE.findall(body))} CJK")
-        records.append({"number": number, "title": title, "text": body})
+        records.append({"number": number, "source_heading_number": source_number,
+                        "title": title, "text": body})
     validate(records, expected)
     return records
 
@@ -196,8 +217,8 @@ def parse_page(html: str, number: int) -> tuple[str, str]:
     title = title_el.get_text(" ", strip=True) if title_el else ""
     if any(token in title.lower() for token in CHALLENGE):
         raise ValueError(f"Challenge at chapter {number}")
-    chapter_match = re.search(r"第\s*(\d{1,3})\s*章", title)
-    if not chapter_match or int(chapter_match.group(1)) != number:
+    chapter_match = re.search(r"第\s*(\d{1,4})\s*(?:章|[:：])", title)
+    if not chapter_match or int(chapter_match.group(1)) != expected_source_number(number):
         raise ValueError(f"Chapter title mismatch at p{number}: {title[:90]}")
     candidates = [soup.select_one(selector) for selector in ROOTS]
     candidates = [node for node in candidates if node]
@@ -228,7 +249,9 @@ def write_archive(records: list[dict], outdir: Path, source: str, source_sha: st
             archive.writestr(filename, chapter_bytes)
             combined.append(content)
             chapter_info.append({
-                "number": number, "title": chapter["title"],
+                "number": number,
+                "source_heading_number": chapter.get("source_heading_number", expected_source_number(number)),
+                "title": chapter["title"],
                 "file": filename, "bytes": len(chapter_bytes),
                 "cjk_chars": len(CHINESE.findall(chapter["text"])),
                 "sha256": digest(chapter_bytes),
@@ -357,6 +380,13 @@ def selftest():
             globals()["TOTAL"] = old_total
     assert PAGE.fullmatch(f"/read/{BOOK}/p1.html")
     assert PAGE.fullmatch(f"/read/{BOOK}/p{TOTAL}.html")
+    assert expected_source_number(204) == 203
+    assert expected_source_number(259) == 258
+    assert expected_source_number(330) == 328
+    assert expected_source_number(333) == 331
+    assert expected_source_number(334) == 334
+    irregular = fixture.replace("第2章", "第2：")
+    assert len(split_text(irregular, expected=3)) == 3
     print("OFFLINE_SELFTEST_PASS")
 
 
