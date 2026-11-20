@@ -65,6 +65,7 @@ def robots_audit(session):
                     record["book_title"] = h1.get_text(" ",strip=True)[:110] if h1 else ""
                     links = [a.get_text(" ",strip=True) for a in soup.select("a[href]")]
                     record["tail_titles"] = [x[:110] for x in links if NUM.search(x)]
+                    record["last_numbered_titles"] = [x[:100] for x in links if re.search(r"第\\s*3\\d{2}\\s*章",x)][-15:]
                     record["page_bytes"] = len(html)
         except Exception as e:
             record["error"]=type(e).__name__+": "+str(e)[:130]
@@ -91,6 +92,22 @@ def main():
             host=urlparse(url).hostname
             if host in {"www.novel543.com","novel543.com","fanqienovel.com"}:
                 report["chapters"].setdefault(str(n),{"title":t[:105],"url":url})
+    # Fanqie is robots-allowed; inspect book chapter links only, not prose.
+    fanqie_allowed = next((x for x in robots_audit(s) if x["host"]=="https://fanqienovel.com"), None)
+    if fanqie_allowed and fanqie_allowed.get("paths",{}).get("/page/7519894716356250686"):
+        rec,html=fetch(s,OTHER)
+        if html:
+            soup=BeautifulSoup(html,"html.parser")
+            report["fanqie_page_metadata"] = {
+                "title":soup.title.get_text(" ",strip=True)[:130] if soup.title else "",
+                "chapter_links":[{"text":a.get_text(" ",strip=True)[:110],"href":a.get("href","")[:200]}
+                    for a in soup.select("a[href]")
+                    if re.search(r"第\\s*36[0-8]\\s*章",a.get_text(" ",strip=True))][:30],
+                "reader_links":[a.get("href","")[:200] for a in soup.select("a[href]")
+                    if "/reader/" in a.get("href","")][:15],
+                "chapter_368_title_in_page": ("第368章" in html),
+                "chapter_365_title_in_page": ("第365章" in html)
+            }
     for n in (360,361,368):
         rec=report["chapters"].get(str(n))
         if not rec:
@@ -106,6 +123,7 @@ def main():
     p=Path("out/novel543-632945-source-probe.json")
     p.parent.mkdir(parents=True,exist_ok=True)
     p.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    print("FANQIE_METADATA",json.dumps(report.get("fanqie_page_metadata",{}),ensure_ascii=False),flush=True)
     print("ROBOTS_AUDIT",json.dumps(report["alternate_robots_audit"],ensure_ascii=False),flush=True)
     print("SOURCE_PROBE",json.dumps({ "pages":report["pages"],"chapters":report["chapters"]},ensure_ascii=False),flush=True)
 if __name__=="__main__":
