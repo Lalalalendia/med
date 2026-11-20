@@ -287,7 +287,7 @@ def catalog_only(outdir: Path) -> dict:
         title = anchor.get_text(" ", strip=True)
         # A page may be linked from both navigation and table of contents.
         # Only the numbered chapter label is catalog evidence.
-        heading = re.search(r"第\\s*(\\d{1,4})\\s*章", title)
+        heading = re.search(r"第\s*(\d{1,4})\s*章", title)
         if not heading:
             continue
         heading_number = int(heading.group(1))
