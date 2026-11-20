@@ -1,0 +1,51 @@
+name: Novel543 632945 authorized final eight chapter export
+on:
+  push:
+    branches: [feat/novel543-632945-tail-20261120]
+    paths:
+      - "tools/novel-ingest/novel543_632945_tail_export.py"
+      - ".github/workflows/novel543-632945-tail-export.yml"
+  workflow_dispatch:
+    inputs:
+      rights_confirmed:
+        description: "I confirm permission to reproduce chapters 361-368"
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: novel543-632945-tail-export
+  cancel-in-progress: false
+jobs:
+  export:
+    if: github.event_name == 'push' || inputs.rights_confirmed == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install runtime
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 opencc-python-reimplemented
+      - name: Selftest
+        run: python tools/novel-ingest/novel543_632945_tail_export.py --selftest
+      - name: Collect authorized original Traditional and Simplified chapters 361-368
+        run: python tools/novel-ingest/novel543_632945_tail_export.py --rights-confirmed --delay 1.25
+      - name: Upload status receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: novel543-632945-361-368-status
+          path: out/novel543-632945-tail/status.json
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Upload verified final eight chapters
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: novel543-632945-361-368-authorized-cn
+          path: out/novel543-632945-tail/novel543-632945-361-368-cn.zip
+          retention-days: 30
+          if-no-files-found: error
