@@ -24,6 +24,53 @@ def fetch(session,url):
         return summary,None
     except Exception as e:
         return {"url":url,"error":type(e).__name__,"message":str(e)[:140]},None
+
+def robots_audit(session):
+    """Check alternate hosts without visiting any disallowed chapter pages."""
+    from urllib.robotparser import RobotFileParser
+    from urllib.parse import urlsplit
+    candidates = [
+        ("https://www.novel543.com", ["/0514657436/dir", "/0514657436/8096_361.html"]),
+        ("https://fanqienovel.com", ["/page/7519894716356250686"]),
+        ("https://wwa4.com", ["/book/13_13211/"]),
+        ("https://www.wwa4.com", ["/book/13_13211/"]),
+    ]
+    outcomes = []
+    for host, paths in candidates:
+        record = {"host":host}
+        try:
+            resp = session.get(host + "/robots.txt", timeout=(8,20), allow_redirects=False)
+            record["robots_status"] = resp.status_code
+            record["robots_redirect"] = resp.headers.get("Location","")
+            rp = RobotFileParser()
+            if resp.status_code == 200 and "user-agent:" in resp.text.lower():
+                rp.parse(resp.text.splitlines())
+                record["policy_lines"] = [
+                    ln.strip()[:150] for ln in resp.text.splitlines()
+                    if ln.lower().strip().startswith(("user-agent:","disallow:","allow:"))
+                ][:25]
+            elif resp.status_code in (404,410):
+                rp.parse(["User-agent: *","Allow: /"])
+            else:
+                record["robots_unresolved"] = True
+                outcomes.append(record)
+                continue
+            record["paths"] = {p:rp.can_fetch(UA, host+p) for p in paths}
+            if host in ("https://wwa4.com", "https://www.wwa4.com") and all(record["paths"].values()):
+                result, html = fetch(session, host + "/book/13_13211/")
+                record["index_status"] = result.get("status")
+                if html:
+                    soup = BeautifulSoup(html,"html.parser")
+                    h1 = soup.find("h1")
+                    record["book_title"] = h1.get_text(" ",strip=True)[:110] if h1 else ""
+                    links = [a.get_text(" ",strip=True) for a in soup.select("a[href]")]
+                    record["tail_titles"] = [x[:110] for x in links if NUM.search(x)]
+                    record["page_bytes"] = len(html)
+        except Exception as e:
+            record["error"]=type(e).__name__+": "+str(e)[:130]
+        outcomes.append(record)
+    return outcomes
+
 def main():
     report={"source":"novel543.com","book_id":"0514657436","pages":[],"chapters":{}}
     s=requests.Session()
@@ -55,9 +102,11 @@ def main():
             nodes={sel:len(soup.select_one(sel).get_text(" ",strip=True)) for sel in ("#content","#chaptercontent","#txtcontent",".chapter-content","article",".content",".read-content","#read-content") if soup.select_one(sel)}
             result["candidate_lengths"]=nodes
         rec["probe"]=result
+    report["alternate_robots_audit"] = robots_audit(s)
     p=Path("out/novel543-632945-source-probe.json")
     p.parent.mkdir(parents=True,exist_ok=True)
     p.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    print("ROBOTS_AUDIT",json.dumps(report["alternate_robots_audit"],ensure_ascii=False),flush=True)
     print("SOURCE_PROBE",json.dumps({ "pages":report["pages"],"chapters":report["chapters"]},ensure_ascii=False),flush=True)
 if __name__=="__main__":
     main()
