@@ -65,7 +65,7 @@ def robots_audit(session):
                     record["book_title"] = h1.get_text(" ",strip=True)[:110] if h1 else ""
                     links = [a.get_text(" ",strip=True) for a in soup.select("a[href]")]
                     record["tail_titles"] = [x[:110] for x in links if NUM.search(x)]
-                    record["last_numbered_titles"] = [x[:100] for x in links if re.search(r"第\\s*3\\d{2}\\s*章",x)][-15:]
+                    record["last_numbered_titles"] = [x[:100] for x in links if re.search(r"第\s*3\d{2}\s*章",x)][-15:]
                     record["page_bytes"] = len(html)
         except Exception as e:
             record["error"]=type(e).__name__+": "+str(e)[:130]
@@ -102,7 +102,7 @@ def main():
                 "title":soup.title.get_text(" ",strip=True)[:130] if soup.title else "",
                 "chapter_links":[{"text":a.get_text(" ",strip=True)[:110],"href":a.get("href","")[:200]}
                     for a in soup.select("a[href]")
-                    if re.search(r"第\\s*36[0-8]\\s*章",a.get_text(" ",strip=True))][:30],
+                    if re.search(r"第\s*36[0-8]\s*章",a.get_text(" ",strip=True))][:30],
                 "reader_links":[a.get("href","")[:200] for a in soup.select("a[href]")
                     if "/reader/" in a.get("href","")][:15],
                 "chapter_368_title_in_page": ("第368章" in html),
