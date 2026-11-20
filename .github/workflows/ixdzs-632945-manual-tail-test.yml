@@ -1,0 +1,24 @@
+name: IXDZS 632945 manual tail merge safety checks
+on:
+  push:
+    branches: [main, feat/novel543-632945-tail-20261120]
+    paths:
+      - "tools/novel-ingest/ixdzs_632945_manual_tail_merge.py"
+      - ".github/workflows/ixdzs-632945-manual-tail-test.yml"
+  pull_request:
+    paths:
+      - "tools/novel-ingest/ixdzs_632945_manual_tail_merge.py"
+      - ".github/workflows/ixdzs-632945-manual-tail-test.yml"
+permissions:
+  contents: read
+jobs:
+  offline-selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m py_compile tools/novel-ingest/ixdzs_632945_manual_tail_merge.py
+      - run: python tools/novel-ingest/ixdzs_632945_manual_tail_merge.py --selftest
