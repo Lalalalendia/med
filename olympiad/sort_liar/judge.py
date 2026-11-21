@@ -521,6 +521,8 @@ async def main_async(args: argparse.Namespace) -> int:
             for mode in STRATEGIES[suite]:
                 for trial in range(args.runs):
                     seed = case_seed(args.seed, n, k, q, mode, trial)
+                    if trial % args.shards != args.shard_index:
+                        continue
                     shape = SHAPES[trial % len(SHAPES)]
                     cases.append((n, k, q, mode, shape, trial, seed))
     print(f"Suite={suite}, cases={len(cases)}, solvers={list(solvers)}, seed={args.seed}", flush=True)
@@ -597,6 +599,8 @@ def cli() -> argparse.Namespace:
     parser.add_argument("--solver", action="append", required=True, help="NAME=path/to/binary (repeatable)")
     parser.add_argument("--suite", choices=PROFILES.keys(), default="smoke")
     parser.add_argument("--runs", type=int, default=3, help="per configuration and strategy")
+    parser.add_argument("--shards", type=int, default=1, help="split repetitions across N CI jobs")
+    parser.add_argument("--shard-index", type=int, default=0, help="0-based shard number")
     parser.add_argument("--seed", type=int, default=794)
     parser.add_argument("--output", default="sort-liar-results")
     parser.add_argument("--replay", help="JSON failure file to reproduce")
@@ -611,7 +615,10 @@ def cli() -> argparse.Namespace:
     parser.add_argument("--max-failure-traces", type=int, default=12)
     parser.add_argument("--fail-on-protocol", action="store_true")
     args = parser.parse_args()
-    if args.runs < 1 or args.runs > 500 or args.cpu_limit < 1 or args.wall_limit <= 0 or args.verify_failures < 0:
+    if (args.runs < 1 or args.runs > 500 or args.cpu_limit < 1
+            or args.wall_limit <= 0 or args.verify_failures < 0
+            or not 1 <= args.shards <= args.runs
+            or not 0 <= args.shard_index < args.shards):
         parser.error("invalid runs or time limits")
     return args
 
