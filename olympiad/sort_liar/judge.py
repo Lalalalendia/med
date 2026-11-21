@@ -415,7 +415,7 @@ async def run_case(
     return result, replay
 
 
-def render_markdown(rows: list[Result], failures: list[str]) -> str:
+def render_markdown(rows: list[Result], failures: list[str], baseline: str = 'adaptive_v5') -> str:
     groups: dict[tuple[str, str], list[Result]] = defaultdict(list)
     for r in rows:
         groups[(r.solver, r.strategy)].append(r)
@@ -445,6 +445,33 @@ def render_markdown(rows: list[Result], failures: list[str]) -> str:
             f"| {sum(r.score for r in group):.3f} "
             f"| {statistics.mean(r.score for r in group):.4f} |"
         )
+    # Compare score on exactly the same synthetic cases and liar strategies.
+    cases: dict[tuple[Any, ...], dict[str, Result]] = defaultdict(dict)
+    for r in rows:
+        key = (r.n, r.k, r.q, r.strategy, r.shape, r.trial, r.seed)
+        cases[key][r.solver] = r
+    if baseline in by_solver:
+        lines += ["", f"## Paired comparison against `{baseline}`", "",
+                  "Comparison uses matched generated cases, not the official hidden tests.", "",
+                  "| Solver | Matched tests | Score delta | Fixed WA | New WA |",
+                  "|---|---:|---:|---:|---:|"]
+        for solver in sorted(by_solver):
+            pairs = [(one[baseline], one[solver]) for one in cases.values()
+                     if baseline in one and solver in one]
+            lines.append(
+                f"| {solver} | {len(pairs)} | {sum(s.score-b.score for b,s in pairs):+.3f} "
+                f"| {sum(not b.correct and s.correct for b,s in pairs)} "
+                f"| {sum(b.correct and not s.correct for b,s in pairs)} |"
+            )
+    lines += ["", "## Failure diagnostics", "",
+              "| Solver | Wrong permutation | Single adjacent swap | Multi-inversion WA | Protocol / timeout / exit |",
+              "|---|---:|---:|---:|---:|"]
+    for solver, group in sorted(by_solver.items()):
+        wrong = sum(r.reason == 'wrong_permutation' for r in group)
+        single = sum(r.reason == 'wrong_permutation' and r.kendall_inversions == 1 for r in group)
+        multi = sum(r.reason == 'wrong_permutation' and (r.kendall_inversions or 0) > 1 for r in group)
+        other = sum(not r.correct and r.reason != 'wrong_permutation' for r in group)
+        lines.append(f"| {solver} | {wrong} | {single} | {multi} | {other} |")
     lines += ["", "## First failure artifacts", ""]
     lines += [f"- `{path}`" for path in failures[:30]] or ["No failures in this run."]
     lines += ["", "Reproduce with `python3 olympiad/sort_liar/judge.py --replay <failure.json> --solver name=path`.\n"]
@@ -473,6 +500,7 @@ async def main_async(args: argparse.Namespace) -> int:
     rows: list[Result] = []
     artifacts: list[str] = []
     failures_by_solver: dict[str, int] = defaultdict(int)
+    recorded_failures: list[tuple[str, Result, dict[str, Any]]] = []
 
     if args.replay:
         payload = json.loads(Path(args.replay).read_text())
@@ -482,8 +510,12 @@ async def main_async(args: argparse.Namespace) -> int:
         if build_permutation(payload["n"], payload["shape"], payload["seed"]) != expected_pi:
             raise ValueError("replay permutation disagrees with case seed")
         suite = "replay"
+        recorded_trace = payload.get("trace") if args.replay_mode == "exact" else None
+        if args.replay_mode == "exact" and recorded_trace is None:
+            raise ValueError("exact replay requires a saved query trace")
     else:
         suite = args.suite
+        recorded_trace = None
         cases = []
         for n, k, q in PROFILES[suite]:
             for mode in STRATEGIES[suite]:
@@ -499,7 +531,7 @@ async def main_async(args: argparse.Namespace) -> int:
                 name, command, suite=suite, n=n, k=k, q=q,
                 strategy=mode, shape=shape, trial=trial, seed=seed,
                 wall_limit=args.wall_limit, cpu_limit=args.cpu_limit,
-                memory_mb=args.memory_mb,
+                memory_mb=args.memory_mb, replay_trace=recorded_trace,
             )
             rows.append(result)
             if not result.correct and failures_by_solver[name] < args.max_failure_traces:
@@ -508,17 +540,42 @@ async def main_async(args: argparse.Namespace) -> int:
                 file.parent.mkdir(parents=True, exist_ok=True)
                 file.write_text(json.dumps(detail, ensure_ascii=False, indent=2))
                 artifacts.append(str(file.relative_to(out_dir)))
+                if failures_by_solver[name] <= args.verify_failures:
+                    recorded_failures.append((command, result, detail))
         if (idx + 1) % max(1, len(cases) // 10) == 0:
             print(f"Completed {idx + 1}/{len(cases)} cases ({time.monotonic()-start:.1f}s)", flush=True)
 
+    replay_problems: list[str] = []
+    for command, original, detail in recorded_failures:
+        rerun, rerun_detail = await run_case(
+            original.solver, command, suite=original.suite,
+            n=original.n, k=original.k, q=original.q,
+            strategy=original.strategy, shape=original.shape,
+            trial=original.trial, seed=original.seed,
+            wall_limit=args.wall_limit, cpu_limit=args.cpu_limit,
+            memory_mb=args.memory_mb, replay_trace=detail['trace'],
+        )
+        if (rerun.reason, rerun.queries, rerun.lies, rerun.score) != (
+            original.reason, original.queries, original.lies, original.score
+        ) or rerun_detail['answer'] != detail['answer']:
+            replay_problems.append(
+                f"{original.solver}/{original.strategy}/{original.seed}: "
+                f"{original.reason}/{original.queries} -> {rerun.reason}/{rerun.queries} "
+                f"{rerun_detail.get('replay_divergence') or ''}"
+            )
     with (out_dir / "results.csv").open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(asdict(rows[0]).keys()))
         writer.writeheader()
         writer.writerows(asdict(r) for r in rows)
     (out_dir / "results.json").write_text(json.dumps([asdict(r) for r in rows], indent=2))
-    md = render_markdown(rows, artifacts)
+    md = render_markdown(rows, artifacts, args.baseline)
     (out_dir / "summary.md").write_text(md)
     print(md)
+    if recorded_failures:
+        print(f"Exact failure replay: {len(recorded_failures)-len(replay_problems)}/{len(recorded_failures)} matched")
+    if replay_problems:
+        print("REPLAY VERIFICATION FAILED:", *replay_problems, sep="\n- ")
+        return 1
     if os.getenv("GITHUB_STEP_SUMMARY"):
         with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as f:
             f.write(md + "\n")
@@ -528,7 +585,7 @@ async def main_async(args: argparse.Namespace) -> int:
             "not_a_permutation", "noninteger_answer", "malformed_protocol_output",
             "exited_without_final_answer", "wall_timeout", "wall_timeout_or_unflushed_output",
             "broken_pipe", "nonzero_exit_after_answer", "did_not_exit_after_answer",
-            "output_after_final_answer", "missing_final_answer",
+            "output_after_final_answer", "missing_final_answer", "replay_query_diverged", "replay_query_count_mismatch",
         }
         if any(r.reason in protocol_errors or r.reason.startswith("invalid_output:") for r in rows):
             return 1
@@ -543,13 +600,18 @@ def cli() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=794)
     parser.add_argument("--output", default="sort-liar-results")
     parser.add_argument("--replay", help="JSON failure file to reproduce")
+    parser.add_argument("--replay-mode", choices=("exact", "strategy"), default="exact",
+                        help="exact=recorded replies and queries, strategy=adaptive liar with same seed")
+    parser.add_argument("--baseline", default="adaptive_v5", help="baseline solver for paired score deltas")
+    parser.add_argument("--verify-failures", type=int, default=0,
+                        help="exactly replay first N saved WA cases per solver")
     parser.add_argument("--wall-limit", type=float, default=8.0, help="wall guard, seconds")
     parser.add_argument("--cpu-limit", type=int, default=2, help="contestant CPU seconds, Linux")
     parser.add_argument("--memory-mb", type=int, default=256)
     parser.add_argument("--max-failure-traces", type=int, default=12)
     parser.add_argument("--fail-on-protocol", action="store_true")
     args = parser.parse_args()
-    if args.runs < 1 or args.runs > 500 or args.cpu_limit < 1 or args.wall_limit <= 0:
+    if args.runs < 1 or args.runs > 500 or args.cpu_limit < 1 or args.wall_limit <= 0 or args.verify_failures < 0:
         parser.error("invalid runs or time limits")
     return args
 
