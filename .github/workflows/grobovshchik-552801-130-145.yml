@@ -1,0 +1,55 @@
+name: Grobovshchik 552801 authorized Chinese chapters 130-145
+
+on:
+  push:
+    branches: [feat/grobovshchik-552801-cn-130-145-20261121]
+    paths:
+      - "tools/novel-ingest/ixdzs_552801_grobovshchik_130_145.py"
+      - ".github/workflows/grobovshchik-552801-130-145.yml"
+  workflow_dispatch:
+    inputs:
+      rights_confirmed:
+        description: "I confirm permission to copy Chinese chapters 130-145"
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: grobovshchik-552801-130-145
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    if: github.event_name == 'push' || inputs.rights_confirmed == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install parser dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Validate chapter parser offline
+        run: python tools/novel-ingest/ixdzs_552801_grobovshchik_130_145.py --selftest
+      - name: Collect Chinese chapters 130-145
+        run: python tools/novel-ingest/ixdzs_552801_grobovshchik_130_145.py --rights-confirmed --delay 2 --out out/grobovshchik-552801-130-145
+      - name: Upload collection status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grobovshchik-552801-130-145-status
+          path: out/grobovshchik-552801-130-145/status.json
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Upload verified Chinese text ZIP
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grobovshchik-552801-cn-130-145-verified
+          path: out/grobovshchik-552801-130-145/grobovshchik-552801-cn-130-145.zip
+          retention-days: 30
+          if-no-files-found: error
