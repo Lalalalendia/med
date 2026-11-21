@@ -254,3 +254,8 @@ A separate held-out family with seed `20261129` yielded improvements on
 some cases and ties on others; **these counts are not official competition
 points**. CPU scheduling can affect results of time-bounded stochastic
 heuristics. Official hidden test inputs are unavailable.
+
+
+## V51: temporal deferral
+
+See [the V51 method](docs/v51_temporal_separation.md). This standalone C++23 variant can omit a current transmission when a scheduled future sender offers a better recipient activation phase. Its ablation test verifies the mechanism. The `temporal` workflow suite provides reproducible synthetic comparisons; official score unknown.

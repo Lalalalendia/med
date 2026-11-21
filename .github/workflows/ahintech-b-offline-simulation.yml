@@ -15,6 +15,7 @@ on:
           - paired
           - research
           - counterfactual
+          - temporal
       seed:
         description: 'Deterministic random seed'
         required: true
@@ -57,11 +58,14 @@ jobs:
         run: |
           if [ "$SUITE" = "counterfactual" ]; then
             python3 tools/ahintech_sim/counterfactual.py --seed "$SEED" --count 16 --out /tmp/ahintech_cases
+          elif [ "$SUITE" = "temporal" ]; then
+            python3 tools/ahintech_sim/temporal_separation.py --seed "$SEED" --count 16 --out /tmp/ahintech_cases
           else
             python3 tools/ahintech_sim/generator.py --suite "$SUITE" --seed "$SEED" --out /tmp/ahintech_cases
           fi
           if [ "$SUITE" = "smoke" ]; then
             cp tools/ahintech_sim/tests/cases/v46_splice_community_n32_m360.in /tmp/ahintech_cases/98_v46_splice_community_n32_m360.in
+            cp tools/ahintech_sim/tests/cases/temporal_dev_seed28_i22.in /tmp/ahintech_cases/97_temporal_dev_seed28_i22.in
           fi
       - name: Compile, run and independently validate contestants
         env:
@@ -83,8 +87,9 @@ jobs:
             --solver v33=tools/ahintech_sim/solvers/v33_ejection_lns.cpp \
             --solver v38=tools/ahintech_sim/solvers/v38_periodic_bridge.cpp \
             --solver v46=tools/ahintech_sim/solvers/v46_window_splice.cpp \
-            --solver v47=tools/ahintech_sim/solvers/v47_deep_splice.cpp
-      - name: Verify certified development fixtures for V32/V33/V38/V46/V47
+            --solver v47=tools/ahintech_sim/solvers/v47_deep_splice.cpp \
+            --solver v51=tools/ahintech_sim/solvers/v51_time_separation.cpp
+      - name: Verify certified development fixtures for V32/V33/V38/V46/V47/V51
         if: github.event_name == 'pull_request' || inputs.suite == 'smoke' || inputs.suite == 'research'
         run: python3 tools/ahintech_sim/tests/check_certified_results.py /tmp/ahintech_results/results.json
       - name: Publish summary to GitHub Actions
