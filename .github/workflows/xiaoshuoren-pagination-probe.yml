@@ -1,4 +1,4 @@
-name: Xiaoshuoren alternate-source metadata probe
+name: Xiaoshuoren alternate-source chapter probe
 on:
   push:
     branches: ["collect/xiaoshuoren-marvel-20261121"]
@@ -14,17 +14,18 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Diagnose public mirrors without downloading entire works
+      - name: Check title-matched alternate pages
         run: |
           python - <<'PY'
           import requests,re
           from bs4 import BeautifulSoup
           urls = [
-            "https://www.txtpai.com/126/126855/353552.html",
-            "https://www.lmshu.com/daizhezhanshimobanhunmanwei/353552/",
-            "https://www.17177.cc/daizhezhanshimobanhunmanwei/353552/",
-            "https://www.69shuba.com/tag/%E6%88%98%E5%A3%AB/2/",
-            "https://czbooks.net/n/up9ac"
+            "https://www.diyibanzi.com/read/25731/1003479.html",
+            "https://www.diyibanzi.com/read/25731/1003534.html",
+            "https://www.diyibanzi.com/read/25731/1003535.html",
+            "https://www.diyibanzi.com/read/25731/1003553.html",
+            "https://www.diyibanzi.com/read/25731/1003554.html",
+            "https://www.diyibanzi.com/read/25731/1003572.html",
           ]
           s=requests.Session()
           s.headers.update({"User-Agent":"Mozilla/5.0","Accept-Language":"zh-CN,zh;q=0.9"})
@@ -34,15 +35,10 @@ jobs:
                   r.encoding = r.apparent_encoding or 'utf-8'
                   soup=BeautifulSoup(r.text,'html.parser')
                   title=soup.title.get_text(" ",strip=True) if soup.title else ''
-                  nodes=[soup.select_one('article.font_max'),soup.select_one('article'),soup.select_one('#content'),soup.select_one('.content')]
-                  nodes=[x for x in nodes if x]
-                  big=max(nodes,key=lambda e:len(e.get_text(" ",strip=True))) if nodes else None
-                  body=big.get_text(" ",strip=True) if big else ''
-                  print("PROBE",r.status_code,r.url,"HTML",len(r.text),"TITLE",title[:80],"BODY",len(body),"SNIP",body[:80],flush=True)
-                  if '69shuba.com' in url or 'czbooks.net' in url:
-                      candidates=[(a.get_text(" ",strip=True),a.get('href','')) for a in soup.select("a[href]") if ('带着战士模板混漫威' in a.get_text(" ",strip=True) or '人形无限手套' in a.get_text(" ",strip=True) or '被打击' in a.get_text(" ",strip=True) or '人形無限手套' in a.get_text(" ",strip=True) or '被打擊' in a.get_text(" ",strip=True))]
-                      print("LINKS",candidates[:20],flush=True)
-                      print("ALL_LINKS",len(soup.select('a[href]')),flush=True)
+                  article=soup.select_one('#content') or soup.select_one('.content') or soup.select_one('.read-content') or soup.select_one('article')
+                  body=article.get_text(" ",strip=True) if article else ''
+                  cjk=len(re.findall(r'[㐀-鿿]',body))
+                  print("PROBE",r.status_code,r.url,"TITLE",title[:100],"BODY",len(body),"CJK",cjk,"SNIP",body[:80],flush=True)
               except Exception as e:
                   print("ERROR",url,str(e)[:200],flush=True)
           PY
