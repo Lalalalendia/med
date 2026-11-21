@@ -41,7 +41,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${REQUESTED_LIMIT:-}" ]; then
-            REQUESTED_LIMIT=3
+            REQUESTED_LIMIT=0
           fi
           python tools/novel-ingest/xiaoshuoren_marvel.py --limit "$REQUESTED_LIMIT" --delay 0.8 --output out/xiaoshuoren-marvel
       - name: Publish report
