@@ -1,0 +1,70 @@
+name: Sort Liar - synthetic interactive judge
+
+on:
+  pull_request:
+    paths:
+      - 'olympiad/sort_liar/**'
+      - '.github/workflows/sort-liar-simulation.yml'
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: 'Repetitions per configuration and liar strategy (1-500)'
+        required: true
+        default: '10'
+        type: number
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sort-liar-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  simulate:
+    name: ${{ matrix.suite }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [smoke, balanced, adversarial]
+    env:
+      SUITE: ${{ matrix.suite }}
+      RUNS: ${{ github.event_name == 'pull_request' && '2' || inputs.runs }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unit tests for the synthetic jury
+        run: python3 -m unittest discover -s olympiad/sort_liar/tests -v
+      - name: Compile C++23 contestants
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .sort-liar-bin
+          for source in olympiad/sort_liar/solutions/*.cpp; do
+            name="$(basename "${source%.cpp}")"
+            g++ -std=c++23 -O2 -pipe -Wall -Wextra "$source" -o ".sort-liar-bin/$name"
+          done
+      - name: Run deterministic interactive simulations
+        shell: bash
+        run: |
+          set -euo pipefail
+          solvers=()
+          for binary in .sort-liar-bin/*; do
+            name="$(basename "$binary")"
+            solvers+=(--solver "$name=$binary")
+          done
+          python3 olympiad/sort_liar/judge.py \
+            --suite "$SUITE" --runs "$RUNS" --seed 794 \
+            --cpu-limit 2 --memory-mb 256 --wall-limit 8 \
+            --max-failure-traces 20 --fail-on-protocol \
+            --output "sort-liar-reports/$SUITE" \
+            "${solvers[@]}"
+      - name: Store CSV, summary and reproducible failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sort-liar-${{ matrix.suite }}-${{ github.run_id }}
+          path: sort-liar-reports/${{ matrix.suite }}/
+          if-no-files-found: warn
+          retention-days: 14
