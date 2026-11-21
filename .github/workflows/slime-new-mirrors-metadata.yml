@@ -1,0 +1,26 @@
+name: Slime new mirrors metadata QA
+on:
+  push:
+    branches:
+      - feat/slime-true-immortal-220-545-20261119
+    paths:
+      - tools/novel-ingest/slime_new_sources_probe.py
+      - .github/workflows/slime-new-mirrors-metadata.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parser dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Syntax check
+        run: python -m py_compile tools/novel-ingest/slime_new_sources_probe.py
+      - name: Probe only public metadata and body-length signals
+        run: python -u tools/novel-ingest/slime_new_sources_probe.py
