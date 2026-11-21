@@ -1,0 +1,35 @@
+name: Xiaoshuoren chapter pagination probe
+on:
+  push:
+    branches: ["collect/xiaoshuoren-marvel-20261121"]
+    paths: [".github/workflows/xiaoshuoren-pagination-probe.yml"]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Inspect public chapter 3 pagination links
+        run: |
+          python - <<'PY'
+          import requests
+          from bs4 import BeautifulSoup
+          url = "https://www.xiaoshuoren.com/daizhezhanshimobanhunmanwei/353396/"
+          r = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
+          r.raise_for_status()
+          r.encoding = r.apparent_encoding or "utf-8"
+          s = BeautifulSoup(r.text, "html.parser")
+          print("status",r.status_code,"url",r.url,"chars",len(r.text))
+          for a in s.select("a[href]"):
+              href = a.get("href","")
+              label = a.get_text(" ",strip=True)
+              if "353396" in href or "下一页" in label or "上一页" in label or "第(1/3)页" in label:
+                  print("LINK",repr(label[:100]),repr(href[:200]))
+          for el in s.find_all(string=lambda x: x and ("第(1/3)页" in x or "下一页" in x)):
+              print("CONTEXT",str(el.parent)[:1400])
+          PY
