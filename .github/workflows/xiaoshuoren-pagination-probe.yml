@@ -1,4 +1,4 @@
-name: Xiaoshuoren chapter diagnostics
+name: Xiaoshuoren alternate-source metadata probe
 on:
   push:
     branches: ["collect/xiaoshuoren-marvel-20261121"]
@@ -8,35 +8,41 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 6
     steps:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Inspect six ambiguous short or missing chapter pages
+      - name: Diagnose public mirrors without downloading entire works
         run: |
           python - <<'PY'
           import requests,re
           from bs4 import BeautifulSoup
-          root="https://www.xiaoshuoren.com/daizhezhanshimobanhunmanwei/"
-          failed=(159,214,215,233,234,252)
+          urls = [
+            "https://www.txtpai.com/126/126855/353552.html",
+            "https://www.lmshu.com/daizhezhanshimobanhunmanwei/353552/",
+            "https://www.17177.cc/daizhezhanshimobanhunmanwei/353552/",
+            "https://www.69shuba.com/tag/%E6%88%98%E5%A3%AB/2/",
+            "https://czbooks.net/n/up9ac"
+          ]
           s=requests.Session()
           s.headers.update({"User-Agent":"Mozilla/5.0","Accept-Language":"zh-CN,zh;q=0.9"})
-          for ordinal in failed:
-              url=root+str(353394+ordinal-1)+"/"
+          for url in urls:
               try:
-                  r=s.get(url,timeout=25)
-                  r.encoding=r.apparent_encoding or 'utf-8'
-                  html=BeautifulSoup(r.text,'html.parser')
-                  node=html.select_one('article.font_max') or html.select_one('article')
-                  body=node.get_text(" ",strip=True) if node else ''
-                  cjk=len(re.findall(r'[㐀-鿿]',body))
-                  heads=[a.get_text(" ",strip=True) for a in html.select('h1')][:2]
-                  marker=re.findall(r'第\s*[(（]\s*\d+\s*/\s*\d+\s*[)）]\s*页',body)
-                  print("CHAPTER",ordinal,"HTTP",r.status_code,"URL",r.url,
-                        "HEAD",heads,"HTML",len(r.text),"ARTICLE",bool(node),
-                        "BODY",len(body),"CJK",cjk,"MARKERS",marker,"PREVIEW",body[:120],flush=True)
-              except Exception as exc:
-                  print("CHAPTER",ordinal,"ERROR",str(exc),flush=True)
+                  r=s.get(url,timeout=20)
+                  r.encoding = r.apparent_encoding or 'utf-8'
+                  soup=BeautifulSoup(r.text,'html.parser')
+                  title=soup.title.get_text(" ",strip=True) if soup.title else ''
+                  nodes=[soup.select_one('article.font_max'),soup.select_one('article'),soup.select_one('#content'),soup.select_one('.content')]
+                  nodes=[x for x in nodes if x]
+                  big=max(nodes,key=lambda e:len(e.get_text(" ",strip=True))) if nodes else None
+                  body=big.get_text(" ",strip=True) if big else ''
+                  print("PROBE",r.status_code,r.url,"HTML",len(r.text),"TITLE",title[:80],"BODY",len(body),"SNIP",body[:80],flush=True)
+                  if '69shuba.com' in url or 'czbooks.net' in url:
+                      candidates=[(a.get_text(" ",strip=True),a.get('href','')) for a in soup.select("a[href]") if ('带着战士模板混漫威' in a.get_text(" ",strip=True) or '人形无限手套' in a.get_text(" ",strip=True) or '被打击' in a.get_text(" ",strip=True) or '人形無限手套' in a.get_text(" ",strip=True) or '被打擊' in a.get_text(" ",strip=True))]
+                      print("LINKS",candidates[:20],flush=True)
+                      print("ALL_LINKS",len(soup.select('a[href]')),flush=True)
+              except Exception as e:
+                  print("ERROR",url,str(e)[:200],flush=True)
           PY
