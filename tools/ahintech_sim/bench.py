@@ -133,6 +133,9 @@ def main() -> None:
     ap.add_argument('--memory-mb',type=int,default=256)
     ap.add_argument('--oracle',action='store_true',help='Run exponential optimum only for n<=6,m<=14')
     ap.add_argument('--reachability-bound',action='store_true',help='Compute relaxed temporal upper bound with capped work')
+    ap.add_argument('--milp',action='store_true',help='Use optional SciPy MILP to certify small cases')
+    ap.add_argument('--milp-time-limit',type=float,default=4.0)
+    ap.add_argument('--milp-max-vars',type=int,default=15000)
     ap.add_argument('--fail-on-invalid', action='store_true')
     args=ap.parse_args()
     args.out.mkdir(parents=True,exist_ok=True)
@@ -151,6 +154,9 @@ def main() -> None:
             binary=p
         compiled[name] = binary
     rows, exact, upper_bounds = [], {}, {}
+    milp_metadata = {}
+    if args.milp:
+        from milp_oracle import TooLarge, solve_milp
     cases = sorted(args.cases.glob('*.in'))
     if not cases:
         ap.error('No .in files in --cases')
@@ -168,12 +174,30 @@ def main() -> None:
                 exact[inputfile.stem]=answer[0]
             except TooComplex:
                 pass
+        if args.milp and problem.n <= 12 and problem.m <= 120:
+            try:
+                proof=solve_milp(problem,time_limit=args.milp_time_limit,
+                                 max_variables=args.milp_max_vars)
+                milp_metadata[inputfile.stem]={
+                    'status':proof.status,'optimal':proof.optimal,
+                    'lower_bound':proof.activations,'upper_bound':proof.upper_bound,
+                    'seconds':round(proof.seconds,3),'variables':proof.variables}
+                if proof.optimal and proof.activations is not None:
+                    exact[inputfile.stem]=proof.activations
+                if proof.upper_bound is not None:
+                    oldbound=upper_bounds.get(inputfile.stem)
+                    upper_bounds[inputfile.stem]=(min(oldbound,proof.upper_bound)
+                                                     if oldbound is not None else proof.upper_bound)
+            except TooLarge as e:
+                milp_metadata[inputfile.stem]={'status':'skipped: '+str(e)}
         for name,binary in compiled.items():
             rec=execute(binary,data,args.time_limit_ms/1000,args.memory_mb,
                         inputfile.stem,name,args.out,problem)
             rows.append(rec)
             print(f'{inputfile.stem}: {name}: {rec["status"]}, A={rec["A"]}, {rec["wall_ms"]} ms',flush=True)
     write_reports(rows,args.out,oracle_scores=exact,upper_bounds=upper_bounds)
+    if args.milp:
+        (args.out/'milp_metadata.json').write_text(json.dumps(milp_metadata,indent=2)+'\n',encoding='utf-8')
     if args.fail_on_invalid and any(r['status']!='OK' for r in rows):
         raise SystemExit(1)
 

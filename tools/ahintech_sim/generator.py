@@ -150,8 +150,11 @@ def matrix(suite: str) -> list[tuple[int, int, str, str, int]]:
     elif suite == 'paired':
         sizes = [(12, 160), (20, 360), (20, 360), (12, 360),
                  (20, 160), (20, 360), (12, 360), (20, 360)]
+    elif suite == 'research':
+        sizes = [(6, 18), (8, 36), (9, 60), (10, 48),
+                 (11, 60), (12, 72), (16, 80), (20, 120)]
     else:
-        raise ValueError('suite must be smoke, standard, stress or paired')
+        raise ValueError('suite must be smoke, standard, stress, paired or research')
     result = []
     for i, (n, m) in enumerate(sizes):
         fam = FAMILIES[i % len(FAMILIES)]
@@ -164,7 +167,7 @@ def matrix(suite: str) -> list[tuple[int, int, str, str, int]]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument('--suite', choices=['smoke','standard','stress','paired'], default='smoke')
+    ap.add_argument('--suite', choices=['smoke','standard','stress','paired','research'], default='smoke')
     ap.add_argument('--seed', type=int, default=20261121)
     ap.add_argument('--out', type=Path, default=Path('cases'))
     args = ap.parse_args()
@@ -201,6 +204,21 @@ def main() -> None:
                              'edges':sum(map(len,prob.adj))//2,'seed':seed,
                              'sha256':hashlib.sha256(augmented_data.encode('ascii')).hexdigest(),
                              'pair':i,'variant':'padded'})
+    # Certified small regression inputs are explicitly developmental, not
+    # an independent hold-out set and never official hidden judge cases.
+    if args.suite in ('smoke','research'):
+        fixtures=Path(__file__).parent/'tests'/'cases'
+        for source in sorted(fixtures.glob('dev_gap_*.in')):
+            name='99_'+source.stem
+            data=source.read_bytes()
+            problem=Problem.parse(data)
+            (args.out/(name+'.in')).write_bytes(data)
+            manifest.append({'name':name,'file':name+'.in','n':problem.n,
+                             'm':problem.m,'k':problem.k,'x':problem.x,
+                             'family':'certified-dev-fixture','schedule':'known',
+                             'edges':sum(map(len,problem.adj))//2,
+                             'seed':None,'sha256':hashlib.sha256(data).hexdigest(),
+                             'pair':None,'variant':'development-regression'})
     (args.out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
     print(f'Generated {len(manifest)} reproducible {args.suite} cases in {args.out}')
 

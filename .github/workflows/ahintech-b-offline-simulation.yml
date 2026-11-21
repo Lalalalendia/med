@@ -13,6 +13,7 @@ on:
           - standard
           - stress
           - paired
+          - research
       seed:
         description: 'Deterministic random seed'
         required: true
@@ -43,6 +44,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install optional MILP research dependency
+        if: github.event_name == 'workflow_dispatch' && inputs.suite == 'research'
+        run: python3 -m pip install --disable-pip-version-check scipy
       - name: Check independent simulator and exact oracle
         run: python3 -m unittest discover -s tools/ahintech_sim/tests -v
       - name: Generate reproducible cases
@@ -52,14 +56,21 @@ jobs:
         run: |
           python3 tools/ahintech_sim/generator.py --suite "$SUITE" --seed "$SEED" --out /tmp/ahintech_cases
       - name: Compile, run and independently validate contestants
+        env:
+          SUITE: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'smoke' }}
         run: |
+          MILP_ARGS=""
+          if [ "$SUITE" = "research" ]; then MILP_ARGS="--milp --milp-time-limit 4"; fi
           python3 tools/ahintech_sim/bench.py \
             --cases /tmp/ahintech_cases \
             --out /tmp/ahintech_results \
-            --time-limit-ms 2000 --memory-mb 256 --oracle --reachability-bound \
+            --time-limit-ms 2000 --memory-mb 256 --oracle --reachability-bound --fail-on-invalid \
+            $MILP_ARGS \
             --solver v12=tools/ahintech_sim/solvers/v12_cache.cpp \
             --solver v21=tools/ahintech_sim/solvers/v21_p0.cpp \
-            --solver v24=tools/ahintech_sim/solvers/v24_reachable.cpp
+            --solver v24=tools/ahintech_sim/solvers/v24_reachable.cpp \
+            --solver v27=tools/ahintech_sim/solvers/v27_exactmedium.cpp \
+            --solver v29=tools/ahintech_sim/solvers/v29_subset_beam.cpp
       - name: Publish summary to GitHub Actions
         if: always()
         run: |
@@ -77,6 +88,7 @@ jobs:
             /tmp/ahintech_results/results.csv
             /tmp/ahintech_results/summary.json
             /tmp/ahintech_results/report.md
+            /tmp/ahintech_results/milp_metadata.json
             /tmp/ahintech_results/failures
           if-no-files-found: warn
           retention-days: 30
