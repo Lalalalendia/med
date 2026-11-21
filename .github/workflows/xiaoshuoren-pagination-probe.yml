@@ -1,4 +1,4 @@
-name: Xiaoshuoren chapter pagination probe
+name: Xiaoshuoren chapter diagnostics
 on:
   push:
     branches: ["collect/xiaoshuoren-marvel-20261121"]
@@ -14,22 +14,29 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Inspect public chapter 3 pagination links
+      - name: Inspect six ambiguous short or missing chapter pages
         run: |
           python - <<'PY'
-          import requests
+          import requests,re
           from bs4 import BeautifulSoup
-          url = "https://www.xiaoshuoren.com/daizhezhanshimobanhunmanwei/353396/"
-          r = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
-          r.raise_for_status()
-          r.encoding = r.apparent_encoding or "utf-8"
-          s = BeautifulSoup(r.text, "html.parser")
-          print("status",r.status_code,"url",r.url,"chars",len(r.text))
-          for a in s.select("a[href]"):
-              href = a.get("href","")
-              label = a.get_text(" ",strip=True)
-              if "353396" in href or "下一页" in label or "上一页" in label or "第(1/3)页" in label:
-                  print("LINK",repr(label[:100]),repr(href[:200]))
-          for el in s.find_all(string=lambda x: x and ("第(1/3)页" in x or "下一页" in x)):
-              print("CONTEXT",str(el.parent)[:1400])
+          root="https://www.xiaoshuoren.com/daizhezhanshimobanhunmanwei/"
+          failed=(159,214,215,233,234,252)
+          s=requests.Session()
+          s.headers.update({"User-Agent":"Mozilla/5.0","Accept-Language":"zh-CN,zh;q=0.9"})
+          for ordinal in failed:
+              url=root+str(353394+ordinal-1)+"/"
+              try:
+                  r=s.get(url,timeout=25)
+                  r.encoding=r.apparent_encoding or 'utf-8'
+                  html=BeautifulSoup(r.text,'html.parser')
+                  node=html.select_one('article.font_max') or html.select_one('article')
+                  body=node.get_text(" ",strip=True) if node else ''
+                  cjk=len(re.findall(r'[㐀-鿿]',body))
+                  heads=[a.get_text(" ",strip=True) for a in html.select('h1')][:2]
+                  marker=re.findall(r'第\s*[(（]\s*\d+\s*/\s*\d+\s*[)）]\s*页',body)
+                  print("CHAPTER",ordinal,"HTTP",r.status_code,"URL",r.url,
+                        "HEAD",heads,"HTML",len(r.text),"ARTICLE",bool(node),
+                        "BODY",len(body),"CJK",cjk,"MARKERS",marker,"PREVIEW",body[:120],flush=True)
+              except Exception as exc:
+                  print("CHAPTER",ordinal,"ERROR",str(exc),flush=True)
           PY
