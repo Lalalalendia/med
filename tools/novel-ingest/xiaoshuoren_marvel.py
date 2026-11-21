@@ -20,9 +20,9 @@ from bs4 import BeautifulSoup
 BOOK = "https://www.xiaoshuoren.com/daizhezhanshimobanhunmanwei/"
 HOST = "www.xiaoshuoren.com"
 SLUG = "/daizhezhanshimobanhunmanwei/"
-CHAPTER = re.compile(r"^/daizhezhanshimobanhunmanwei/(\\d+)/?$")
-CHAPTER_PAGE = re.compile(r"^/daizhezhanshimobanhunmanwei/(\\d+)(?:_(\\d+))?/?$")
-PAGE_MARKER = re.compile(r"第\\s*[(（]\\s*(\\d+)\\s*/\\s*(\\d+)\\s*[)）]\\s*页")
+CHAPTER = re.compile(r"^/daizhezhanshimobanhunmanwei/(\d+)/?$")
+CHAPTER_PAGE = re.compile(r"^/daizhezhanshimobanhunmanwei/(\d+)(?:_(\d+))?/?$")
+PAGE_MARKER = re.compile(r"第\s*[(（]\s*(\d+)\s*/\s*(\d+)\s*[)）]\s*页")
 CJK = re.compile(r"[\u3400-\u9fff]")
 RANGE = re.compile(r"第\s*(\d+)\s*章\s*[~～]\s*(\d+)\s*章\s*/\s*共\s*(\d+)\s*章")
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36"
