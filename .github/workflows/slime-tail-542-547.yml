@@ -1,0 +1,74 @@
+name: Slime 542-547 permitted tail intake
+on:
+  push:
+    branches:
+      - feat/slime-true-immortal-220-545-20261119
+    paths:
+      - .github/workflows/slime-tail-542-547.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Existing parser regression tests
+        run: python -m unittest tools/novel-ingest/test_slime_true_immortal.py -v
+      - name: Verify new public sources and collect only genuinely complete tail chapters
+        id: collect
+        continue-on-error: true
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import argparse
+          import sys
+          script = Path('tools/novel-ingest/slime_true_immortal.py')
+          text = script.read_text('utf-8')
+          old = 'args.end<=544'
+          assert text.count(old)==1, 'Collector bounds unexpectedly changed: inspect manually'
+          script.write_text(text.replace(old,'args.end<=547'),'utf-8')
+          sys.path.insert(0, str(script.parent.resolve()))
+          import slime_true_immortal as m
+          original_load = m.load_source
+          original_source_number = m.source_number_for_local
+          required_tail_titles = {539:'风暴前夕', 540:'天地之阵'}
+          def load_verified(s):
+              original_load(s)
+              if s.error:
+                  return
+              for no,title in required_tail_titles.items():
+                  record = (s.entries or {}).get(no)
+                  if not record or m.clean_title(title) != m.clean_title(record[1]):
+                      s.error = 'missing or wrong title anchor '+str(no)
+                      print('SOURCE',s.name,'REJECT',s.error,flush=True)
+                      return
+          def tail_number(s,local):
+              if local>=450:
+                  return local-1
+              return original_source_number(s,local)
+          m.load_source = load_verified
+          m.source_number_for_local = tail_number
+          m.SOURCES = (
+              ('lexin','https://www.lexin580.com/lexin/43514174207/','43514174207'),
+              ('guangde','https://m.51gdfc.com/gdsy/53713815161/','53713815161'),
+          ) + m.SOURCES
+          args=argparse.Namespace(rights_confirmed=True,start=542,end=547,
+                                  delay=1.2,min_chars=2500,
+                                  out='out/slime-tail-542-547')
+          raise SystemExit(m.collect(args))
+          PY
+      - name: Preserve provenance, checksums and failure diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slime-tail-542-547
+          path: out/slime-tail-542-547/
+          if-no-files-found: warn
+          retention-days: 7
