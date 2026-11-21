@@ -117,7 +117,8 @@ def probe(name,home):
             if not body:
                 print('CHAPTER',name,no,'HTTP',code,'bytes',size,'NO_HTML',flush=True);continue
             heading,(cjk,sel),blocked=diagnostic(body)
-            body_cjk=count_cjk(BeautifulSoup(body,'html.parser').get_text(' ',strip=True))\n            print('CHAPTER',name,no,'HTTP',code,'bytes',size,'cjk',cjk,'body_cjk',body_cjk,'selector',sel,'heading',heading,'blocked',blocked,'candidate',bool(cjk>=2500 and not blocked and str(no) in heading),flush=True)
+            body_cjk=count_cjk(BeautifulSoup(body,'html.parser').get_text(' ',strip=True))
+            print('CHAPTER',name,no,'HTTP',code,'bytes',size,'cjk',cjk,'body_cjk',body_cjk,'selector',sel,'heading',heading,'blocked',blocked,'candidate',bool(cjk>=2500 and not blocked and str(no) in heading),flush=True)
     except requests.RequestException as e:
         print('ERROR',name,type(e).__name__,str(e)[:120],flush=True)
 
