@@ -86,7 +86,7 @@ def catalog(session, delay):
     while True:
         if page >= 12:
             raise RuntimeError("Too many index pages")
-        url = BOOK if page == 0 else urljoin(BOOK, "index_%d.html" % page)
+        url = BOOK if page == 0 else urljoin(BOOK, "index_%d.html" % (page + 1))
         soup, actual = get(session, url)
         m = RANGE.search(soup.get_text(" ", strip=True))
         if not m:
