@@ -22,7 +22,8 @@ jobs:
         run: python -m unittest tools/novel-ingest/test_slime_true_immortal.py -v
       - name: Verify new public sources and collect only genuinely complete tail chapters
         id: collect
-        continue-on-error: true
+        # A missing chapter is a failed collection, not a passing check.
+        # The following artifact step uses if: always() to preserve diagnostics.
         shell: bash
         run: |
           python - <<'PY'
