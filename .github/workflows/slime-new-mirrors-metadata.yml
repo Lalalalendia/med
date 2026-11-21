@@ -23,4 +23,4 @@ jobs:
       - name: Syntax check
         run: python -m py_compile tools/novel-ingest/slime_new_sources_probe.py
       - name: Probe only public metadata and body-length signals
-        run: python -u tools/novel-ingest/slime_new_sources_probe.py
+        run: SLIME_PROBE_SITE=myshu python -u tools/novel-ingest/slime_new_sources_probe.py
