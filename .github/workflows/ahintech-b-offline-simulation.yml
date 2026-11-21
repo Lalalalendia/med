@@ -12,6 +12,7 @@ on:
           - smoke
           - standard
           - stress
+          - paired
       seed:
         description: 'Deterministic random seed'
         required: true
@@ -55,9 +56,10 @@ jobs:
           python3 tools/ahintech_sim/bench.py \
             --cases /tmp/ahintech_cases \
             --out /tmp/ahintech_results \
-            --time-limit-ms 2000 --memory-mb 256 --oracle \
+            --time-limit-ms 2000 --memory-mb 256 --oracle --reachability-bound \
             --solver v12=tools/ahintech_sim/solvers/v12_cache.cpp \
-            --solver v21=tools/ahintech_sim/solvers/v21_p0.cpp
+            --solver v21=tools/ahintech_sim/solvers/v21_p0.cpp \
+            --solver v24=tools/ahintech_sim/solvers/v24_reachable.cpp
       - name: Publish summary to GitHub Actions
         if: always()
         run: |
