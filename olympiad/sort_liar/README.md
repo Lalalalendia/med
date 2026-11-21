@@ -47,3 +47,65 @@ python3 olympiad/sort_liar/judge.py \
 Профили включают `N=1000,k=30,Q=11000` и меньшие значения. Формы перестановок: random, sorted, reversed, nearly_sorted, zigzag, shuffled blocks.
 
 **Ограничение метода:** это *синтетические* тесты, а не опубликованный набор из 50 закрытых тестов. Они позволяют сравнивать алгоритмы и воспроизводить регрессии, но не раскрывают скрытый тест №40. При некоторых `N,k,Q` гарантированное восстановление математически невозможно.
+
+
+## Replay and paired scoring (v2)
+
+The harness sets `SORT_LIAR_SEED` to the case seed. The three time-seeded C++
+reference solvers honor this environment variable **only for simulations**;
+without it, the original clock-based seed is used. This makes the recorded
+query transcript reproducible without changing the competition protocol.
+
+A failed run saves its entire `trace`: each query, true comparison, reply and
+whether the judge lied. By default, `--replay` is now **exact**: the simulator
+checks the contestant's next ordered query against the recorded one and gives
+the original reply. A changed or nondeterministic query sequence is reported
+as `replay_query_diverged`, never silently treated as an equivalent replay.
+
+To compare a different algorithm on the same *permutation and adaptive liar
+policy* (not the same answers), use:
+
+```bash
+python3 olympiad/sort_liar/judge.py \
+  --replay sort-liar-reports/failures/CASE.json \
+  --replay-mode strategy \
+  --solver candidate=.sort-liar-bin/candidate \
+  --output sort-liar-whatif
+```
+
+The report now includes **paired score deltas** against `adaptive_v5`,
+counts of regressions and fixes, and diagnoses wrong permutations by
+the number of reversed true-neighbor pairs and Kendall inversions.
+Each stored failure includes the true ranks, indices, number of comparisons,
+and lies for its first 20 reversed-neighbor pairs.
+
+The CI runner calls `--verify-failures 2`: it must reproduce the first two
+saved failure transcripts per solver **exactly**. This checks that artifacts
+are usable. WA itself is still a normal simulation result, not a CI failure.
+
+## Large campaigns and aggregation
+
+For manual GitHub Actions runs with `runs >= 32`, eight independent shards
+partition trial numbers, including permutation shapes. Reports are uploaded
+separately and then merged by `aggregate.py` into a combined CSV, JSON and
+summary with paired scores. On PRs the workflow uses a single shard and two
+repetitions per configuration. There is no automatic heavy stress run.
+
+Local two-shard example:
+
+```bash
+python3 olympiad/sort_liar/judge.py \
+  --suite balanced --runs 20 --shards 2 --shard-index 0 \
+  --solver adaptive_v5=.sort-liar-bin/adaptive_v5 \
+  --output results/part-0
+python3 olympiad/sort_liar/judge.py \
+  --suite balanced --runs 20 --shards 2 --shard-index 1 \
+  --solver adaptive_v5=.sort-liar-bin/adaptive_v5 \
+  --output results/part-1
+python3 olympiad/sort_liar/aggregate.py \
+  --input results --output results/combined
+```
+
+**Caveat:** The simulation uses prescribed strategies; their frequencies
+are not estimates of the private judge distribution. Better simulated
+aggregate points do not automatically imply improvement on hidden test #40.
