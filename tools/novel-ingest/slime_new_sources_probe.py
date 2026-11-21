@@ -7,6 +7,7 @@ from urllib.robotparser import RobotFileParser
 
 UA = 'MedNovelCollector/1.0 (authorized metadata QA; no evasion)'
 LANDINGS = [
+ ('myshu','https://www.myshu.net/lastupdate/'),
  ('09kan','https://www.09kan.com/rank/'),
  ('qiqidu','https://www.qiqidu.net/qdq-17/'),
  ('92sr','https://www.92sr.com/jiuer283/'),
