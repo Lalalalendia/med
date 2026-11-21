@@ -1,0 +1,330 @@
+{
+  "schema": "katieb-science-classification-v1",
+  "source": "Katie B. Science Pun Cartoons, 3-page archive",
+  "scope": "28 verified original cartoons",
+  "method": "One primary subject per comic; humor and OGE relevance are independent axes; editorial classification, not author tags",
+  "counts": {
+    "Химия": 5,
+    "Математика": 1,
+    "Научный метод и критическое мышление": 2,
+    "Биология и медицина": 9,
+    "Физика и инженерия": 3,
+    "Общенаучные каламбуры": 3,
+    "Учёные и история науки": 5
+  },
+  "oge_counts": {
+    "По теме ОГЭ": 3,
+    "Косвенно": 3,
+    "Не относится": 22
+  },
+  "comics": [
+    {
+      "id": 1,
+      "title_ru": "Слишком бурная реакция",
+      "slug": "i-think-you-re-overreacting",
+      "section": "Химия",
+      "topic": "Химические реакции; сода и уксус",
+      "humor": "Двойное значение выражения",
+      "oge": "По теме ОГЭ",
+      "comment": "Признаки реакции. Взрыв — карикатурное преувеличение, не демонстрация безопасного опыта.",
+      "source_url": "https://katiebcartoons.com/cartoon/i-think-you-re-overreacting/"
+    },
+    {
+      "id": 2,
+      "title_ru": "Значащие цифры",
+      "slug": "significant-digit",
+      "section": "Математика",
+      "topic": "Значащие цифры; измерения и точность",
+      "humor": "Двойное значение выражения",
+      "oge": "Косвенно",
+      "comment": "Можно связать с округлением расчётных ответов, но правило комикс не объясняет.",
+      "source_url": "https://katiebcartoons.com/cartoon/significant-digit/"
+    },
+    {
+      "id": 3,
+      "title_ru": "Клинические испытания салемских ведьм",
+      "slug": "salem-witch-clinical-trials",
+      "section": "Научный метод и критическое мышление",
+      "topic": "Плацебо; контрольная группа; испытание гипотезы",
+      "humor": "Ситуационный абсурд",
+      "oge": "Не относится",
+      "comment": "Помогает обсудить контрольные группы, но не является задачей ОГЭ по химии.",
+      "source_url": "https://katiebcartoons.com/cartoon/salem-witch-clinical-trials/"
+    },
+    {
+      "id": 4,
+      "title_ru": "Цилиндр-выпускник",
+      "slug": "graduated-cylinder",
+      "section": "Химия",
+      "topic": "Лабораторная посуда; мерный цилиндр",
+      "humor": "Двойное значение слова",
+      "oge": "По теме ОГЭ",
+      "comment": "Можно показать внешний вид мерного цилиндра, но не правила снятия показаний.",
+      "source_url": "https://katiebcartoons.com/cartoon/graduated-cylinder/"
+    },
+    {
+      "id": 5,
+      "title_ru": "Недостающее звено — Линкольн",
+      "slug": "the-missing-lincoln-missing-link",
+      "section": "Биология и медицина",
+      "topic": "Эволюция; недостающее звено",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Не относится",
+      "comment": "Английское missing link обыгрывается фамилией Lincoln.",
+      "source_url": "https://katiebcartoons.com/cartoon/the-missing-lincoln-missing-link/"
+    },
+    {
+      "id": 6,
+      "title_ru": "Полудирижёр",
+      "slug": "semiconductor",
+      "section": "Физика и инженерия",
+      "topic": "Проводники и полупроводники",
+      "humor": "Двойное значение слова",
+      "oge": "Не относится",
+      "comment": "Игра conductor — проводник/дирижёр; физику полупроводников не объясняет.",
+      "source_url": "https://katiebcartoons.com/cartoon/semiconductor/"
+    },
+    {
+      "id": 7,
+      "title_ru": "Сердце генетически изменённой свиньи",
+      "slug": "man-receives-heart-from-genetically-modified-pig",
+      "section": "Биология и медицина",
+      "topic": "Пересадка органов; генетическая модификация",
+      "humor": "Ситуационный абсурд",
+      "oge": "Не относится",
+      "comment": "Основано на сюжете о ксенотрансплантации, не учит процедуре.",
+      "source_url": "https://katiebcartoons.com/cartoon/man-receives-heart-from-genetically-modified-pig/"
+    },
+    {
+      "id": 8,
+      "title_ru": "Манекен и гений краш-тестов",
+      "slug": "crash-test-dummy-crash-test-smarty",
+      "section": "Физика и инженерия",
+      "topic": "Столкновения; кинетическая энергия",
+      "humor": "Ситуационный абсурд",
+      "oge": "Не относится",
+      "comment": "Сопоставляет crash-test dummy и crash-test smarty; не решает расчёт по механике.",
+      "source_url": "https://katiebcartoons.com/cartoon/crash-test-dummy-crash-test-smarty/"
+    },
+    {
+      "id": 9,
+      "title_ru": "Рыцари периодической таблицы",
+      "slug": "the-knights-of-the-periodic-table",
+      "section": "Химия",
+      "topic": "Химические элементы Fe, K, Ne, He; благородные газы",
+      "humor": "Двойное значение слова",
+      "oge": "По теме ОГЭ",
+      "comment": "Наглядно различает благородные газы He, Ne и металлы Fe, K.",
+      "source_url": "https://katiebcartoons.com/cartoon/the-knights-of-the-periodic-table/"
+    },
+    {
+      "id": 10,
+      "title_ru": "Давление на кровь",
+      "slug": "blood-pressure",
+      "section": "Биология и медицина",
+      "topic": "Кровь; свёртывание",
+      "humor": "Двойное значение слова",
+      "oge": "Не относится",
+      "comment": "Обыгрывает blood pressure и социальное давление.",
+      "source_url": "https://katiebcartoons.com/cartoon/blood-pressure/"
+    },
+    {
+      "id": 11,
+      "title_ru": "Рокетты-учёные",
+      "slug": "rockette-scientists",
+      "section": "Физика и инженерия",
+      "topic": "Ракетостроение; сценическая культура",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Не относится",
+      "comment": "Созвучие Rockettes и rocket scientists; образовательного объяснения нет.",
+      "source_url": "https://katiebcartoons.com/cartoon/rockette-scientists/"
+    },
+    {
+      "id": 12,
+      "title_ru": "Сторонники «толстой Земли»",
+      "slug": "fat-earthers",
+      "section": "Научный метод и критическое мышление",
+      "topic": "Ошибочные сравнения; ложные выводы",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Не относится",
+      "comment": "Flat/Fat Earthers. Абсурдное рассуждение специально ошибочно.",
+      "source_url": "https://katiebcartoons.com/cartoon/fat-earthers/"
+    },
+    {
+      "id": 13,
+      "title_ru": "Учёная ракета",
+      "slug": "rocket-scientist",
+      "section": "Общенаучные каламбуры",
+      "topic": "Буквальное понимание названия профессии",
+      "humor": "Двойное значение выражения",
+      "oge": "Не относится",
+      "comment": "Ракета называет себя ботаником; шутка о буквальном понимании профессии.",
+      "source_url": "https://katiebcartoons.com/cartoon/rocket-scientist/"
+    },
+    {
+      "id": 14,
+      "title_ru": "Гиппокампус",
+      "slug": "hippocampus",
+      "section": "Биология и медицина",
+      "topic": "Гиппокамп; память",
+      "humor": "Двойное значение слова",
+      "oge": "Не относится",
+      "comment": "Hippocampus превращён в hippo campus — университет бегемотов.",
+      "source_url": "https://katiebcartoons.com/cartoon/hippocampus/"
+    },
+    {
+      "id": 15,
+      "title_ru": "Свиндмунд Фрейд",
+      "slug": "pigmund-freud",
+      "section": "Учёные и история науки",
+      "topic": "Зигмунд Фрейд; психоанализ",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Не относится",
+      "comment": "Пародия Pigmund Freud; психологическую теорию не раскрывает.",
+      "source_url": "https://katiebcartoons.com/cartoon/pigmund-freud/"
+    },
+    {
+      "id": 16,
+      "title_ru": "Сэр Фрэнсис Бекон",
+      "slug": "francis-bacon",
+      "section": "Учёные и история науки",
+      "topic": "Фрэнсис Бэкон; философия науки",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Не относится",
+      "comment": "Фамилия Bacon звучит как английское слово «бекон».",
+      "source_url": "https://katiebcartoons.com/cartoon/francis-bacon/"
+    },
+    {
+      "id": 17,
+      "title_ru": "Стивен Хрюкинг",
+      "slug": "stephen-hogking",
+      "section": "Учёные и история науки",
+      "topic": "Стивен Хокинг; космология",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Не относится",
+      "comment": "Hogking/Hawking, книга-пародия о свиньях.",
+      "source_url": "https://katiebcartoons.com/cartoon/stephen-hogking/"
+    },
+    {
+      "id": 18,
+      "title_ru": "Альберт Свинштейн",
+      "slug": "albert-swinestein-or-einswine",
+      "section": "Учёные и история науки",
+      "topic": "Альберт Эйнштейн; образ физика",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Не относится",
+      "comment": "Swine + Einstein; не раскрывает теорию относительности.",
+      "source_url": "https://katiebcartoons.com/cartoon/albert-swinestein-or-einswine/"
+    },
+    {
+      "id": 19,
+      "title_ru": "Нильс Кабан",
+      "slug": "niels-boar",
+      "section": "Учёные и история науки",
+      "topic": "Нильс Бор; историческая модель атома",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Косвенно",
+      "comment": "Связан с моделью атома, но на картинке нет её полноценного объяснения.",
+      "source_url": "https://katiebcartoons.com/cartoon/niels-boar/"
+    },
+    {
+      "id": 20,
+      "title_ru": "Между нами не химия",
+      "slug": "this-isn-t-chemistry-between-us-it-s-physics",
+      "section": "Химия",
+      "topic": "Химия и физика как области науки",
+      "humor": "Двойное значение выражения",
+      "oge": "Не относится",
+      "comment": "Слово «химия» в переносном значении; химического закона нет.",
+      "source_url": "https://katiebcartoons.com/cartoon/this-isn-t-chemistry-between-us-it-s-physics/"
+    },
+    {
+      "id": 21,
+      "title_ru": "Компьютерная наука",
+      "slug": "computer-science",
+      "section": "Общенаучные каламбуры",
+      "topic": "Информатика; буквальное понимание профессии",
+      "humor": "Двойное значение выражения",
+      "oge": "Не относится",
+      "comment": "Компьютер представлен учёным; не вводит понятия информатики.",
+      "source_url": "https://katiebcartoons.com/cartoon/computer-science/"
+    },
+    {
+      "id": 22,
+      "title_ru": "Образцы стульев",
+      "slug": "stool-samples",
+      "section": "Биология и медицина",
+      "topic": "Медицинские анализы",
+      "humor": "Двойное значение слова",
+      "oge": "Не относится",
+      "comment": "Stool — стул и кал; stool samples — медицинский анализ.",
+      "source_url": "https://katiebcartoons.com/cartoon/stool-samples/"
+    },
+    {
+      "id": 23,
+      "title_ru": "Галапагостров привидений",
+      "slug": "galapaghost-island",
+      "section": "Биология и медицина",
+      "topic": "Эволюционная адаптация; Галапагосские острова",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Не относится",
+      "comment": "Galapagos/Galapaghost, иллюстрация гипотетических адаптаций призраков.",
+      "source_url": "https://katiebcartoons.com/cartoon/galapaghost-island/"
+    },
+    {
+      "id": 24,
+      "title_ru": "Клеточный телефон",
+      "slug": "cell-phone",
+      "section": "Биология и медицина",
+      "topic": "Клетка; телефонная связь",
+      "humor": "Двойное значение слова",
+      "oge": "Не относится",
+      "comment": "Cell — биологическая клетка и ячейка сотовой связи.",
+      "source_url": "https://katiebcartoons.com/cartoon/cell-phone/"
+    },
+    {
+      "id": 25,
+      "title_ru": "Генный бассейн",
+      "slug": "gene-pool",
+      "section": "Биология и медицина",
+      "topic": "Генофонд популяции",
+      "humor": "Двойное значение слова",
+      "oge": "Не относится",
+      "comment": "Gene pool — «генофонд», буквальный pool — бассейн.",
+      "source_url": "https://katiebcartoons.com/cartoon/gene-pool/"
+    },
+    {
+      "id": 26,
+      "title_ru": "Мюнстер Франкенштейна",
+      "slug": "frankenstein-s-muenster",
+      "section": "Общенаучные каламбуры",
+      "topic": "Литературная отсылка; сыр Muenster",
+      "humor": "Созвучие / именная пародия",
+      "oge": "Не относится",
+      "comment": "Muenster — сорт сыра, созвучный monster.",
+      "source_url": "https://katiebcartoons.com/cartoon/frankenstein-s-muenster/"
+    },
+    {
+      "id": 27,
+      "title_ru": "Углеродное свидание",
+      "slug": "carbon-dating",
+      "section": "Химия",
+      "topic": "Радиоуглеродная датировка; изотопы",
+      "humor": "Двойное значение слова",
+      "oge": "Косвенно",
+      "comment": "Повод поговорить об изотопах, но радиоуглеродное датирование не объяснено.",
+      "source_url": "https://katiebcartoons.com/cartoon/carbon-dating/"
+    },
+    {
+      "id": 28,
+      "title_ru": "Начитанные эритроциты",
+      "slug": "well-read-blood-cells",
+      "section": "Биология и медицина",
+      "topic": "Эритроциты; красные клетки крови",
+      "humor": "Двойное значение слова",
+      "oge": "Не относится",
+      "comment": "Well-read / well-red, шутка держится на английском произношении.",
+      "source_url": "https://katiebcartoons.com/cartoon/well-read-blood-cells/"
+    }
+  ]
+}
