@@ -160,3 +160,47 @@ For the same workload in GitHub Actions select `counterfactual` in
 `workflow_dispatch`. Full 32-case research evaluation can be run locally
 with `--count 32`. This is a validation suite, not evidence of hidden-test
 generalization.
+
+## Periodic-orbit research: a different algorithmic model
+
+Use `periodic_oracle.py` + `bridge_oracle.py` to separate **long-run
+throughput** from **reachability from one initial activation**.
+
+The stationary HiGHS MILP uses binary variables `y[v,h]` for active copies
+and `z[u,v,h]` for transmissions at hour `h` modulo 24. The constraints
+require: each active copy has exactly one incoming copy from the preceding
+period; sender quota `k` holds for every activation; and processing intervals
+on each receiver never overlap, including across midnight. The objective
+maximizes completions in **one repeating 24-hour period**.
+
+This is **not an upper bound for an arbitrary finite horizon**, and a period
+may be impossible to reach from the initial copy. E.g. a single initial
+copy with `k=1` cannot produce two independent circulating copies, but the
+stationary model may admit two such cycles without a specified bootstrap.
+
+The `bridge_oracle.py` MILP therefore enforces the original single-copy start,
+then requires the chosen stationary transmissions after a specified join hour.
+A bridge is independently validated against the original contest constraints;
+if found, it is a **valid finite-horizon strategy**. A missing bridge does not
+prove the 24-hour rate unachievable: the optimizer might have chosen a different
+equally good orbit, or the provided join time may be wrong.
+
+### Reproduce the breakthrough experiment
+
+```bash
+python3 -m pip install scipy==1.14.1
+python3 -m unittest discover -s tools/ahintech_sim/tests -p 'test_periodic_research.py' -v
+python3 tools/ahintech_sim/periodic_study.py --seed 20261125 \
+  --indices 1,9 --horizons 96,144 --out /tmp/ahin_periodic
+```
+
+The first synthetic graph (30 devices, `k=4`) has a certified stationary
+rate of **205 completions per 24 hours**. A feasible bridge solution scores
+**792 vs V33's 735** over 96 hours and **1202 vs V33's 1109** over 144
+hours (local SciPy/HiGHS run). Other graphs exhibit much smaller gains or
+unreachable templates. Every witness is validated independently.
+
+Manual and PR testing: `.github/workflows/ahintech-b-periodic-research.yml`.
+The normal 2-second C++ contestant does not call SciPy or this MILP; finding
+a fast online approximation to the repeating orbit and its bootstrap is a
+**future algorithmic research task**, not a claimed solved feature.
