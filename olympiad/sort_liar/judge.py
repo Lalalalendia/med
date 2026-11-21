@@ -139,6 +139,109 @@ class Liar:
         return not truth if lie else truth, truth, lie
 
 
+class ReplayDivergence(ValueError):
+    """The contestant issued different queries from a saved transcript."""
+
+
+class RecordedLiar:
+    """Replay exact recorded replies and require exactly the same ordered queries."""
+    def __init__(self, pi: list[int], k: int, q: int, recorded: list[dict[str, Any]]):
+        self.pi = pi
+        self.k = k
+        self.q = q
+        self.recorded = recorded
+        self.lies = 0
+        self.queries = 0
+        if len(recorded) > q:
+            raise ValueError('recorded trace exceeds Q')
+        seen_lies = 0
+        for i, record in enumerate(recorded):
+            x, y = int(record['x']), int(record['y'])
+            if not (1 <= x <= len(pi) and 1 <= y <= len(pi) and x != y):
+                raise ValueError('invalid recorded query')
+            truth = pi[x - 1] < pi[y - 1]
+            if record.get('t') != i + 1 or record['truth'] != ('YES' if truth else 'NO'):
+                raise ValueError('recorded truth does not match permutation')
+            if record['reply'] not in ('YES', 'NO'):
+                raise ValueError('invalid recorded reply')
+            lie = (record['reply'] == 'YES') != truth
+            if bool(record['lie']) != lie:
+                raise ValueError('inconsistent recorded lie flag')
+            seen_lies += int(lie)
+        if seen_lies > k:
+            raise ValueError('recorded transcript exceeds lie budget')
+
+    def respond(self, x: int, y: int) -> tuple[bool, bool, bool]:
+        if self.queries >= len(self.recorded):
+            raise ReplayDivergence(f'extra query {x} {y} beyond recorded transcript')
+        expected = self.recorded[self.queries]
+        if (x, y) != (expected['x'], expected['y']):
+            raise ReplayDivergence(
+                f'query #{self.queries + 1}: expected {expected["x"]} {expected["y"]},'
+                f' got {x} {y}'
+            )
+        self.queries += 1
+        truth = self.pi[x - 1] < self.pi[y - 1]
+        said = expected['reply'] == 'YES'
+        lied = not (truth == said)
+        self.lies += int(lied)
+        return said, truth, lied
+
+
+def answer_diagnostics(
+    pi: list[int], answer: list[int] | None, trace: list[dict[str, Any]]
+) -> dict[str, Any]:
+    """Explain wrong permutations: inversions and misplaced true neighbors."""
+    n = len(pi)
+    if answer is None or len(answer) != n or set(answer) != set(range(1, n + 1)):
+        return {'valid_final_permutation': False}
+
+    by_true_rank = [0] * (n + 1)
+    for idx, rank in enumerate(pi, 1):
+        by_true_rank[rank] = idx
+    inverted_neighbors = [
+        (rank, by_true_rank[rank], by_true_rank[rank + 1])
+        for rank in range(1, n)
+        if answer[by_true_rank[rank] - 1] > answer[by_true_rank[rank + 1] - 1]
+    ]
+    touched: dict[tuple[int, int], list[int]] = defaultdict(lambda: [0, 0])
+    for e in trace:
+        key = tuple(sorted((e['x'], e['y'])))
+        touched[key][0] += 1
+        touched[key][1] += int(e['lie'])
+    items = sorted(range(n), key=lambda i: answer[i])
+    bit = [0] * (n + 1)
+    inversions = 0
+    for j, i in enumerate(items):
+        rank = pi[i]
+        count_leq = 0
+        z = rank
+        while z:
+            count_leq += bit[z]
+            z -= z & -z
+        inversions += j - count_leq
+        z = rank
+        while z <= n:
+            bit[z] += 1
+            z += z & -z
+    return {
+        'valid_final_permutation': True,
+        'wrong_positions': sum(a != b for a, b in zip(pi, answer)),
+        'max_rank_displacement': max(abs(a - b) for a, b in zip(pi, answer)),
+        'kendall_inversions': inversions,
+        'inverted_true_neighbor_pairs': len(inverted_neighbors),
+        'inverted_neighbor_examples': [
+            {
+                'true_ranks': [rank, rank + 1],
+                'indices': [u, v],
+                'comparisons': touched[tuple(sorted((u, v)))][0],
+                'lies_on_pair': touched[tuple(sorted((u, v)))][1],
+            }
+            for rank, u, v in inverted_neighbors[:20]
+        ],
+    }
+
+
 @dataclass
 class Result:
     solver: str
@@ -156,6 +259,9 @@ class Result:
     score: float
     wall_seconds: float
     reason: str
+    wrong_positions: int | None = None
+    kendall_inversions: int | None = None
+    inverted_neighbor_pairs: int | None = None
 
 
 def cpu_memory_limits(cpu_seconds: int, memory_mb: int):
@@ -177,10 +283,11 @@ async def run_case(
     solver: str, command: str, *, suite: str, n: int, k: int, q: int,
     strategy: str, shape: str, trial: int, seed: int,
     wall_limit: float = 8.0, cpu_limit: int = 2, memory_mb: int = 256,
+    replay_trace: list[dict[str, Any]] | None = None,
 ) -> tuple[Result, dict[str, Any]]:
     """Execute one contestant with real pipes, enforce protocol and exact permutation."""
     pi = build_permutation(n, shape, seed)
-    liar = Liar(strategy, pi, k, q, seed)
+    liar = RecordedLiar(pi, k, q, replay_trace) if replay_trace is not None else Liar(strategy, pi, k, q, seed)
     trace: list[dict[str, Any]] = []
     answer: list[int] | None = None
     reason = "missing_final_answer"
@@ -189,6 +296,7 @@ async def run_case(
         command, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
         preexec_fn=lambda: cpu_memory_limits(cpu_limit, memory_mb),
+        env={**os.environ, 'SORT_LIAR_SEED': str(seed)},
         limit=65536,
     )
     assert proc.stdin is not None and proc.stdout is not None and proc.stderr is not None
@@ -244,10 +352,15 @@ async def run_case(
                     reason = "correct"
                 else:
                     reason = "wrong_permutation"
+                if replay_trace is not None and liar.queries != len(replay_trace):
+                    reason = 'replay_query_count_mismatch'
                 break
             else:
                 reason = "malformed_protocol_output"
                 break
+    except ReplayDivergence as e:
+        reason = 'replay_query_diverged'
+        replay_divergence = str(e)
     except (BrokenPipeError, ConnectionResetError):
         reason = "broken_pipe"
     except ValueError as e:
@@ -280,11 +393,15 @@ async def run_case(
     if reason == "correct" and proc.returncode != 0:
         reason = "nonzero_exit_after_answer"
     points = (1.5 + 0.5 * (q - liar.queries) / q) if correct else 0.0
+    diagnostics = answer_diagnostics(pi, answer, trace)
     result = Result(
         solver=solver, suite=suite, n=n, k=k, q=q, strategy=strategy,
         shape=shape, trial=trial, seed=seed, correct=correct,
         queries=liar.queries, lies=liar.lies, score=points,
         wall_seconds=round(elapsed, 5), reason=reason,
+        wrong_positions=diagnostics.get('wrong_positions'),
+        kendall_inversions=diagnostics.get('kendall_inversions'),
+        inverted_neighbor_pairs=diagnostics.get('inverted_true_neighbor_pairs'),
     )
     replay = {
         "solver": solver, "suite": suite, "n": n, "k": k, "q": q,
@@ -292,6 +409,8 @@ async def run_case(
         "seed": seed, "permutation": pi, "result": asdict(result),
         "answer": answer, "stderr": stderr.decode(errors="replace"),
         "trace": trace,
+        "diagnostics": diagnostics,
+        "replay_divergence": locals().get("replay_divergence"),
     }
     return result, replay
 
