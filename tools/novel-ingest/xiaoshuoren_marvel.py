@@ -20,7 +20,9 @@ from bs4 import BeautifulSoup
 BOOK = "https://www.xiaoshuoren.com/daizhezhanshimobanhunmanwei/"
 HOST = "www.xiaoshuoren.com"
 SLUG = "/daizhezhanshimobanhunmanwei/"
-CHAPTER = re.compile(r"^/daizhezhanshimobanhunmanwei/(\d+)/?$")
+CHAPTER = re.compile(r"^/daizhezhanshimobanhunmanwei/(\\d+)/?$")
+CHAPTER_PAGE = re.compile(r"^/daizhezhanshimobanhunmanwei/(\\d+)(?:_(\\d+))?/?$")
+PAGE_MARKER = re.compile(r"第\\s*[(（]\\s*(\\d+)\\s*/\\s*(\\d+)\\s*[)）]\\s*页")
 CJK = re.compile(r"[\u3400-\u9fff]")
 RANGE = re.compile(r"第\s*(\d+)\s*章\s*[~～]\s*(\d+)\s*章\s*/\s*共\s*(\d+)\s*章")
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36"
@@ -125,34 +127,91 @@ def catalog(session, delay):
         raise RuntimeError("Catalog total/unique mismatch: %d vs %d" % (len(chapters), total))
     return chapters, pages
 
-def chapter_body(session, item):
-    soup, final = get(session, item["url"])
+def page_body(session, url, chapter_id, expected_page, expected_total=None):
+    """Fetch exactly one numbered page of a chapter. No silent partial chapters."""
+    soup, final = get(session, url)
+    parsed = CHAPTER_PAGE.fullmatch(urlsplit(final).path)
+    if not parsed or int(parsed.group(1)) != chapter_id or int(parsed.group(2) or 1) != expected_page:
+        raise RuntimeError("Unexpected chapter page URL: %s (chapter %d page %d)" %
+                           (final, chapter_id, expected_page))
     h = soup.find("h1")
     heading = h.get_text(" ", strip=True) if h else ""
-    candidates = []
-    for selector in SELECTORS:
-        for node in soup.select(selector):
-            body = clean_text(node)
-            cjk = len(CJK.findall(body))
-            if cjk >= 180:
-                candidates.append((cjk, len(body), selector, body))
-    if not candidates:
-        for node in soup.select("article,main,section,div"):
-            if len(node.select("a[href]")) > 20:
-                continue
-            body = clean_text(node)
-            cjk = len(CJK.findall(body))
-            if cjk >= 200 and cjk / max(len(body), 1) > .25:
-                candidates.append((cjk, len(body), node.name, body))
-    if not candidates:
-        raise RuntimeError("No substantial chapter body found; h1=%r" % heading)
-    candidates.sort(reverse=True)
-    cjk, _, selector, body = candidates[0]
-    if cjk < 200 or len(body) < 300:
-        raise RuntimeError("Short body, potential preview: chars=%d, cjk=%d" % (len(body), cjk))
-    if "loading..." in body.lower() or "请开启javascript" in body.lower() or "加载中" == body.strip():
-        raise RuntimeError("Unloaded script placeholder")
-    return {"text": body, "heading": heading, "selector": selector, "resolved": final, "cjk": cjk}
+    # The actual novel body is in <article class="font_max">. Parents such
+    # as <section> also contain reading controls and misrepresent page length.
+    target = soup.select_one("article.font_max")
+    selector = "article.font_max"
+    if target is None:
+        target = soup.select_one("article")
+        selector = "article"
+    if target is not None:
+        body = clean_text(target)
+    else:
+        candidates = []
+        for candidate_selector in SELECTORS:
+            for node in soup.select(candidate_selector):
+                part = clean_text(node)
+                count = len(CJK.findall(part))
+                if count >= 100:
+                    candidates.append((count, candidate_selector, part))
+        if not candidates:
+            raise RuntimeError("No readable chapter article; heading=%r" % heading)
+        candidates.sort(reverse=True)
+        _, selector, body = candidates[0]
+    markers = PAGE_MARKER.findall(body)
+    if markers:
+        values = set((int(x), int(y)) for x,y in markers)
+        if len(values) != 1:
+            raise RuntimeError("Conflicting page markers %r at %s" % (sorted(values), final))
+        actual_page, total = next(iter(values))
+    else:
+        actual_page, total = 1, 1
+    if total < 1 or total > 20 or actual_page != expected_page:
+        raise RuntimeError("Unexpected chapter page marker %d/%d at %s" % (actual_page, total, final))
+    if expected_total is not None and total != expected_total:
+        raise RuntimeError("Chapter page total changed %d -> %d at %s" % (expected_total, total, final))
+    cleaned = []
+    for line in body.splitlines():
+        line = line.strip()
+        if not line or PAGE_MARKER.fullmatch(line):
+            continue
+        if line in ("字体", "大", "中", "小", "换手", "关灯", "存书签"):
+            continue
+        if line.endswith("-《带着战士模板混漫威》"):
+            continue
+        cleaned.append(line)
+    body = "\n".join(cleaned).strip()
+    cjk = len(CJK.findall(body))
+    if cjk < 40 or len(body) < 60:
+        raise RuntimeError("Empty or short page %d/%d at %s: chars=%d CJK=%d" %
+                           (expected_page, total, final, len(body), cjk))
+    if "loading..." in body.lower() or "请开启javascript" in body.lower() or body == "加载中":
+        raise RuntimeError("Unloaded script placeholder at " + final)
+    return {"text": body, "heading": heading, "selector": selector, "resolved": final,
+            "cjk": cjk, "page": actual_page, "total_pages": total}
+
+
+def chapter_body(session, item):
+    match = CHAPTER.fullmatch(urlsplit(item["url"]).path)
+    if not match:
+        raise RuntimeError("Invalid catalog chapter URL: " + item["url"])
+    chapter_id = int(match.group(1))
+    first = page_body(session, item["url"], chapter_id, 1)
+    total_pages = first["total_pages"]
+    pages = [first]
+    for page in range(2, total_pages + 1):
+        time.sleep(0.8)
+        page_url = urljoin(BOOK, "%d_%d/" % (chapter_id, page))
+        pages.append(page_body(session, page_url, chapter_id, page, total_pages))
+    parts = [p["text"] for p in pages]
+    if len(set(parts)) != len(parts):
+        raise RuntimeError("Duplicate chapter page content at " + item["url"])
+    body = "\n\n".join(parts)
+    cjk = len(CJK.findall(body))
+    if len(body) < 300 or cjk < 200:
+        raise RuntimeError("Short assembled chapter: chars=%d, CJK=%d" % (len(body), cjk))
+    return {"text": body, "heading": first["heading"], "selector": first["selector"],
+            "resolved": first["resolved"], "cjk": cjk, "pages": total_pages,
+            "page_urls": [p["resolved"] for p in pages]}
 
 def collect(args):
     root = Path(args.output)
@@ -184,9 +243,10 @@ def collect(args):
                 combined.append(text)
                 report["chapters"].append({**entry, "file": "chapters/" + fname,
                     "chars": len(body), "cjk_chars": fetch["cjk"], "sha256": sha,
-                    "page_heading": fetch["heading"], "selector": fetch["selector"]})
-                print("%d/%d: %d OK, chars=%d, CJK=%d" % (
-                    i, len(selected), entry["ordinal"], len(body), fetch["cjk"]), flush=True)
+                    "page_heading": fetch["heading"], "selector": fetch["selector"],
+                    "pages": fetch["pages"], "page_urls": fetch["page_urls"]})
+                print("%d/%d: %d OK, pages=%d, chars=%d, CJK=%d" % (
+                    i, len(selected), entry["ordinal"], fetch["pages"], len(body), fetch["cjk"]), flush=True)
             except Exception as exc:
                 report["failures"].append({"ordinal": entry["ordinal"], "url": entry["url"], "error": str(exc)})
                 print("FAILED chapter %d: %s" % (entry["ordinal"], exc), flush=True)
@@ -228,6 +288,8 @@ def self_test():
     assert "第一段故事内容" in result and "第三行文字" in result
     assert "下一章" not in result
     assert CHAPTER.fullmatch("/daizhezhanshimobanhunmanwei/353394/")
+    assert CHAPTER_PAGE.fullmatch("/daizhezhanshimobanhunmanwei/353396_2/").groups() == ("353396", "2")
+    assert PAGE_MARKER.findall("第(1/3)页") == [("1", "3")]
     assert RANGE.search("章节列表，第1章~ 100章/共297章 倒序").groups() == ("1", "100", "297")
     print("SELF-TEST PASS")
 
