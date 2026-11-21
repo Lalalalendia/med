@@ -66,6 +66,8 @@ jobs:
           if [ "$SUITE" = "smoke" ]; then
             cp tools/ahintech_sim/tests/cases/v46_splice_community_n32_m360.in /tmp/ahintech_cases/98_v46_splice_community_n32_m360.in
             cp tools/ahintech_sim/tests/cases/temporal_dev_seed28_i22.in /tmp/ahintech_cases/97_temporal_dev_seed28_i22.in
+            cp tools/ahintech_sim/tests/cases/v53_seed20270116_01_n15_m48.in /tmp/ahintech_cases/95_v53_seed20270116_01_n15_m48.in
+            cp tools/ahintech_sim/tests/cases/v53_seed20270116_12_n14_m48.in /tmp/ahintech_cases/96_v53_seed20270116_12_n14_m48.in
           fi
       - name: Compile, run and independently validate contestants
         env:
@@ -89,8 +91,9 @@ jobs:
             --solver v46=tools/ahintech_sim/solvers/v46_window_splice.cpp \
             --solver v47=tools/ahintech_sim/solvers/v47_deep_splice.cpp \
             --solver v51=tools/ahintech_sim/solvers/v51_time_separation.cpp \
-            --solver v52=tools/ahintech_sim/solvers/v52_joint_beam.cpp
-      - name: Verify certified development fixtures for V32/V33/V38/V46/V47/V51/V52
+            --solver v52=tools/ahintech_sim/solvers/v52_joint_beam.cpp \
+            --solver v53=tools/ahintech_sim/solvers/v53_medium_subsets.cpp
+      - name: Verify certified development fixtures for V32/V33/V38/V46/V47/V51/V52/V53
         if: github.event_name == 'pull_request' || inputs.suite == 'smoke' || inputs.suite == 'research'
         run: python3 tools/ahintech_sim/tests/check_certified_results.py /tmp/ahintech_results/results.json
       - name: Publish summary to GitHub Actions

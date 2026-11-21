@@ -264,3 +264,8 @@ See [the V51 method](docs/v51_temporal_separation.md). This standalone C++23 var
 ## V52: joint subset beam up to 12 vertices
 
 See [V52 joint beam notes](docs/v52_joint_beam.md). V52 performs capacitated subset matching and keeps alternative valid active/busy states across successive hours on small graphs. Three new synthetic examples with exact HiGHS optima 144/314/292 reproduce the advantage over V51. Run `python3 -m unittest discover -s tools/ahintech_sim/tests -v`; optional SciPy reruns certificates. For large graphs the V51 strategy remains in use. No official V52 score has been measured.
+
+
+## V53: causal subset beam for 13–24 vertices
+
+See [V53 details and independent measurements](docs/v53_medium_subsets.md). The new C++23 candidate keeps 28–48 alternative active/busy states and uses exact capacitated matching over 9–10 candidate recipients per hour. It is limited to an additional 0.42-second early search window. Across 40 independent synthetic 2-second tests, net +54 successful activations versus V52 (17 wins / 21 ties / 2 losses of 1). This is not an official score gain; the official reference remains V51 at ~85.1736, with V52 virtually identical.
