@@ -448,7 +448,7 @@ def render_markdown(rows: list[Result], failures: list[str], baseline: str = 'ad
     # Compare score on exactly the same synthetic cases and liar strategies.
     cases: dict[tuple[Any, ...], dict[str, Result]] = defaultdict(dict)
     for r in rows:
-        key = (r.n, r.k, r.q, r.strategy, r.shape, r.trial, r.seed)
+        key = (r.suite, r.n, r.k, r.q, r.strategy, r.shape, r.trial, r.seed)
         cases[key][r.solver] = r
     if baseline in by_solver:
         lines += ["", f"## Paired comparison against `{baseline}`", "",
