@@ -1,0 +1,119 @@
+name: Ahintek B - offline simulation
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Test workload'
+        required: true
+        default: standard
+        type: choice
+        options:
+          - smoke
+          - standard
+          - stress
+          - paired
+          - research
+          - counterfactual
+          - temporal
+      seed:
+        description: 'Deterministic random seed'
+        required: true
+        default: '20261121'
+        type: string
+  pull_request:
+    paths:
+      - 'tools/ahintech_sim/**'
+      - '.github/workflows/ahintech-b-offline-simulation.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ahintek-b-sim-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-compare:
+    name: Validate simulator and compare solutions
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONUNBUFFERED: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install optional MILP research dependency
+        if: github.event_name == 'workflow_dispatch' && inputs.suite == 'research'
+        run: python3 -m pip install --disable-pip-version-check scipy
+      - name: Check independent simulator and exact oracle
+        run: python3 -m unittest discover -s tools/ahintech_sim/tests -v
+      - name: Generate reproducible cases
+        env:
+          SUITE: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'smoke' }}
+          SEED: ${{ github.event_name == 'workflow_dispatch' && inputs.seed || '20261121' }}
+        run: |
+          if [ "$SUITE" = "counterfactual" ]; then
+            python3 tools/ahintech_sim/counterfactual.py --seed "$SEED" --count 16 --out /tmp/ahintech_cases
+          elif [ "$SUITE" = "temporal" ]; then
+            python3 tools/ahintech_sim/temporal_separation.py --seed "$SEED" --count 16 --out /tmp/ahintech_cases
+          else
+            python3 tools/ahintech_sim/generator.py --suite "$SUITE" --seed "$SEED" --out /tmp/ahintech_cases
+          fi
+          if [ "$SUITE" = "smoke" ]; then
+            cp tools/ahintech_sim/tests/cases/v46_splice_community_n32_m360.in /tmp/ahintech_cases/98_v46_splice_community_n32_m360.in
+            cp tools/ahintech_sim/tests/cases/temporal_dev_seed28_i22.in /tmp/ahintech_cases/97_temporal_dev_seed28_i22.in
+            cp tools/ahintech_sim/tests/cases/v53_seed20270116_01_n15_m48.in /tmp/ahintech_cases/95_v53_seed20270116_01_n15_m48.in
+            cp tools/ahintech_sim/tests/cases/v53_seed20270116_12_n14_m48.in /tmp/ahintech_cases/96_v53_seed20270116_12_n14_m48.in
+          fi
+      - name: Compile, run and independently validate contestants
+        env:
+          SUITE: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'smoke' }}
+        run: |
+          MILP_ARGS=""
+          if [ "$SUITE" = "research" ]; then MILP_ARGS="--milp --milp-time-limit 4"; fi
+          python3 tools/ahintech_sim/bench.py \
+            --cases /tmp/ahintech_cases \
+            --out /tmp/ahintech_results \
+            --time-limit-ms 2000 --memory-mb 256 --oracle --reachability-bound --fail-on-invalid \
+            $MILP_ARGS \
+            --solver v12=tools/ahintech_sim/solvers/v12_cache.cpp \
+            --solver v21=tools/ahintech_sim/solvers/v21_p0.cpp \
+            --solver v24=tools/ahintech_sim/solvers/v24_reachable.cpp \
+            --solver v27=tools/ahintech_sim/solvers/v27_exactmedium.cpp \
+            --solver v29=tools/ahintech_sim/solvers/v29_subset_beam.cpp \
+            --solver v32=tools/ahintech_sim/solvers/v32_certified_beam.cpp \
+            --solver v33=tools/ahintech_sim/solvers/v33_ejection_lns.cpp \
+            --solver v38=tools/ahintech_sim/solvers/v38_periodic_bridge.cpp \
+            --solver v46=tools/ahintech_sim/solvers/v46_window_splice.cpp \
+            --solver v47=tools/ahintech_sim/solvers/v47_deep_splice.cpp \
+            --solver v51=tools/ahintech_sim/solvers/v51_time_separation.cpp \
+            --solver v52=tools/ahintech_sim/solvers/v52_joint_beam.cpp \
+            --solver v53=tools/ahintech_sim/solvers/v53_medium_subsets.cpp
+      - name: Verify certified development fixtures for V32/V33/V38/V46/V47/V51/V52/V53
+        if: github.event_name == 'pull_request' || inputs.suite == 'smoke' || inputs.suite == 'research'
+        run: python3 tools/ahintech_sim/tests/check_certified_results.py /tmp/ahintech_results/results.json
+      - name: Publish summary to GitHub Actions
+        if: always()
+        run: |
+          if [ -f /tmp/ahintech_results/report.md ]; then
+            cat /tmp/ahintech_results/report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Save inputs, scores, and failing outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ahintek-b-simulator-${{ github.run_id }}
+          path: |
+            /tmp/ahintech_cases
+            /tmp/ahintech_results/results.json
+            /tmp/ahintech_results/results.csv
+            /tmp/ahintech_results/summary.json
+            /tmp/ahintech_results/report.md
+            /tmp/ahintech_results/milp_metadata.json
+            /tmp/ahintech_results/failures
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,17 @@
+{
+  "v52_gap_00_n12_m60": {
+    "optimal_score": 144,
+    "sha256": "f1bdc8e2d16f200e056f8db0c7c8f040aa43fee67635763eb14499c369f557c4",
+    "proven_with": "scipy.optimize.milp / HiGHS"
+  },
+  "v52_gap_01_n12_m72": {
+    "optimal_score": 314,
+    "sha256": "814209b03316864c79e2343f1aea7360e00872bfbe2c97e46e086ae073e37d6b",
+    "proven_with": "scipy.optimize.milp / HiGHS"
+  },
+  "v52_gap_05_n12_m72": {
+    "optimal_score": 292,
+    "sha256": "979062af1f322d2067ab1d8c84aac881b4975e6e9c154d63feaed8d4e2c25a57",
+    "proven_with": "scipy.optimize.milp / HiGHS"
+  }
+}
