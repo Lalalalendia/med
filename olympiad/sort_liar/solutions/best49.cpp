@@ -10,7 +10,7 @@ struct Solver {
         : n(n_), k(k_), q(q_),
           yes(n_ + 1, vector<short>(n_ + 1, 0)),
           no(n_ + 1, vector<short>(n_ + 1, 0)),
-          rng(chrono::steady_clock::now().time_since_epoch().count()) {}
+          rng(([] { const char *env = std::getenv("SORT_LIAR_SEED"); return env ? std::strtoull(env, nullptr, 10) : (unsigned long long)chrono::steady_clock::now().time_since_epoch().count(); }())) {}
 
     int margin(int x, int y) const {
         return int(yes[x][y]) - int(no[x][y]);
