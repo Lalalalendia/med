@@ -96,6 +96,7 @@ def probe(name,home):
         print('LANDING',name,code,'bytes',size,flush=True)
         if not html:return
         matches=candidates(html,home)
+        print('PAGE_DIAGNOSTIC',name,'title',BeautifulSoup(html,'html.parser').title.get_text(' ',strip=True)[:90] if BeautifulSoup(html,'html.parser').title else 'none','book_mentions',html.count('史莱姆真仙'),'author_mentions',html.count('肚子有点胀'),flush=True)
         print('BOOK_HINTS',name,len(matches),[urlsplit(v).path for v in matches[:2]],flush=True)
         if not matches:return
         book=matches[0]
