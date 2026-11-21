@@ -77,7 +77,7 @@ jobs:
             --solver v27=tools/ahintech_sim/solvers/v27_exactmedium.cpp \
             --solver v29=tools/ahintech_sim/solvers/v29_subset_beam.cpp \
             --solver v32=tools/ahintech_sim/solvers/v32_certified_beam.cpp \
-            --solver v33=tools/ahintech_sim/solvers/v33_ejection_lns.cpp
+            --solver v33=tools/ahintech_sim/solvers/v33_ejection_lns.cpp \
             --solver v38=tools/ahintech_sim/solvers/v38_periodic_bridge.cpp
       - name: Verify certified development fixtures for V32/V33/V38
         if: github.event_name == 'pull_request' || inputs.suite == 'smoke' || inputs.suite == 'research'
