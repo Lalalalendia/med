@@ -293,7 +293,8 @@ struct Solver {
 
     bool confirmed_bad(int x,int y,int reserve) {
         if (k==0) return margin(x,y)<0;
-        if (k > 10 && true) return margin(x,y)<0;
+        // Full proof is efficient only when the total lie budget is small.
+        if (k > 10) return margin(x,y)<0;
         int remaining = k-lowerBound;
         if (margin(x,y) < -remaining) return true;
         if (margin(x,y) > remaining) return false;
