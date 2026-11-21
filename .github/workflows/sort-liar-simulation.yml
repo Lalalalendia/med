@@ -57,7 +57,7 @@ jobs:
           python3 olympiad/sort_liar/judge.py \
             --suite "$SUITE" --runs "$RUNS" --seed 794 \
             --cpu-limit 2 --memory-mb 256 --wall-limit 8 \
-            --max-failure-traces 20 --fail-on-protocol \
+            --max-failure-traces 20 --verify-failures 2 --fail-on-protocol \
             --output "sort-liar-reports/$SUITE" \
             "${solvers[@]}"
       - name: Store CSV, summary and reproducible failures
