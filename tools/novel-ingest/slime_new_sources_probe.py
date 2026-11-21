@@ -7,13 +7,15 @@ from urllib.robotparser import RobotFileParser
 
 UA = 'MedNovelCollector/1.0 (authorized metadata QA; no evasion)'
 LANDINGS = [
- ('512wwx','https://m.512wwx.com/'),
- ('chinapigs','https://www.chinapigs.com/'),
- ('wenbozw','https://www.wenbozw.com/9wb13/'),
- ('hncqm','https://www.hncqm.com/hncq506/'),
- ('80y','https://www.80y.net/80y124/'),
+ ('09kan','https://www.09kan.com/rank/'),
+ ('qiqidu','https://www.qiqidu.net/qdq-17/'),
+ ('92sr','https://www.92sr.com/jiuer283/'),
+ ('hncqm_category','https://www.hncqm.com/hncq506/'),
+ ('512wwx_mobile','https://m.512wwx.com/'),
 ]
-TITLES = {540:'天地之阵',541:'神在庇佑我呀',542:'信仰的冲突'}
+TITLES = {540:'天地之阵',541:'神在庇佑我呀',542:'信仰的冲突',
+          543:'上吧，银雀',544:'胶达，出击！',
+          545:'决定胜负的一枪',546:'史莱姆元婴'}
 SELECTORS = ('#content','#chaptercontent','#chapterContent','#article','.chapter-content','.chapter_content','.read-content','.reading-content','.article-content','.content','article')
 BLOCK = ('验证码','captcha','请先登录','登录后阅读','访问频繁','verify you are human','access denied','正在验证浏览器')
 HEAD = re.compile(r'第\s*(\d{1,4})\s*章\s*(.*)')
@@ -105,7 +107,7 @@ def probe(name,home):
         if not index:return
         target=chapters(index,book)
         print('MATCHED_CHAPTERS',name,sorted(target),flush=True)
-        for no in (540,541,542):
+        for no in (540,541,542,543,544,545,546):
             url=target.get(no)
             if not url:continue
             if not rp.can_fetch(UA,url):
@@ -115,7 +117,7 @@ def probe(name,home):
             if not body:
                 print('CHAPTER',name,no,'HTTP',code,'bytes',size,'NO_HTML',flush=True);continue
             heading,(cjk,sel),blocked=diagnostic(body)
-            print('CHAPTER',name,no,'HTTP',code,'bytes',size,'cjk',cjk,'selector',sel,'heading',heading,'blocked',blocked,flush=True)
+            body_cjk=count_cjk(BeautifulSoup(body,'html.parser').get_text(' ',strip=True))\n            print('CHAPTER',name,no,'HTTP',code,'bytes',size,'cjk',cjk,'body_cjk',body_cjk,'selector',sel,'heading',heading,'blocked',blocked,'candidate',bool(cjk>=2500 and not blocked and str(no) in heading),flush=True)
     except requests.RequestException as e:
         print('ERROR',name,type(e).__name__,str(e)[:120],flush=True)
 
