@@ -60,6 +60,9 @@ jobs:
           else
             python3 tools/ahintech_sim/generator.py --suite "$SUITE" --seed "$SEED" --out /tmp/ahintech_cases
           fi
+          if [ "$SUITE" = "smoke" ]; then
+            cp tools/ahintech_sim/tests/cases/v46_splice_community_n32_m360.in /tmp/ahintech_cases/98_v46_splice_community_n32_m360.in
+          fi
       - name: Compile, run and independently validate contestants
         env:
           SUITE: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'smoke' }}
@@ -78,8 +81,9 @@ jobs:
             --solver v29=tools/ahintech_sim/solvers/v29_subset_beam.cpp \
             --solver v32=tools/ahintech_sim/solvers/v32_certified_beam.cpp \
             --solver v33=tools/ahintech_sim/solvers/v33_ejection_lns.cpp \
-            --solver v38=tools/ahintech_sim/solvers/v38_periodic_bridge.cpp
-      - name: Verify certified development fixtures for V32/V33/V38
+            --solver v38=tools/ahintech_sim/solvers/v38_periodic_bridge.cpp \
+            --solver v46=tools/ahintech_sim/solvers/v46_window_splice.cpp
+      - name: Verify certified development fixtures for V32/V33/V38/V46
         if: github.event_name == 'pull_request' || inputs.suite == 'smoke' || inputs.suite == 'research'
         run: python3 tools/ahintech_sim/tests/check_certified_results.py /tmp/ahintech_results/results.json
       - name: Publish summary to GitHub Actions
