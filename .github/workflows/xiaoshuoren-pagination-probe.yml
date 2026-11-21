@@ -1,4 +1,4 @@
-name: Xiaoshuoren alternate-source chapter probe
+name: Xiaoshuoren missing-chapter title alignment
 on:
   push:
     branches: ["collect/xiaoshuoren-marvel-20261121"]
@@ -8,37 +8,29 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 5
     steps:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Check title-matched alternate pages
+      - name: Verify exact names of six alternate pages
         run: |
           python - <<'PY'
           import requests,re
           from bs4 import BeautifulSoup
-          urls = [
-            "https://www.diyibanzi.com/read/25731/1003479.html",
-            "https://www.diyibanzi.com/read/25731/1003534.html",
-            "https://www.diyibanzi.com/read/25731/1003535.html",
-            "https://www.diyibanzi.com/read/25731/1003553.html",
-            "https://www.diyibanzi.com/read/25731/1003554.html",
-            "https://www.diyibanzi.com/read/25731/1003572.html",
-          ]
-          s=requests.Session()
-          s.headers.update({"User-Agent":"Mozilla/5.0","Accept-Language":"zh-CN,zh;q=0.9"})
-          for url in urls:
-              try:
-                  r=s.get(url,timeout=20)
-                  r.encoding = r.apparent_encoding or 'utf-8'
-                  soup=BeautifulSoup(r.text,'html.parser')
-                  title=soup.title.get_text(" ",strip=True) if soup.title else ''
-                  article=soup.select_one('#content') or soup.select_one('.content') or soup.select_one('.read-content') or soup.select_one('article')
-                  body=article.get_text(" ",strip=True) if article else ''
-                  cjk=len(re.findall(r'[㐀-鿿]',body))
-                  print("PROBE",r.status_code,r.url,"TITLE",title[:100],"BODY",len(body),"CJK",cjk,"SNIP",body[:80],flush=True)
-              except Exception as e:
-                  print("ERROR",url,str(e)[:200],flush=True)
+          mapping = {159:157,214:212,215:213,233:231,234:232,252:250}
+          session=requests.Session();session.headers['User-Agent']='Mozilla/5.0'
+          for expected,alt in mapping.items():
+              url='https://www.diyibanzi.com/read/25731/'+str(1003320+alt)+'.html'
+              r=session.get(url,timeout=25)
+              r.encoding=r.apparent_encoding or 'utf-8'
+              soup=BeautifulSoup(r.text,'html.parser')
+              h=soup.find('h1')
+              article=soup.select_one('#content') or soup.select_one('.content') or soup.select_one('article')
+              body=article.get_text(' ',strip=True) if article else ''
+              print('MAPPING',expected,alt,'HTTP',r.status_code,'URL',r.url,
+                    'TITLE',h.get_text(' ',strip=True)[:160] if h else 'none',
+                    'HAN',len(re.findall(r'[㐀-鿿]',body)),
+                    'MARKER',re.findall(r'[（(]\s*\d+\s*/\s*\d+\s*[)）]',soup.get_text(' ',strip=True))[:5],flush=True)
           PY
