@@ -19,6 +19,7 @@ import time
 
 from model import Problem, InvalidSolution, validate_output
 from oracle import TooComplex, format_solution, solve_exact
+from diagnostics import time_expanded_upper_bound
 
 
 def limit_memory(limit_bytes: int) -> None:
@@ -73,7 +74,8 @@ def execute(binary: Path, data: bytes, wall_limit: float, memory_mb: int,
     return base
 
 
-def write_reports(rows: list[dict], outdir: Path, *, oracle_scores: dict[str,int]) -> None:
+def write_reports(rows: list[dict], outdir: Path, *, oracle_scores: dict[str,int],
+                  upper_bounds: dict[str,int]) -> None:
     outdir.mkdir(parents=True,exist_ok=True)
     case_best: dict[str,int] = {}
     for row in rows:
@@ -81,6 +83,8 @@ def write_reports(rows: list[dict], outdir: Path, *, oracle_scores: dict[str,int
     for row in rows:
         best = case_best[row['case']]
         row['ratio_to_best_tested'] = round(row['A']/best,6) if best else 0
+        row['reachable_upper_bound'] = upper_bounds.get(row['case'])
+        row['gap_to_reachability_bound'] = (upper_bounds[row['case']]-row['A']) if row['case'] in upper_bounds and row['status']=='OK' else None
         row['exact_optimum'] = oracle_scores.get(row['case'])
         row['gap_to_exact'] = (oracle_scores[row['case']] - row['A']) if row['case'] in oracle_scores and row['status']=='OK' else None
     (outdir/'results.json').write_text(json.dumps(rows,indent=2)+'\n',encoding='utf-8')
@@ -110,10 +114,10 @@ def write_reports(rows: list[dict], outdir: Path, *, oracle_scores: dict[str,int
         s = summary[solver]
         text.append(f'| {solver} | {s["ok"]}/{s["total"]} | {s["sum_A"]} | {s["mean_ratio_to_best_tested"]:.4f} | {s["max_wall_ms"]:.1f} | {s["worst_statuses"]["TLE"]} | {s["worst_statuses"]["WA"]} | {s["worst_statuses"]["RTE"]} |')
     text += ['', '## Per-case results', '',
-             '| Case | Solver | Status | A | Ratio | Wall (ms) | RSS (KiB) | Exact gap |',
-             '|---|---|---|---:|---:|---:|---:|---:|']
+             '| Case | Solver | Status | A | Ratio | Wall (ms) | RSS (KiB) | Exact gap | Relaxed UB | Gap to UB |',
+             '|---|---|---|---:|---:|---:|---:|---:|---:|---:|']
     for row in rows:
-        text.append(f'| {row["case"]} | {row["solver"]} | {row["status"]} | {row["A"]} | {row["ratio_to_best_tested"]:.3f} | {row["wall_ms"] or "-"} | {row["peak_rss_kb"] or "-"} | {row["gap_to_exact"] if row["gap_to_exact"] is not None else "-"} |')
+        text.append(f'| {row["case"]} | {row["solver"]} | {row["status"]} | {row["A"]} | {row["ratio_to_best_tested"]:.3f} | {row["wall_ms"] or "-"} | {row["peak_rss_kb"] or "-"} | {row["gap_to_exact"] if row["gap_to_exact"] is not None else "-"} | {row["reachable_upper_bound"] if row["reachable_upper_bound"] is not None else "-"} | {row["gap_to_reachability_bound"] if row["gap_to_reachability_bound"] is not None else "-"} |')
     text += ['', '## Reproduce', '', '`python3 tools/ahintech_sim/generator.py --suite smoke --seed 20261121 --out /tmp/ahin_cases`',
              '', 'The actual case input files and manifest are saved as workflow artifacts.']
     (outdir/'report.md').write_text('\n'.join(text)+'\n',encoding='utf-8')
@@ -128,6 +132,7 @@ def main() -> None:
     ap.add_argument('--time-limit-ms',type=int,default=2000)
     ap.add_argument('--memory-mb',type=int,default=256)
     ap.add_argument('--oracle',action='store_true',help='Run exponential optimum only for n<=6,m<=14')
+    ap.add_argument('--reachability-bound',action='store_true',help='Compute relaxed temporal upper bound with capped work')
     ap.add_argument('--fail-on-invalid', action='store_true')
     args=ap.parse_args()
     args.out.mkdir(parents=True,exist_ok=True)
@@ -145,13 +150,17 @@ def main() -> None:
         else:
             binary=p
         compiled[name] = binary
-    rows, exact = [], {}
+    rows, exact, upper_bounds = [], {}, {}
     cases = sorted(args.cases.glob('*.in'))
     if not cases:
         ap.error('No .in files in --cases')
     for inputfile in cases:
         data=inputfile.read_bytes()
         problem=Problem.parse(data)
+        if args.reachability_bound:
+            bound=time_expanded_upper_bound(problem)
+            if bound is not None:
+                upper_bounds[inputfile.stem]=bound.upper_bound
         if args.oracle and problem.n<=6 and problem.m<=14:
             try:
                 answer=solve_exact(problem)
@@ -164,7 +173,7 @@ def main() -> None:
                         inputfile.stem,name,args.out,problem)
             rows.append(rec)
             print(f'{inputfile.stem}: {name}: {rec["status"]}, A={rec["A"]}, {rec["wall_ms"]} ms',flush=True)
-    write_reports(rows,args.out,oracle_scores=exact)
+    write_reports(rows,args.out,oracle_scores=exact,upper_bounds=upper_bounds)
     if args.fail_on_invalid and any(r['status']!='OK' for r in rows):
         raise SystemExit(1)
 
