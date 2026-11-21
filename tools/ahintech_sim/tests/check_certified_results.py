@@ -16,12 +16,12 @@ def main():
     observed={(r['case'],r['solver']):r for r in results}
     for key,record in known.items():
         case='99_'+key
-        for solver in ('v32','v33','v38','v46'):
+        for solver in ('v32','v33','v38','v46','v47'):
             row=observed.get((case,solver))
             if row is None or row['status']!='OK' or row['A']<record['optimum']:
                 raise SystemExit(f'{case}: {solver} must reach certified {record["optimum"]}, got {row}')
             print(f'{case}: {solver} {row["A"]}/{record["optimum"]} OK')
-    print(f'All {len(known)} certified V32/V33/V38/V46 development fixtures passed')
+    print(f'All {len(known)} certified V32/V33/V38/V46/V47 development fixtures passed')
 
 
 if __name__=='__main__':
