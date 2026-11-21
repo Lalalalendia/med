@@ -70,7 +70,11 @@ jobs:
             --solver v21=tools/ahintech_sim/solvers/v21_p0.cpp \
             --solver v24=tools/ahintech_sim/solvers/v24_reachable.cpp \
             --solver v27=tools/ahintech_sim/solvers/v27_exactmedium.cpp \
-            --solver v29=tools/ahintech_sim/solvers/v29_subset_beam.cpp
+            --solver v29=tools/ahintech_sim/solvers/v29_subset_beam.cpp \
+            --solver v32=tools/ahintech_sim/solvers/v32_certified_beam.cpp
+      - name: Verify certified development fixtures for V32
+        if: github.event_name == 'pull_request' || inputs.suite == 'smoke' || inputs.suite == 'research'
+        run: python3 tools/ahintech_sim/tests/check_certified_results.py /tmp/ahintech_results/results.json
       - name: Publish summary to GitHub Actions
         if: always()
         run: |
