@@ -14,6 +14,7 @@ on:
           - stress
           - paired
           - research
+          - counterfactual
       seed:
         description: 'Deterministic random seed'
         required: true
@@ -54,7 +55,11 @@ jobs:
           SUITE: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'smoke' }}
           SEED: ${{ github.event_name == 'workflow_dispatch' && inputs.seed || '20261121' }}
         run: |
-          python3 tools/ahintech_sim/generator.py --suite "$SUITE" --seed "$SEED" --out /tmp/ahintech_cases
+          if [ "$SUITE" = "counterfactual" ]; then
+            python3 tools/ahintech_sim/counterfactual.py --seed "$SEED" --count 16 --out /tmp/ahintech_cases
+          else
+            python3 tools/ahintech_sim/generator.py --suite "$SUITE" --seed "$SEED" --out /tmp/ahintech_cases
+          fi
       - name: Compile, run and independently validate contestants
         env:
           SUITE: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'smoke' }}
@@ -71,8 +76,9 @@ jobs:
             --solver v24=tools/ahintech_sim/solvers/v24_reachable.cpp \
             --solver v27=tools/ahintech_sim/solvers/v27_exactmedium.cpp \
             --solver v29=tools/ahintech_sim/solvers/v29_subset_beam.cpp \
-            --solver v32=tools/ahintech_sim/solvers/v32_certified_beam.cpp
-      - name: Verify certified development fixtures for V32
+            --solver v32=tools/ahintech_sim/solvers/v32_certified_beam.cpp \
+            --solver v33=tools/ahintech_sim/solvers/v33_ejection_lns.cpp
+      - name: Verify certified development fixtures for V32/V33
         if: github.event_name == 'pull_request' || inputs.suite == 'smoke' || inputs.suite == 'research'
         run: python3 tools/ahintech_sim/tests/check_certified_results.py /tmp/ahintech_results/results.json
       - name: Publish summary to GitHub Actions

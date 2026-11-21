@@ -126,3 +126,37 @@ python3 tools/ahintech_sim/bench.py --cases /tmp/ahin_research --out /tmp/ahin_r
 A valid strategy may still be below the certified optimum; do not interpret wall-clock budget use or generated-case activation gains as official contest scores.
 
 V32 raises the exact DP transition/state exploration caps without increasing its 0.19-second deadline, which solves more small instances outright. It prioritizes a wider exact-subset beam (1024 states for `n<=9`, 256 for `n=10`) before randomized greedy restarts, under its own interruptible wall-clock limit. The three certified fixture scores sum to 147 for V32 versus 139 for V24. This is an intentionally small *development* sample, not an estimate of hidden judge performance.
+
+## V33: counterfactual ejection and suffix reconstruction
+
+V33 preserves V32's exact small-graph and subset beam searches. During
+large-neighborhood search, a subset of trials now samples one *actual*
+incumbent transmission, freezes earlier transmissions, **forbids the sampled
+recipient for that one hour**, and reconstructs the suffix with a different
+policy. Unlike simply randomizing a suffix, this forces the solver to try a
+structurally different branch. Only schedules with more successful activations
+replace the current incumbent.
+
+Development (seed 20261124) and held-out (seed 20261125) workloads were
+generated with `counterfactual.py`. At the same 0.65s budget on 32 development
+cases V33 added 422 activations vs V32 (13 wins, 0 losses); at the full 2s
+budget on 32 separate evaluation cases it added 262 activations (19 wins,
+0 losses). These are **synthetic activation counts, not official contest
+points**. The six existing stress scenarios passed independent validation
+and had the same counts as V32. The V33 candidate has not been officially
+scored.
+
+Run a reproducible subset locally:
+
+```bash
+python3 tools/ahintech_sim/counterfactual.py --seed 20261125 --count 16 --out /tmp/ahin_v33
+python3 tools/ahintech_sim/bench.py --cases /tmp/ahin_v33 --out /tmp/ahin_v33_results \
+  --time-limit-ms 2000 --memory-mb 256 --fail-on-invalid \
+  --solver v32=tools/ahintech_sim/solvers/v32_certified_beam.cpp \
+  --solver v33=tools/ahintech_sim/solvers/v33_ejection_lns.cpp
+```
+
+For the same workload in GitHub Actions select `counterfactual` in
+`workflow_dispatch`. Full 32-case research evaluation can be run locally
+with `--count 32`. This is a validation suite, not evidence of hidden-test
+generalization.

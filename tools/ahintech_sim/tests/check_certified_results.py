@@ -1,4 +1,4 @@
-"""CI gate: V32 must reproduce certified small development examples.
+"""CI gate: V32 and V33 must reproduce certified small development examples.
 
 This is a regression guard, NOT a measure of generalization to unseen inputs.
 """
@@ -16,11 +16,12 @@ def main():
     observed={(r['case'],r['solver']):r for r in results}
     for key,record in known.items():
         case='99_'+key
-        row=observed.get((case,'v32'))
-        if row is None or row['status']!='OK' or row['A']<record['optimum']:
-            raise SystemExit(f'{case}: V32 must reach certified {record["optimum"]}, got {row}')
-        print(f'{case}: V32 {row["A"]}/{record["optimum"]} OK')
-    print(f'All {len(known)} certified V32 development fixtures passed')
+        for solver in ('v32','v33'):
+            row=observed.get((case,solver))
+            if row is None or row['status']!='OK' or row['A']<record['optimum']:
+                raise SystemExit(f'{case}: {solver} must reach certified {record["optimum"]}, got {row}')
+            print(f'{case}: {solver} {row["A"]}/{record["optimum"]} OK')
+    print(f'All {len(known)} certified V32/V33 development fixtures passed')
 
 
 if __name__=='__main__':
