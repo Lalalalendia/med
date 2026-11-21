@@ -202,5 +202,55 @@ unreachable templates. Every witness is validated independently.
 
 Manual and PR testing: `.github/workflows/ahintech-b-periodic-research.yml`.
 The normal 2-second C++ contestant does not call SciPy or this MILP; finding
-a fast online approximation to the repeating orbit and its bootstrap is a
-**future algorithmic research task**, not a claimed solved feature.
+a fast online approximation to the repeating orbit and its bootstrap was
+the motivation for the standalone V38 experiment below; it is not a claim of optimality.
+
+## V38: causal closed-day planning in standalone C++23
+
+`solvers/v38_periodic_bridge.cpp` implements a new **self-contained**
+C++23 heuristic. It requires no external MILP solver and has the same
+2-second / 256-MiB judge limits as V33.
+
+For selected long-horizon small-to-medium graphs, it:
+
+1. Builds a feasible incumbent by retaining the V33 exact/beam/greedy/LNS core.
+2. Chooses an interior day boundary and reads the state of every computer:
+   idle, just activated, or hours remaining until activation.
+3. Computes shortest causal paths from currently scheduled activations in a
+   **24-hour time-expanded graph**. A randomized, backtracking planner
+   reserves *all mandatory predecessor chains* needed to reproduce the
+   identical state 24 hours later.
+4. Fills remaining send capacity chronologically, never overlapping these
+   reserved chains; optional transmissions must finish before the day ends.
+5. Repeats the verified closed 24-hour pattern. An induction on day-boundary
+   states proves the repeated schedule feasible; late transmissions that
+   cannot finish before the global horizon are omitted.
+6. Retains the incumbent unless a proposed full-horizon schedule has more
+   successful activations. A brief probe examines several possible day
+   boundaries. If no improvement is found, remaining CPU budget returns to
+   the V33 LNS instead of being wasted on an unsuitable periodic strategy.
+
+The exact MILP is a *research teacher*, not used at judge time. The periodic
+heuristic is bounded to `n<=64`, `n*m<=30000`, `edge2<=1000`, sufficiently
+long horizons and `k>=2`; all other inputs use the V33 policy. On supported
+inputs the split between V33 and periodic optimization depends on horizon.
+The output remains independently checked by `model.validate_output`.
+
+### Reproduce
+
+```bash
+python3 -m unittest discover -s tools/ahintech_sim/tests -p test_cpp_periodic_bridge.py -v
+python3 tools/ahintech_sim/counterfactual.py --seed 20261129 --count 12 --out /tmp/ahin_v38_cases
+python3 tools/ahintech_sim/bench.py --cases /tmp/ahin_v38_cases \
+  --out /tmp/ahin_v38_results --time-limit-ms 2000 --memory-mb 256 \
+  --fail-on-invalid \
+  --solver v33=tools/ahintech_sim/solvers/v33_ejection_lns.cpp \
+  --solver v38=tools/ahintech_sim/solvers/v38_periodic_bridge.cpp
+```
+
+On the **synthetic development** instance `index1_n30_m144_k4` V33 yielded
+1109 and V38 yielded **1181** valid activations, in around 1.8 seconds.
+A separate held-out family with seed `20261129` yielded improvements on
+some cases and ties on others; **these counts are not official competition
+points**. CPU scheduling can affect results of time-bounded stochastic
+heuristics. Official hidden test inputs are unavailable.
