@@ -259,3 +259,8 @@ heuristics. Official hidden test inputs are unavailable.
 ## V51: temporal deferral
 
 See [the V51 method](docs/v51_temporal_separation.md). This standalone C++23 variant can omit a current transmission when a scheduled future sender offers a better recipient activation phase. Its ablation test verifies the mechanism. The `temporal` workflow suite provides reproducible synthetic comparisons; official score unknown.
+
+
+## V52: joint subset beam up to 12 vertices
+
+See [V52 joint beam notes](docs/v52_joint_beam.md). V52 performs capacitated subset matching and keeps alternative valid active/busy states across successive hours on small graphs. Three new synthetic examples with exact HiGHS optima 144/314/292 reproduce the advantage over V51. Run `python3 -m unittest discover -s tools/ahintech_sim/tests -v`; optional SciPy reruns certificates. For large graphs the V51 strategy remains in use. No official V52 score has been measured.

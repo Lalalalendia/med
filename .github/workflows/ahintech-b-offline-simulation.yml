@@ -88,8 +88,9 @@ jobs:
             --solver v38=tools/ahintech_sim/solvers/v38_periodic_bridge.cpp \
             --solver v46=tools/ahintech_sim/solvers/v46_window_splice.cpp \
             --solver v47=tools/ahintech_sim/solvers/v47_deep_splice.cpp \
-            --solver v51=tools/ahintech_sim/solvers/v51_time_separation.cpp
-      - name: Verify certified development fixtures for V32/V33/V38/V46/V47/V51
+            --solver v51=tools/ahintech_sim/solvers/v51_time_separation.cpp \
+            --solver v52=tools/ahintech_sim/solvers/v52_joint_beam.cpp
+      - name: Verify certified development fixtures for V32/V33/V38/V46/V47/V51/V52
         if: github.event_name == 'pull_request' || inputs.suite == 'smoke' || inputs.suite == 'research'
         run: python3 tools/ahintech_sim/tests/check_certified_results.py /tmp/ahintech_results/results.json
       - name: Publish summary to GitHub Actions
