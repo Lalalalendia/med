@@ -147,8 +147,11 @@ def matrix(suite: str) -> list[tuple[int, int, str, str, int]]:
     elif suite == 'stress':
         sizes = [(1000, 1000), (5000, 200), (10000, 100),
                  (20000, 50), (100000, 10), (1000, 1000)]
+    elif suite == 'paired':
+        sizes = [(12, 160), (20, 360), (20, 360), (12, 360),
+                 (20, 160), (20, 360), (12, 360), (20, 360)]
     else:
-        raise ValueError('suite must be smoke, standard or stress')
+        raise ValueError('suite must be smoke, standard, stress or paired')
     result = []
     for i, (n, m) in enumerate(sizes):
         fam = FAMILIES[i % len(FAMILIES)]
@@ -161,7 +164,7 @@ def matrix(suite: str) -> list[tuple[int, int, str, str, int]]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument('--suite', choices=['smoke','standard','stress'], default='smoke')
+    ap.add_argument('--suite', choices=['smoke','standard','stress','paired'], default='smoke')
     ap.add_argument('--seed', type=int, default=20261121)
     ap.add_argument('--out', type=Path, default=Path('cases'))
     args = ap.parse_args()
@@ -177,7 +180,27 @@ def main() -> None:
         path.write_text(data,encoding='ascii')
         manifest.append({'name': name, 'file':path.name, 'n':n, 'm':m, 'k':k, 'x':x,
                          'family':family, 'schedule':schedule, 'edges':sum(map(len,prob.adj))//2,
-                         'seed':seed, 'sha256':hashlib.sha256(data.encode('ascii')).hexdigest()})
+                         'seed':seed, 'sha256':hashlib.sha256(data.encode('ascii')).hexdigest(),
+                         'pair':i if args.suite=='paired' else None, 'variant':'base'})
+        if args.suite=='paired':
+            pad=150
+            rng=random.Random(seed^0xC0FFEE)
+            extra_a=[rng.randrange(24) for _ in range(pad)]
+            extra_b=[rng.randrange(1,24) for _ in range(pad)]
+            extra_t=[rng.randrange(1,24) for _ in range(pad)]
+            augmented=Problem(n+pad,prob.p,prob.k,prob.x,prob.m,
+                              prob.a+extra_a,prob.b+extra_b,prob.t+extra_t,
+                              prob.adj+[[] for _ in range(pad)])
+            augmented.validate_definition()
+            augmented_data=augmented.to_text()
+            padded_name=name+'_padded'
+            padded_path=args.out/(padded_name+'.in')
+            padded_path.write_text(augmented_data,encoding='ascii')
+            manifest.append({'name':padded_name,'file':padded_path.name,'n':n+pad,
+                             'm':m,'k':k,'x':x,'family':family,'schedule':schedule,
+                             'edges':sum(map(len,prob.adj))//2,'seed':seed,
+                             'sha256':hashlib.sha256(augmented_data.encode('ascii')).hexdigest(),
+                             'pair':i,'variant':'padded'})
     (args.out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
     print(f'Generated {len(manifest)} reproducible {args.suite} cases in {args.out}')
 
