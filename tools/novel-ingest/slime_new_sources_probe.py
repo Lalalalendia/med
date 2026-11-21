@@ -125,4 +125,8 @@ def probe(name,home):
         print('ERROR',name,type(e).__name__,str(e)[:120],flush=True)
 
 if __name__=='__main__':
-    for item in LANDINGS:probe(*item)
+    import os
+    selected=os.environ.get('SLIME_PROBE_SITE','all')
+    for item in LANDINGS:
+        if selected=='all' or item[0]==selected:
+            probe(*item)
