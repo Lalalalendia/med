@@ -1,0 +1,53 @@
+name: Slime Sudugu - remaining chapters 455-540
+on:
+  push:
+    branches:
+      - feat/slime-true-immortal-220-545-20261119
+    paths:
+      - .github/workflows/slime-sudugu-continuation-455-540.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    name: Sudugu ${{ matrix.start }}-${{ matrix.end }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {start: 455, end: 476}
+          - {start: 477, end: 498}
+          - {start: 499, end: 520}
+          - {start: 521, end: 540}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Recheck pagination with synthetic fixtures
+        run: python -m unittest tools/novel-ingest/test_slime_true_immortal.py -v
+      - name: Collect permitted numbered chapters only
+        id: collect
+        continue-on-error: true
+        shell: bash
+        env:
+          START: ${{ matrix.start }}
+          END: ${{ matrix.end }}
+        run: |
+          python -u tools/novel-ingest/slime_true_immortal.py collect \
+            --rights-confirmed --start "$START" --end "$END" \
+            --delay 1.2 --min-chars 2500 --out out/slime-"$START"-"$END"
+      - name: Publish text, per-chapter checksums and failure receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slime-sudugu-${{ matrix.start }}-${{ matrix.end }}
+          path: out/slime-${{ matrix.start }}-${{ matrix.end }}/
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Reject uncollected chapters in shard
+        if: steps.collect.outcome != 'success'
+        run: exit 1

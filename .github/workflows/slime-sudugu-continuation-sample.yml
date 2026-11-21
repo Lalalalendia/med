@@ -1,0 +1,42 @@
+name: Slime Sudugu - bounded continuation sample 450-454
+on:
+  push:
+    branches:
+      - feat/slime-true-immortal-220-545-20261119
+    paths:
+      - tools/novel-ingest/slime_true_immortal.py
+      - tools/novel-ingest/test_slime_true_immortal.py
+      - .github/workflows/slime-sudugu-continuation-sample.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect-five:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collector and pagination unit tests
+        run: python -m unittest tools/novel-ingest/test_slime_true_immortal.py -v
+      - name: Collect full multi-page chapters 450-454
+        id: collect
+        continue-on-error: true
+        run: |
+          python -u tools/novel-ingest/slime_true_immortal.py collect \
+            --rights-confirmed --start 450 --end 454 \
+            --delay 1.2 --min-chars 2500 --out out/slime-450-454
+      - name: Publish verified text and receipts as private CI artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slime-sudugu-450-454
+          path: out/slime-450-454/
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Require complete 5-chapter sample
+        if: steps.collect.outcome != 'success'
+        run: exit 1

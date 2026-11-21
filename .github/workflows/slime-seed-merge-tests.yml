@@ -1,0 +1,23 @@
+name: Slime continuation - offline seed merge checks
+on:
+  push:
+    branches:
+      - feat/slime-true-immortal-220-545-20261119
+    paths:
+      - tools/novel-ingest/slime_seed_merge.py
+      - tools/novel-ingest/test_slime_seed_merge.py
+      - .github/workflows/slime-seed-merge-tests.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run offline resume-merge tests
+        run: python -m unittest tools/novel-ingest/test_slime_seed_merge.py -v

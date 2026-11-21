@@ -1,0 +1,23 @@
+name: Slime - archive integrity and editorial QA
+on:
+  push:
+    branches:
+      - feat/slime-true-immortal-220-545-20261119
+    paths:
+      - tools/novel-ingest/slime_archive_quality.py
+      - tools/novel-ingest/test_slime_archive_quality.py
+      - .github/workflows/slime-archive-quality.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test archive integrity and content-noise classification
+        run: python -m unittest tools/novel-ingest/test_slime_archive_quality.py -v
