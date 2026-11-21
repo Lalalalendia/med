@@ -109,3 +109,19 @@ python3 olympiad/sort_liar/aggregate.py \
 **Caveat:** The simulation uses prescribed strategies; their frequencies
 are not estimates of the private judge distribution. Better simulated
 aggregate points do not automatically imply improvement on hidden test #40.
+
+
+## Score-oriented v11 candidate: budget drain
+
+`solutions/budget_drain_v11.cpp` is an executable C++23 submission, not a test harness.
+
+1. If there is enough query budget, repeat `? 1 2` up to `2*k+1` times. A contradictory minority of `k` replies certifies that the entire lie budget is spent. Later answers are truthful.
+2. Sort by mergesort, retaining the chronological query history.
+3. Identify the earliest pairs from that history which became adjacent in the provisional order. Certify their order with the remaining global lie budget. Also probe a few central pairs.
+4. If the global lie budget is demonstrably exhausted, recheck adjacent relations with guaranteed-true comparisons and finish immediately. Otherwise use the existing Adaptive v5 verification and repair stages.
+
+The global lie lower bound is `sum(min(YES[x,y], NO[x,y]))`; an adjacent relation is proven if its signed vote margin exceeds `k - lowerBound` in absolute value.
+
+**Local synthetic results, not hidden official judge:** In 28 paired cases from the adversarial suite (`runs=1, seed=794`) v11 recovered 28/28 versus Adaptive v5's 21/28, earning 47.920 vs 35.398 points. CPU and memory limits were 2 s / 256 MiB. A fast in-process stress harness found 5194/5200 successes for v11, but this stress harness is not the official protocol. The official #40 failure is not confirmed fixed.
+
+Run: `g++ -std=c++23 -O2 olympiad/sort_liar/solutions/budget_drain_v11.cpp -o budget_drain_v11`
