@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-21T10:09:55+00:00
+Run: 2026-11-22T10:14:55+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-21T10:09:55+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `118153` [Pocket Monsters: Dragon Succubus is Actually Me](https://wtr-lab.com/en/novel/118153/pocket-monsters-dragon-succubus-is-actually-me) — catalog
-- **wtr-lab** `109973` [Best Dragon Son-in-law: Underworld King](https://wtr-lab.com/en/novel/109973/best-dragon-son-in-law-underworld-king) — catalog
-- **wtr-lab** `118150` [HP: Did Miss Malfoy Breakdown Today?](https://wtr-lab.com/en/novel/118150/hp-did-miss-malfoy-breakdown-today) — catalog
-- **wtr-lab** `117154` [Though I’m in Another World, My Dreams Can Come True](https://wtr-lab.com/en/novel/117154/though-im-in-another-world-my-dreams-can-come-true) — catalog
-- **wtr-lab** `118141` [Star Train World: I am Silver Wolf's Older Sister](https://wtr-lab.com/en/novel/118141/star-train-world-i-am-silver-wolfs-older-sister) — catalog
-- **wtr-lab** `118131` [Greek Mythology, the God of Ice and Fire](https://wtr-lab.com/en/novel/118131/greek-mythology-the-god-of-ice-and-fire) — catalog
-- **wtr-lab** `118163` [War Tabletop World: I'm Playing a Game, and You Want Me to Actually Wear It?!](https://wtr-lab.com/en/novel/118163/war-tabletop-world-im-playing-a-game-and-you-want-me-to-actually-wear-it) — catalog
-- **wtr-lab** `117935` [Diary of Ascension in the Heavens](https://wtr-lab.com/en/novel/117935/diary-of-ascension-in-the-heavens) — catalog
-- **wtr-lab** `117282` [Husband, Be Gentle: Your Little Wife Wants to Snuggle](https://wtr-lab.com/en/novel/117282/husband-be-gentle-your-little-wife-wants-to-snuggle) — catalog
-- **wtr-lab** `117785` [The Weakest Human in a Contract? I Summon an Aether Calamity Instead](https://wtr-lab.com/en/novel/117785/the-weakest-human-in-a-contract-i-summon-an-aether-calamity-instead) — catalog
-- **mtl-novel** `douluo-continent-all-characters-levels-reset-to-zero-exposed` [Douluo Continent: All Characters’ Levels Reset to Zero, Exposed](https://mtl-novel.com/novel/douluo-continent-all-characters-levels-reset-to-zero-exposed/) — catalog
-- **mtl-novel** `zhe-tian-i-am-the-first-emperor-of-ancient-times` [Zhe Tian: I am the First Emperor of Ancient Times](https://mtl-novel.com/novel/zhe-tian-i-am-the-first-emperor-of-ancient-times/) — catalog
-- **mtl-novel** `reborn-in-the-1960s-i-have-an-intelligence-system` [Reborn in the 1960s, I Have an Intelligence System](https://mtl-novel.com/novel/reborn-in-the-1960s-i-have-an-intelligence-system/) — catalog
-- **mtl-novel** `kamen-rider-mission-accomplished` [Kamen Rider, Mission Accomplished!](https://mtl-novel.com/novel/kamen-rider-mission-accomplished/) — catalog
-- **mtl-novel** `all-out-tower-i-get-one-god-tier-affix-per-level` [All-out Tower: I Get One God-tier Affix Per Level](https://mtl-novel.com/novel/all-out-tower-i-get-one-god-tier-affix-per-level/) — catalog
-- **mtl-novel** `covering-the-sky-many-sons-and-many-blessings-begin-with-yan-ruyu` [Covering the Sky: Many Sons and Many Blessings Begin with Yan Ruyu](https://mtl-novel.com/novel/covering-the-sky-many-sons-and-many-blessings-begin-with-yan-ruyu/) — catalog
-- **mtl-novel** `global-high-martial-arts-killing-monsters-to-become-a-god-i-have-broken-through-the-human-forbidden-zone` [Global High Martial Arts: Killing Monsters to Become a God, I Have Broken Through the Human Forbidden Zone](https://mtl-novel.com/novel/global-high-martial-arts-killing-monsters-to-become-a-god-i-have-broken-through-the-human-forbidden-zone/) — catalog
-- **mtl-novel** `one-of-the-courtyard-houses-has-a-huqin-a-two-stringed-bowed-instrument-that-has-made-its-way-in-the-world` [One of the Courtyard Houses Has a Huqin (a Two-stringed Bowed Instrument) That Has Made Its Way in the World](https://mtl-novel.com/novel/one-of-the-courtyard-houses-has-a-huqin-a-two-stringed-bowed-instrument-that-has-made-its-way-in-the-world/) — catalog
-- **mtl-novel** `football-manager-starting-by-building-a-football-black-market` [Football Manager: Starting by Building a Football Black Market](https://mtl-novel.com/novel/football-manager-starting-by-building-a-football-black-market/) — catalog
-- **mtl-novel** `transmigrated-as-a-villainous-boss-i-used-a-popularity-system-to-traumatize-players-with-knife-moments-and-now-theyre-sobbing-over-my-tragic-backstory` [Transmigrated As a Villainous Boss: I Used a Popularity System to Traumatize Players with ‘knife’ Moments, and Now They’re Sobbing Over My Tragic Backstory](https://mtl-novel.com/novel/transmigrated-as-a-villainous-boss-i-used-a-popularity-system-to-traumatize-players-with-knife-moments-and-now-theyre-sobbing-over-my-tragic-backstory/) — catalog
+- **wtr-lab** `118418` [NBA 1984: The League of Regretters](https://wtr-lab.com/en/novel/118418/nba-1984-the-league-of-regretters) — catalog
+- **wtr-lab** `118368` [The Top Immortal in the College Entrance Exam](https://wtr-lab.com/en/novel/118368/the-top-immortal-in-the-college-entrance-exam) — catalog
+- **wtr-lab** `118296` [60s Military Life: Fleeing Famine and Marrying a Cavalry Officer](https://wtr-lab.com/en/novel/118296/60-s-military-life-fleeing-famine-and-marrying-a-cavalry-officer) — catalog
+- **wtr-lab** `118287` [Guns and Wizards: I Achieve Immortality Through Taoist Magic](https://wtr-lab.com/en/novel/118287/guns-and-wizards-i-achieve-immortality-through-taoist-magic) — catalog
+- **wtr-lab** `117318` [Upgrade Frenzy](https://wtr-lab.com/en/novel/117318/upgrade-frenzy) — catalog
+- **wtr-lab** `118272` [Super Rich: I Flew a Helicopter to the School Beauty's College Entrance Banquet](https://wtr-lab.com/en/novel/118272/super-rich-i-flew-a-helicopter-to-the-school-beautys-college-entrance-banquet) — catalog
+- **wtr-lab** `118378` [Starting with the Establishment of Academies in Soul Land Continent](https://wtr-lab.com/en/novel/118378/starting-with-the-establishment-of-academies-in-soul-land-continent) — catalog
+- **wtr-lab** `118422` [NBA: Jason Silver Model, the Ultimate Center](https://wtr-lab.com/en/novel/118422/nba-jason-silver-model-the-ultimate-center) — catalog
+- **wtr-lab** `118420` [A Cheerful Priest Doesn't Die in a Carnage!](https://wtr-lab.com/en/novel/118420/a-cheerful-priest-doesnt-die-in-a-carnage) — catalog
+- **wtr-lab** `118410` [Cosmic Star World: Myriad Realms, All of Me Return to One](https://wtr-lab.com/en/novel/118410/cosmic-star-world-myriad-realms-all-of-me-return-to-one) — catalog
+- **mtl-novel** `in-a-post-apocalyptic-world-filled-with-superpowers-i-start-by-creating-a-cultivation-method-for-superpowers` [In a Post-apocalyptic World Filled with Superpowers, I Start by Creating a Cultivation Method for Superpowers](https://mtl-novel.com/novel/in-a-post-apocalyptic-world-filled-with-superpowers-i-start-by-creating-a-cultivation-method-for-superpowers/) — catalog
+- **mtl-novel** `douluo-dalu-martial-soul-sun-but-star-core-essence` [Douluo Dalu: Martial Soul Sun, But Star Core Essence](https://mtl-novel.com/novel/douluo-dalu-martial-soul-sun-but-star-core-essence/) — catalog
+- **mtl-novel** `is-it-wrong-to-seek-encounters-in-honkai-star-rail` [Is It Wrong to Seek Encounters in Honkai Star Rail?](https://mtl-novel.com/novel/is-it-wrong-to-seek-encounters-in-honkai-star-rail/) — catalog
+- **mtl-novel** `online-game-get-one-master-ball-every-day` [Online Game: Get One Master Ball Every Day](https://mtl-novel.com/novel/online-game-get-one-master-ball-every-day/) — catalog
+- **mtl-novel** `he-powerful-man-has-no-heir-the-poor-girl-has-triplets-after-experiencing-morning-sickness` [He Powerful Man Has No Heir? The Poor Girl Has Triplets After Experiencing Morning Sickness](https://mtl-novel.com/novel/he-powerful-man-has-no-heir-the-poor-girl-has-triplets-after-experiencing-morning-sickness/) — catalog
+- **mtl-novel** `wipeout-dreaming-back-to-the-beginning` [Wipeout: Dreaming Back to the Beginning](https://mtl-novel.com/novel/wipeout-dreaming-back-to-the-beginning/) — catalog
+- **mtl-novel** `the-story-begins-with-kicking-a-deaf-old-woman-to-death-then-killing-everyone` [The Story Begins with Kicking a Deaf Old Woman to Death, Then Killing Everyone](https://mtl-novel.com/novel/the-story-begins-with-kicking-a-deaf-old-woman-to-death-then-killing-everyone/) — catalog
+- **mtl-novel** `douluo-continent-the-creation-of-the-elf-world-was-exposed-by-the-heavens` [Douluo Continent: The Creation of the Elf World Was Exposed by the Heavens](https://mtl-novel.com/novel/douluo-continent-the-creation-of-the-elf-world-was-exposed-by-the-heavens/) — catalog
+- **mtl-novel** `primordial-era-compare-your-background-to-mine-im-your-father` [Primordial Era: Compare Your Background to Mine? I’m Your Father!](https://mtl-novel.com/novel/primordial-era-compare-your-background-to-mine-im-your-father/) — catalog
+- **mtl-novel** `demon-slayer-the-onmyojis-demon-king-consort` [Demon Slayer: The Onmyoji’s Demon King Consort](https://mtl-novel.com/novel/demon-slayer-the-onmyojis-demon-king-consort/) — catalog
