@@ -1,0 +1,76 @@
+name: Ahintek B - periodic throughput research
+
+on:
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: 'Reproducible synthetic seed'
+        type: string
+        required: true
+        default: '20261125'
+      indices:
+        description: 'Comma-separated indices of synthetic graph types (0..31)'
+        type: string
+        required: true
+        default: '1,9'
+      horizons:
+        description: 'Comma-separated finite horizons in hours'
+        type: string
+        required: true
+        default: '96,144'
+  pull_request:
+    paths:
+      - 'tools/ahintech_sim/periodic_oracle.py'
+      - 'tools/ahintech_sim/bridge_oracle.py'
+      - 'tools/ahintech_sim/periodic_study.py'
+      - 'tools/ahintech_sim/tests/test_periodic_research.py'
+      - '.github/workflows/ahintech-b-periodic-research.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ahintek-periodic-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  periodic-lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install offline MILP research solver
+        run: python3 -m pip install --disable-pip-version-check scipy==1.14.1
+      - name: Verify periodic MILP and bootstrap constraints
+        run: python3 -m unittest discover -s tools/ahintech_sim/tests -p 'test_periodic_research.py' -v
+      - name: Study periodic throughput and finite bootstrap witness
+        env:
+          SEED: ${{ github.event_name == 'workflow_dispatch' && inputs.seed || '20261125' }}
+          INDICES: ${{ github.event_name == 'workflow_dispatch' && inputs.indices || '1,9' }}
+          HORIZONS: ${{ github.event_name == 'workflow_dispatch' && inputs.horizons || '96,144' }}
+        run: |
+          python3 tools/ahintech_sim/periodic_study.py \
+            --seed "$SEED" --indices "$INDICES" --horizons "$HORIZONS" \
+            --out /tmp/ahintech_periodic \
+            --stationary-seconds 4 --bridge-seconds 4
+      - name: Publish research results
+        if: always()
+        run: |
+          if [ -f /tmp/ahintech_periodic/periodic_report.md ]; then
+            cat /tmp/ahintech_periodic/periodic_report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Save finite-horizon problem inputs and validated witnesses
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ahintek-b-periodic-${{ github.run_id }}
+          path: |
+            /tmp/ahintech_periodic/*.in
+            /tmp/ahintech_periodic/*.bridge.out
+            /tmp/ahintech_periodic/periodic_report.json
+            /tmp/ahintech_periodic/periodic_report.md
+          if-no-files-found: warn
+          retention-days: 30
