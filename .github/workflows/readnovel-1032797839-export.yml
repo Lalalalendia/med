@@ -1,0 +1,57 @@
+name: ReadNovel Marvel Uzumaki public RAW export
+on:
+  push:
+    paths:
+      - .github/workflows/readnovel-1032797839-export.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - start: 1
+            end: 100
+          - start: 101
+            end: 200
+          - start: 201
+            end: 300
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Archive accessible public chapters
+        id: archive
+        continue-on-error: true
+        run: |
+          python tools/novel-ingest/readnovel_marvel_uzumaki.py --start ${{ matrix.start }} --end ${{ matrix.end }} --delay 0.9 --out out/readnovel-${{ matrix.start }}-${{ matrix.end }}
+      - name: Show verification manifest
+        if: always()
+        run: |
+          if test -f out/readnovel-${{ matrix.start }}-${{ matrix.end }}/manifest.json; then
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("out/readnovel-${{ matrix.start }}-${{ matrix.end }}/manifest.json")
+          x=json.loads(p.read_text(encoding="utf-8"))
+          print(f"CATALOG: {x['catalog_count']} OK: {x['ok_count']} FAILED: {x['failed_count']}")
+          print("MISSING:",[(r["ordinal"],r["status"]) for r in x["chapters"] if r["status"]!="ok"])
+          PY
+          fi
+      - name: Save RAW ZIP and manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: readnovel-marvel-uzumaki-${{ matrix.start }}-${{ matrix.end }}
+          path: out/readnovel-${{ matrix.start }}-${{ matrix.end }}/*
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Fail on incomplete collection
+        if: steps.archive.outcome != 'success'
+        run: exit 1
