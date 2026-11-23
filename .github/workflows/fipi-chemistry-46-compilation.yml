@@ -1,0 +1,33 @@
+name: FIPI chemistry 46 qids - accessible compilation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/fipi-oge-chemistry-46-20261119]
+    paths:
+      - "tools/fipi_oge_chemistry_46_compilation.py"
+      - ".github/workflows/fipi-chemistry-46-compilation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  cross-index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4 lxml
+      - name: Fetch only public task compilation pages
+        run: python tools/fipi_oge_chemistry_46_compilation.py --limit 46
+      - name: Save provenance report and parsed task candidates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fipi-oge-chemistry-46-compilation
+          path: artifacts/fipi-oge-chemistry-46-compilation/
+          if-no-files-found: warn
+          retention-days: 30
