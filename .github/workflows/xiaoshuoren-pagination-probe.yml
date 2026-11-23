@@ -1,0 +1,36 @@
+name: Xiaoshuoren missing-chapter title alignment
+on:
+  push:
+    branches: ["collect/xiaoshuoren-marvel-20261121"]
+    paths: [".github/workflows/xiaoshuoren-pagination-probe.yml"]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Verify exact names of six alternate pages
+        run: |
+          python - <<'PY'
+          import requests,re
+          from bs4 import BeautifulSoup
+          mapping = {159:157,214:212,215:213,233:231,234:232,252:250}
+          session=requests.Session();session.headers['User-Agent']='Mozilla/5.0'
+          for expected,alt in mapping.items():
+              url='https://www.diyibanzi.com/read/25731/'+str(1003320+alt)+'.html'
+              r=session.get(url,timeout=25)
+              r.encoding=r.apparent_encoding or 'utf-8'
+              soup=BeautifulSoup(r.text,'html.parser')
+              h=soup.find('h1')
+              article=soup.select_one('#content') or soup.select_one('.content') or soup.select_one('article')
+              body=article.get_text(' ',strip=True) if article else ''
+              print('MAPPING',expected,alt,'HTTP',r.status_code,'URL',r.url,
+                    'TITLE',h.get_text(' ',strip=True)[:160] if h else 'none',
+                    'HAN',len(re.findall(r'[㐀-鿿]',body)),
+                    'MARKER',re.findall(r'[（(]\s*\d+\s*/\s*\d+\s*[)）]',soup.get_text(' ',strip=True))[:5],flush=True)
+          PY
