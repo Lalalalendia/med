@@ -1,0 +1,39 @@
+name: Marvel Uzumaki xbiqiuge 7-unit pilot
+on:
+  push:
+    paths: [.github/workflows/xbiqiuge-143731-pilot.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Fetch original, VIP start, middle, ending and epilogue
+        run: python tools/novel-ingest/xbiqiuge_143731.py --numbers 0,1,118,119,155,283,284 --out out/xbiqiuge-pilot
+      - name: Verify pilot receipt and texts
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          p=Path("out/xbiqiuge-pilot")
+          x=json.loads((p/"manifest.json").read_text(encoding="utf-8"))
+          assert x["catalog_story_units"]==285
+          assert x["ok_count"]==7 and x["failed_count"]==0
+          for c in x["chapters"]:
+            b=(p/c["raw_file"]).read_bytes()
+            assert hashlib.sha256(b).hexdigest()==c["sha256"]
+            print(c["ordinal"],c["pages"],c["cjk_chars"],c["sha256"][:10])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xbiqiuge-143731-pilot
+          path: out/xbiqiuge-pilot/**
+          retention-days: 7
