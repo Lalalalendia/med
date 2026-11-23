@@ -1,0 +1,87 @@
+name: ReadNovel Marvel Uzumaki - 69shuba source check
+on:
+  push:
+    paths: [.github/workflows/readnovel-1032797839-69shuba-probe.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Check robots, full index, chapter length samples
+        run: |
+          python - <<'PY'
+          import requests, re, json, time
+          from urllib.parse import urljoin, urlsplit
+          from urllib.robotparser import RobotFileParser
+          from bs4 import BeautifulSoup
+          S=requests.Session()
+          S.headers.update({"User-Agent":"AuthorizedNovelPublicArchiver/1.0 (with rights holder authorization)","Accept-Language":"zh-CN,zh;q=0.9,en;q=0.5"})
+          roots=["https://www.69shuba.com","https://69shuba.com","https://m.69shuba.com"]
+          results=[]
+          for root in roots:
+            item={"root":root}
+            try:
+              resp=S.get(root+"/robots.txt",timeout=18,allow_redirects=False)
+              item["robots_status"]=resp.status_code
+              item["robots_sample"]=resp.text[:900] if resp.status_code==200 else ""
+              robot=RobotFileParser()
+              robot.parse(resp.text.splitlines() if resp.status_code==200 else ["User-agent: *","Allow: /"])
+              path="/tag/%E5%86%B7%E9%9D%99/19/"
+              item["robots_allows_tag"]=robot.can_fetch(S.headers["User-Agent"],root+path)
+              if not item["robots_allows_tag"]:
+                results.append(item); continue
+              r=S.get(root+path,timeout=25,allow_redirects=False)
+              item.update(tag_status=r.status_code,tag_bytes=len(r.content),tag_type=r.headers.get("content-type"))
+              r.encoding=r.apparent_encoding or "utf-8"
+              soup=BeautifulSoup(r.text,"html.parser")
+              found=[]
+              for a in soup.select("a[href]"):
+                if "漫威里的旋涡一族" in a.get_text(" ",strip=True):
+                  found.append({"href":urljoin(r.url,a["href"]),"name":a.get_text(" ",strip=True)[:80]})
+              item["matches"]=found[:10]
+              for m in found[:2]:
+                url=m["href"]
+                if urlsplit(url).netloc not in ("www.69shuba.com","69shuba.com","m.69shuba.com"):continue
+                if not robot.can_fetch(S.headers["User-Agent"],url):
+                  m["robots_disallowed"]=True;continue
+                resp=S.get(url,timeout=25,allow_redirects=False)
+                resp.encoding=resp.apparent_encoding or "utf-8"
+                m["status"]=resp.status_code
+                m["length"]=len(resp.content)
+                s=BeautifulSoup(resp.text,"html.parser")
+                m["title"]=s.title.get_text(" ",strip=True) if s.title else ""
+                chapters=[]
+                for a in s.select("a[href]"):
+                  t=a.get_text(" ",strip=True)
+                  if (re.search(r"第.{1,15}章|尾声|完结",t) and len(t)<95) and re.search(r"/(?:txt|book|chapter)/|/\d+\.html",a["href"]):
+                    chapters.append({"title":t,"url":urljoin(url,a["href"])})
+                m["chapter_count"]=len(chapters)
+                m["first"]=chapters[:3]
+                m["last"]=chapters[-3:]
+                m["samples"]=[]
+                for candidate in [chapters[0],chapters[len(chapters)//2],chapters[-2]] if len(chapters)>4 else chapters[:2]:
+                  u=candidate["url"]
+                  sample={"title":candidate["title"],"url":u}
+                  if not robot.can_fetch(S.headers["User-Agent"],u):
+                    sample["robots_disallowed"]=True;m["samples"].append(sample);continue
+                  rr=S.get(u,timeout=25,allow_redirects=False)
+                  rr.encoding=rr.apparent_encoding or "utf-8"
+                  ss=BeautifulSoup(rr.text,"html.parser")
+                  sample.update(status=rr.status_code,bytes=len(rr.content),page_title=ss.title.get_text(" ",strip=True) if ss.title else "")
+                  sample["selectors"]={sel:len(ss.select_one(sel).get_text(" ",strip=True)) for sel in ["#content","#txt","#chaptercontent",".txtnav",".content","#chapter_content","#read-content"] if ss.select_one(sel)}
+                  sample["body_chinese_chars"]=len(re.findall(r"[\u3400-\u9fff]",ss.get_text(" ",strip=True)))
+                  m["samples"].append(sample)
+              results.append(item)
+            except Exception as e:
+              item["error"]=repr(e)[:300]
+              results.append(item)
+          print(json.dumps(results,ensure_ascii=False,indent=2))
+          PY
