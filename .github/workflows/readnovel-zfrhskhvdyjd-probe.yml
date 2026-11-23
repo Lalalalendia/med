@@ -1,0 +1,61 @@
+name: ReadNovel zfrhskhvdyjd source probe
+on:
+  push:
+    paths:
+      - .github/workflows/readnovel-zfrhskhvdyjd-probe.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Identify public book landing page
+        run: |
+          python - <<'PY'
+          import json,re,requests
+          from bs4 import BeautifulSoup
+          from pathlib import Path
+          urls=[
+            "https://www.readnovel.com/bookquery/zfrhskhvdyjd",
+            "https://m.readnovel.com/bookquery/zfrhskhvdyjd",
+            "https://readnovel.com/bookquery/zfrhskhvdyjd",
+            "https://www.readnovel.com/robots.txt",
+            "https://www.readnovel.com/"
+          ]
+          s=requests.Session()
+          s.headers.update({"User-Agent":"Mozilla/5.0 (compatible; AuthorizedBookArchiveProbe/1.0)","Accept-Language":"zh-CN,zh;q=0.9,en;q=0.6"})
+          rows=[]
+          for url in urls:
+            row={"url":url}
+            try:
+              resp=s.get(url,timeout=25,allow_redirects=False)
+              row.update(status=resp.status_code,final_url=resp.url,location=resp.headers.get("Location"),content_type=resp.headers.get("Content-Type"),bytes=len(resp.content))
+              if "html" in resp.headers.get("content-type","").lower():
+                soup=BeautifulSoup(resp.text,"html.parser")
+                row["title"]=soup.title.get_text(" ",strip=True) if soup.title else None
+                row["h1"]=[x.get_text(" ",strip=True)[:130] for x in soup.select("h1")[:3]]
+                row["canonical"]=[x.get("href") for x in soup.select('link[rel="canonical"]')[:2]]
+                row["book_links"]=[x.get("href") for x in soup.select("a[href*='/book/']")[:6]]
+                row["body_sample"]=soup.get_text(" ",strip=True)[:180]
+                row["book_ids"]=list(dict.fromkeys(re.findall(r'(?:bookId|book_id|bid)["\x27:\s=]+(\d{5,})',resp.text)))[:6]
+              else:
+                row["body_sample"]=resp.text[:120] if resp.status_code>=400 else None
+            except Exception as exc:
+              row["error"]=repr(exc)[:500]
+            rows.append(row)
+          Path("readnovel-probe.json").write_text(json.dumps(rows,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps(rows,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: readnovel-zfrhskhvdyjd-probe
+          path: readnovel-probe.json
+          retention-days: 7
