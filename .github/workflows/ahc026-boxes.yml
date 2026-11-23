@@ -1,0 +1,18 @@
+name: AHC026 heuristic solver check
+on:
+  push:
+    branches:
+      - experiment/ahc026-boxes-20261117
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Compile Rust optimized
+        run: rustc --edition=2021 -O tools/olympiad/ahc026_boxes.rs -o /tmp/ahc026_boxes
+      - name: Evaluate 150 deterministic random test cases
+        run: python3 tools/olympiad/ahc026_boxes_test.py /tmp/ahc026_boxes
