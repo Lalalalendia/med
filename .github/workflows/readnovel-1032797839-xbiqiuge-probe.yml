@@ -1,0 +1,77 @@
+name: Marvel Uzumaki xbiqiuge source verification
+on:
+  push:
+    paths: [.github/workflows/readnovel-1032797839-xbiqiuge-probe.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests beautifulsoup4
+      - name: Inspect public index and full chapter body samples
+        run: |
+          python - <<'PY'
+          import requests,re,json
+          from urllib.parse import urljoin
+          from urllib.robotparser import RobotFileParser
+          from bs4 import BeautifulSoup
+          base="https://www.xbiqiuge.net"
+          s=requests.Session()
+          s.headers.update({"User-Agent":"AuthorizedBookCensus/1.0 (public pages only)","Accept-Language":"zh-CN,zh;q=0.9"})
+          rs={}
+          try:
+            r=s.get(base+"/robots.txt",timeout=18,allow_redirects=False)
+            rs["robots"]={"status":r.status_code,"snippet":r.text[:1000] if r.status_code==200 else ""}
+            robot=RobotFileParser()
+            if r.status_code==200 and "<html" not in r.text[:100].lower():
+              robot.parse(r.text.splitlines())
+            elif r.status_code in (404,410):
+              robot.parse(["User-agent: *","Allow: /"])
+            else:
+              print(json.dumps(rs,ensure_ascii=False,indent=2))
+              raise SystemExit(0)
+            def fetch(path):
+              u=urljoin(base,path)
+              if not robot.can_fetch(s.headers["User-Agent"],u):
+                return {"url":u,"status":"disallowed"}
+              r=s.get(u,timeout=25,allow_redirects=False)
+              if r.status_code!=200:
+                return {"url":u,"status":r.status_code,"size":len(r.content)}
+              r.encoding=r.apparent_encoding or "utf-8"
+              soup=BeautifulSoup(r.text,"html.parser")
+              rows=[]
+              for a in soup.select("a[href]"):
+                t=a.get_text(" ",strip=True)
+                if re.search(r"第.{1,12}章|尾声|完结",t) and len(t)<85:
+                  rows.append({"label":t,"href":urljoin(u,a.get("href",""))})
+              items=[]
+              for selector in ["#content","#chaptercontent",".content",".chapter-content","#read_content","#booktxt","div.showtxt","div.bookcontent"]:
+                el=soup.select_one(selector)
+                if el:
+                  txt=el.get_text(" ",strip=True)
+                  items.append({"selector":selector,"chars":len(txt),"hanzi":len(re.findall(r"[\u3400-\u9fff]",txt)),"lines":len(el.get_text("\n",strip=True).splitlines())})
+              return {"url":u,"status":r.status_code,"bytes":len(r.content),"title":soup.title.get_text(" ",strip=True) if soup.title else "",
+                "h1":[x.get_text(" ",strip=True) for x in soup.select("h1")[:2]],
+                "link_total":len(rows),"links_first":rows[:3],"links_last":rows[-6:],"containers":items,
+                "page_length_hanzi":len(re.findall(r"[\u3400-\u9fff]",soup.get_text(" ",strip=True))),
+                "navigation":[{"text":a.get_text(" ",strip=True),"href":urljoin(u,a.get("href",""))} for a in soup.select("a[href]") if a.get_text(" ",strip=True) in ("下一页","上一页","下一章","章节目录")][:12]}
+            for path in ["/biquge_143731/","/biquge_143731/66126148.html",
+                         "/biquge_143731/66126148_2.html"]:
+              rs[path]=fetch(path)
+            idx=rs.get("/biquge_143731/",{})
+            choices=idx.get("links_first",[])+idx.get("links_last",[])
+            for row in choices[:8]:
+              u=row.get("href","")
+              if "/biquge_143731/" in u:
+                rs[u]=fetch(u)
+          except Exception as e:
+            rs["error"]=repr(e)[:800]
+          print(json.dumps(rs,ensure_ascii=False,indent=2))
+          PY
