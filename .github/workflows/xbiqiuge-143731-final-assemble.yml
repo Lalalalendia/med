@@ -1,0 +1,42 @@
+name: Marvel Uzumaki final verified 283 chapter ZIP
+on:
+  push:
+    paths: [.github/workflows/xbiqiuge-143731-final-assemble.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download four validated story batches
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45230999760
+          pattern: xbiqiuge-143731-part-*
+          path: incoming/mirror/
+          merge-multiple: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download official ReadNovel comparison archive
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45228517476
+          pattern: readnovel-1032797839-verified-120-of-290
+          path: incoming/official/
+          merge-multiple: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cross-check chapter content, SHAs, and publish combined TXT
+        run: python tools/novel-ingest/merge_xbiqiuge_143731.py --mirror-input incoming/mirror --official-input incoming/official --out out/complete
+      - name: Upload one complete story ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: readnovel-1032797839-complete-story-zh
+          path: out/readnovel-1032797839-complete-story-zh.zip
+          retention-days: 14
+          if-no-files-found: error
