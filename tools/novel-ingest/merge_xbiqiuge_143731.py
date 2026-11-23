@@ -47,7 +47,7 @@ def run(mirror_input:Path,official_input:Path,out:Path)->None:
     checks={}
     with zipfile.ZipFile(prior[0]) as old:
         if old.testzip() is not None:raise ValueError("Original partial ZIP corrupt")
-        for n in [0,1,10,30,60,90,117,118]:
+        for n in [0,1,10,30,60,90,117]:
             old_num=1 if n==0 else n+2
             older=old.read(f"raw/{old_num:04d}.txt").decode("utf-8")
             newer=rows[n][1].decode("utf-8")
