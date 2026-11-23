@@ -1,0 +1,66 @@
+name: Marvel Uzumaki accessible public mirror probe
+on:
+  push:
+    paths:
+      - .github/workflows/readnovel-1032797839-mirror-probe.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests beautifulsoup4
+      - name: Probe public sources, no authentication
+        run: |
+          python - <<'PY'
+          import requests, json, re, urllib.parse
+          from bs4 import BeautifulSoup
+          sources=[
+            "https://www.novel543.com/0603219485/",
+            "https://m.biquge.com.tw/uzzsgd/",
+            "https://www.novel543.com/robots.txt",
+            "https://m.biquge.com.tw/robots.txt"
+          ]
+          s=requests.Session()
+          s.headers.update({"User-Agent":"Mozilla/5.0 (compatible; PublicChapterCensus/1.0)","Accept-Language":"zh-TW,zh;q=0.9"})
+          result=[]
+          for u in sources:
+            row={"url":u}
+            try:
+              r=s.get(u,timeout=23,allow_redirects=False)
+              row.update(status=r.status_code,size=len(r.content),type=r.headers.get("content-type"),location=r.headers.get("Location"))
+              if u.endswith("robots.txt"):row["text"]=r.text[:2000]
+              else:
+                r.encoding=r.apparent_encoding or "utf-8"
+                soup=BeautifulSoup(r.text,"html.parser")
+                row["title"]=soup.title.get_text(" ",strip=True) if soup.title else ""
+                links=[]
+                for a in soup.select("a[href]"):
+                  v=a.get_text(" ",strip=True)
+                  if re.search(r"第.{1,15}章|完結|尾聲|序$",v) and len(v)<110:
+                    links.append({"label":v,"url":urllib.parse.urljoin(u,a["href"])})
+                row["links_total"]=len(links)
+                row["links_first"]=links[:5]
+                row["links_last"]=links[-8:]
+                row["body_length"]=len(soup.get_text(" ",strip=True))
+                # Probe up to 3 chapter pages: first, later, final
+                selected=links[:1]+links[-2:] if links else []
+                row["sampled_chapters"]=[]
+                for x in selected:
+                  try:
+                    q=s.get(x["url"],timeout=23,allow_redirects=False)
+                    q.encoding=q.apparent_encoding or "utf-8"
+                    sq=BeautifulSoup(q.text,"html.parser")
+                    cand=[(sel,len(sq.select_one(sel).get_text(" ",strip=True))) for sel in ("#content",".content","#chapter-content",".chapter-content",".read-content",".txtnav",".chapter-body") if sq.select_one(sel)]
+                    row["sampled_chapters"].append({"label":x["label"],"url":x["url"],"status":q.status_code,"size":len(q.content),"title":sq.title.get_text(" ",strip=True) if sq.title else "", "selectors":cand,"body_chars":len(sq.get_text(" ",strip=True))})
+                  except Exception as exc:row["sampled_chapters"].append({"error":str(exc)[:150]})
+            except Exception as e:row["error"]=str(e)[:200]
+            result.append(row)
+          print(json.dumps(result,ensure_ascii=False,indent=2))
+          PY
