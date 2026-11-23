@@ -238,13 +238,16 @@ def collect(args: argparse.Namespace) -> int:
                 for row in status["chapters"]:
                     z.write(out / row["file"], row["file"])
                 z.write(out / "combined.txt", "combined.txt")
-                z.writestr("manifest.json", json.dumps(status, ensure_ascii=False, indent=2))
+                archive_manifest = {**status, "status": "PASS", "archive": archive.name}
+                z.writestr("manifest.json", json.dumps(archive_manifest, ensure_ascii=False, indent=2))
             with zipfile.ZipFile(archive) as z:
                 if z.testzip() is not None:
                     raise ValueError("ZIP CRC validation failed")
                 names = [name for name in z.namelist() if name.startswith("chapters/")]
                 if len(names) != EXPECTED_CHAPTERS:
                     raise ValueError("ZIP chapter count mismatch")
+                if json.loads(z.read("manifest.json"))["status"] != "PASS":
+                    raise ValueError("ZIP manifest status mismatch")
             status["status"] = "PASS"
             status["archive"] = archive.name
             status["archive_sha256"] = hashlib.sha256(archive.read_bytes()).hexdigest()
