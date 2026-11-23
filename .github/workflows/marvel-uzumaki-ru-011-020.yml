@@ -1,0 +1,35 @@
+name: Marvel Uzumaki RU chapters 11-20 verified export
+on:
+  push:
+    paths:
+      - .github/workflows/marvel-uzumaki-ru-011-020.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve matching Chinese original 11-20
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45230999760
+          pattern: xbiqiuge-143731-part-0-70
+          path: incoming/official-source
+          merge-multiple: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Validate chapter translations and build TXT plus ZIP
+        run: |
+          python tools/novel-ingest/package_marvel_uzumaki_ru_011_020.py
+      - name: Upload complete bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: Marvel_Uzumaki_ru_011-020_delivery
+          path: |
+            out/Marvel_Uzumaki_ru_011-020.txt
+            out/Marvel_Uzumaki_ru_011-020.zip
+          if-no-files-found: error
+          retention-days: 14
