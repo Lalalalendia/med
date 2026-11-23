@@ -1,0 +1,46 @@
+name: ReadNovel Marvel Uzumaki verified partial archive
+on:
+  push:
+    paths:
+      - .github/workflows/readnovel-1032797839-consolidate.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download all three original batch artifacts
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45218896040
+          pattern: readnovel-marvel-uzumaki-*
+          path: input/
+          merge-multiple: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify SHA256 and build a single ZIP
+        run: |
+          python tools/novel-ingest/merge_readnovel_marvel_uzumaki.py --input-root input --output-root out/consolidated
+          python - <<'PY'
+          import json,zipfile
+          from pathlib import Path
+          z=Path("out/readnovel-1032797839-verified-available.zip")
+          with zipfile.ZipFile(z) as f:
+            m=json.loads(f.read("manifest.json"))
+            assert m["catalog_count"] == 290
+            assert m["verified_raw_count"] == 120
+            assert m["unavailable_count"] == 170
+            assert len([n for n in f.namelist() if n.startswith("raw/")]) == 120
+            assert f.testzip() is None
+            print("FINAL VERIFIED:",len(f.namelist()),"entries",z.stat().st_size,"bytes")
+          PY
+      - name: Upload final verified partial archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: readnovel-1032797839-verified-120-of-290
+          path: out/readnovel-1032797839-verified-available.zip
+          if-no-files-found: error
+          retention-days: 14
