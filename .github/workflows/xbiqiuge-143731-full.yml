@@ -1,0 +1,86 @@
+name: Marvel Uzumaki complete 283 chapters plus prologue and epilogue
+on:
+  push:
+    paths: [.github/workflows/xbiqiuge-143731-full.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  acquire:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - start: 0
+            end: 70
+          - start: 71
+            end: 140
+          - start: 141
+            end: 210
+          - start: 211
+            end: 284
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Fetch each chapter and all pagination pieces
+        run: |
+          python tools/novel-ingest/xbiqiuge_143731.py --start ${{ matrix.start }} --end ${{ matrix.end }} --out out/part
+      - name: Verify complete shard receipt and hashes
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          p=Path("out/part")
+          d=json.loads((p/"manifest.json").read_text(encoding="utf-8"))
+          expected=len(d["requested"])
+          assert d["failed_count"]==0 and d["ok_count"]==expected,(d["failed_count"],expected)
+          for row in d["chapters"]:
+            assert hashlib.sha256((p/row["raw_file"]).read_bytes()).hexdigest()==row["sha256"],row["ordinal"]
+          print("SHARD VERIFIED:",expected)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xbiqiuge-143731-part-${{ matrix.start }}-${{ matrix.end }}
+          path: out/part/**
+          retention-days: 14
+          if-no-files-found: warn
+  assemble:
+    needs: acquire
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download four new RAW batches
+        uses: actions/download-artifact@v4
+        with:
+          pattern: xbiqiuge-143731-part-*
+          path: incoming/mirror/
+          merge-multiple: false
+      - name: Obtain previous verified original ReadNovel sample
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45228517476
+          pattern: readnovel-1032797839-verified-120-of-290
+          path: incoming/official/
+          merge-multiple: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Independently verify and compile story
+        run: |
+          python tools/novel-ingest/merge_xbiqiuge_143731.py --mirror-input incoming/mirror --official-input incoming/official --out out/complete
+      - name: Publish full verified story archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: readnovel-1032797839-complete-story-zh
+          path: out/readnovel-1032797839-complete-story-zh.zip
+          retention-days: 14
+          if-no-files-found: error
