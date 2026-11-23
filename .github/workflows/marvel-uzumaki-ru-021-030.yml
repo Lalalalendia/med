@@ -1,0 +1,35 @@
+name: Marvel Uzumaki RU chapters 21-30 literary translation export
+on:
+  push:
+    paths:
+      - .github/workflows/marvel-uzumaki-ru-021-030.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get archived original Chinese source
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45230999760
+          pattern: xbiqiuge-143731-part-0-70
+          path: incoming/chinese/
+          merge-multiple: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check chapter texts and build TXT + ZIP
+        run: |
+          python tools/novel-ingest/package_marvel_uzumaki_ru_block.py --start 21 --end 30 --source incoming/chinese/xbiqiuge-143731-part-0-70/raw --out out/marvel_ru_021_030
+      - name: Attach text and archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: Marvel_Uzumaki_ru_021-030_delivery
+          path: |
+            out/marvel_ru_021_030/Marvel_Uzumaki_ru_021-030.txt
+            out/marvel_ru_021_030/Marvel_Uzumaki_ru_021-030.zip
+          if-no-files-found: error
+          retention-days: 14
