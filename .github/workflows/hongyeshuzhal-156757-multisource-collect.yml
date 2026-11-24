@@ -1,0 +1,218 @@
+name: Hongyeshuzhal 156757 - separate public source candidates
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-multisource-collect.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        source: [publisher, biquting, canghaishuge]
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collect public source candidates without mixing or guessing content
+        env:
+          SOURCE: ${{ matrix.source }}
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, re, time, unicodedata
+          from pathlib import Path
+          from urllib.parse import urljoin,urlsplit,urldefrag
+          import requests
+          from bs4 import BeautifulSoup
+          source=os.environ['SOURCE']
+          conf={
+            'publisher':('https://www.xs8.cn/bookquery/foiqpeamosqb','www.xs8.cn','section.section.chapter'),
+            'biquting':('https://m.biquting.org/book_19242689.html','m.biquting.org','section.read-section.jsChapterWrapper'),
+            'canghaishuge':('https://www.canghaishuge.com/shenmemonujuemingyaoshi/','www.canghaishuge.com','div.shiguang-reader-content'),
+          }
+          base,host,selector=conf[source]
+          out=Path('out')/source
+          (out/'entries').mkdir(parents=True,exist_ok=True)
+          deadline=time.monotonic()+49*60
+          session=requests.Session()
+          session.headers.update({'User-Agent':'med-authorized-public-collection/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          han=re.compile(r'[\u3400-\u9fff]')
+          chapter=re.compile(r'第\s*(\d+)\s*[章章节節]')
+          section=re.compile(r'第\s*(\d+)\s*[节節]')
+          access=re.compile(r'订阅本章|購買本章|购买本章|购买后阅读|付费阅读|付費閱讀|本章为VIP|本章是VIP|登录后阅读|登陆后阅读|登录后查看|章节未解锁|请登录后阅读|請登入後閱讀|请购买后阅读|captcha|access denied|verify you are human|just a moment',re.I)
+          paid=re.compile(r'VIP|付费|付費|收费|收費|订阅|訂閱|购买|購買|锁定|鎖定',re.I)
+          next_page=re.compile(r'(?:下一[页頁]|下[一]?頁|下页|下頁)[\s>»›]*')
+          class Stop(Exception): pass
+          def norm(x): return re.sub(r'\s+',' ',unicodedata.normalize('NFKC',x)).strip()
+          def digest(x): return hashlib.sha256(x.encode('utf-8')).hexdigest()
+          def count(x): return len(han.findall(x))
+          def safe(u):
+              p=urlsplit(u)
+              return p.scheme=='https' and p.hostname==host and p.username is None and p.password is None
+          def get(u):
+              for _ in range(4):
+                  if time.monotonic()>deadline: raise Stop('time budget')
+                  if not safe(u): raise Stop('redirect outside source')
+                  time.sleep(1.2)
+                  r=session.get(u,timeout=(10,20),allow_redirects=False)
+                  if r.is_redirect:
+                      u=urljoin(u,r.headers['Location']);continue
+                  if r.status_code in {401,403,429,451,503}: raise Stop('HTTP '+str(r.status_code))
+                  r.raise_for_status()
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  if soup.title and access.search(soup.title.get_text()): raise Stop('access challenge')
+                  return soup,r.url
+              raise Stop('redirect limit')
+          def heading(soup):
+              h=[norm(x.get_text(' ',strip=True)) for x in soup.select('h1,h2,.chapter-title,.chapter_title')[:8]]
+              if soup.title: h.append(norm(soup.title.get_text(' ',strip=True)))
+              return h
+          def body(soup):
+              node=soup.select_one(selector)
+              if not node: raise ValueError('expected chapter container missing')
+              clone=BeautifulSoup(str(node),'html.parser')
+              for z in clone.select('script,style,iframe,ins,nav,header,footer,button,form,.ads,.ad,.advertisement,.pagination,.chapter-nav,h1,h2'):
+                  z.decompose()
+              visible=clone.get_text('\n',strip=True)
+              if access.search(visible): raise Stop('restricted content marker')
+              ps=[p.get_text('\n',strip=True) for p in clone.select('p')]
+              ptext='\n\n'.join(x for x in ps if x)
+              text=ptext if count(ptext)>=100 else visible
+              if count(text)<100: raise ValueError('short or empty body')
+              return text,{'han':count(text),'paragraphs':len(ps),'sha256':digest(text),'selector':selector}
+          def catalog_rows(soup,url):
+              node=soup.select_one('section.section.chapterlist') if source=='publisher' else soup
+              if not node: raise ValueError('publisher catalog not found')
+              for a in node.select('a[href]'):
+                  t=norm(a.get_text(' ',strip=True))
+                  u=urldefrag(urljoin(url,a['href']))[0]
+                  if not safe(u) or u==url: continue
+                  if source=='biquting':
+                      if not re.fullmatch(r'/read_19242689_\d+\.html',urlsplit(u).path): continue
+                      m=section.search(t)
+                  elif source=='canghaishuge':
+                      if not re.fullmatch(r'/shenmemonujuemingyaoshi/\d+\.html',urlsplit(u).path): continue
+                      m=chapter.search(t)
+                  else: m=chapter.search(t)
+                  if not m: continue
+                  n=int(m.group(1))
+                  flags=' '.join([t,str(a.get('class',[])),str(a.get('title','')),str(a.get('data-vip','')),str(a.get('data-is-vip',''))])
+                  yield {'number':n,'title':t,'url':u,'paid_marker':bool(paid.search(flags)),'explicit_vip':a.get('data-vip') in ['1','true','True'] or a.get('data-is-vip') in ['1','true','True']}
+          def next_urls(soup,url,seen):
+              urls=[]
+              for a in soup.select('a[href]'):
+                  t=norm(a.get_text(' ',strip=True))
+                  if not next_page.fullmatch(t): continue
+                  v=urldefrag(urljoin(url,a['href']))[0]
+                  if safe(v) and v not in seen: urls.append(v)
+              return list(dict.fromkeys(urls))
+          def collect_entry(row):
+              n=row['number'];u=row['url'];texts=[];pages=[];seen=set();expected=None
+              for i in range(1,21):
+                  if u in seen: raise ValueError('pagination loop')
+                  soup,actual=get(u)
+                  if actual in seen: raise ValueError('repeated page')
+                  seen.add(actual)
+                  heads=heading(soup)
+                  if source=='biquting':
+                      nums={int(m.group(1)) for h in heads for m in section.finditer(h)}
+                      if n not in nums: raise ValueError('section number not confirmed')
+                      m=re.search(r'\((\d+)\s*/\s*(\d+)\)',heads[-1])
+                      if not m: raise ValueError('page number not confirmed')
+                      if int(m.group(1))!=i: raise ValueError('page order mismatch')
+                      total=int(m.group(2))
+                      if expected is None: expected=total
+                      if expected!=total or not 1<=expected<=20: raise ValueError('page count mismatch')
+                  elif not any(int(m.group(1))==n for h in heads for m in chapter.finditer(h)):
+                      raise ValueError('chapter number not confirmed')
+                  txt,meta=body(soup)
+                  if any(meta['sha256']==p['sha256'] for p in pages): raise ValueError('duplicate page content')
+                  texts.append(txt);pages.append({'page':i,'url':actual,**meta})
+                  if expected==i: break
+                  nxt=next_urls(soup,actual,seen)
+                  if not nxt:
+                      if expected is not None and i!=expected: raise ValueError('missing continuation')
+                      break
+                  if len(nxt)!=1: raise ValueError('ambiguous continuation')
+                  u=nxt[0]
+              else: raise ValueError('pagination limit')
+              text='\n\n'.join(texts)
+              return text,pages
+          catalog=[];records=[];errors=[];skipped=[];seen_hash={};state='failed'
+          try:
+              soup,url=get(base)
+              rows=list(catalog_rows(soup,url))
+              # Explicitly linked catalog pagination, not guessed URLs.
+              if source=='canghaishuge':
+                  seen={url};cur=soup;cur_url=url
+                  for _ in range(30):
+                      links=[]
+                      for a in cur.select('a[href]'):
+                          t=norm(a.get_text(' ',strip=True))
+                          if not next_page.fullmatch(t): continue
+                          v=urldefrag(urljoin(cur_url,a['href']))[0]
+                          if safe(v) and v not in seen and urlsplit(v).path.startswith('/shenmemonujuemingyaoshi/') and not re.fullmatch(r'/shenmemonujuemingyaoshi/\d+\.html',urlsplit(v).path): links.append(v)
+                      links=list(dict.fromkeys(links))
+                      if len(links)!=1: break
+                      cur,cur_url=get(links[0]);seen.add(cur_url)
+                      rows.extend(catalog_rows(cur,cur_url))
+              by_url={}
+              for row in rows: by_url.setdefault(row['url'],row)
+              catalog=sorted(by_url.values(),key=lambda x:x['number'])
+              if not catalog: raise ValueError('no chapter links found')
+              (out/'catalog.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2),encoding='utf-8')
+              print('CATALOG',source,len(catalog),'max',max(r['number'] for r in catalog),flush=True)
+              todo=[]
+              for row in catalog:
+                  # Official free sample range already established; no paid chapters requested.
+                  if source=='publisher' and (row['number']>75 or row['paid_marker'] or row['explicit_vip']):
+                      skipped.append({**row,'reason':'outside confirmed free range or paid marker'});continue
+                  if row['paid_marker'] or row['explicit_vip']:
+                      skipped.append({**row,'reason':'paid marker'});continue
+                  todo.append(row)
+              for idx,row in enumerate(todo,1):
+                  n=row['number']
+                  try:
+                      if source=='publisher' and n==1:
+                          txt,meta=body(soup)
+                          pages=[{'page':1,'url':url,**meta}]
+                      else: txt,pages=collect_entry(row)
+                      h=digest(txt)
+                      filename=f'{idx:05d}-n{n:05d}.txt'
+                      (out/'entries'/filename).write_text(row['title']+'\n\n'+txt+'\n',encoding='utf-8')
+                      record={**row,'sequence':idx,'file':filename,'han':count(txt),'sha256_body':h,'pages':pages,'status':'collected_candidate','duplicate_of':seen_hash.get(h)}
+                      seen_hash.setdefault(h,filename)
+                      records.append(record)
+                      if len(records)%5==0 or len(records)==1: print('COLLECTED',source,len(records),'of',len(todo),'number',n,flush=True)
+                  except Stop as e:
+                      errors.append({'number':n,'url':row['url'],'error':str(e)})
+                      print('STOP',source,n,str(e),flush=True);break
+                  except Exception as e:
+                      errors.append({'number':n,'url':row['url'],'error':str(e)})
+                      if len(errors)<=10: print('ERROR',source,n,str(e),flush=True)
+                      if len(errors)>=5 and not records: break
+              state='candidate_collection_complete' if len(records)==len(todo) and not errors and records else 'partial_candidates' if records else 'failed'
+          except Exception as e:
+              errors.append({'error':str(e)})
+              print('STOP',source,str(e),flush=True)
+          finally:
+              if records:
+                  (out/'candidate-text.txt').write_text('\n\n'.join((out/'entries'/r['file']).read_text(encoding='utf-8').rstrip() for r in records)+'\n',encoding='utf-8')
+              summary={'source':source,'source_url':base,'state':state,'catalog_count':len(catalog),'collected_count':len(records),'total_han':sum(r['han'] for r in records),'duplicate_bodies':sum(bool(r['duplicate_of']) for r in records),'skipped_count':len(skipped),'errors':errors,'skipped':skipped,'entries':records,'quality_warning':'Source candidates only. No assertion of complete, authentic chapters. Do not merge without cross-source verification.'}
+              (out/'manifest.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+              print('SUMMARY',json.dumps({k:v for k,v in summary.items() if k not in {'entries','skipped','errors'}},ensure_ascii=False),flush=True)
+          if not records: raise SystemExit(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-${{ matrix.source }}-candidates
+          path: out/**
+          retention-days: 7
+          if-no-files-found: error
