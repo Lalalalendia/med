@@ -1,0 +1,122 @@
+name: Whisper transcription
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_url:
+        description: 'Public HTTPS URL of the audio or video (optional for repository input)'
+        required: false
+        type: string
+      model_size:
+        description: 'Multilingual Whisper model'
+        required: false
+        type: choice
+        default: medium
+        options:
+          - small
+          - medium
+          - large-v3
+  push:
+    branches:
+      - tools/whisper-transcription
+    paths:
+      - 'transcription/input/**'
+      - 'transcription/input-url.txt'
+
+permissions:
+  contents: read
+
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      SOURCE_URL: ${{ inputs.source_url }}
+      MODEL_SIZE: ${{ inputs.model_size || 'medium' }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Select source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p transcription-output
+          if [[ -z "$SOURCE_URL" && -f transcription/input-url.txt ]]; then
+            SOURCE_URL="$(head -n 1 transcription/input-url.txt | tr -d '\r')"
+          fi
+          if [[ -n "$SOURCE_URL" ]]; then
+            [[ "$SOURCE_URL" == https://* ]] || { echo 'HTTPS URL required'; exit 1; }
+            curl --fail --location --silent --show-error --retry 3 --proto '=https' --proto-redir '=https' --max-filesize 250000000 --output /tmp/whisper-input "$SOURCE_URL"
+            echo 'MEDIA_PATH=/tmp/whisper-input' >> "$GITHUB_ENV"
+          else
+            mapfile -d '' files < <(find transcription/input -maxdepth 1 -type f \( -iname '*.mp3' -o -iname '*.wav' -o -iname '*.m4a' -o -iname '*.ogg' -o -iname '*.mp4' -o -iname '*.webm' \) -print0 2>/dev/null || true)
+            [[ "${#files[@]}" == 1 ]] || { echo 'Provide exactly one media file or public HTTPS URL'; exit 1; }
+            echo "MEDIA_PATH=${files[0]}" >> "$GITHUB_ENV"
+          fi
+      - name: Install Whisper runtime
+        run: python -m pip install 'faster-whisper==1.2.1'
+      - name: Transcribe Russian speech with timestamps
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from faster_whisper import WhisperModel
+
+          output = Path("transcription-output")
+          model = WhisperModel(os.environ["MODEL_SIZE"], device="cpu", compute_type="int8", cpu_threads=min(8, os.cpu_count() or 2))
+          segments, info = model.transcribe(
+              os.environ["MEDIA_PATH"],
+              language="ru",
+              task="transcribe",
+              beam_size=5,
+              vad_filter=True,
+          )
+
+          def timestamp(seconds, sep=","):
+              ms = max(0, round(seconds * 1000))
+              h, ms = divmod(ms, 3600000)
+              m, ms = divmod(ms, 60000)
+              s, ms = divmod(ms, 1000)
+              return f"{h:02}:{m:02}:{s:02}{sep}{ms:03}"
+
+          count = 0
+          with (
+              (output / "transcript.txt").open("w", encoding="utf-8") as txt,
+              (output / "transcript.srt").open("w", encoding="utf-8") as srt,
+              (output / "segments.jsonl").open("w", encoding="utf-8") as data,
+          ):
+              for count, segment in enumerate(segments, start=1):
+                  start, end = segment.start, segment.end
+                  text = segment.text.strip()
+                  txt.write(f"[{timestamp(start, '.')}] {text}\n")
+                  srt.write(f"{count}\n{timestamp(start)} --> {timestamp(end)}\n{text}\n\n")
+                  data.write(json.dumps({"id": count, "start": start, "end": end, "text": text}, ensure_ascii=False) + "\n")
+                  txt.flush()
+                  srt.flush()
+                  data.flush()
+                  if count % 25 == 0:
+                      print(f"Processed through {timestamp(end, '.')}", flush=True)
+
+          (output / "metadata.json").write_text(json.dumps({
+              "model": os.environ["MODEL_SIZE"],
+              "language": info.language,
+              "duration_seconds": info.duration,
+              "segment_count": count,
+          }, ensure_ascii=False, indent=2), encoding="utf-8")
+          if not count:
+              raise RuntimeError("No speech segments were generated")
+          print(f"Transcribed {count} segments from {info.duration:.1f} seconds")
+          PY
+      - name: Upload transcription
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: whisper-transcript
+          path: transcription-output/
+          if-no-files-found: warn
+          retention-days: 7
