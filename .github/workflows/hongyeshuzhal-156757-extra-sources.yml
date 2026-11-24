@@ -1,0 +1,124 @@
+name: Hongyeshuzhal 156757 - three new public source samples
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-extra-sources.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Inspect public opening chapter containers
+        run: |
+          python - <<'PY'
+          import json,re,time,hashlib,unicodedata
+          from pathlib import Path
+          from urllib.parse import urljoin,urlsplit,urldefrag
+          import requests
+          from bs4 import BeautifulSoup
+          sources={
+            'publisher_xs8':'https://www.xs8.cn/bookquery/foiqpeamosqb',
+            'canghaishuge':'https://www.canghaishuge.com/shenmemonujuemingyaoshi/',
+            'biquting':'https://m.biquting.org/book_19242689.html',
+            'cbyim':'https://www.cbyim.com/93/93241/',
+          }
+          num=re.compile(r'第\s*(\d+)\s*章')
+          han=re.compile(r'[\u3400-\u9fff]')
+          locked=re.compile(r'订阅本章|购买本章|购买后阅读|付费阅读|本章为VIP|本章是VIP|登录后阅读|登陆后阅读|登录后查看|章节未解锁|请登录后阅读|請登入後閱讀|请购买后阅读|captcha|access denied|verify you are human|just a moment',re.I)
+          norm=lambda x:re.sub(r'\s+',' ',unicodedata.normalize('NFKC',x)).strip()
+          names=['莱昂','萊昂','福斯特','莉娅','莉婭','泰勒','哈梅尔','哈梅爾','摩伊莱','摩伊萊','异端审判官','異端審判官']
+          anchors=['福斯特小姐','莱昂站在旅店房间','梦月旅舍','金盏花酒馆','异端审判官','三十六泰勒','摩伊莱']
+          session=requests.Session()
+          session.headers.update({'User-Agent':'med-public-sample-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          out=Path('out');out.mkdir(exist_ok=True)
+          results={}
+          def fetch(url,host):
+              for _ in range(4):
+                  p=urlsplit(url)
+                  if p.scheme!='https' or not p.hostname or p.hostname.removeprefix('www.')!=host: raise RuntimeError('outside source')
+                  time.sleep(1.1)
+                  r=session.get(url,timeout=(8,15),allow_redirects=False)
+                  if r.is_redirect:
+                      url=urljoin(url,r.headers['Location']);continue
+                  if r.status_code!=200: raise RuntimeError('HTTP '+str(r.status_code))
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  if soup.title and locked.search(soup.title.get_text()): raise RuntimeError('access challenge')
+                  return soup,r.url,len(r.content)
+              raise RuntimeError('redirect limit')
+          def body_candidates(soup):
+              candidates=[]; seen=set()
+              for node in soup.select('article,main,section,div,td'):
+                  label=node.name+('#'+str(node.get('id')) if node.get('id') else '')+(''.join('.'+str(c) for c in node.get('class',[])[:3]))
+                  if not node.get('id') and not node.get('class') and node.name not in ('article','main','section'): continue
+                  clone=BeautifulSoup(str(node),'html.parser')
+                  for z in clone.select('script,style,iframe,ins,nav,header,footer,button,form,.ads,.ad,.advertisement,.pagination,.chapter-nav,h1,h2'):
+                      z.decompose()
+                  txt=norm(clone.get_text(' ',strip=True))
+                  h=len(han.findall(txt))
+                  if h<100 or h>20000: continue
+                  digest=hashlib.sha256(txt.encode()).hexdigest()
+                  if digest in seen: continue
+                  seen.add(digest)
+                  candidates.append({'container':label,'han':h,'anchor_hits':[a for a in anchors if a in txt],'first_third_name_hits':sum(txt[:len(txt)//3].count(n) for n in names),'last_third_name_hits':sum(txt[len(txt)*2//3:].count(n) for n in names),'sha256':digest,'paragraphs':len(node.find_all('p')),'access_marker':bool(locked.search(txt))})
+              candidates.sort(key=lambda x:(len(x['anchor_hits']),x['last_third_name_hits'],x['han']),reverse=True)
+              return candidates[:8]
+          def audit(soup,url,host):
+              title=norm(soup.title.get_text()) if soup.title else ''
+              headings=[norm(h.get_text(' ',strip=True)) for h in soup.select('h1,h2')[:6]]
+              pages=[]
+              for a in soup.select('a[href]'):
+                  t=norm(a.get_text(' ',strip=True))
+                  if re.fullmatch(r'(?:下一[页頁]|下[一]?頁|下页|下頁)[\s>»›]*',t):
+                      v=urldefrag(urljoin(url,a['href']))[0]
+                      if urlsplit(v).hostname and urlsplit(v).hostname.removeprefix('www.')==host and v!=url: pages.append(v)
+              page_text=norm(soup.get_text(' ',strip=True))
+              return {'url':url,'title':title,'headings':headings,'access_marker':bool(locked.search(page_text[:18000])),'visible_next_page_links':list(dict.fromkeys(pages)),'body_candidates':body_candidates(soup),'visible_anchor_hits':[a for a in anchors if a in page_text]}
+          for key,base in sources.items():
+              item={'source':base};results[key]=item
+              host=urlsplit(base).hostname.removeprefix('www.')
+              try:
+                  soup,url,size=fetch(base,host)
+                  row=audit(soup,url,host)
+                  if key.startswith('publisher_') and len(row['visible_anchor_hits'])>=2:
+                      item['sample']=row
+                  else:
+                      links=[]
+                      for a in soup.select('a[href]'):
+                          t=norm(a.get_text(' ',strip=True));m=num.search(t)
+                          v=urldefrag(urljoin(url,a['href']))[0]
+                          if m and int(m.group(1))==1 and ('讨债人' in t or '討債人' in t or '第1节' in t) and urlsplit(v).hostname and urlsplit(v).hostname.removeprefix('www.')==host and v!=url: links.append(v)
+                      if not links: raise RuntimeError('public chapter 1 link not found')
+                      ch,v,size=fetch(links[0],host)
+                      item['sample']=audit(ch,v,host)
+                      sample=item['sample']
+                      # Inspect at most three explicitly linked public continuation pages of chapter 1.
+                      seen={v}; cur=sample
+                      for _ in range(3):
+                          next_pages=[p for p in cur['visible_next_page_links'] if p not in seen]
+                          if cur['access_marker'] or len(next_pages)!=1: break
+                          s2,u2,sz=fetch(next_pages[0],host)
+                          nxt=audit(s2,u2,host)
+                          if nxt['access_marker'] or not any(num.search(h) and int(num.search(h).group(1))==1 for h in nxt['headings']+[nxt['title']]): break
+                          item.setdefault('continuations',[]).append(nxt)
+                          seen.add(u2);cur=nxt
+                  sample=item['sample']
+                  print('AUDIT',key,json.dumps({'title':sample['title'],'headings':sample['headings'],'visible_anchor_hits':sample['visible_anchor_hits'],'next_page_count':len(sample['visible_next_page_links']),'continuations':len(item.get('continuations',[])),'access_marker':sample['access_marker'],'best':sample['body_candidates'][:3]},ensure_ascii=False),flush=True)
+              except Exception as e:
+                  item['error']=str(e)
+                  print('STOP',key,str(e),flush=True)
+              (out/'body-audit.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-extra-sources
+          path: out/body-audit.json
+          if-no-files-found: warn
+          retention-days: 14
