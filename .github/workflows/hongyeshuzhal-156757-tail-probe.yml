@@ -1,0 +1,96 @@
+name: Hongyeshuzhal 156757 - unresolved tail metadata probe
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-tail-probe.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Inspect public catalog and unresolved section metadata
+        run: |
+          python - <<'PY'
+          import json,re,hashlib,time,unicodedata
+          from pathlib import Path
+          from urllib.parse import urlsplit,urljoin,urldefrag
+          import requests
+          from bs4 import BeautifulSoup
+          out=Path('out');out.mkdir()
+          s=requests.Session()
+          s.headers.update({'User-Agent':'med-public-catalog-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          denied=re.compile(r'captcha|access denied|verify you are human|just a moment|购买后阅读|付费阅读|登录后阅读|章节未解锁|本章为VIP|订阅本章',re.I)
+          chapter=re.compile(r'第\s*(\d+)\s*章')
+          heading=re.compile(r'^第\s*(\d+)\s*章\s*(.{1,100})$')
+          han=re.compile(r'[\u3400-\u9fff]')
+          norm=lambda x:re.sub(r'\s+',' ',unicodedata.normalize('NFKC',x)).strip()
+          def fetch(url,host):
+              for _ in range(4):
+                  p=urlsplit(url)
+                  if p.scheme!='https' or p.hostname!=host: raise ValueError('outside source')
+                  time.sleep(1.2)
+                  r=s.get(url,timeout=(8,20),allow_redirects=False)
+                  if r.is_redirect:
+                      url=urljoin(url,r.headers['Location']);continue
+                  if r.status_code!=200: raise ValueError('HTTP '+str(r.status_code))
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  if soup.title and denied.search(soup.title.get_text()): raise ValueError('access challenge')
+                  return soup,r.url
+              raise ValueError('redirect limit')
+          result={}
+          try:
+              base='https://m.biquting.org/read_19242689_18366356.html'
+              soup,url=fetch(base,'m.biquting.org')
+              title=norm(soup.title.get_text()) if soup.title else ''
+              node=soup.select_one('section.read-section.jsChapterWrapper')
+              text=node.get_text('\n',strip=True) if node else ''
+              if denied.search(text): raise ValueError('restricted content marker')
+              labels=[]
+              for p in node.select('p') if node else []:
+                  t=norm(p.get_text(' ',strip=True))
+                  m=heading.fullmatch(t)
+                  if m: labels.append({'chapter':int(m.group(1)),'title':t})
+              links=[]
+              for a in soup.select('a[href]'):
+                  t=norm(a.get_text(' ',strip=True))
+                  u=urldefrag(urljoin(url,a['href']))[0]
+                  if urlsplit(u).hostname=='m.biquting.org' and re.fullmatch(r'(?:下一[页頁章节節]|下[一]?頁|下页|下頁|下章)[\s>»›]*',t):
+                      links.append({'label':t,'url':u})
+              result['biquting_344']={'url':url,'page_title':title,'body_container_found':node is not None,'han':len(han.findall(text)),'sha256_body':hashlib.sha256(text.encode()).hexdigest(),'embedded_chapter_titles':labels,'public_navigation':links[:10]}
+              print('BIQUTING_344',json.dumps(result['biquting_344'],ensure_ascii=False),flush=True)
+          except Exception as e:
+              result['biquting_344']={'error':str(e)}
+              print('STOP biquting_344',str(e),flush=True)
+          try:
+              base='https://bqg139.com/youxi/8624'
+              soup,url=fetch(base,'bqg139.com')
+              title=norm(soup.title.get_text()) if soup.title else ''
+              if not re.search(r'(什么魔女|什麼魔女).*?(绝命药师|絕命藥師)',title): raise ValueError('book title not confirmed')
+              rows={}
+              for a in soup.select('a[href]'):
+                  t=norm(a.get_text(' ',strip=True));m=chapter.search(t)
+                  u=urldefrag(urljoin(url,a['href']))[0]
+                  if m and urlsplit(u).hostname=='bqg139.com' and u!=url:
+                      rows.setdefault(int(m.group(1)),{'title':t,'url':u})
+              ns=sorted(rows)
+              result['bqg139']={'url':url,'title':title,'catalog_count':len(ns),'maximum_number':max(ns,default=None),'tail_numbers':[n for n in ns if n>=726],'catalog':rows}
+              print('BQG139',json.dumps({k:v for k,v in result['bqg139'].items() if k!='catalog'},ensure_ascii=False),flush=True)
+          except Exception as e:
+              result['bqg139']={'error':str(e)}
+              print('STOP bqg139',str(e),flush=True)
+          (out/'tail-probe.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-tail-probe
+          path: out/tail-probe.json
+          retention-days: 14
+          if-no-files-found: error
