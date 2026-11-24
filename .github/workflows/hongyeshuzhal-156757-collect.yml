@@ -1,0 +1,222 @@
+name: Hongyeshuzhal 156757 - verified public original
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-collect.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Collect and verify public chapter text
+        run: |
+          python - <<'PY'
+          import hashlib, json, re, time, unicodedata
+          from pathlib import Path
+          from urllib.parse import urljoin, urlsplit, urldefrag
+          import requests
+          from bs4 import BeautifulSoup
+
+          base = 'https://hongyeshuzhal.com/shuzhai/156757/'
+          out = Path('out/hongyeshuzhal-156757')
+          out.mkdir(parents=True, exist_ok=True)
+          (out/'chapters').mkdir(exist_ok=True)
+          session = requests.Session()
+          session.headers.update({'User-Agent':'med-authorized-collection/1.0', 'Accept-Language':'zh-CN,zh;q=0.9'})
+          records, errors, catalog = [], [], []
+          cn = '零〇一二三四五六七八九十百千万兩两'
+          chapter_re = re.compile(r'第\s*([0-9'+cn+r']+)\s*[章回節节]')
+          han = re.compile(r'[\u3400-\u9fff]')
+          allowed_host = {'hongyeshuzhal.com','www.hongyeshuzhal.com'}
+          def norm(s):
+              return re.sub(r'\s+',' ',unicodedata.normalize('NFKC',s)).strip()
+          def ordinal(t):
+              m=chapter_re.search(norm(t))
+              if not m: return None
+              s=m.group(1)
+              if s.isdecimal(): return int(s)
+              d=dict(zip('零一二三四五六七八九',range(10)))
+              d.update({'〇':0,'兩':2,'两':2})
+              if all(c in d for c in s): return int(''.join(str(d[c]) for c in s))
+              total=section=num=0
+              for c in s:
+                  if c in d: num=d[c]
+                  elif c in '十百千':
+                      section+=(num or 1)*{'十':10,'百':100,'千':1000}[c];num=0
+                  elif c=='万':
+                      total+=(section+num)*10000;section=num=0
+                  else: return None
+              return total+section+num
+          def safe(u):
+              u=urldefrag(u)[0]
+              p=urlsplit(u)
+              return p.scheme=='https' and p.hostname in allowed_host
+          class AccessStop(Exception): pass
+          def get(u):
+              if not safe(u): raise AccessStop('outside authorized source: '+u)
+              time.sleep(1.0)
+              r=session.get(u,timeout=(12,30),allow_redirects=False)
+              for _ in range(4):
+                  if r.is_redirect:
+                      u=urljoin(u,r.headers['Location'])
+                      if not safe(u): raise AccessStop('redirect outside authorized source: '+u)
+                      time.sleep(1.0)
+                      r=session.get(u,timeout=(12,30),allow_redirects=False)
+                  else: break
+              if r.status_code in (401,403,429,451,503):
+                  raise AccessStop('HTTP '+str(r.status_code)+' at '+u)
+              r.raise_for_status()
+              if r.status_code!=200: raise RuntimeError('HTTP '+str(r.status_code))
+              soup=BeautifulSoup(r.content,'html.parser')
+              if soup.title and re.search(r'captcha|access denied|just a moment|verify you are human',soup.title.get_text(),re.I):
+                  raise AccessStop('access challenge at '+u)
+              return soup,r.url
+          def links(soup,url):
+              items=[]
+              for a in soup.select('a[href]'):
+                  t=norm(a.get_text(' ',strip=True))
+                  n=ordinal(t)
+                  v=urljoin(url,a['href'])
+                  if n is not None and safe(v) and v!=url and '/shuzhai/156757/' in urlsplit(v).path:
+                      items.append((n,t,urldefrag(v)[0]))
+              return items
+          def catalog_pages(soup,url):
+              for a in soup.select('a[href]'):
+                  t=norm(a.get_text(' ',strip=True))
+                  v=urljoin(url,a['href'])
+                  p=urlsplit(v)
+                  if not safe(v) or not p.path.startswith('/shuzhai/156757'): continue
+                  if ordinal(t) is not None: continue
+                  if re.fullmatch(r'下一[页頁]|下[一]?頁|下一页[>»›]*|[0-9]+|[>»›]+',t) and (p.query or re.search(r'(?:index|list|page)[_-]?\d',p.path,re.I)):
+                      yield urldefrag(v)[0]
+          def body(soup):
+              selectors=['#chaptercontent','#chapterContent','#chapter_content','#content','#txtcontent','#txtContent','#readcontent','#readContent','.chapter-content','.chapter_content','.read-content','.readcontent','.read-content-text','.txtcontent','.book-content','.content']
+              candidates=[]
+              for sel in selectors:
+                  for node in soup.select(sel):
+                      copy=BeautifulSoup(str(node),'html.parser')
+                      for z in copy.select('script,style,iframe,ins,nav,header,footer,button,form,.ads,.ad,.advertisement,.pagination,.page,.bottem,.bottom,.chapter-nav,h1,h2'):
+                          z.decompose()
+                      for z in copy.select('a'):
+                          if len(z.get_text(strip=True))<60: z.decompose()
+                      raw=copy.get_text('\n',strip=True)
+                      lines=[norm(x) for x in raw.splitlines()]
+                      lines=[x for x in lines if x and not re.fullmatch(r'(?:上一[章页頁]|下一[章页頁]|返回目[录錄]|加入書架|加入书架|目[录錄]|上一章下一章)[\s>»›<]*',x)]
+                      content='\n\n'.join(lines)
+                      count=len(han.findall(content))
+                      if count>=100 and count>=0.4*len(re.sub(r'\s','',content)):
+                          candidates.append((sel,content,count))
+              if not candidates: raise RuntimeError('no reliable body selector')
+              return candidates[0]
+          def chapter_page(n,title,u):
+              seen=set(); pieces=[]; pages=[]; selectors=[]
+              for _ in range(40):
+                  if u in seen: raise RuntimeError('pagination loop')
+                  seen.add(u)
+                  soup,actual=get(u)
+                  headings=[norm(z.get_text(' ',strip=True)) for z in soup.select('h1,h2,.chapter-title,.chapter_title,.title')]
+                  headings += [norm(soup.title.get_text(' ',strip=True))] if soup.title else []
+                  ords={ordinal(t) for t in headings if ordinal(t) is not None}
+                  if n not in ords: raise RuntimeError('chapter heading ordinal not verified: '+str(sorted(ords)))
+                  selector,content,count=body(soup)
+                  if content in pieces: raise RuntimeError('duplicate pagination body')
+                  pieces.append(content);pages.append(actual);selectors.append(selector)
+                  more=[]
+                  for a in soup.select('a[href]'):
+                      t=norm(a.get_text(' ',strip=True))
+                      if re.fullmatch(r'(?:下一[页頁]|下[一]?頁|下页|下頁)[\s>»›]*',t):
+                          v=urldefrag(urljoin(actual,a['href']))[0]
+                          if safe(v) and v not in seen and '/shuzhai/156757/' in urlsplit(v).path: more.append(v)
+                  more=list(dict.fromkeys(more))
+                  if len(more)>1: raise RuntimeError('ambiguous next page')
+                  if not more:
+                      if re.search(r'(?:本章未完|本章尚未完|请点击下一页|請點擊下一頁|未完待续|未完待續)',content[-180:]) and re.search(r'下一[页頁]',content[-180:]):
+                          raise RuntimeError('possible truncated chapter')
+                      break
+                  u=more[0]
+              else: raise RuntimeError('pagination limit')
+              text='\n\n'.join(pieces)
+              if len(han.findall(text))<250: raise RuntimeError('short chapter; manual review required')
+              return text,pages,selectors
+
+          status='failed'
+          title='unknown'
+          try:
+              soup,actual=get(base)
+              title=norm(soup.select_one('h1').get_text(' ',strip=True)) if soup.select_one('h1') else norm(soup.title.get_text(' ',strip=True)) if soup.title else 'unknown'
+              print('BOOK',title,'URL',actual)
+              queue=[(soup,actual)]; visited=set(); entries=[]
+              while queue:
+                  page,url=queue.pop(0)
+                  if url in visited: continue
+                  visited.add(url)
+                  if len(visited)>100: raise RuntimeError('catalog pagination limit')
+                  entries.extend(links(page,url))
+                  for v in catalog_pages(page,url):
+                      if v not in visited and not any(v==q[1] for q in queue):
+                          s,p=get(v);queue.append((s,p))
+              by_num={}
+              conflicts=[]
+              for n,t,u in entries:
+                  if n in by_num and by_num[n][1]!=u:
+                      conflicts.append({'ordinal':n,'urls':[by_num[n][1],u]})
+                  else: by_num[n]=(t,u)
+              catalog=[{'ordinal':n,'title':t,'url':u} for n,(t,u) in sorted(by_num.items())]
+              (out/'catalog.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2),encoding='utf-8')
+              print('CATALOG',len(catalog),'pages',len(visited),'first',catalog[0]['ordinal'] if catalog else None,'last',catalog[-1]['ordinal'] if catalog else None)
+              if not catalog: raise RuntimeError('no numbered catalog links; inspect source layout')
+              if conflicts: raise RuntimeError('conflicting ordinal URLs: '+json.dumps(conflicts[:10],ensure_ascii=False))
+              gaps=sorted(set(range(1,catalog[-1]['ordinal']+1))-set(by_num))
+              if gaps: errors.append({'catalog_gaps':gaps})
+              hashes=set()
+              for row in catalog:
+                  n,t,u=row['ordinal'],row['title'],row['url']
+                  try:
+                      content,pages,selectors=chapter_page(n,t,u)
+                      digest=hashlib.sha256(content.encode()).hexdigest()
+                      if digest in hashes: raise RuntimeError('duplicate chapter body')
+                      hashes.add(digest)
+                      filename=f'{n:05d}.txt'
+                      (out/'chapters'/filename).write_text(t+'\n\n'+content+'\n',encoding='utf-8')
+                      records.append({**row,'status':'verified','file':filename,'chars':len(content),'han':len(han.findall(content)),'sha256_body':digest,'pages':pages,'selectors':selectors})
+                      if len(records)%5==0: print('VERIFIED',len(records),'of',len(catalog),flush=True)
+                  except AccessStop as e:
+                      errors.append({'ordinal':n,'error':str(e)});break
+                  except Exception as e:
+                      errors.append({'ordinal':n,'error':str(e)})
+              status='verified_catalog' if len(records)==len(catalog) and not errors else 'partial' if records else 'failed'
+          except Exception as e:
+              errors.append({'error':str(e)})
+              print('STOP',type(e).__name__,str(e))
+          finally:
+              if records:
+                  name='original-verified.txt' if status=='verified_catalog' else 'original-partial.txt'
+                  (out/name).write_text('\n\n'.join((out/'chapters'/r['file']).read_text(encoding='utf-8').rstrip() for r in records)+'\n',encoding='utf-8')
+              manifest={'source':base,'title':title,'status':status,'catalog_count':len(catalog),'verified_count':len(records),'unverified_ordinals':sorted({r['ordinal'] for r in catalog}-{r['ordinal'] for r in records}),'chapters':records,'errors':errors,'note':'Verified against discovered public catalog only; no claim about unpublished or undiscovered chapters.'}
+              (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+              summary=f'# {title}\n\nStatus: {status}\n\nVerified: {len(records)}/{len(catalog)}\n\nErrors: {len(errors)}\n'
+              (out/'summary.md').write_text(summary,encoding='utf-8')
+              print(summary)
+          if status!='verified_catalog': raise SystemExit(1)
+          PY
+      - name: Publish summary
+        if: always()
+        run: |
+          if test -f out/hongyeshuzhal-156757/summary.md; then
+            cat out/hongyeshuzhal-156757/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload collection or failure receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-verified-original
+          path: out/hongyeshuzhal-156757/**
+          if-no-files-found: error
+          retention-days: 14
