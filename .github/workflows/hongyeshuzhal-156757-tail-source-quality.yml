@@ -1,0 +1,125 @@
+name: Hongyeshuzhal 156757 - tail source catalog and public sample verification
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-tail-source-quality.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Audit public catalog metadata and chapter one
+        run: |
+          python - <<'PY'
+          import re,json,time,hashlib,difflib,unicodedata
+          from pathlib import Path
+          from urllib.parse import urljoin,urlsplit,urldefrag
+          import requests
+          from bs4 import BeautifulSoup
+          out=Path('out');out.mkdir()
+          s=requests.Session()
+          s.headers.update({'User-Agent':'med-public-catalog-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          norm=lambda x:re.sub(r'\s+',' ',unicodedata.normalize('NFKC',x)).strip()
+          han=lambda x:''.join(re.findall(r'[\u3400-\u9fff]',x))
+          marker=re.compile(r'购买后阅读|付费阅读|登录后阅读|章节未解锁|订阅本章|captcha|access denied|verify you are human|just a moment',re.I)
+          number=re.compile(r'^第\s*(\d+)\s*章')
+          def get(url,host):
+              for _ in range(4):
+                  p=urlsplit(url)
+                  if p.scheme!='https' or p.hostname!=host: raise ValueError('outside source')
+                  time.sleep(1.2)
+                  r=s.get(url,timeout=(8,18),allow_redirects=False)
+                  if r.is_redirect: url=urljoin(url,r.headers['Location']);continue
+                  if r.status_code!=200: raise ValueError('HTTP '+str(r.status_code))
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  if soup.title and marker.search(soup.title.get_text()): raise ValueError('access challenge')
+                  return soup,r.url
+              raise ValueError('redirect limit')
+          def digest(t): return hashlib.sha256(t.encode()).hexdigest()
+          def local(url,host): return urlsplit(url).scheme=='https' and urlsplit(url).hostname==host
+          official,_=get('https://www.xs8.cn/bookquery/foiqpeamosqb','www.xs8.cn')
+          ref=han(''.join(p.get_text(' ',strip=True) for p in official.select('section.section.chapter p')))
+          if len(ref)!=3600: raise ValueError('official sample changed')
+          cat=official.select_one('section.section.chapterlist')
+          ref_titles={}
+          for a in cat.select('a[href]'):
+              t=norm(a.get_text(' ',strip=True));m=number.match(t)
+              if m: ref_titles[int(m.group(1))]=t
+          result={'reference_han':len(ref),'reference_numbered':len(ref_titles)}
+          for key,base in {
+              'bqg139':'https://bqg139.com/youxi/8624',
+              'jingdu':'https://www.jingduxianbing.com/107_107248/',
+              'jizai':'https://www.jzfyyang.com/117826/',
+          }.items():
+              host=urlsplit(base).hostname
+              rec={};result[key]=rec
+              try:
+                  queue=[base];seen=set();rows={}
+                  while queue and len(seen)<16:
+                      u=queue.pop(0)
+                      if u in seen: continue
+                      seen.add(u)
+                      soup,url=get(u,host)
+                      title=norm(soup.title.get_text()) if soup.title else ''
+                      if not re.search(r'(什么魔女|什麼魔女).*?(绝命药师|絕命藥師)',title): raise ValueError('book title not confirmed')
+                      for a in soup.select('a[href],option[value]'):
+                          t=norm(a.get_text(' ',strip=True))
+                          link=urldefrag(urljoin(url,a.get('href',a.get('value',''))))[0]
+                          if not local(link,host) or link==url: continue
+                          m=number.match(t)
+                          if m: rows.setdefault(int(m.group(1)),{'title':t,'url':link});continue
+                          if re.search(r'\d+\s*[-—~至]\s*\d+\s*章',t) or re.fullmatch(r'(?:下一页|下一頁|下一组|下一組)',t):
+                              if link not in seen and link not in queue: queue.append(link)
+                  rec.update({'catalog_count':len(rows),'max_number':max(rows,default=None),'catalog_pages':len(seen),'tail_count':len(set(rows)&set(range(726,929))),'missing_tail':sorted(set(range(726,929))-set(rows)),'title_mismatches':[n for n,row in rows.items() if n in ref_titles and norm(row['title'])!=norm(ref_titles[n])]})
+                  if 1 in rows:
+                      soup,url=get(rows[1]['url'],host)
+                      if marker.search(soup.get_text(' ',strip=True)[:12000]): raise ValueError('restricted content marker')
+                      samples=[]
+                      for node in soup.select('article,main,#content,#chaptercontent,#chapterContent,#txtcontent,#readcontent,.chapter-content,.read-content,.content,.txtcontent'):
+                          clone=BeautifulSoup(str(node),'html.parser')
+                          for x in clone.select('script,style,nav,footer,header,iframe,ins,form,button,h1,h2'): x.decompose()
+                          t=han(clone.get_text(' ',strip=True))
+                          if not 100<=len(t)<=12000: continue
+                          m=difflib.SequenceMatcher(None,ref,t,autojunk=False)
+                          matched=sum(b.size for b in m.get_matching_blocks())
+                          samples.append({'selector':node.name+'#'+str(node.get('id',''))+'.'+'.'.join(node.get('class',[])),'han':len(t),'reference_coverage':round(matched/len(ref),5),'sample_match_fraction':round(matched/len(t),5),'exact':t==ref})
+                      rec['chapter1_samples']=sorted(samples,key=lambda x:(x['reference_coverage'],x['sample_match_fraction']),reverse=True)[:4]
+                  print('SOURCE',key,json.dumps({k:v for k,v in rec.items() if k not in ('missing_tail','title_mismatches')},ensure_ascii=False),flush=True)
+              except Exception as e:
+                  rec['error']=str(e);print('STOP',key,str(e),flush=True)
+          try:
+              u='https://m.biquting.org/read_19242689_18366356.html'
+              soup,_=get(u,'m.biquting.org')
+              node=soup.select_one('section.read-section.jsChapterWrapper')
+              if not node: raise ValueError('container missing')
+              visible=node.get_text('\n',strip=True)
+              if marker.search(visible): raise ValueError('restricted content marker')
+              text=han(visible)
+              refs={
+                'biquting_726_partial':['52bd613085afc218','cb75d835514d3fae','23f98deab0a8d504','ed6bb4f3ff9b635b','6f0aa945f17c2c40','7251d8e455ddfe5b','b6fdcce1226eaaf3','c4307dab274ba7b2','4b6cf1bc39c9aacf','c7eb4a1dfbdb2d9e','9cc49e4fe6e6205e'],
+                'canghaishuge_726':['52bd613085afc218','0f63713aa045f308','6184e8bbf14f9139','e7e59fb1300064ad','f47351438699c35a','d7321f010444d1d8','164a1b5db2835783','7450b0a72921a184','65d458b16347f632','dd9251b876ac3fb3','ac0091af45f6855a','6222410b89cd7bbc','5e70271151312bf6','87828eb49163b20d','1c1d5b99328605ba','9fd6ce6f6b3a155c','7cbfc3892282a4ff'],
+                'hongyeshuzhal_726':['52bd613085afc218','88fbe57e1843ab7e','256eab9e88f0d69c','c6404dab650518f8','25a37d5b75e95c28','39b97d3512bd1381','1279d81907de768c','d7c1edca1251f90e','a72f37e209910874']
+              }
+              refs['hongyeshuzhal_726'][2]='1ef009a3adceea5c'
+              windows={digest(text[i:i+16])[:16] for i in range(max(0,len(text)-15))}
+              rec={'han':len(text),'paragraph_count':len(node.select('p')),'sampled_16_han_matches':{k:len(windows&set(v)) for k,v in refs.items()},'advertisement_markers':bool(re.search(r'关注公众号|加群|QQ群|下载APP|完整版|未完待续|请记住本站|最新章节',visible,re.I)),'story_name_hits':{n:text.count(n) for n in ['莱昂','芬里尔','魔女','黑山羊']},'sha256_han':digest(text),'conclusion':'Overlap metadata only; no proof of continuation or completeness.'}
+              result['biquting_344']=rec
+              print('SECTION344',json.dumps(rec,ensure_ascii=False),flush=True)
+          except Exception as e:
+              result['biquting_344']={'error':str(e)};print('STOP section344',str(e),flush=True)
+          (out/'quality.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-tail-source-quality
+          path: out/quality.json
+          retention-days: 14
+          if-no-files-found: error
