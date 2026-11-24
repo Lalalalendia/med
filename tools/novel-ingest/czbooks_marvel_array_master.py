@@ -35,7 +35,8 @@ def norm(text):
 def safe_url(url):
     u = urlsplit(url)
     return (u.scheme == "https" and u.netloc == "czbooks.net"
-            and not u.query and not u.fragment
+            and (not u.query or bool(re.fullmatch(r"chapterNumber=\d+", u.query)))
+            and not u.fragment
             and bool(re.fullmatch(r"/n/s6gd58j8/[A-Za-z0-9_-]+", u.path)))
 
 def robots(session):
@@ -85,6 +86,9 @@ def catalog(html):
             continue
         seen.add(url)
         number = int(m.group(1)) if m else None
+        query = urlsplit(url).query
+        if query and int(query.split("=", 1)[1]) != len(rows):
+            raise ValueError("Catalog chapterNumber disagrees with position")
         rows.append({"position": len(rows) + 1, "number": number, "title": title,
                      "url": url, "kind": "author_note" if number in (None, 115) else "chapter"})
     if [r["number"] for r in rows] != EXPECTED:
@@ -143,11 +147,18 @@ def selftest():
     parts = []
     for p, n in enumerate(EXPECTED, 1):
         t = NOTE if n is None else f"第{n}章 Test"
-        parts.append(f'<a href="/n/s6gd58j8/test{p}">{t}</a>')
+        parts.append(f'<a href="//czbooks.net/n/s6gd58j8/test{p}?chapterNumber={p - 1}">{t}</a>')
     html = f"<title>{TITLE}</title><p>{AUTHOR}</p>" + "".join(parts)
     rows = catalog(html)
     assert len(rows) == 304 and rows[213]["number"] is None
     assert rows[114]["kind"] == "author_note"
+    assert not safe_url(BOOK + "/test1?other=1")
+    try:
+        catalog(html.replace("chapterNumber=0\"", "chapterNumber=999\"", 1))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("incorrect chapterNumber accepted")
     try:
         catalog(html.replace(parts[9], ""))
     except ValueError:
