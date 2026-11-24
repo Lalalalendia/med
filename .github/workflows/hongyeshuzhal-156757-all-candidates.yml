@@ -1,0 +1,160 @@
+name: Hongyeshuzhal 156757 - all additional candidate checks
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-all-candidates.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Inspect public catalogs and sample chapter quality
+        run: |
+          python - <<'PY'
+          import json, re, time, hashlib, unicodedata
+          from pathlib import Path
+          from urllib.parse import urljoin,urlsplit,urldefrag
+          from collections import Counter
+          import requests
+          from bs4 import BeautifulSoup
+
+          sources={
+              'kuaisuge':'https://www.kuaisugg4.com/kuaishu/304/304991/',
+              'xiaoshuoshu':'https://www.xiaoshuoshu.com/117/117901/',
+              'hxwx':'https://www.hxwx.net/117/117901/',
+              '17kbook':'https://www.17kbook.com/book/117/117901/',
+              'txtwang':'https://www.txtwang.com/117/117925/',
+              'biquche':'https://www.biquche.com/lastupdate/',
+              'lylfsw':'https://www.lylfsw.com/',
+              'xhtcsh':'https://www.xhtcsh.com/',
+              'huahua332':'https://www.huahua332.net/',
+              'zftong88':'https://www.zftong88.com/',
+              'zaxmw':'https://www.zaxmw.com/',
+              'zjple':'https://www.zjple.com/',
+          }
+          index_sources={'biquche','lylfsw','xhtcsh','huahua332','zftong88','zaxmw','zjple'}
+          wanted={1,2,50,75}
+          num=re.compile(r'第\s*(\d+)\s*章')
+          han=re.compile(r'[\u3400-\u9fff]')
+          marker=re.compile(r'订阅本章|购买本章|购买后阅读|付费阅读|本章为VIP|本章是VIP|登录后阅读|登陆后阅读|登录后查看|章节未解锁|请登录后阅读|請登入後閱讀|请购买后阅读|captcha|access denied|verify you are human|just a moment',re.I)
+          chars=['莱昂','萊昂','阿黛尔','阿黛爾','朵露茜','艾莉丝','艾莉絲','艾莉西娅','艾莉西婭','芬里尔','芬里爾','拉米娅','拉米婭','魔女','教会','教會','芙蕾德','蕾娜','亚伦','亞倫','福斯特']
+          norm=lambda t:re.sub(r'\s+',' ',unicodedata.normalize('NFKC',t)).strip()
+          session=requests.Session()
+          session.headers.update({'User-Agent':'med-authorized-source-quality/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          out=Path('out');out.mkdir(exist_ok=True)
+          results={}
+          class Stop(Exception): pass
+          def fetch(u,host):
+              for _ in range(4):
+                  if urlsplit(u).scheme!='https' or urlsplit(u).hostname.removeprefix('www.')!=host: raise Stop('cross-host link')
+                  time.sleep(1.2)
+                  r=session.get(u,timeout=(8,15),allow_redirects=False)
+                  if r.is_redirect:
+                      u=urljoin(u,r.headers['Location'])
+                      continue
+                  if r.status_code in {401,403,429,451,503}: raise Stop('HTTP '+str(r.status_code))
+                  r.raise_for_status()
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  if soup.title and marker.search(soup.title.get_text()): raise Stop('access challenge')
+                  return soup,r.url
+              raise Stop('redirect limit')
+          def chapter_links(soup,u,host):
+              rows={}
+              for a in soup.select('a[href]'):
+                  t=norm(a.get_text(' ',strip=True));m=num.search(t)
+                  v=urldefrag(urljoin(u,a['href']))[0]
+                  if not m or urlsplit(v).hostname is None or urlsplit(v).hostname.removeprefix('www.')!=host: continue
+                  if v==u or v.startswith(u+'#') or urlsplit(v).scheme!='https': continue
+                  rows.setdefault(int(m.group(1)),(t,v))
+              return rows
+          def analyze(soup,n):
+              headings=[norm(h.get_text(' ',strip=True)) for h in soup.select('h1,h2,.chapter-title,.chapter_title')]
+              if soup.title: headings.append(norm(soup.title.get_text(' ',strip=True)))
+              locked=bool(marker.search(soup.get_text(' ',strip=True)[:18000]))
+              candidates=[]
+              for sel in ['#chaptercontent','#chapterContent','#chapter_content','#content','#txtcontent','#txtContent','#readcontent','#readContent','#nr1','#chapter_body','#articlecontent','.article-content','.chapter-body','.chapter-content','.chapter_content','.read-content','.readcontent','.read-content-text','.txtcontent','.book-content','.content','.read-content','article']:
+                  for node in soup.select(sel):
+                      clone=BeautifulSoup(str(node),'html.parser')
+                      for z in clone.select('script,style,iframe,ins,nav,header,footer,button,form,.ads,.ad,.advertisement,.pagination,.chapter-nav,h1,h2'):
+                          z.decompose()
+                      text=clone.get_text('\n',strip=True)
+                      pars=[norm(p) for p in text.splitlines() if norm(p)]
+                      h=len(han.findall(text))
+                      if h<100: continue
+                      candidates.append({'selector':sel,'han':h,'paragraphs':len(pars),'character_hits':sum(text.count(c) for c in chars),'first_paragraph_character_hits':sum(pars[0].count(c) for c in chars) if pars else 0,'last_third_character_hits':sum(text[len(text)*2//3:].count(c) for c in chars),'matches_official_ch1_start':n==1 and '福斯特小姐' in text[:300] and '莱昂' in text[:500],'ends_in_sentence_punctuation':text[-1:] in '。！？!?……”」』','sha256':hashlib.sha256(text.encode()).hexdigest()})
+              return {'heading_ok':any(num.search(t) and int(num.search(t).group(1))==n for t in headings),'access_marker':locked,'candidates':candidates[:12],'headings':headings[:3],'pagination_links':sum(1 for a in soup.select('a[href]') if norm(a.get_text(' ',strip=True)) in {'下一页','下一頁'})}
+          for key,base in sources.items():
+              result={'source':base,'samples':{}}
+              results[key]=result
+              host=urlsplit(base).hostname.removeprefix('www.')
+              try:
+                  soup,url=fetch(base,host)
+                  if key in index_sources:
+                      matches=[]
+                      for a in soup.select('a[href]'):
+                          t=norm(a.get_text(' ',strip=True))
+                          if re.search(r'(?:什么魔女|什麼魔女).*?(?:绝命药师|絕命藥師)',t) and not num.search(t):
+                              v=urldefrag(urljoin(url,a['href']))[0]
+                              if urlsplit(v).hostname and urlsplit(v).hostname.removeprefix('www.')==host and v!=url:
+                                  matches.append(v)
+                      matches=list(dict.fromkeys(matches))
+                      if not matches: raise RuntimeError('book link not found on public update index')
+                      soup,url=fetch(matches[0],host)
+                  result['book_url']=url
+                  book_title=' '.join(norm(h.get_text(' ',strip=True)) for h in soup.select('h1,h2')[:3])
+                  if soup.title: book_title+=' '+norm(soup.title.get_text(' ',strip=True))
+                  result['book_title']=book_title
+                  result['title_match']=bool(re.search(r'(?:什么魔女|什麼魔女).*?(?:绝命药师|絕命藥師)',book_title))
+                  if not result['title_match']: raise RuntimeError('book title not verified')
+                  rows=chapter_links(soup,url,host)
+                  # Follow only an explicitly linked public table of contents.
+                  if len(rows)<100:
+                      links=[]
+                      for a in soup.select('a[href]'):
+                          t=norm(a.get_text(' ',strip=True))
+                          if re.search(r'完整目录|完整目錄|全部章节|全部章節|章节目录|章節目錄|查看目录|查看目錄|目录列表|目錄列表',t):
+                              v=urldefrag(urljoin(url,a['href']))[0]
+                              if urlsplit(v).hostname and urlsplit(v).hostname.removeprefix('www.')==host and v!=url: links.append(v)
+                      if links:
+                          ss,v=fetch(links[0],host)
+                          rr=chapter_links(ss,v,host)
+                          if len(rr)>len(rows): rows=rr
+                  result.update({'catalog_numbered_count':len(rows),'last_number':max(rows,default=0),'missing_requested_numbers':sorted(wanted-set(rows)),'missing_numbered_ordinals_in_discovered_range':sorted(set(range(1,max(rows,default=0)+1))-set(rows)),'catalog_access_marker':bool(marker.search(soup.get_text(' ',strip=True)[:5000]))})
+                  print('SOURCE',key,'BOOK_URL',url,'CATALOG',len(rows),'LAST',max(rows,default=0),flush=True)
+                  # Publisher listings may contain paid links. Never request paid or locked chapters there.
+                  sample_numbers=sorted(wanted & set(rows) & ({1,75} if key=='publisher' else wanted))
+                  for n in sample_numbers:
+                      title,u=rows[n]
+                      if key=='publisher' and n>75: continue
+                      try:
+                          ss,v=fetch(u,host)
+                          sample=analyze(ss,n)
+                          result['samples'][str(n)]={'url':v,**sample}
+                          best=sample['candidates'][0] if sample['candidates'] else {}
+                          print('SAMPLE',key,n,'heading',sample['heading_ok'],'access_marker',sample['access_marker'],'body',best.get('han',0),'ch1_match',best.get('matches_official_ch1_start',False),'hits',best.get('character_hits',0),'end_hits',best.get('last_third_character_hits',0),'selector',best.get('selector'),flush=True)
+                          if sample['access_marker']:
+                              result['stopped']='access marker';break
+                      except Stop as e:
+                          result['samples'][str(n)]={'error':str(e)}
+                          result['stopped']=str(e);break
+                      except Exception as e:
+                          result['samples'][str(n)]={'error':str(e)}
+              except Exception as e:
+                  result['error']=str(e)
+                  print('STOP',key,type(e).__name__,str(e),flush=True)
+              (out/'source-quality.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-all-candidates
+          path: out/source-quality.json
+          if-no-files-found: warn
+          retention-days: 14
