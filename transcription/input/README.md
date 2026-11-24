@@ -1,0 +1,1 @@
+Upload exactly one media file (MP3, WAV, M4A, OGG, MP4 or WebM) into this directory to start the Whisper transcription workflow. This repository is public. Do not upload confidential material. The resulting transcript will be available as a GitHub Actions artifact.
