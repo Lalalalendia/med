@@ -1,0 +1,145 @@
+name: Hongyeshuzhal 156757 - exact public opening chapter comparison
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-exact-sample.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Compare publicly accessible chapter 1 and inspect catalog metadata
+        run: |
+          python - <<'PY'
+          import difflib, hashlib, json, re, time, unicodedata
+          from pathlib import Path
+          from urllib.parse import urljoin, urlsplit, urldefrag
+          import requests
+          from bs4 import BeautifulSoup
+          out=Path('out');out.mkdir(exist_ok=True)
+          session=requests.Session()
+          session.headers.update({'User-Agent':'med-public-sample-comparison/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          access=re.compile(r'订阅本章|购买本章|购买后阅读|付费阅读|本章为VIP|本章是VIP|登录后阅读|登陆后阅读|登录后查看|章节未解锁|请登录后阅读|請登入後閱讀|请购买后阅读|captcha|access denied|verify you are human|just a moment',re.I)
+          han=re.compile(r'[\u3400-\u9fff]')
+          def get(url,host):
+              for _ in range(4):
+                  p=urlsplit(url)
+                  if p.scheme!='https' or p.hostname!=host: raise ValueError('outside public source')
+                  time.sleep(1.2)
+                  r=session.get(url,timeout=(8,18),allow_redirects=False)
+                  if r.is_redirect:
+                      url=urljoin(url,r.headers['Location']);continue
+                  if r.status_code!=200: raise ValueError('HTTP '+str(r.status_code))
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  if soup.title and access.search(soup.title.get_text()): raise ValueError('access challenge')
+                  return soup,r.url
+              raise ValueError('redirect limit')
+          def clean(text):
+              return ''.join(han.findall(unicodedata.normalize('NFKC',text)))
+          def digest(text): return hashlib.sha256(text.encode()).hexdigest()
+          def candidates(node):
+              clone=BeautifulSoup(str(node),'html.parser')
+              for z in clone.select('script,style,iframe,ins,nav,header,footer,button,form,.ads,.ad,.advertisement,.pagination,.chapter-nav,h1,h2'):
+                  z.decompose()
+              text=clone.get_text(' ',strip=True)
+              ps=[p.get_text(' ',strip=True) for p in clone.select('p')]
+              if access.search(text): raise ValueError('restricted content marker')
+              return {'container':clean(text),'paragraphs':clean(''.join(ps)),'paragraph_list':[clean(p) for p in ps if clean(p)]}
+          def stats(ref, sample):
+              m=difflib.SequenceMatcher(None,ref,sample,autojunk=False)
+              blocks=[(b.a,b.b,b.size) for b in m.get_matching_blocks() if b.size]
+              matched=sum(b[2] for b in blocks)
+              # Report metadata only, never chapter text.
+              return {'han':len(sample),'sha256':digest(sample),'exact':ref==sample,'matching_han':matched,'reference_coverage':round(matched/max(1,len(ref)),5),'sample_match_fraction':round(matched/max(1,len(sample)),5),'first_reference_position':blocks[0][0] if blocks else None,'last_reference_position':blocks[-1][0]+blocks[-1][2] if blocks else None,'longest_match':max((b[2] for b in blocks),default=0),'matching_blocks_ge_20':[list(b) for b in blocks if b[2]>=20]}
+          result={}
+          try:
+              official='https://www.xs8.cn/bookquery/foiqpeamosqb'
+              soup,_=get(official,'www.xs8.cn')
+              node=soup.select_one('section.section.chapter')
+              if not node: raise ValueError('official chapter container absent')
+              ref_candidates=candidates(node)
+              ref=ref_candidates['container']
+              ref_p=ref_candidates['paragraphs']
+              if len(ref)!=3604: raise ValueError('reference changed; inspect reference')
+              result['reference']={'url':official,'container_han':len(ref),'paragraph_han':len(ref_p),'paragraph_count':len(ref_candidates['paragraph_list']),'sha256':digest(ref)}
+              print('REFERENCE',json.dumps(result['reference']),flush=True)
+              # Official catalog labels and links only; no restricted chapter retrieval.
+              catalog=soup.select_one('section.section.chapterlist')
+              if catalog:
+                  items=[a.get_text(' ',strip=True) for a in catalog.select('a[href]')]
+                  ns=[int(m.group(1)) for t in items for m in [re.search(r'第\s*(\d+)\s*章',t)] if m]
+                  result['publisher_catalog']={'links':len(items),'numbered_labels':len(ns),'unique_numbered_labels':len(set(ns)),'max_number':max(ns,default=None)}
+                  print('PUBLISHER_CATALOG',json.dumps(result['publisher_catalog']),flush=True)
+              for key,start,host,selector in [
+                  ('biquting','https://m.biquting.org/read_19242689_18365732.html','m.biquting.org','section.read-section.jsChapterWrapper'),
+                  ('canghaishuge','https://www.canghaishuge.com/shenmemonujuemingyaoshi/1.html','www.canghaishuge.com','div.shiguang-reader-content')
+              ]:
+                  try:
+                      rec={'pages':[]}
+                      texts={'container':[],'paragraphs':[]}
+                      current=start;seen=set();expected=4 if key=='biquting' else 1
+                      for i in range(expected):
+                          page,url=get(current,host)
+                          if url in seen: raise ValueError('repeated page')
+                          seen.add(url)
+                          title=page.title.get_text(' ',strip=True) if page.title else ''
+                          if key=='biquting' and not re.search(r'第1章\s*\(\s*'+str(i+1)+r'\s*/\s*4\s*\)',title): raise ValueError('wrong chapter/page title: '+title[:120])
+                          node=page.select_one(selector)
+                          if not node: raise ValueError('chapter container absent')
+                          x=candidates(node)
+                          for mode in texts: texts[mode].append(x[mode])
+                          detail={'url':url,'page':i+1,'paragraphs':len(x['paragraph_list']),'container_han':len(x['container']),'paragraph_han':len(x['paragraphs'])}
+                          for mode,txt in [('container',x['container']),('paragraphs',x['paragraphs'])]:
+                              detail[mode+'_match']=stats(ref,txt)
+                          rec['pages'].append(detail)
+                          if i+1<expected:
+                              links=[]
+                              for a in page.select('a[href]'):
+                                  t=a.get_text(' ',strip=True)
+                                  if re.fullmatch(r'(?:下一[页頁]|下[一]?頁|下页|下頁)[\s>»›]*',t):
+                                      v=urldefrag(urljoin(url,a['href']))[0]
+                                      if urlsplit(v).hostname==host and v not in seen: links.append(v)
+                              links=list(dict.fromkeys(links))
+                              if len(links)!=1: raise ValueError('missing or ambiguous explicit continuation link')
+                              current=links[0]
+                      rec['assembled']={}
+                      for mode,parts in texts.items():
+                          joined=''.join(parts)
+                          rec['assembled'][mode]={'vs_reference':stats(ref,joined),'vs_reference_paragraphs':stats(ref_p,joined)}
+                      result[key]=rec
+                      print('COMPARE',key,json.dumps({'pages':[{k:v for k,v in p.items() if not k.endswith('_match')} for p in rec['pages']],'assembled':{m:{r:{k:v for k,v in st.items() if k!='matching_blocks_ge_20'} for r,st in rs.items()} for m,rs in rec['assembled'].items()}},ensure_ascii=False),flush=True)
+                  except Exception as e:
+                      result[key]={'error':str(e)}
+                      print('STOP',key,str(e),flush=True)
+              # Separate catalog inspection; no links to other chapter bodies are fetched.
+              try:
+                  cat,_=get('https://m.biquting.org/book_19242689.html','m.biquting.org')
+                  links={}
+                  for a in cat.select('a[href]'):
+                      u=urljoin('https://m.biquting.org/book_19242689.html',a['href'])
+                      t=a.get_text(' ',strip=True)
+                      if urlsplit(u).hostname=='m.biquting.org' and re.fullmatch(r'/read_19242689_\d+\.html',urlsplit(u).path):
+                          links[u]=t
+                  ords=[int(m.group(1)) for t in links.values() for m in [re.search(r'第\s*(\d+)\s*节',t)] if m]
+                  result['biquting_catalog']={'chapter_link_count':len(links),'section_number_count':len(ords),'max_section_number':max(ords,default=None),'first_labels':list(links.values())[:5],'last_labels':list(links.values())[-5:]}
+                  print('BIQUTING_CATALOG',json.dumps(result['biquting_catalog'],ensure_ascii=False),flush=True)
+              except Exception as e:
+                  result['biquting_catalog']={'error':str(e)}
+                  print('STOP biquting_catalog',str(e),flush=True)
+          finally:
+              (out/'comparison.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-exact-public-sample
+          path: out/comparison.json
+          if-no-files-found: warn
+          retention-days: 14
