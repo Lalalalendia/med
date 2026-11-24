@@ -88,6 +88,18 @@ def catalog(html):
         rows.append({"position": len(rows) + 1, "number": number, "title": title,
                      "url": url, "kind": "author_note" if number in (None, 115) else "chapter"})
     if [r["number"] for r in rows] != EXPECTED:
+        candidates = []
+        for a in soup.select("a[href]"):
+            url = urljoin(BOOK + "/", a["href"])
+            u = urlsplit(url)
+            if u.netloc == "czbooks.net" and re.fullmatch(r"/n/s6gd58j8/[A-Za-z0-9_-]+", u.path):
+                candidates.append({"text": a.get_text(" ", strip=True)[:100],
+                                   "title": str(a.get("title", ""))[:100],
+                                   "href": a["href"][:160]})
+        print("CATALOG_DIAGNOSTICS", json.dumps({"total": len(candidates),
+              "first": candidates[:5], "middle": candidates[110:118],
+              "around_213": candidates[210:220], "last": candidates[-5:]},
+              ensure_ascii=False), flush=True)
         actual = [r["number"] for r in rows]
         missing = sorted(set(range(1, 304)) - {n for n in actual if n is not None})
         raise ValueError(f"Catalog mismatch: {len(rows)} entries, missing={missing}, order/duplicates checked")
