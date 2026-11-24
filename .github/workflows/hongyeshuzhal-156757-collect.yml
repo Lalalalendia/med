@@ -79,14 +79,32 @@ jobs:
                   raise AccessStop('access challenge at '+u)
               return soup,r.url
           def links(soup,url):
-              items=[]
-              for a in soup.select('a[href]'):
-                  t=norm(a.get_text(' ',strip=True))
-                  n=ordinal(t)
-                  v=urljoin(url,a['href'])
-                  if n is not None and safe(v) and v!=url and '/shuzhai/156757/' in urlsplit(v).path:
-                      items.append((n,t,urldefrag(v)[0]))
-              return items
+              def extract(node):
+                  items=[]
+                  for a in node.select('a[href]'):
+                      t=norm(a.get_text(' ',strip=True))
+                      v=urldefrag(urljoin(url,a['href']))[0]
+                      if not t or not safe(v) or v==url or not re.fullmatch(r'/shuzhai/156757/[0-9]+\.html',urlsplit(v).path):
+                          continue
+                      if re.fullmatch(r'(?:开始阅读|開始閱讀|立即阅读|立即閱讀|最新章节|最新章節|加入书架|加入書架|点击阅读|點擊閱讀|继续阅读|繼續閱讀|阅读|閱讀|[0-9]+)',t):
+                          continue
+                      items.append((ordinal(t),t,v))
+                  return items
+              all_items=extract(soup)
+              candidates=[]
+              for node in soup.select('dl,ul,ol,div,section,article,main'):
+                  if len(node.find_all('a',href=True,limit=10))<10: continue
+                  rows=extract(node)
+                  if rows:
+                      candidates.append((len({r[2] for r in rows}),-len(rows),-len(node.find_all('a',href=True)),rows))
+              if candidates:
+                  best=max(candidates,key=lambda x:x[:3])
+                  if best[0]==len({r[2] for r in all_items}):
+                      all_items=best[3]
+              dedup={}
+              for row in all_items:
+                  dedup.setdefault(row[2],row)
+              return list(dedup.values())
           def catalog_pages(soup,url):
               for a in soup.select('a[href]'):
                   t=norm(a.get_text(' ',strip=True))
@@ -97,7 +115,7 @@ jobs:
                   if re.fullmatch(r'下一[页頁]|下[一]?頁|下一页[>»›]*|[0-9]+|[>»›]+',t) and (p.query or re.search(r'(?:index|list|page)[_-]?\d',p.path,re.I)):
                       yield urldefrag(v)[0]
           def body(soup):
-              selectors=['#chaptercontent','#chapterContent','#chapter_content','#content','#txtcontent','#txtContent','#readcontent','#readContent','.chapter-content','.chapter_content','.read-content','.readcontent','.read-content-text','.txtcontent','.book-content','.content']
+              selectors=['#chaptercontent','#nr1','#chapter_body','#articlecontent','.article-content','.chapter-body','#chapterContent','#chapter_content','#content','#txtcontent','#txtContent','#readcontent','#readContent','.chapter-content','.chapter_content','.read-content','.readcontent','.read-content-text','.txtcontent','.book-content','.content']
               candidates=[]
               for sel in selectors:
                   for node in soup.select(sel):
@@ -115,7 +133,7 @@ jobs:
                           candidates.append((sel,content,count))
               if not candidates: raise RuntimeError('no reliable body selector')
               return candidates[0]
-          def chapter_page(n,title,u):
+          def chapter_page(n,title,u,strict_title=False):
               seen=set(); pieces=[]; pages=[]; selectors=[]
               for _ in range(40):
                   if u in seen: raise RuntimeError('pagination loop')
@@ -124,7 +142,10 @@ jobs:
                   headings=[norm(z.get_text(' ',strip=True)) for z in soup.select('h1,h2,.chapter-title,.chapter_title,.title')]
                   headings += [norm(soup.title.get_text(' ',strip=True))] if soup.title else []
                   ords={ordinal(t) for t in headings if ordinal(t) is not None}
-                  if n not in ords: raise RuntimeError('chapter heading ordinal not verified: '+str(sorted(ords)))
+                  compact=lambda t: re.sub(r'[\W_]+','',norm(t))
+                  title_ok=any(compact(title) and compact(title) in compact(h) for h in headings)
+                  if n is not None and n not in ords and not title_ok: raise RuntimeError('chapter heading ordinal not verified: '+str(sorted(ords)))
+                  if (n is None or strict_title) and not title_ok: raise RuntimeError('chapter title not verified: '+str(headings[:3]))
                   selector,content,count=body(soup)
                   if content in pieces: raise RuntimeError('duplicate pagination body')
                   pieces.append(content);pages.append(actual);selectors.append(selector)
@@ -148,6 +169,8 @@ jobs:
 
           status='failed'
           title='unknown'
+          anomalies={}
+          deadline=time.monotonic()+45*60
           try:
               soup,actual=get(base)
               title=norm(soup.select_one('h1').get_text(' ',strip=True)) if soup.select_one('h1') else norm(soup.title.get_text(' ',strip=True)) if soup.title else 'unknown'
@@ -162,35 +185,56 @@ jobs:
                   for v in catalog_pages(page,url):
                       if v not in visited and not any(v==q[1] for q in queue):
                           s,p=get(v);queue.append((s,p))
-              by_num={}
-              conflicts=[]
+              by_url={}
               for n,t,u in entries:
-                  if n in by_num and by_num[n][1]!=u:
-                      conflicts.append({'ordinal':n,'urls':[by_num[n][1],u]})
-                  else: by_num[n]=(t,u)
-              catalog=[{'ordinal':n,'title':t,'url':u} for n,(t,u) in sorted(by_num.items())]
+                  if u not in by_url or (by_url[u][0] is None and n is not None):
+                      by_url[u]=(n,t)
+              catalog=[{'sequence':i,'ordinal':n,'title':t,'url':u} for i,(u,(n,t)) in enumerate(by_url.items(),1)]
+              if not catalog: raise RuntimeError('no chapter catalog links; inspect source layout')
+              by_num={}
+              for row in catalog:
+                  if row['ordinal'] is not None:
+                      by_num.setdefault(row['ordinal'],[]).append(row)
+              if not by_num: raise RuntimeError('no numbered chapters in discovered links')
+              ords=[r['ordinal'] for r in catalog if r['ordinal'] is not None]
+              rises=sum(a<b for a,b in zip(ords,ords[1:]))
+              falls=sum(a>b for a,b in zip(ords,ords[1:]))
+              if falls>10*max(rises,1):
+                  catalog.reverse()
+                  for i,row in enumerate(catalog,1): row['sequence']=i
+                  rises,falls=falls,rises
+              duplicates={n:[{'title':r['title'],'url':r['url']} for r in rows] for n,rows in by_num.items() if len(rows)>1}
+              gaps=sorted(set(range(1,max(by_num)+1))-set(by_num))
+              unnumbered=[{'sequence':r['sequence'],'title':r['title'],'url':r['url']} for r in catalog if r['ordinal'] is None]
+              anomalies={'missing_printed_ordinals':gaps,'repeated_printed_ordinals':duplicates,'unnumbered_entries':unnumbered,'order_rises':rises,'order_falls':falls}
               (out/'catalog.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2),encoding='utf-8')
-              print('CATALOG',len(catalog),'pages',len(visited),'first',catalog[0]['ordinal'] if catalog else None,'last',catalog[-1]['ordinal'] if catalog else None)
-              if not catalog: raise RuntimeError('no numbered catalog links; inspect source layout')
-              if conflicts: raise RuntimeError('conflicting ordinal URLs: '+json.dumps(conflicts[:10],ensure_ascii=False))
-              gaps=sorted(set(range(1,catalog[-1]['ordinal']+1))-set(by_num))
-              if gaps: errors.append({'catalog_gaps':gaps})
+              (out/'catalog-anomalies.json').write_text(json.dumps(anomalies,ensure_ascii=False,indent=2),encoding='utf-8')
+              print('CATALOG',len(catalog),'pages',len(visited),'unique numbered',len(by_num),'max',max(by_num),flush=True)
+              print('ANOMALIES',json.dumps(anomalies,ensure_ascii=False),flush=True)
+              print('CATALOG_FIRST',json.dumps(catalog[:5],ensure_ascii=False),flush=True)
+              print('CATALOG_LAST',json.dumps(catalog[-5:],ensure_ascii=False),flush=True)
+              if falls>max(10,rises*0.15): raise RuntimeError('catalog order inconsistent; manual review required')
               hashes=set()
               for row in catalog:
                   n,t,u=row['ordinal'],row['title'],row['url']
+                  seq=row['sequence']
+                  if time.monotonic()>deadline:
+                      errors.append({'sequence':seq,'error':'time budget reached'});break
                   try:
-                      content,pages,selectors=chapter_page(n,t,u)
+                      content,pages,selectors=chapter_page(n,t,u,strict_title=n in duplicates)
                       digest=hashlib.sha256(content.encode()).hexdigest()
                       if digest in hashes: raise RuntimeError('duplicate chapter body')
                       hashes.add(digest)
-                      filename=f'{n:05d}.txt'
+                      filename=f'{seq:05d}.txt'
                       (out/'chapters'/filename).write_text(t+'\n\n'+content+'\n',encoding='utf-8')
                       records.append({**row,'status':'verified','file':filename,'chars':len(content),'han':len(han.findall(content)),'sha256_body':digest,'pages':pages,'selectors':selectors})
                       if len(records)%5==0: print('VERIFIED',len(records),'of',len(catalog),flush=True)
                   except AccessStop as e:
-                      errors.append({'ordinal':n,'error':str(e)});break
+                      errors.append({'sequence':seq,'ordinal':n,'error':str(e)});break
                   except Exception as e:
-                      errors.append({'ordinal':n,'error':str(e)})
+                      errors.append({'sequence':seq,'ordinal':n,'error':str(e)})
+                      if len(errors)<=10: print('CHAPTER_ERROR',seq,n,str(e),flush=True)
+                      if seq>=5 and not records: break
               status='verified_catalog' if len(records)==len(catalog) and not errors else 'partial' if records else 'failed'
           except Exception as e:
               errors.append({'error':str(e)})
@@ -199,7 +243,7 @@ jobs:
               if records:
                   name='original-verified.txt' if status=='verified_catalog' else 'original-partial.txt'
                   (out/name).write_text('\n\n'.join((out/'chapters'/r['file']).read_text(encoding='utf-8').rstrip() for r in records)+'\n',encoding='utf-8')
-              manifest={'source':base,'title':title,'status':status,'catalog_count':len(catalog),'verified_count':len(records),'unverified_ordinals':sorted({r['ordinal'] for r in catalog}-{r['ordinal'] for r in records}),'chapters':records,'errors':errors,'note':'Verified against discovered public catalog only; no claim about unpublished or undiscovered chapters.'}
+              manifest={'source':base,'title':title,'status':status,'catalog_count':len(catalog),'verified_count':len(records),'unverified_sequences':sorted({r['sequence'] for r in catalog}-{r['sequence'] for r in records}),'catalog_anomalies':anomalies,'chapters':records,'errors':errors,'note':'Verified against discovered public catalog only; no claim about unpublished or undiscovered chapters.'}
               (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
               summary=f'# {title}\n\nStatus: {status}\n\nVerified: {len(records)}/{len(catalog)}\n\nErrors: {len(errors)}\n'
               (out/'summary.md').write_text(summary,encoding='utf-8')
