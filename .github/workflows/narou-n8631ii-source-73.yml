@@ -1,0 +1,111 @@
+name: Narou N8631II - verified Japanese original 73
+on:
+  push:
+    branches: [collect/narou-n8631ii-73-20261124]
+    paths:
+      - '.github/workflows/narou-n8631ii-source-73.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: narou-n8631ii-source-73
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Test existing parser and packager
+        run: |
+          python -m unittest discover -s tools/novel-ingest -p test_narou_ingest.py -v
+          python -m unittest discover -s tools/novel-ingest -p test_n6792em_package.py -v
+      - name: Check access and collect exactly 73 Japanese episodes
+        id: collect
+        continue-on-error: true
+        run: |
+          PYTHONPATH=tools/novel-ingest python - <<'PY'
+          import sys
+          from pathlib import Path
+          from urllib.robotparser import RobotFileParser
+          import requests
+          import narou_ingest as ingest
+
+          class StopOnBlock(requests.Session):
+              def __init__(self):
+                  super().__init__()
+                  self.blocked = None
+              def get(self, *args, **kwargs):
+                  if self.blocked is not None:
+                      raise ingest.FetchError("blocked", self.blocked)
+                  response = super().get(*args, **kwargs)
+                  if response.status_code in (301, 302, 303, 307, 308, 401, 402, 403, 429, 451):
+                      self.blocked = f"HTTP {response.status_code}; no further requests"
+                  return response
+
+          session = StopOnBlock()
+          session.headers.update({"User-Agent": ingest.USER_AGENT, "Accept-Language": "ja,en;q=0.5"})
+          base = "https://ncode.syosetu.com/n8631ii/"
+          robots = session.get("https://ncode.syosetu.com/robots.txt", timeout=30, allow_redirects=False)
+          if robots.status_code == 200:
+              rules = RobotFileParser()
+              rules.parse(robots.text.splitlines())
+              if not all(rules.can_fetch(ingest.USER_AGENT, url) for url in [base] + [f"{base}{i}/" for i in range(1, 74)]):
+                  sys.exit("robots.txt disallows requested paths; stopped")
+              delay = max(2.5, rules.crawl_delay(ingest.USER_AGENT) or 0, rules.crawl_delay("*") or 0)
+          elif robots.status_code in (404, 410):
+              delay = 2.5
+          else:
+              sys.exit(f"robots.txt unavailable: HTTP {robots.status_code}; stopped")
+          if delay > 8:
+              sys.exit("Crawl delay exceeds this job's safe duration; stopped")
+          result = ingest.collect(ncode="n8631ii", expected=73, out_dir=Path("out/narou-n8631ii"),
+                                  delay=delay, min_chars=120, session=session)
+          print(Path("out/narou-n8631ii/summary.md").read_text(encoding="utf-8"))
+          sys.exit(0 if result["status"] == "PASS" else 1)
+          PY
+      - name: Verify chapter identities, checksums, Japanese text and archive CRC
+        id: package
+        if: steps.collect.outcome == 'success'
+        run: |
+          PYTHONPATH=tools/novel-ingest python - <<'PY'
+          import json
+          from pathlib import Path
+          import n6792em_package as packager
+
+          # Reuse the existing verified archive implementation with this book's identity.
+          packager.NCODE = "n8631ii"
+          packager.EXPECTED = 73
+          report = packager.package(Path("out/narou-n8631ii"),
+                                    Path("out/narou-n8631ii-japanese-original-001-073.zip"))
+          print(json.dumps(report, ensure_ascii=False))
+          Path("out/package-receipt.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+          PY
+      - name: Upload verification receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-n8631ii-73-metadata
+          path: |
+            out/narou-n8631ii/manifest.json
+            out/narou-n8631ii/summary.md
+            out/package-receipt.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Upload complete verified original only
+        if: steps.collect.outcome == 'success' && steps.package.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: narou-n8631ii-japanese-original-001-073
+          path: out/narou-n8631ii-japanese-original-001-073.zip
+          if-no-files-found: error
+          retention-days: 7
+      - name: Reject partial success
+        if: steps.collect.outcome != 'success' || steps.package.outcome != 'success'
+        run: exit 1
