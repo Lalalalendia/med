@@ -20,7 +20,12 @@ on:
     branches:
       - tools/whisper-transcription
     paths:
-      - 'transcription/input/**'
+      - 'transcription/input/*.mp3'
+      - 'transcription/input/*.wav'
+      - 'transcription/input/*.m4a'
+      - 'transcription/input/*.ogg'
+      - 'transcription/input/*.mp4'
+      - 'transcription/input/*.webm'
       - 'transcription/input-url.txt'
 
 permissions:
