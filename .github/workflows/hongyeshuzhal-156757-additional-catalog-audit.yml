@@ -1,0 +1,108 @@
+name: Hongyeshuzhal 156757 - additional catalog and free sample audit
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-additional-catalog-audit.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Audit public catalog metadata and chapter one
+        run: |
+          python - <<'PY'
+          import re,json,time,hashlib,difflib,unicodedata
+          from pathlib import Path
+          from urllib.parse import urljoin,urlsplit,urldefrag
+          import requests
+          from bs4 import BeautifulSoup
+          out=Path('out');out.mkdir()
+          s=requests.Session()
+          s.headers.update({'User-Agent':'med-public-catalog-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          norm=lambda x:re.sub(r'\s+',' ',unicodedata.normalize('NFKC',x)).strip()
+          han=lambda x:''.join(re.findall(r'[\u3400-\u9fff]',x))
+          marker=re.compile(r'购买后阅读|付费阅读|登录后阅读|章节未解锁|订阅本章|captcha|access denied|verify you are human|just a moment',re.I)
+          number=re.compile(r'^\s*(?:\d+\s*)?第\s*(\d+)\s*章')
+          def get(url,host):
+              for _ in range(4):
+                  p=urlsplit(url)
+                  if p.scheme!='https' or p.hostname!=host: raise ValueError('outside source')
+                  time.sleep(1.2)
+                  r=s.get(url,timeout=(8,18),allow_redirects=False)
+                  if r.is_redirect: url=urljoin(url,r.headers['Location']);continue
+                  if r.status_code!=200: raise ValueError('HTTP '+str(r.status_code))
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  if soup.title and marker.search(soup.title.get_text()): raise ValueError('access challenge')
+                  return soup,r.url
+              raise ValueError('redirect limit')
+          def digest(t): return hashlib.sha256(t.encode()).hexdigest()
+          def local(url,host): return urlsplit(url).scheme=='https' and urlsplit(url).hostname==host
+          official,_=get('https://www.xs8.cn/bookquery/foiqpeamosqb','www.xs8.cn')
+          ref=han(''.join(p.get_text(' ',strip=True) for p in official.select('section.section.chapter p')))
+          if len(ref)!=3600: raise ValueError('official sample changed')
+          cat=official.select_one('section.section.chapterlist')
+          ref_titles={}
+          for a in cat.select('a[href]'):
+              t=norm(a.get_text(' ',strip=True));m=number.match(t)
+              if m: ref_titles[int(m.group(1))]=t
+          result={'reference_han':len(ref),'reference_numbered':len(ref_titles)}
+          for key,base in {
+              'zswx':'https://www.zswx.org/book/22044971101.html',
+              'dingdian666':'https://www.dingdian666.com/xiaoshuo/310926/',
+              'sigret':'https://www.sigret.com/book/107_107986.html',
+              'hjsm':'https://www.hjsm.org/117/117910/',
+              'biquji':'https://www.biquji.com/117/117925/',
+              'biqukong':'https://www.biqukong.com/117/117901/',
+          }.items():
+              host=urlsplit(base).hostname
+              rec={};result[key]=rec
+              try:
+                  queue=[base];seen=set();rows={}
+                  while queue and len(seen)<16:
+                      u=queue.pop(0)
+                      if u in seen: continue
+                      seen.add(u)
+                      soup,url=get(u,host)
+                      title=norm(soup.title.get_text()) if soup.title else ''
+                      if not re.search(r'(什么魔女|什麼魔女).*?(绝命药师|絕命藥師)',title): raise ValueError('book title not confirmed')
+                      for a in soup.select('a[href],option[value]'):
+                          t=norm(a.get_text(' ',strip=True))
+                          link=urldefrag(urljoin(url,a.get('href',a.get('value',''))))[0]
+                          if not local(link,host) or link==url: continue
+                          m=number.match(t)
+                          if m: rows.setdefault(int(m.group(1)),{'title':t,'url':link});continue
+                          if re.search(r'\d+\s*[-—~至]\s*\d+\s*章',t) or re.fullmatch(r'(?:下一页|下一頁|下一组|下一組)',t):
+                              if link not in seen and link not in queue: queue.append(link)
+                  rec.update({'catalog_count':len(rows),'max_number':max(rows,default=None),'catalog_pages':len(seen),'tail_count':len(set(rows)&set(range(726,929))),'missing_tail':sorted(set(range(726,929))-set(rows)),'title_mismatches':[n for n,row in rows.items() if n in ref_titles and norm(row['title'])!=norm(ref_titles[n])]})
+                  if 1 in rows:
+                      soup,url=get(rows[1]['url'],host)
+                      if marker.search(soup.get_text(' ',strip=True)[:12000]): raise ValueError('restricted content marker')
+                      samples=[]
+                      for node in soup.select('article,main,#content,#chaptercontent,#chapterContent,#txtcontent,#readcontent,.chapter-content,.read-content,.content,.txtcontent,.reader-content'):
+                          clone=BeautifulSoup(str(node),'html.parser')
+                          for x in clone.select('script,style,nav,footer,header,iframe,ins,form,button,h1,h2'): x.decompose()
+                          t=han(clone.get_text(' ',strip=True))
+                          if not 100<=len(t)<=12000: continue
+                          m=difflib.SequenceMatcher(None,ref,t,autojunk=False)
+                          matched=sum(b.size for b in m.get_matching_blocks())
+                          samples.append({'selector':node.name+'#'+str(node.get('id',''))+'.'+'.'.join(node.get('class',[])),'han':len(t),'reference_coverage':round(matched/len(ref),5),'sample_match_fraction':round(matched/len(t),5),'exact':t==ref})
+                      rec['chapter1_samples']=sorted(samples,key=lambda x:(x['reference_coverage'],x['sample_match_fraction']),reverse=True)[:4]
+                  print('SOURCE',key,json.dumps({k:v for k,v in rec.items() if k not in ('missing_tail','title_mismatches')},ensure_ascii=False),flush=True)
+              except Exception as e:
+                  rec['error']=str(e);print('STOP',key,str(e),flush=True)
+          (out/'quality.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-additional-catalog-audit
+          path: out/quality.json
+          retention-days: 14
+          if-no-files-found: error
