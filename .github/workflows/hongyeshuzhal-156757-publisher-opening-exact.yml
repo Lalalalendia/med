@@ -1,0 +1,95 @@
+name: Hongyeshuzhal 156757 - exact publisher opening verification
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-publisher-opening-exact.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Verify public publisher sample using contiguous historical hash
+        run: |
+          python - <<'PY'
+          import concurrent.futures, hashlib, json, re, unicodedata
+          from pathlib import Path
+          import requests
+          from bs4 import BeautifulSoup
+          expected='7ee4a7da24dc4bbaa03f4fe72cbdae71799d2607ec7e2e1acc76dcd0e66abb30'
+          windows='3daad08d177ebe14720a8606 eaa9a27337b7f40c628bde1f 070b8cde16486020da657cbf 2b5bb6787f896790321ff5c0 0ad13d21b66ce22dca5ed3e2 0718574c8863221ad6e739e1 3ddfac1ddb43b61a5fb35440 55a1eaa005da528a9a52e404 124ba8dea0b032c8f0aa7986 a07e7e0f2fda6db9a3710f50 3cc60d2076c0e9878c94af17 2ed905c2b2cab5e886199e42 59ab5ef04b2ddf35111414e5 0fc8299ccb3bdabe6eb68337 f4cbe9842718c10b4ee8e483 1d5a3cd204515de03e26d507 0c60c506011f7413816596af 5599a29aaacfcb9237cbbe5e 1fa567c3235dc72ba9f339a3 9fd3331207f97bc3fb9940ac 86a4839dfb97bdc4eb706c2a 068cafd789bff60f2e33d07d e8818e33fb16ca7645f80733 77fdd751ffb69120ef8b7418 093a033b02707ba2dacd14cf baa81153df527562d86eda9a 409f47c88bb949bc4594efe4 5fdc416e733a9d5b55ba2dc3'.split()
+          urls={
+            'hongxiu_new':'https://www.hongxiu.com/bookquery/qbxaiqwznjos',
+            'xxsy_new':'https://www.xxsy.net/bookquery/qbxaurqbenhv',
+            'xs8_old':'https://www.xs8.cn/bookquery/foiqpeamosqb',
+          }
+          book=re.compile(r'(什么魔女|什麼魔女).*?(绝命药师|絕命藥師)')
+          restriction=re.compile(r'captcha|access denied|verify you are human|just a moment|购买后阅读|購買後閱讀|付费阅读|付費閱讀|登录后阅读|登入後閱讀|章节未解锁|订阅本章|本章为VIP',re.I)
+          def han(t):return ''.join(re.findall(r'[\u3400-\u9fff]',unicodedata.normalize('NFKC',t)))
+          def sha(t):return hashlib.sha256(t.encode()).hexdigest()
+          def search(body,ref_hash,ws,n):
+              anchors=[i for i in range(max(0,len(body)-31)) if sha(body[i:i+32])[:24]==ws[0]]
+              hits=[]
+              for i in anchors:
+                  if i+n>len(body):continue
+                  piece=body[i:i+n]
+                  matches=sum(sha(piece[j*128:j*128+32])[:24]==h for j,h in enumerate(ws))
+                  hits.append({'offset':i,'ordered_window_matches':matches,'exact_contiguous_hash':sha(piece)==ref_hash})
+              return hits
+          fixture=''.join(chr(0x4e00+i) for i in range(3600))
+          fw=[sha(fixture[i:i+32])[:24] for i in range(0,len(fixture)-31,128)]
+          assert search('甲乙'+fixture+'丙',sha(fixture),fw,3600)==[{'offset':2,'ordered_window_matches':28,'exact_contiguous_hash':True}]
+          assert not search(fixture[:1800],sha(fixture),fw,3600)
+          assert len(windows)==28
+          print('SELF_TEST PASS',flush=True)
+          def inspect(key,url):
+              rec={'url':url}
+              try:
+                  r=requests.get(url,headers={'User-Agent':'med-public-publisher-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'},timeout=(8,20),allow_redirects=False)
+                  rec['http_status']=r.status_code
+                  if r.status_code!=200:raise ValueError('HTTP '+str(r.status_code))
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  title=soup.title.get_text(' ',strip=True) if soup.title else ''
+                  if not book.search(title) or restriction.search(title):
+                      raise ValueError('identity or access unavailable')
+                  rec['catalog_number_count']=len({int(m.group(1)) for a in soup.select('a[href]') if (m:=re.match(r'^第\s*(\d+)\s*章',a.get_text(' ',strip=True)))})
+                  nodes=soup.select('article,main,section,div')
+                  candidates=[]
+                  for n in nodes:
+                      # Never inspect hidden script payloads, restricted content or chapter links.
+                      clone=BeautifulSoup(str(n),'html.parser')
+                      for z in clone.select('script,style,iframe,nav,footer,header,form,button,ins,[hidden],[aria-hidden="true"],.ads,.pagination,.chapter-nav'):
+                          z.decompose()
+                      visible=clone.get_text(' ',strip=True)
+                      if restriction.search(visible):continue
+                      body=han(visible)
+                      if not 3600<=len(body)<=50000:continue
+                      hits=search(body,expected,windows,3600)
+                      if hits:
+                          candidates.append({'tag':n.name,'id':n.get('id'),'classes':n.get('class',[]),'han':len(body),'paragraphs':len(clone.select('p')),'hits':hits})
+                  candidates.sort(key=lambda r:(not any(h['exact_contiguous_hash'] for h in r['hits']),-max(h['ordered_window_matches'] for h in r['hits']),r['han']))
+                  rec['candidates']=candidates[:8]
+                  rec['exact_match']=any(h['exact_contiguous_hash'] for c in candidates for h in c['hits'])
+                  rec['max_ordered_matches']=max((h['ordered_window_matches'] for c in candidates for h in c['hits']),default=0)
+              except Exception as exc:
+                  rec['error']=str(exc)
+              return key,rec
+          with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+              results=dict(pool.map(lambda kv:inspect(*kv),urls.items()))
+          for k,v in results.items():print('PUBLISHER_EXACT',k,json.dumps(v,ensure_ascii=False),flush=True)
+          out=Path('out');out.mkdir(exist_ok=True)
+          (out/'publisher-opening-exact.json').write_text(json.dumps({'sources':results,'reference_han':3600,'reference_sha256':expected,'scope':'Public visible opening sample; metadata and hashes only. No conclusion about subsequent chapters.','new_accepted_tail_chapters':0},ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-publisher-opening-exact
+          path: out/publisher-opening-exact.json
+          retention-days: 14
+          if-no-files-found: error
