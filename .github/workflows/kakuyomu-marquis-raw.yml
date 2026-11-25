@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 'archive/kakuyomu-marquis-*'
     paths:
       - ".github/workflows/kakuyomu-marquis-raw.yml"
       - "tools/novel-ingest/kakuyomu_authorized_archive.py"
@@ -35,17 +36,16 @@ jobs:
 
       - name: Collect authorized Kakuyomu episode texts
         id: archive
-        continue-on-error: true
         run: |
           python tools/novel-ingest/kakuyomu_authorized_archive.py \
             --work-id 2912051607778505262 \
             --out-dir novels/kakuyomu/2912051607778505262/raw \
-            --min-episodes 70 \
+            --min-episodes 146 \
+            --resume \
             --min-chars 80 \
             --delay 0.7
 
       - name: Show archive receipt
-        if: always()
         run: |
           if [ -f novels/kakuyomu/2912051607778505262/raw/summary.md ]; then
             cat novels/kakuyomu/2912051607778505262/raw/summary.md >> "$GITHUB_STEP_SUMMARY"
@@ -54,7 +54,12 @@ jobs:
           from pathlib import Path
           base = Path("novels/kakuyomu/2912051607778505262/raw")
           data = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
-          assert data["index_count"] >= 70, data["index_count"]
+          assert data["index_count"] >= 146, data["index_count"]
+          assert data["status"] == "COMPLETE" and data["failed_count"] == 0
+          assert data["index_count"] == data["stored_count"]
+          assert [ch["ordinal"] for ch in data["chapters"]] == list(range(1, data["index_count"] + 1))
+          assert len({ch["episode_id"] for ch in data["chapters"]}) == data["index_count"]
+          assert len({ch["sha256_body"] for ch in data["chapters"]}) == data["index_count"]
           assert len(data["chapters"]) == data["stored_count"]
           for ch in data["chapters"]:
               body = (base / ch["file"]).read_text(encoding="utf-8").split("\n\n", 1)[1].rstrip("\n")
@@ -66,7 +71,6 @@ jobs:
           fi
 
       - name: Persist verified originals and manifest
-        if: always()
         run: |
           set -euo pipefail
           OUTPUT=novels/kakuyomu/2912051607778505262/raw
@@ -76,6 +80,25 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Never permit a previous chapter to be rewritten or deleted.
+          if git diff --name-only -- "$OUTPUT" | grep -E '/[0-9]{3}\.txt
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit"
+            exit 0
+          fi
+          git commit -m "Persist authorized Kakuyomu Marquis III original corpus"
+          git fetch origin "$GITHUB_REF_NAME"
+          git rebase "origin/$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+
+      - name: Fail if any episode was not acquired
+        if: steps.archive.outcome != 'success'
+        run: |
+          echo "Some chapters could not be verified or downloaded; see manifest.json"
+          exit 1
+ ; then
+            echo "Existing chapter unexpectedly changed"; exit 1
+          fi
           git add "$OUTPUT"
           if git diff --cached --quiet; then
             echo "Nothing new to commit"

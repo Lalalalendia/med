@@ -13,11 +13,14 @@ import re
 import sys
 import time
 from pathlib import Path
+from urllib.robotparser import RobotFileParser
 
 import requests
 from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+
+USER_AGENT = "med-Kakuyomu-source-archiver"
 
 DEFAULT_ID = "2912051607778505262"
 DEFAULT_DIR = f"novels/kakuyomu/{DEFAULT_ID}/raw"
@@ -26,13 +29,13 @@ DEFAULT_DIR = f"novels/kakuyomu/{DEFAULT_ID}/raw"
 def session():
     client = requests.Session()
     client.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; med-Kakuyomu-source-archiver/1.0)",
+        "User-Agent": USER_AGENT + "/1.1",
         "Accept-Language": "ja-JP,ja;q=0.9,en;q=0.5",
     })
     retry = Retry(
         total=3, connect=3, read=3, backoff_factor=1.5,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=["GET"], respect_retry_after_header=True,
+        status_forcelist=[500, 502, 503, 504],
+        allowed_methods=["GET"], respect_retry_after_header=False,
     )
     client.mount("https://", HTTPAdapter(max_retries=retry))
     return client
@@ -107,17 +110,64 @@ def parse_body(html):
     return title, "\n".join(paras).strip()
 
 
-def archive(work_id, out_dir, delay, min_chars, min_episodes):
+def checked_robots(client):
+    """Fail closed for unavailable robots policy, except explicit 404."""
+    url = "https://kakuyomu.jp/robots.txt"
+    response = client.get(url, timeout=(15, 45))
+    policy = RobotFileParser(url)
+    if response.status_code == 404:
+        policy.parse([])
+        policy.allow_all = True
+    else:
+        response.raise_for_status()
+        policy.parse(response.text.splitlines())
+    return policy
+
+
+def prior_records(out, work_id, toc):
+    """Verify an existing complete prefix byte-for-byte without re-fetching."""
+    data = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+    records = data["chapters"]
+    if (data["work_id"] != work_id or data["status"] != "COMPLETE"
+            or data["failed_count"] != 0
+            or len(records) != data["stored_count"]
+            or len(records) != data["index_count"]
+            or len(toc) < len(records)):
+        raise ValueError("Prior archive is not a complete prefix")
+    seen = set()
+    for n, (record, entry) in enumerate(zip(records, toc), 1):
+        path = out / f"{n:03d}.txt"
+        if (record["ordinal"] != n or record["episode_id"] != entry["episode_id"]
+                or record["file"] != path.name or record["status"] != "PASS"):
+            raise ValueError(f"Archived catalog prefix changed at {n}; manual review required")
+        body = path.read_text(encoding="utf-8").split("\n\n", 1)[1].rstrip("\n")
+        digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        if (digest != record["sha256_body"] or digest in seen
+                or len(re.sub(r"\s+", "", body)) != record["chars_no_whitespace"]):
+            raise ValueError(f"Prior archive integrity failure at {n}")
+        seen.add(digest)
+    print(f"REUSE {len(records)} verified existing chapters", flush=True)
+    return records
+
+
+def archive(work_id, out_dir, delay, min_chars, min_episodes, resume=False):
     client = session()
+    base_url = f"https://kakuyomu.jp/works/{work_id}"
+    policy = checked_robots(client)
+    if not policy.can_fetch(USER_AGENT, base_url):
+        raise ValueError("robots.txt disallows the requested work catalog")
     base, work, toc = get_episode_index(client, work_id)
     if len(toc) < min_episodes:
         raise ValueError(f"Only {len(toc)} episodes (minimum expected {min_episodes})")
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    records = []
+    records = prior_records(out, work_id, toc) if resume else []
+    seen = {record['sha256_body'] for record in records}
     failures = []
-    for entry in toc:
+    for entry in toc[len(records):]:
         ordinal = entry["ordinal"]
+        if not policy.can_fetch(USER_AGENT, entry['source_url']):
+            raise ValueError(f"robots.txt disallows episode {ordinal}; no archive will be published")
         try:
             html = fetch(client, entry["source_url"])
             title, body = parse_body(html)
@@ -126,6 +176,9 @@ def archive(work_id, out_dir, delay, min_chars, min_episodes):
             if chars < min_chars:
                 raise ValueError(f"Body too short: {chars} non-whitespace characters")
             digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+            if digest in seen:
+                raise ValueError("Duplicate chapter body; manual review required")
+            seen.add(digest)
             path = out / f"{ordinal:03d}.txt"
             header = (
                 f"Work-ID: {work_id}\n"
@@ -146,6 +199,10 @@ def archive(work_id, out_dir, delay, min_chars, min_episodes):
                 "sha256_body": digest, "status": "PASS",
             })
             print(f"PASS {ordinal:03d}/{len(toc)} {chars} chars", flush=True)
+        except requests.HTTPError as exc:
+            if exc.response is not None and exc.response.status_code in {401, 403, 429}:
+                raise ValueError(f"Source access restricted at episode {ordinal}; stopping") from exc
+            raise
         except Exception as exc:
             errors = {"ordinal": ordinal, "episode_id": entry["episode_id"],
                       "source_url": entry["source_url"], "error": str(exc)}
@@ -203,9 +260,10 @@ def main():
     parser.add_argument("--delay", type=float, default=0.7)
     parser.add_argument("--min-chars", type=int, default=80)
     parser.add_argument("--min-episodes", type=int, default=70)
+    parser.add_argument("--resume", action="store_true", help="Verify and preserve existing manifest prefix")
     args = parser.parse_args()
     return archive(args.work_id, args.out_dir, args.delay,
-                   args.min_chars, args.min_episodes)
+                   args.min_chars, args.min_episodes, args.resume)
 
 
 if __name__ == "__main__":
