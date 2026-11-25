@@ -1,0 +1,220 @@
+name: Hongyeshuzhal 156757 - offline candidate inventory
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-offline-inventory.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Retrieve existing authoritative catalog artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-official-catalog
+          run-id: 45491887337
+          github-token: ${{ github.token }}
+          path: inputs/official
+      - name: Retrieve existing Hongyeshuzhal inventory
+        uses: actions/download-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-verified-original
+          run-id: 45475253999
+          github-token: ${{ github.token }}
+          path: inputs/hongyeshuzhal
+      - name: Retrieve existing Biquting inventory
+        uses: actions/download-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-biquting-candidates
+          run-id: 45486996346
+          github-token: ${{ github.token }}
+          path: inputs/biquting
+      - name: Retrieve existing Canghaishuge inventory
+        uses: actions/download-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-canghaishuge-candidates
+          run-id: 45486996346
+          github-token: ${{ github.token }}
+          path: inputs/canghaishuge
+      - name: Compare existing manifest metadata with publisher numbering
+        run: |
+          python - <<'PY'
+          import collections, json, re, unicodedata
+          from pathlib import Path
+
+          # Never read, publish or concatenate chapter bodies. Metadata only.
+          def read_one(directory, filename):
+              paths = list(Path(directory).rglob(filename))
+              if len(paths) != 1:
+                  raise ValueError(f'{directory}: expected exactly one {filename}, got {len(paths)}')
+              return json.loads(paths[0].read_text(encoding='utf-8'))
+
+          def title_key(s):
+              s = unicodedata.normalize('NFKC', s)
+              s = re.sub(r'^\s*第\s*\d+\s*章\s*', '', s)
+              return ''.join(c.casefold() for c in s if c.isalnum())
+
+          def spans(values):
+              a = sorted(set(values))
+              runs = []
+              for n in a:
+                  if runs and n == runs[-1][-1] + 1:
+                      runs[-1][-1] = n
+                  else:
+                      runs.append([n,n])
+              return [[x] if x==y else [x,y] for x,y in runs]
+
+          def review(rows, number_field, official, comparable_numbering):
+              nums = collections.Counter()
+              hashes = collections.defaultdict(list)
+              titles_match = set()
+              unknown_title = set()
+              title_mismatch = set()
+              exact_title_records = 0
+              invalid_hash_records = 0
+              for row in rows:
+                  n = row.get(number_field)
+                  if type(n) is int:
+                      nums[n] += 1
+                  h = row.get('sha256_body')
+                  if isinstance(h,str) and re.fullmatch(r'[a-f0-9]{64}',h):
+                      hashes[h].append(n)
+                  else:
+                      invalid_hash_records += 1
+                  if not comparable_numbering or type(n) is not int or n not in official:
+                      continue
+                  t = title_key(str(row.get('title','')))
+                  if not t:
+                      unknown_title.add(n)
+                  elif t == official[n]:
+                      titles_match.add(n)
+                      exact_title_records += 1
+                  else:
+                      title_mismatch.add(n)
+              dup_groups = [v for v in hashes.values() if len(v)>1]
+              duplicate_num = {n for n,c in nums.items() if c>1}
+              duplicated_body_nums = {n for group in dup_groups for n in group if type(n) is int}
+              eligible = titles_match - duplicate_num - duplicated_body_nums - title_mismatch - unknown_title
+              covered = set(nums) & set(official)
+              result = {
+                  'records':len(rows),
+                  'unique_printed_numbers':len(nums),
+                  'duplicate_number_groups':len(duplicate_num),
+                  'duplicate_number_ranges':spans(duplicate_num),
+                  'duplicate_body_groups':len(dup_groups),
+                  'duplicate_body_extra_records':sum(len(g)-1 for g in dup_groups),
+                  'numbers_in_duplicate_body_groups':spans(duplicated_body_nums),
+                  'invalid_or_missing_hash_records':invalid_hash_records,
+                  'numbering_comparable':comparable_numbering,
+              }
+              if comparable_numbering:
+                  result.update({
+                      'number_overlap_count':len(covered),
+                      'missing_printed_number_ranges':spans(set(official)-covered),
+                      'unexpected_number_ranges':spans(set(nums)-set(official)),
+                      'exact_normalized_title_records':exact_title_records,
+                      'exact_normalized_title_numbers':len(titles_match),
+                      'title_mismatch_ranges':spans(title_mismatch),
+                      'empty_title_ranges':spans(unknown_title),
+                      'unambiguous_metadata_matches':len(eligible),
+                      'unambiguous_metadata_ranges':spans(eligible),
+                  })
+              return result, eligible if comparable_numbering else set()
+
+          # Synthetic control cases: duplicates, absent chapters, conflicting labels,
+          # identical bodies assigned to different numbers, incomparable sections.
+          h1='1'*64; h2='2'*64; h3='3'*64; h4='4'*64
+          test_official={1:'甲',2:'乙',3:'丙',4:'丁',5:'戊'}
+          test_rows=[
+              {'number':1,'title':'第1章 甲','sha256_body':h1},
+              {'number':2,'title':'第2章 乙','sha256_body':h2},
+              {'number':2,'title':'第2章 错','sha256_body':h3},
+              {'number':3,'title':'第3章 丙','sha256_body':h2},
+              {'number':4,'title':'第4章 丁','sha256_body':h4},
+          ]
+          t,e=review(test_rows,'number',test_official,True)
+          assert e=={1,4} and t['duplicate_number_groups']==1
+          assert t['duplicate_body_groups']==1 and t['duplicate_body_extra_records']==1
+          assert t['missing_printed_number_ranges']==[[5]]
+          assert t['title_mismatch_ranges']==[[2]]
+          assert review(test_rows,'number',test_official,False)[1]==set()
+          print('SELF_TEST PASS',flush=True)
+
+          ref_rows=read_one('inputs/official','official-catalog.json')
+          ref={}
+          for row in ref_rows:
+              n=row.get('number')
+              if type(n) is not int:
+                  continue
+              if n in ref:
+                  raise ValueError('duplicate publisher number')
+              ref[n]=title_key(row['title'])
+          if set(ref)!=set(range(1,929)) or not all(ref.values()):
+              raise ValueError('unexpected historical publisher catalog')
+          for name in ('xs8','readnovel','hongxiu'):
+              other=read_one('inputs/official',name+'-catalog.json')
+              normalized={r['number']:title_key(r['title']) for r in other if type(r.get('number')) is int}
+              if normalized!=ref:
+                  raise ValueError('publisher title consensus mismatch: '+name)
+
+          specs=[
+              ('hongyeshuzhal','chapters','ordinal',True,14960786836),
+              ('biquting','entries','number',False,14966712060),
+              ('canghaishuge','entries','number',True,14966331165),
+          ]
+          result={
+              'official_artifact_id':14966022264,
+              'official_numbered_chapters':len(ref),
+              'official_additional_entries':len(ref_rows)-len(ref),
+              'publisher_title_consensus':'3/3',
+              'self_test':'pass',
+              'sources':{},
+              'limitations':[
+                  'Only historical manifest metadata was examined.',
+                  'Title or numbering agreement does not establish body authenticity or completeness.',
+                  'Hashes from different source-specific extraction pipelines are not compared across sources.',
+                  'Biquting section numbering is not mapped to publisher chapter numbering.',
+                  'No new chapter is accepted and the previous 725 structural candidates are not promoted.',
+              ],
+          }
+          eligible_union=set()
+          eligible_by_source={}
+          for key,records_field,number_field,comparable,artifact in specs:
+              manifest=read_one('inputs/'+key,'manifest.json')
+              rows=manifest[records_field]
+              if not isinstance(rows,list):
+                  raise ValueError('invalid manifest records: '+key)
+              expected=manifest.get('verified_count' if key=='hongyeshuzhal' else 'collected_count')
+              if expected!=len(rows):
+                  raise ValueError('manifest count mismatch: '+key)
+              rec,eligible=review(rows,number_field,ref,comparable)
+              rec['artifact_id']=artifact
+              rec['original_manifest_status']=manifest.get('status',manifest.get('state'))
+              rec['manifest_error_count']=len(manifest.get('errors',[]))
+              result['sources'][key]=rec
+              if comparable:
+                  eligible_by_source[key]=eligible
+                  eligible_union.update(eligible)
+              print('INVENTORY',key,json.dumps(rec,ensure_ascii=False),flush=True)
+          dual=eligible_by_source['hongyeshuzhal'] & eligible_by_source['canghaishuge']
+          result['metadata_only_union_count']=len(eligible_union)
+          result['metadata_only_dual_source_count']=len(dual)
+          result['metadata_only_union_missing_ranges']=spans(set(ref)-eligible_union)
+          result['new_accepted_chapters']=0
+          print('TOTALS',json.dumps({k:v for k,v in result.items() if k not in {'sources','limitations'}},ensure_ascii=False),flush=True)
+          out=Path('out');out.mkdir(exist_ok=True)
+          (out/'offline-inventory.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-offline-inventory
+          path: out/offline-inventory.json
+          if-no-files-found: error
+          retention-days: 14
