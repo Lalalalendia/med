@@ -1,0 +1,186 @@
+name: Hongyeshuzhal 156757 - targeted tail comparison
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-tail-comparison.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-official-catalog
+          run-id: 45491887337
+          github-token: ${{ github.token }}
+          path: inputs/official
+      - uses: actions/download-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-verified-original
+          run-id: 45475253999
+          github-token: ${{ github.token }}
+          path: inputs/hongyeshuzhal
+      - uses: actions/download-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-canghaishuge-candidates
+          run-id: 45486996346
+          github-token: ${{ github.token }}
+          path: inputs/canghaishuge
+      - name: Compare existing candidate bodies and produce actionable chapter list
+        run: |
+          python - <<'PY'
+          import collections, hashlib, json, re, unicodedata
+          from pathlib import Path
+
+          def load(directory, filename):
+              files=list(Path(directory).rglob(filename))
+              if len(files)!=1:
+                  raise ValueError(f'{directory}: expected one {filename}, found {len(files)}')
+              return files[0],json.loads(files[0].read_text(encoding='utf-8'))
+
+          def sha(s):
+              return hashlib.sha256(s.encode('utf-8')).hexdigest()
+
+          def han(s):
+              return ''.join(re.findall(r'[\u3400-\u9fff]',unicodedata.normalize('NFKC',s)))
+
+          def title_key(s):
+              s=unicodedata.normalize('NFKC',s)
+              s=re.sub(r'^\s*第\s*\d+\s*章\s*','',s)
+              return ''.join(c.casefold() for c in s if c.isalnum())
+
+          def relation(a,b):
+              if not a or not b:
+                  return {'relation':'missing'}
+              if a==b:
+                  return {'relation':'equal'}
+              if a in b:
+                  return {'relation':'first_is_substring','offset':b.index(a)}
+              if b in a:
+                  return {'relation':'second_is_substring','offset':a.index(b)}
+              shorter,longer=sorted((a,b),key=len)
+              # Long, exact fragments distinguish shared passages from unrelated strings.
+              # This is evidence of overlap only, not a completeness or authorship test.
+              k=32
+              w={longer[i:i+k] for i in range(max(0,len(longer)-k+1))}
+              sampled=[shorter[i:i+k] for i in range(0,len(shorter)-k+1,32)]
+              hits=sum(s in w for s in sampled)
+              return {'relation':'overlap' if hits else 'no_32_han_overlap',
+                      'sampled_shorter_windows':len(sampled),'matching_windows':hits,
+                      'sampled_shorter_fraction':round(hits/max(1,len(sampled)),6)}
+
+          assert relation('甲乙','甲乙')['relation']=='equal'
+          assert relation('乙丙','甲乙丙丁')['offset']==1
+          assert relation('甲'*64,'乙'*64)['relation']=='no_32_han_overlap'
+          assert han('甲！乙\uf900')=='甲乙豈'
+          print('SELF_TEST PASS',flush=True)
+
+          _,official=load('inputs/official','official-catalog.json')
+          ref={r['number']:r['title'] for r in official if type(r.get('number')) is int}
+          if set(ref)!=set(range(1,929)):
+              raise ValueError('historical catalog mismatch')
+
+          sources={}
+          for key,field,number,folder in [
+              ('hongyeshuzhal','chapters','ordinal','chapters'),
+              ('canghaishuge','entries','number','entries')]:
+              path,manifest=load('inputs/'+key,'manifest.json')
+              rows=manifest[field]
+              result=collections.defaultdict(list)
+              normalized_hashes=collections.defaultdict(list)
+              for row in rows:
+                  n=row.get(number)
+                  if type(n) is not int or n not in ref:
+                      continue
+                  file=Path(row['file'])
+                  if file.name!=str(file):
+                      raise ValueError('invalid manifest file name')
+                  f=path.parent/folder/file
+                  record={'number':n,'title':row.get('title',''),
+                          'title_matches':title_key(row.get('title',''))==title_key(ref[n]),
+                          'stored_han':row.get('han'),
+                          'file':str(file),'integrity':'unverified'}
+                  body=''
+                  if f.is_file():
+                      try:
+                          text=f.read_bytes().decode('utf-8')
+                          head,sep,tail=text.partition('\n\n')
+                          if not sep or head!=row.get('title',''):
+                              raise ValueError('unexpected file header')
+                          body=tail[:-1] if tail.endswith('\n') else tail
+                          if sha(body)!=row.get('sha256_body'):
+                              raise ValueError('manifest body SHA-256 mismatch')
+                          body=han(body)
+                          if not body:
+                              raise ValueError('empty normalized text')
+                          record['integrity']='verified'
+                          record['normalized_han']=len(body)
+                          record['normalized_sha256']=sha(body)
+                          normalized_hashes[sha(body)].append(n)
+                      except (UnicodeDecodeError,ValueError) as exc:
+                          record['integrity']='failed'
+                          record['reason']=str(exc)
+                          body=''
+                  else:
+                      record['integrity']='failed'
+                      record['reason']='archive entry missing'
+                  result[n].append((record,body))
+              for n,records in result.items():
+                  for rec,body in records:
+                      rec['same_normalized_body_other_numbers']=sorted(set(normalized_hashes.get(sha(body),[]))-{n}) if body else []
+              sources[key]=result
+              print('SOURCE',key,json.dumps({'numbered_records':sum(map(len,result.values())),
+                  'valid_files':sum(rec['integrity']=='verified' for rows in result.values() for rec,_ in rows),
+                  'invalid_files':sum(rec['integrity']!='verified' for rows in result.values() for rec,_ in rows),
+                  'cross_number_duplicate_hashes':sum(len(set(ns))>1 for ns in normalized_hashes.values())}),flush=True)
+
+          targets=sorted(set(range(726,929))|{1,21,485,515})
+          entries=[]
+          for n in targets:
+              a=sources['hongyeshuzhal'].get(n,[])
+              b=sources['canghaishuge'].get(n,[])
+              good=lambda rows:[(r,t) for r,t in rows if r['integrity']=='verified' and r['title_matches'] and not r['same_normalized_body_other_numbers']]
+              aa,bb=good(a),good(b)
+              comp=relation(aa[0][1],bb[0][1]) if len(aa)==len(bb)==1 else {'relation':'not_comparable'}
+              if len(aa)>1 or len(bb)>1:
+                  status='ambiguous_records'
+              elif not aa and not bb:
+                  status='no_unambiguous_candidate'
+              elif not aa or not bb:
+                  status='single_candidate'
+              elif comp['relation']=='equal':
+                  status='matching_unverified_bodies'
+              elif comp['relation'] in ('first_is_substring','second_is_substring'):
+                  status='one_candidate_contains_other'
+              else:
+                  status='conflicting_candidates'
+              entries.append({'number':n,'official_title':ref[n],
+                  'hongyeshuzhal':[rec for rec,_ in a],
+                  'canghaishuge':[rec for rec,_ in b],
+                  'comparison':comp,'status':status})
+          tail=[r for r in entries if r['number']>=726]
+          summary={'target_count':len(tail),
+                   'tail_status_counts':dict(collections.Counter(r['status'] for r in tail)),
+                   'tail_by_status':{s:[r['number'] for r in tail if r['status']==s] for s in sorted({r['status'] for r in tail})},
+                   'specific_chapters':[r for r in entries if r['number'] in {21,485,515}],
+                   'opening_control':[r for r in entries if r['number']==1],
+                   'historical_publisher_opening_han':3600,
+                   'new_accepted_chapters':0,
+                   'limitations':'Existing archived candidates only. Identical mirrors and substring relations do not establish authorized complete original text.'}
+          print('TAIL_SUMMARY',json.dumps(summary,ensure_ascii=False),flush=True)
+          out=Path('out');out.mkdir(exist_ok=True)
+          (out/'targeted-tail-comparison.json').write_text(json.dumps({'summary':summary,'entries':entries},ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-targeted-tail-comparison
+          path: out/targeted-tail-comparison.json
+          if-no-files-found: error
+          retention-days: 14
