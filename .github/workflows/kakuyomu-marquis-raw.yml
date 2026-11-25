@@ -74,43 +74,19 @@ jobs:
         run: |
           set -euo pipefail
           OUTPUT=novels/kakuyomu/2912051607778505262/raw
-          if [ ! -f "$OUTPUT/manifest.json" ]; then
-            echo "Parser failed before producing chapter files"
+          test -f "$OUTPUT/manifest.json"
+          if git diff --name-only -- "$OUTPUT" | grep -E '/[0-9]{3}\.txt$'; then
+            echo "Existing chapter unexpectedly changed"
             exit 1
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Never permit a previous chapter to be rewritten or deleted.
-          if git diff --name-only -- "$OUTPUT" | grep -E '/[0-9]{3}\.txt
-          if git diff --cached --quiet; then
-            echo "Nothing new to commit"
-            exit 0
-          fi
-          git commit -m "Persist authorized Kakuyomu Marquis III original corpus"
-          git fetch origin "$GITHUB_REF_NAME"
-          git rebase "origin/$GITHUB_REF_NAME"
-          git push origin "HEAD:$GITHUB_REF_NAME"
-
-      - name: Fail if any episode was not acquired
-        if: steps.archive.outcome != 'success'
-        run: |
-          echo "Some chapters could not be verified or downloaded; see manifest.json"
-          exit 1
- ; then
-            echo "Existing chapter unexpectedly changed"; exit 1
-          fi
           git add "$OUTPUT"
           if git diff --cached --quiet; then
             echo "Nothing new to commit"
             exit 0
           fi
-          git commit -m "Persist authorized Kakuyomu Marquis III original corpus"
-          git fetch origin main
-          git rebase origin/main
-          git push origin HEAD:main
-
-      - name: Fail if any episode was not acquired
-        if: steps.archive.outcome != 'success'
-        run: |
-          echo "Some chapters could not be verified or downloaded; see manifest.json"
-          exit 1
+          git commit -m "Persist verified new Kakuyomu Marquis original chapters"
+          git fetch origin "$GITHUB_REF_NAME"
+          git rebase "origin/$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
