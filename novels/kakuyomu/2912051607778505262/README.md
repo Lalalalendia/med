@@ -7,8 +7,8 @@
 - **Author's Narou mirror:** https://ncode.syosetu.com/n9756mm/
 - **Notion translation tracker:** https://app.notion.com/p/40832a84beec812c8b95f4b39cdf6d15
 - **Rulate:** https://tl.rulate.ru/book/268193 (owner-supplied on 2026-10-29).
-- **Current archived episode count:** 118, complete as of 2026-10-29 (prior count 117; series ongoing).
-- **JP RAW:** **118/118 stored and checked**, 0 errors, 212,053 non-whitespace Japanese characters.
+- **Current archived episode count:** 146, complete as of 2026-11-25 (prior count 118; series ongoing).
+- **JP RAW:** **146/146 stored and checked**, 0 errors, 261,549 non-whitespace Japanese characters.
 - **RU translation:** [118 Russian drafts](ru/README.md) — chapters 001–118 saved in GitHub and recorded in Notion, with exact GitHub↔Notion check of the last 8 chapters (329 paragraphs); **Final RU 0**, **confirmed published 0**. JP↔RU literary QA and the earlier 096–105 Notion audit still require review.
 
 ## Source catalog
@@ -26,7 +26,7 @@
 ## Audit status
 
 - Rulate registration: **owner-reported; external URL not verified**.
-- RAW archive: **118/118 COMPLETE**, 118 unique episode IDs and 118 unique SHA-256 body hashes. See [manifest](raw/manifest.json). New chapters may be added later.
+- RAW archive: **146/146 COMPLETE**, 146 unique episode IDs and 146 unique SHA-256 body hashes. Chapters 001–118 unchanged; chapters 119–146 added on 2026-11-25. See [manifest](raw/manifest.json). New chapters may be added later.
 - Rulate prior-duplicate search (G5): **not conclusively closed**.
 - Translation/publication rights: **not checked**.
 
