@@ -1,0 +1,165 @@
+name: Hongyeshuzhal 156757 - new source pagination audit
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-pagination-audit.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Inspect public catalogs, opening fingerprints and explicit pagination
+        run: |
+          python - <<'PY'
+          import concurrent.futures, hashlib, json, re, time, unicodedata
+          from pathlib import Path
+          from urllib.parse import urlsplit, urljoin, urldefrag
+          import requests
+          from bs4 import BeautifulSoup
+
+          sources = {
+              'biquge': ('https://biquge.com.co/book/326131/', 'catalog'),
+              'crnetz': ('https://www.crnetz.com/119823/', 'catalog'),
+              'xiaoshuoshu': ('https://www.xiaoshuoshu.com/117/117901/', 'catalog'),
+              '020novel': ('https://www.020ebhw.com/html/96822/49546575.html', 'chapter'),
+              'hongxiu_new': ('https://www.hongxiu.com/bookquery/qbxaiqwznjos', 'publisher'),
+              'xxsy_new': ('https://www.xxsy.net/bookquery/qbxaurqbenhv', 'publisher'),
+          }
+          # Historical local reference; publisher provenance remains unconfirmed.
+          fingerprints = '3daad08d177ebe14720a8606 eaa9a27337b7f40c628bde1f 070b8cde16486020da657cbf 2b5bb6787f896790321ff5c0 0ad13d21b66ce22dca5ed3e2 0718574c8863221ad6e739e1 3ddfac1ddb43b61a5fb35440 55a1eaa005da528a9a52e404 124ba8dea0b032c8f0aa7986 a07e7e0f2fda6db9a3710f50 3cc60d2076c0e9878c94af17 2ed905c2b2cab5e886199e42 59ab5ef04b2ddf35111414e5 0fc8299ccb3bdabe6eb68337 f4cbe9842718c10b4ee8e483 1d5a3cd204515de03e26d507 0c60c506011f7413816596af 5599a29aaacfcb9237cbbe5e 1fa567c3235dc72ba9f339a3 9fd3331207f97bc3fb9940ac 86a4839dfb97bdc4eb706c2a 068cafd789bff60f2e33d07d e8818e33fb16ca7645f80733 77fdd751ffb69120ef8b7418 093a033b02707ba2dacd14cf baa81153df527562d86eda9a 409f47c88bb949bc4594efe4 5fdc416e733a9d5b55ba2dc3'.split()
+          ref_sha = '7ee4a7da24dc4bbaa03f4fe72cbdae71799d2607ec7e2e1acc76dcd0e66abb30'
+          book = re.compile(r'(什么魔女|什麼魔女).*?(绝命药师|絕命藥師)')
+          chapter = re.compile(r'第\s*(\d+)\s*章')
+          blocked = re.compile(r'captcha|access denied|verify you are human|just a moment|购买后阅读|購買後閱讀|付费阅读|付費閱讀|登录后阅读|登入後閱讀|章节未解锁|订阅本章|本章为VIP',re.I)
+          page_label = re.compile(r'^(?:下一[页頁]|下[一]?頁|下一[页頁]\s*[>»→]+|[（(]?[2-9]\s*[/／]\s*[2-9][)）]?)$')
+          norm = lambda t: re.sub(r'\s+', ' ', unicodedata.normalize('NFKC',t)).strip()
+          han = lambda t: ''.join(re.findall(r'[\u3400-\u9fff]',unicodedata.normalize('NFKC',t)))
+          sha = lambda t: hashlib.sha256(t.encode()).hexdigest()
+          selector = 'section.section.chapter,#txt,#content,#chaptercontent,#chapterContent,#txtcontent,#readcontent,#article,.chapter-content,.read-content,.reader-content,.txtcontent,article'
+          def title(s):
+              return norm(s.title.get_text(' ',strip=True)) if s.title else ''
+          def safe_link(base, raw, host):
+              u=urldefrag(urljoin(base,raw))[0]
+              p=urlsplit(u)
+              return u if p.scheme=='https' and p.hostname==host and not p.username and not p.password else None
+          def fetch(s,url,host):
+              if safe_link(url,url,host)!=url: raise ValueError('outside approved source')
+              time.sleep(1)
+              r=s.get(url,timeout=(6,12),allow_redirects=False)
+              if r.status_code!=200: raise ValueError('HTTP '+str(r.status_code))
+              soup=BeautifulSoup(r.content,'html.parser')
+              if blocked.search(title(soup)):raise ValueError('access restriction')
+              return soup
+          def page_links(soup,url,host):
+              return list(dict.fromkeys(u for a in soup.select('a[href]')
+                if page_label.fullmatch(norm(a.get_text(' ',strip=True)))
+                and (u:=safe_link(url,a['href'],host)) and u!=url))
+          def candidates(soup):
+              records=[]
+              for n in soup.select(selector):
+                  clone=BeautifulSoup(str(n),'html.parser')
+                  for z in clone.select('script,style,iframe,ins,nav,header,footer,button,form,h1,h2,.ads,.pagination,.chapter-nav'):
+                      z.decompose()
+                  raw=clone.get_text(' ',strip=True)
+                  if blocked.search(raw):continue
+                  body=han(raw)
+                  if not 100<=len(body)<=18000:continue
+                  records.append((n.name+'#'+str(n.get('id',''))+'.'+'.'.join(n.get('class',[])),body))
+              return records
+          def metrics(body,opening):
+              res={'han':len(body),'sha256_han':sha(body)}
+              if opening:
+                  windows={sha(body[i:i+32])[:24] for i in range(len(body)-31)}
+                  res.update({'historical_exact':sha(body)==ref_sha,'historical_windows':sum(h in windows for h in fingerprints)})
+              return res
+          def audit_page(s,soup,url,host,n,opening=False):
+              t=title(soup)
+              headings=' '.join(x.get_text(' ',strip=True) for x in soup.select('h1,h2')[:5])
+              identity=bool(book.search(t+' '+headings))
+              numbers={int(x) for x in chapter.findall(t+' '+headings)}
+              links=page_links(soup,url,host)
+              result={'title':t[:240],'book_identity':identity,'chapter_numbers':sorted(numbers),'explicit_pagination_links':links,'pages':[]}
+              if not identity or (n not in numbers and n is not None):
+                  result['status']='identity_unconfirmed';return result
+              if blocked.search(soup.get_text(' ',strip=True)[:2000]):
+                  result['status']='restricted';return result
+              seen=set()
+              for index in range(3):
+                  seen.add(url)
+                  bodies=candidates(soup)
+                  reports=[{'selector':k,**metrics(b,opening)} for k,b in bodies]
+                  reports.sort(key=lambda r:(r.get('historical_exact',False),r.get('historical_windows',0),r['han']),reverse=True)
+                  nxt=page_links(soup,url,host)
+                  result['pages'].append({'url':url,'candidates':reports[:5],'explicit_pagination_links':nxt})
+                  opts=[u for u in nxt if u not in seen]
+                  if not opts:break
+                  try:
+                      u=opts[0]; p=fetch(s,u,host)
+                      # Never proceed to another chapter or a login/access challenge.
+                      pt=title(p)+' '+' '.join(x.get_text(' ',strip=True) for x in p.select('h1,h2')[:5])
+                      if not book.search(pt) or n not in {int(x) for x in chapter.findall(pt)}:
+                          result['pagination_stop']='next page identity unconfirmed';break
+                      if blocked.search(p.get_text(' ',strip=True)[:2000]):
+                          result['pagination_stop']='restricted';break
+                      soup,url=p,u
+                  except Exception as e:
+                      result['pagination_stop']=str(e);break
+              result['status']='metadata_only'
+              return result
+          def inspect(key,base,kind):
+              host=urlsplit(base).hostname
+              rec={'url':base,'kind':kind}
+              with requests.Session() as s:
+                  s.headers.update({'User-Agent':'med-public-pagination-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+                  try:
+                      soup=fetch(s,base,host)
+                      rec['http_status']=200;rec['title']=title(soup)[:240]
+                      if not book.search(rec['title']):
+                          raise ValueError('book title unconfirmed')
+                      if kind=='chapter':
+                          rec['sample']=audit_page(s,soup,base,host,920)
+                          return key,rec
+                      rows={}
+                      for a in soup.select('a[href]'):
+                          m=chapter.match(norm(a.get_text(' ',strip=True)))
+                          u=safe_link(base,a['href'],host)
+                          if m and u:rows.setdefault(int(m.group(1)),u)
+                      rec.update({'catalog_numbers_visible':len(rows),'max_number_visible':max(rows,default=0),'tail_numbers_visible':len(set(rows)&set(range(726,929)))})
+                      if kind=='publisher':
+                          rec['public_opening_candidates']=[{'selector':k,**metrics(b,True)} for k,b in candidates(soup)]
+                      elif 1 in rows:
+                          try:
+                              p=fetch(s,rows[1],host)
+                              rec['opening']=audit_page(s,p,rows[1],host,1,True)
+                          except Exception as e:rec['opening_error']=str(e)
+                      # Only public catalog metadata for tail entries, no bulk tail downloads.
+                      rec['tail_links_present']=[n for n in [726,800,900,920,926,928] if n in rows]
+                  except Exception as e:rec['error']=str(e)
+                  return key,rec
+          assert len(fingerprints)==28 and han('甲乙！')=='甲乙'
+          assert page_label.fullmatch('下一页') and not page_label.fullmatch('下一章')
+          assert safe_link('https://a.example/x','https://b.example/x','a.example') is None
+          print('SELF_TEST PASS',flush=True)
+          results={}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+              fs=[pool.submit(inspect,k,u,t) for k,(u,t) in sources.items()]
+              for f in concurrent.futures.as_completed(fs):
+                  k,r=f.result();results[k]=r
+                  print('SOURCE',k,json.dumps(r,ensure_ascii=False),flush=True)
+          out=Path('out');out.mkdir(exist_ok=True)
+          (out/'pagination-audit.json').write_text(json.dumps({'sources':results,'historical_reference_provenance':'unconfirmed','accepted_new_chapters':0,'scope':'public metadata and bounded sample fingerprints only; no chapter bodies persisted'},ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-pagination-audit
+          path: out/pagination-audit.json
+          retention-days: 14
+          if-no-files-found: error
