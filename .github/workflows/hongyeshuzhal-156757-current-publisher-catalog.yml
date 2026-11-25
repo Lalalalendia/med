@@ -1,0 +1,93 @@
+name: Hongyeshuzhal 156757 - current public publisher chapter title catalog
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-current-publisher-catalog.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Export public chapter titles only
+        run: |
+          python - <<'PY'
+          import json,re,unicodedata,hashlib,time
+          from pathlib import Path
+          import requests
+          from bs4 import BeautifulSoup
+          out=Path('out');out.mkdir(exist_ok=True)
+          sources={
+              'xs8':'https://www.xs8.cn/bookquery/foiqpeamosqb',
+              'xxsy':'https://www.xxsy.net/bookquery/qbxaurqbenhv',
+              'hongxiu':'https://www.hongxiu.com/bookquery/qbxaiqwznjos',
+          }
+          pattern=re.compile(r'^第\s*(\d+)\s*章')
+          norm=lambda t:re.sub(r'\s+',' ',unicodedata.normalize('NFKC',t)).strip().strip('\ue63c\ue637\ue63b\ue61f\ue608').strip()
+          results={}
+          s=requests.Session()
+          s.headers.update({'User-Agent':'med-public-catalog-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          for name,url in sources.items():
+              try:
+                  r=s.get(url,timeout=(8,20),allow_redirects=False)
+                  if r.status_code!=200: raise ValueError('HTTP '+str(r.status_code))
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  node=soup.select_one('section.section.chapterlist') or soup.select_one('.bq-chapter-list') or soup
+                  if node is None: raise ValueError('chapter catalog absent')
+                  rows=[]
+                  for a in node.select('a[href]'):
+                      # Chapter names and numbers are public catalog metadata.
+                      title=norm(a.get_text(' ',strip=True))
+                      if not title: continue
+                      m=pattern.match(title)
+                      if not m: continue
+                  n=int(m.group(1))
+                  evidence=' '.join(str(z.get('class',''))+' '+str(z.get('title',''))+' '+str(z.get('aria-label','')) for z in [a]+a.select('span,i,em,svg,use'))
+                  access='paid_label' if re.search(r'\bvip\b|付费|付費|订阅|訂閱|icon-vip',evidence,re.I) else 'free_label' if re.search(r'\bfree\b|免费|免費',evidence,re.I) else 'unknown'
+                  rows.append({'position':len(rows)+1,'number':n,'title':title,'access':access})
+                  numbers=[x['number'] for x in rows if x['number'] is not None]
+                  if not numbers or len(numbers)<900: raise ValueError('catalog incomplete')
+                  vols=[norm(h.get_text(' ',strip=True)) for h in node.select('h2,h3,h4')]
+                  extra=[x for x in rows if x['number'] is None]
+                  missing=sorted(set(range(1,max(numbers)+1))-set(numbers))
+                  dup=sorted({n for n in numbers if numbers.count(n)>1})
+                  tail=[x for x in rows if x['number']>=726]
+                  info={'tail_access_counts':{s:sum(x['access']==s for x in tail) for s in ('paid_label','free_label','unknown')},'source':url,'entries':len(rows),'numbered':len(numbers),'max_number':max(numbers),'missing':missing,'duplicates':dup,'additional':extra,'volume_labels':vols,'first':rows[:10],'last':rows[-10:]}
+                  results[name]={'summary':info,'rows':rows}
+                  print('CATALOG',name,json.dumps(info,ensure_ascii=False),flush=True)
+                  (out/(name+'-catalog.json')).write_text(json.dumps(rows,ensure_ascii=False,indent=2),encoding='utf-8')
+                  (out/(name+'-catalog.txt')).write_text('\n'.join(x['title'] for x in rows)+'\n',encoding='utf-8')
+              except Exception as e:
+                  results[name]={'error':str(e)}
+                  print('STOP',name,str(e),flush=True)
+              time.sleep(1.2)
+          available=[(k,v) for k,v in results.items() if 'rows' in v]
+          if not available:
+              (out/'summary.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
+              raise SystemExit(1)
+          chosen,best=max(available,key=lambda kv:kv[1]['summary']['max_number'])
+          (out/'official-catalog.txt').write_text('\n'.join(x['title'] for x in best['rows'])+'\n',encoding='utf-8')
+          (out/'official-catalog.json').write_text(json.dumps(best['rows'],ensure_ascii=False,indent=2),encoding='utf-8')
+          checks={}
+          ref={r['number']:r['title'] for r in best['rows'] if r['number'] is not None}
+          for k,v in available:
+              other={r['number']:r['title'] for r in v['rows'] if r['number'] is not None}
+              shared=sorted(set(ref)&set(other))
+              checks[k]={'shared_numbered':len(shared),'title_discrepancies':[{'number':n,'chosen_title':ref[n],'other_title':other[n]} for n in shared if ref[n]!=other[n]]}
+          summary={'chosen':chosen,'sources':{k:v.get('summary',v.get('error')) for k,v in results.items()},'cross_source_title_checks':checks}
+          print('CHOSEN',chosen,'CHECKS',json.dumps({k:{'shared':v['shared_numbered'],'discrepancies':len(v['title_discrepancies'])} for k,v in checks.items()}),flush=True)
+          (out/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-current-publisher-catalog
+          path: out/**
+          retention-days: 14
+          if-no-files-found: error
