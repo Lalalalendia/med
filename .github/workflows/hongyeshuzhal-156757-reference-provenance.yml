@@ -1,0 +1,117 @@
+name: Hongyeshuzhal 156757 - publisher fingerprint provenance
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-reference-provenance.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Verify historical reference against official public opening sample
+        run: |
+          python - <<'PY'
+          import hashlib, json, re, unicodedata
+          from pathlib import Path
+          from urllib.parse import urlsplit
+          import requests
+          from bs4 import BeautifulSoup
+
+          historical_container_sha = '6070abcf10d243130691374f851e6b939dd4a51314510499eee3d2405d2c5d04'
+          local_paragraph_sha = '7ee4a7da24dc4bbaa03f4fe72cbdae71799d2607ec7e2e1acc76dcd0e66abb30'
+          local_windows = '3daad08d177ebe14720a8606 eaa9a27337b7f40c628bde1f 070b8cde16486020da657cbf 2b5bb6787f896790321ff5c0 0ad13d21b66ce22dca5ed3e2 0718574c8863221ad6e739e1 3ddfac1ddb43b61a5fb35440 55a1eaa005da528a9a52e404 124ba8dea0b032c8f0aa7986 a07e7e0f2fda6db9a3710f50 3cc60d2076c0e9878c94af17 2ed905c2b2cab5e886199e42 59ab5ef04b2ddf35111414e5 0fc8299ccb3bdabe6eb68337 f4cbe9842718c10b4ee8e483 1d5a3cd204515de03e26d507 0c60c506011f7413816596af 5599a29aaacfcb9237cbbe5e 1fa567c3235dc72ba9f339a3 9fd3331207f97bc3fb9940ac 86a4839dfb97bdc4eb706c2a 068cafd789bff60f2e33d07d e8818e33fb16ca7645f80733 77fdd751ffb69120ef8b7418 093a033b02707ba2dacd14cf baa81153df527562d86eda9a 409f47c88bb949bc4594efe4 5fdc416e733a9d5b55ba2dc3'.split()
+          def clean(t, normalize=True):
+              if normalize:
+                  t = unicodedata.normalize('NFKC', t)
+              return ''.join(re.findall(r'[\u3400-\u9fff]', t))
+          def sha(t):
+              return hashlib.sha256(t.encode('utf-8')).hexdigest()
+          def windows(t):
+              return [sha(t[i:i+32])[:24] for i in range(0,len(t)-31,128)]
+          def compare(t, expected):
+              actual = windows(t)
+              return {'han': len(t), 'sha256': sha(t),
+                      'matching_offsets': [128*i for i,(a,b) in enumerate(zip(actual,expected)) if a==b],
+                      'matching_windows_anywhere': sum(h in {sha(t[j:j+32])[:24] for j in range(len(t)-31)} for h in expected)}
+          # Synthetic fixtures only; no novel content is embedded.
+          assert clean('\uf900') == '\u8c48' and clean('\uf900',False) == ''
+          assert clean('甲，乙 123 丙') == '甲乙丙'
+          fixture = ''.join(chr(0x4e00+i) for i in range(3600))
+          fw = windows(fixture)
+          assert len(fw)==28 and len(compare(fixture,fw)['matching_offsets'])==28
+          assert len(compare(fixture[:1600],fw)['matching_offsets'])==13
+          assert compare('甲'*1600,fw)['matching_windows_anywhere']==0
+          assert len(local_windows)==28 and all(re.fullmatch(r'[0-9a-f]{24}',h) for h in local_windows)
+          print('SELF_TEST PASS', flush=True)
+
+          urls = {
+            'xs8':'https://www.xs8.cn/bookquery/foiqpeamosqb',
+            'readnovel':'https://www.readnovel.com/bookquery/foiqpeamurwz',
+            'hongxiu':'https://www.hongxiu.com/bookquery/foiqpeamurwz',
+          }
+          access = re.compile(r'订阅本章|购买本章|购买后阅读|付费阅读|本章为VIP|本章是VIP|登录后阅读|登陆后阅读|登录后查看|章节未解锁|请登录后阅读|請登入後閱讀|请购买后阅读|captcha|access denied|verify you are human|just a moment',re.I)
+          result = {'prior_run':45486390556,'local_fingerprint_run':45604682525,'normalization':'NFKC then Han-only U+3400-U+9FFF','expected_container_han':3604,'expected_paragraph_han':3600,'historical_container_sha':historical_container_sha,'local_paragraph_sha':local_paragraph_sha,'window_length':32,'stride':128,'window_count':28,'self_test':'pass','sources':{}}
+          session = requests.Session()
+          session.headers.update({'User-Agent':'med-publisher-reference-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          for key,url in urls.items():
+              rec = {}
+              result['sources'][key] = rec
+              try:
+                  # Only the known public book overview. No chapter-link traversal,
+                  # login, cookies from users, redirects, challenge or paywall bypass.
+                  response = session.get(url,timeout=(8,18),allow_redirects=False)
+                  rec['http_status'] = response.status_code
+                  if response.status_code!=200:
+                      raise ValueError('HTTP '+str(response.status_code))
+                  if urlsplit(response.url).hostname!=urlsplit(url).hostname:
+                      raise ValueError('unexpected origin')
+                  soup=BeautifulSoup(response.content,'html.parser')
+                  title=soup.title.get_text(' ',strip=True) if soup.title else ''
+                  if access.search(title) or not re.search(r'什么魔女.*?绝命药师',title):
+                      raise ValueError('book title unavailable or access restriction')
+                  node=soup.select_one('section.section.chapter')
+                  if node is None:
+                      raise ValueError('public opening sample container absent')
+                  clone=BeautifulSoup(str(node),'html.parser')
+                  for z in clone.select('script,style,iframe,ins,nav,header,footer,button,form,.ads,.ad,.advertisement,.pagination,.chapter-nav,h1,h2'):
+                      z.decompose()
+                  full=clone.get_text(' ',strip=True)
+                  if access.search(full):
+                      raise ValueError('restricted sample')
+                  ps=[p.get_text(' ',strip=True) for p in clone.select('p')]
+                  paragraph_text=''.join(ps)
+                  container=clean(full)
+                  paragraphs=clean(paragraph_text)
+                  rec.update({'container_han':len(container),'container_sha':sha(container),'paragraph_count':sum(bool(clean(p)) for p in ps),'paragraph_nfkc':compare(paragraphs,local_windows),'paragraph_legacy':compare(clean(paragraph_text,False),local_windows)})
+                  rec['historical_container_match'] = len(container)==3604 and sha(container)==historical_container_sha
+                  rec['local_reference_match'] = len(paragraphs)==3600 and sha(paragraphs)==local_paragraph_sha and windows(paragraphs)==local_windows
+                  rec['status'] = 'confirmed' if rec['historical_container_match'] and rec['local_reference_match'] else ('fingerprint_mismatch' if rec['historical_container_match'] else 'historical_sample_not_reproduced')
+              except (requests.RequestException,ValueError) as exc:
+                  rec.update({'status':'unavailable','reason':str(exc)})
+              print('PUBLISHER',key,json.dumps(rec,ensure_ascii=False),flush=True)
+          states=[s['status'] for s in result['sources'].values()]
+          if 'fingerprint_mismatch' in states:
+              result['verdict']='local_reference_mismatch'
+          elif states.count('confirmed')>=2:
+              result['verdict']='reference_confirmed_by_multiple_publisher_endpoints'
+          elif 'confirmed' in states:
+              result['verdict']='reference_confirmed_by_one_publisher_endpoint'
+          else:
+              result['verdict']='reference_unverified'
+          print('VERDICT',result['verdict'],flush=True)
+          out=Path('out');out.mkdir(exist_ok=True)
+          (out/'reference-provenance.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-reference-provenance
+          path: out/reference-provenance.json
+          if-no-files-found: error
+          retention-days: 14
