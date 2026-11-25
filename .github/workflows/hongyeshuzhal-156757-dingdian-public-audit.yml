@@ -1,0 +1,97 @@
+name: Hongyeshuzhal 156757 - Dingdian public page audit
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-dingdian-public-audit.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Inspect ordinary public reading page and compare free chapter one
+        run: |
+          python - <<'PY'
+          import json,re,time,hashlib,difflib
+          from pathlib import Path
+          from urllib.parse import urlsplit,urljoin
+          import requests
+          from bs4 import BeautifulSoup
+          out=Path('out');out.mkdir()
+          s=requests.Session()
+          s.headers.update({'User-Agent':'med-public-reading-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          blocked=re.compile(r'captcha|access denied|verify you are human|just a moment|购买后阅读|付费阅读|登录后阅读|章节未解锁|订阅本章',re.I)
+          han=lambda t:''.join(re.findall(r'[\u3400-\u9fff]',t))
+          norm=lambda t:re.sub(r'\s+',' ',t).strip()
+          def get(url,host):
+              for _ in range(4):
+                  p=urlsplit(url)
+                  if p.scheme!='https' or p.hostname!=host: raise ValueError('outside public source')
+                  time.sleep(1.2)
+                  r=s.get(url,timeout=(8,18),allow_redirects=False)
+                  if r.is_redirect:
+                      url=urljoin(url,r.headers['Location']);continue
+                  if r.status_code!=200: raise ValueError('HTTP '+str(r.status_code))
+                  return BeautifulSoup(r.content,'html.parser'),r.url,len(r.content)
+              raise ValueError('redirect limit')
+          result={}
+          try:
+              official,_,_=get('https://www.xs8.cn/bookquery/foiqpeamosqb','www.xs8.cn')
+              ref=han(''.join(p.get_text(' ',strip=True) for p in official.select('section.section.chapter p')))
+              if len(ref)!=3600: raise ValueError('official reference changed')
+              result['reference_han']=len(ref)
+              base='https://www.dingdian666.com/xiaoshuo/310926/'
+              cat,url,size=get(base,'www.dingdian666.com')
+              rows={}
+              for a in cat.select('a[href]'):
+                  t=norm(a.get_text(' ',strip=True))
+                  m=re.match(r'^第\s*(\d+)\s*章',t)
+                  u=urljoin(url,a['href'])
+                  if m and urlsplit(u).hostname=='www.dingdian666.com' and urlsplit(u).scheme=='https':
+                      rows.setdefault(int(m.group(1)),{'title':t,'url':u})
+              result['catalog']={'count':len(rows),'max':max(rows,default=0),'missing':sorted(set(range(1,max(rows,default=0)+1))-set(rows)),'first':rows.get(1),'last':rows.get(max(rows,default=0))}
+              print('CATALOG',json.dumps(result['catalog'],ensure_ascii=False),flush=True)
+              if 1 not in rows: raise ValueError('no chapter one link')
+              page,url,size=get(rows[1]['url'],'www.dingdian666.com')
+              title=norm(page.title.get_text()) if page.title else ''
+              visible=page.get_text(' ',strip=True)
+              rec={'url':url,'title':title,'size_bytes':size,'access_marker':bool(blocked.search(title+' '+visible[:2000])),'visible_han':len(han(visible)),'headings':[norm(h.get_text(' ',strip=True)) for h in page.select('h1,h2')[:8]],'script_count':len(page.select('script'))}
+              result['page']=rec
+              if rec['access_marker']:
+                  print('PAGE',json.dumps(rec,ensure_ascii=False),flush=True)
+                  raise ValueError('access restriction, stopping')
+              candidates=[]
+              seen=set()
+              for node in page.select('body,article,main,section,div,td,pre'):
+                  clone=BeautifulSoup(str(node),'html.parser')
+                  for z in clone.select('script,style,nav,header,footer,iframe,ins,form,button,h1,h2'):
+                      z.decompose()
+                  t=han(clone.get_text(' ',strip=True))
+                  if not 100<=len(t)<=16000: continue
+                  d=hashlib.sha256(t.encode()).hexdigest()
+                  if d in seen:continue
+                  seen.add(d)
+                  m=difflib.SequenceMatcher(None,ref,t,autojunk=False)
+                  matches=m.get_matching_blocks()
+                  hit=sum(b.size for b in matches)
+                  candidates.append({'tag':node.name,'id':node.get('id'),'classes':node.get('class',[]),'han':len(t),'reference_coverage':round(hit/len(ref),5),'sample_match_fraction':round(hit/len(t),5),'longest_match':max((b.size for b in matches),default=0),'exact':t==ref,'sha256':d})
+              rec['candidates']=sorted(candidates,key=lambda x:(x['reference_coverage'],x['sample_match_fraction']),reverse=True)[:10]
+              print('PAGE',json.dumps(rec,ensure_ascii=False),flush=True)
+          except Exception as e:
+              result['error']=str(e)
+              print('STOP',str(e),flush=True)
+          (out/'audit.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-dingdian-public-audit
+          path: out/audit.json
+          retention-days: 14
+          if-no-files-found: error
