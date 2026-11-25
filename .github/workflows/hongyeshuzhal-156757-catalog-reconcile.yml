@@ -1,0 +1,79 @@
+name: Hongyeshuzhal 156757 - offline catalog reconciliation
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-catalog-reconcile.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-official-catalog
+          run-id: 45491887337
+          github-token: ${{ github.token }}
+          path: inputs/old
+      - uses: actions/download-artifact@v4
+        with:
+          name: hongyeshuzhal-156757-current-publisher-catalog
+          run-id: 45677815193
+          github-token: ${{ github.token }}
+          path: inputs/current
+      - name: Normalize only catalog decorations and compare title metadata
+        run: |
+          python - <<'PY'
+          import collections,json,re,unicodedata
+          from pathlib import Path
+          def load(folder,name):
+              files=list(Path(folder).rglob(name))
+              if len(files)!=1:raise ValueError(f'{folder}: {name} count={len(files)}')
+              return json.loads(files[0].read_text(encoding='utf-8'))
+          def normalized_title(t):
+              s=unicodedata.normalize('NFKC',t)
+              s=re.sub(r'[\s\U0001f512\U0001f513\ufe0f\ue63c\ue637\ue63b\ue61f\ue608]+$','',s)
+              return re.sub(r'\s+',' ',s).strip()
+          assert normalized_title('第1章 讨债人 🔒')=='第1章 讨债人'
+          assert normalized_title('第1章 讨债人！')!='第1章 讨债人'
+          def index(rows):
+              result={}
+              for row in rows:
+                  n=row.get('number')
+                  if type(n) is not int:continue
+                  if n in result:raise ValueError(f'duplicate number {n}')
+                  result[n]={'title':normalized_title(row['title']),'access':row.get('access','unknown')}
+              return result
+          oldrows=load('inputs/old','official-catalog.json')
+          old=index(oldrows)
+          sources={s:index(load('inputs/current',s+'-catalog.json')) for s in ('xs8','xxsy','hongxiu')}
+          def compare(a,b):
+              shared=sorted(set(a)&set(b))
+              return {'shared':len(shared),'differences':[{'number':n,'first':a[n]['title'],'second':b[n]['title']} for n in shared if a[n]['title']!=b[n]['title']]}
+          assert set(old)==set(range(1,929))
+          report={'previous_numbered':len(old),'historical_unnumbered_entries':sum(r.get('number') is None for r in oldrows),'sources':{},'comparisons':{}}
+          for s,rows in sources.items():
+              tail={n:r for n,r in rows.items() if n>=726}
+              report['sources'][s]={'numbered':len(rows),'max':max(rows),'gaps':sorted(set(range(1,max(rows)+1))-set(rows)),'historical_comparison':compare(old,rows),'new_numbered':{n:rows[n] for n in sorted(set(rows)-set(old))},'tail_access':dict(collections.Counter(r['access'] for r in tail.values()))}
+          for a,b in [('xs8','xxsy'),('xs8','hongxiu'),('xxsy','hongxiu')]:
+              report['comparisons'][a+'__'+b]=compare(sources[a],sources[b])
+          report['accepted_new_text_chapters']=0
+          report['limitations']='Catalog titles and access labels only; no original chapter text verification.'
+          brief={'sources':{s:{**r,'historical_comparison':{'shared':r['historical_comparison']['shared'],'differences':len(r['historical_comparison']['differences'])}} for s,r in report['sources'].items()},'comparisons':{s:{'shared':r['shared'],'differences':len(r['differences'])} for s,r in report['comparisons'].items()},'historical_unnumbered_entries':report['historical_unnumbered_entries']}
+          print('RECONCILED',json.dumps(brief,ensure_ascii=False),flush=True)
+          out=Path('out');out.mkdir()
+          (out/'catalog-reconcile.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-catalog-reconcile
+          path: out/catalog-reconcile.json
+          retention-days: 14
+          if-no-files-found: error
