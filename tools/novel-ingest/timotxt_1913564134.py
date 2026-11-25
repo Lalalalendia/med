@@ -62,6 +62,16 @@ def chapter(html, row):
     wanted = normalized(row["title"])
     headings = [normalized(h.get_text(" ", strip=True)) for h in soup.select("h1,h2,title")]
     if not any(wanted in h for h in headings):
+        # Diagnostic metadata only: never log chapter prose.
+        print(json.dumps({"expected_title": row["title"],
+                          "page_title": soup.title.get_text(" ", strip=True)[:200] if soup.title else None,
+                          "heading_nodes": [{"tag": h.name, "id": h.get("id"),
+                                             "class": h.get("class"),
+                                             "text": h.get_text(" ", strip=True)[:160]}
+                                            for h in soup.select("h1,h2,h3")[:12]],
+                          "content_candidates": [{"selector": selector, "matches": len(soup.select(selector)),
+                                                  "han_counts": [len(HAN.findall(n.get_text(" ", strip=True))) for n in soup.select(selector)[:3]]}
+                                                 for selector in SELECTORS]}, ensure_ascii=False), flush=True)
         raise ValueError(f"Chapter {row['number']}: title not verified")
     # Never silently archive a first page of a split chapter.
     for a in soup.select("a[href]"):
