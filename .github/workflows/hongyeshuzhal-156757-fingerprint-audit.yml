@@ -1,0 +1,101 @@
+name: Hongyeshuzhal 156757 - independent first chapter fingerprint audit
+on:
+  push:
+    branches: [collect/hongyeshuzhal-156757-20261125]
+    paths: [.github/workflows/hongyeshuzhal-156757-fingerprint-audit.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Audit public catalog and free opening page fingerprints
+        run: |
+          python - <<'PY'
+          import re,json,time,hashlib,unicodedata
+          from pathlib import Path
+          from urllib.parse import urljoin,urlsplit,urldefrag
+          import requests
+          from bs4 import BeautifulSoup
+          out=Path('out');out.mkdir()
+          s=requests.Session()
+          s.headers.update({'User-Agent':'med-public-reading-audit/1.0','Accept-Language':'zh-CN,zh;q=0.9'})
+          # From previously verified 3600-Han opening chapter in the local Biquting candidate archive.
+          # Only non-reversible hashes are embedded; no chapter bodies are stored.
+          reference_sha='7ee4a7da24dc4bbaa03f4fe72cbdae71799d2607ec7e2e1acc76dcd0e66abb30'
+          fingerprints='3daad08d177ebe14720a8606 eaa9a27337b7f40c628bde1f 070b8cde16486020da657cbf 2b5bb6787f896790321ff5c0 0ad13d21b66ce22dca5ed3e2 0718574c8863221ad6e739e1 3ddfac1ddb43b61a5fb35440 55a1eaa005da528a9a52e404 124ba8dea0b032c8f0aa7986 a07e7e0f2fda6db9a3710f50 3cc60d2076c0e9878c94af17 2ed905c2b2cab5e886199e42 59ab5ef04b2ddf35111414e5 0fc8299ccb3bdabe6eb68337 f4cbe9842718c10b4ee8e483 1d5a3cd204515de03e26d507 0c60c506011f7413816596af 5599a29aaacfcb9237cbbe5e 1fa567c3235dc72ba9f339a3 9fd3331207f97bc3fb9940ac 86a4839dfb97bdc4eb706c2a 068cafd789bff60f2e33d07d e8818e33fb16ca7645f80733 77fdd751ffb69120ef8b7418 093a033b02707ba2dacd14cf baa81153df527562d86eda9a 409f47c88bb949bc4594efe4 5fdc416e733a9d5b55ba2dc3'.split()
+          norm=lambda t:re.sub(r'\s+',' ',unicodedata.normalize('NFKC',t)).strip()
+          han=lambda t:''.join(re.findall(r'[\u3400-\u9fff]',t))
+          digest=lambda t:hashlib.sha256(t.encode()).hexdigest()
+          blocked=re.compile(r'captcha|access denied|verify you are human|just a moment|购买后阅读|付费阅读|登录后阅读|章节未解锁|订阅本章',re.I)
+          def get(url,host):
+              for _ in range(4):
+                  p=urlsplit(url)
+                  if p.scheme!='https' or p.hostname!=host: raise ValueError('outside source')
+                  time.sleep(1.2)
+                  r=s.get(url,timeout=(8,18),allow_redirects=False)
+                  if r.is_redirect: url=urljoin(url,r.headers['Location']);continue
+                  if r.status_code!=200: raise ValueError('HTTP '+str(r.status_code))
+                  soup=BeautifulSoup(r.content,'html.parser')
+                  title=norm(soup.title.get_text()) if soup.title else ''
+                  if blocked.search(title):raise ValueError('access restriction')
+                  return soup,r.url
+              raise ValueError('redirect limit')
+          results={'reference':{'han':3600,'sha256':reference_sha,'sampled_windows':len(fingerprints),'window_length':32,'stride':128,'previous_comparison_run':45486390556},'sources':{}}
+          for key,base in {
+              '97shuba':'https://www.97shuba.com/book/164497105.html',
+              'stone05':'https://www.stone05.com/107886/',
+              'wzxh120':'https://www.wzxh120.com/book/32986/',
+              'awbook':'https://m.awbook.cc/book/228352/',
+              'dingdian666':'https://www.dingdian666.com/xiaoshuo/310926/',
+          }.items():
+              rec={};results['sources'][key]=rec;host=urlsplit(base).hostname
+              try:
+                  soup,url=get(base,host)
+                  title=norm(soup.title.get_text()) if soup.title else ''
+                  if not re.search(r'(什么魔女|什麼魔女).*?(绝命药师|絕命藥師)',title): raise ValueError('book title not confirmed')
+                  rows={}
+                  for a in soup.select('a[href]'):
+                      t=norm(a.get_text(' ',strip=True));m=re.match(r'^第\s*(\d+)\s*章',t)
+                      u=urldefrag(urljoin(url,a['href']))[0]
+                      if m and urlsplit(u).hostname==host and urlsplit(u).scheme=='https':
+                          rows.setdefault(int(m.group(1)),{'title':t,'url':u})
+                  rec.update({'catalog_count':len(rows),'max_number':max(rows,default=0),'tail_count':len(set(rows)&set(range(726,929))),'missing_tail':sorted(set(range(726,929))-set(rows))})
+                  if 1 not in rows:raise ValueError('first chapter link not found')
+                  page,url=get(rows[1]['url'],host)
+                  visible=page.get_text(' ',strip=True)
+                  if blocked.search(visible[:2000]):raise ValueError('access restriction')
+                  rec['chapter1_url']=url
+                  rec['page_title']=norm(page.title.get_text()) if page.title else ''
+                  candidates=[];seen=set()
+                  for node in page.select('body,article,main,section,div,td,pre'):
+                      clone=BeautifulSoup(str(node),'html.parser')
+                      for z in clone.select('script,style,nav,header,footer,iframe,ins,form,button,h1,h2'):
+                          z.decompose()
+                      t=han(clone.get_text(' ',strip=True))
+                      if not 100<=len(t)<=16000:continue
+                      d=digest(t)
+                      if d in seen:continue
+                      seen.add(d)
+                      windows={digest(t[i:i+32])[:24] for i in range(len(t)-31)}
+                      matches=[i for i,x in enumerate(fingerprints) if x in windows]
+                      candidates.append({'tag':node.name,'id':node.get('id'),'classes':node.get('class',[]),'han':len(t),'sha256':d,'exact':d==reference_sha,'matched_windows':len(matches),'reference_window_count':len(fingerprints),'matched_reference_offsets':[i*128 for i in matches]})
+                  rec['samples']=sorted(candidates,key=lambda x:(x['exact'],x['matched_windows'],-x['han']),reverse=True)[:6]
+                  print('SOURCE',key,json.dumps({k:v for k,v in rec.items() if k!='missing_tail'},ensure_ascii=False),flush=True)
+              except Exception as e:
+                  rec['error']=str(e);print('STOP',key,str(e),flush=True)
+          (out/'audit.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hongyeshuzhal-156757-fingerprint-audit
+          path: out/audit.json
+          retention-days: 14
+          if-no-files-found: error
