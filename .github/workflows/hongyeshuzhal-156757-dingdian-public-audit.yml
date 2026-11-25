@@ -42,10 +42,30 @@ jobs:
               raise ValueError('redirect limit')
           result={}
           try:
-              official,_,_=get('https://www.xs8.cn/bookquery/foiqpeamosqb','www.xs8.cn')
-              ref=han(''.join(p.get_text(' ',strip=True) for p in official.select('section.section.chapter p')))
-              if len(ref)!=3600: raise ValueError('official reference changed')
+              refs={}
+              result['official_samples']={}
+              for label,official_url in {
+                  'xs8':'https://www.xs8.cn/bookquery/foiqpeamosqb',
+                  'readnovel':'https://www.readnovel.com/bookquery/foiqpeamurwz',
+                  'hongxiu':'https://www.hongxiu.com/bookquery/foiqpeamurwz',
+              }.items():
+                  try:
+                      official,_,_=get(official_url,urlsplit(official_url).hostname)
+                      heading=official.select_one('section.section.chapter')
+                      if heading is None: raise ValueError('chapter container absent')
+                      t=han(''.join(p.get_text(' ',strip=True) for p in heading.select('p')))
+                      meta={'han':len(t),'sha256':hashlib.sha256(t.encode()).hexdigest(),'first_chapter_anchor':('福斯特小姐' in t[:300] and '莱昂' in t[:500])}
+                      result['official_samples'][label]=meta
+                      if len(t)>=1500 and meta['first_chapter_anchor']: refs[label]=t
+                  except Exception as e:
+                      result['official_samples'][label]={'error':str(e)}
+              groups={}
+              for label,t in refs.items(): groups.setdefault(t,[]).append(label)
+              best=max(groups.items(),key=lambda kv:len(kv[1]),default=('',[]))
+              ref=best[0] if len(best[1])>=2 else ''
               result['reference_han']=len(ref)
+              result['reference_agreement']=best[1]
+              print('REFERENCE',json.dumps({'samples':result['official_samples'],'agreement':best[1],'usable':bool(ref)},ensure_ascii=False),flush=True)
               base='https://www.dingdian666.com/xiaoshuo/310926/'
               cat,url,size=get(base,'www.dingdian666.com')
               rows={}
@@ -77,11 +97,15 @@ jobs:
                   d=hashlib.sha256(t.encode()).hexdigest()
                   if d in seen:continue
                   seen.add(d)
-                  m=difflib.SequenceMatcher(None,ref,t,autojunk=False)
-                  matches=m.get_matching_blocks()
-                  hit=sum(b.size for b in matches)
-                  candidates.append({'tag':node.name,'id':node.get('id'),'classes':node.get('class',[]),'han':len(t),'reference_coverage':round(hit/len(ref),5),'sample_match_fraction':round(hit/len(t),5),'longest_match':max((b.size for b in matches),default=0),'exact':t==ref,'sha256':d})
-              rec['candidates']=sorted(candidates,key=lambda x:(x['reference_coverage'],x['sample_match_fraction']),reverse=True)[:10]
+                  if ref:
+                      m=difflib.SequenceMatcher(None,ref,t,autojunk=False)
+                      matches=m.get_matching_blocks()
+                      hit=sum(b.size for b in matches)
+                      metrics={'reference_coverage':round(hit/len(ref),5),'sample_match_fraction':round(hit/len(t),5),'longest_match':max((b.size for b in matches),default=0),'exact':t==ref}
+                  else:
+                      metrics={'reference_coverage':None,'sample_match_fraction':None,'longest_match':None,'exact':None}
+                  candidates.append({'tag':node.name,'id':node.get('id'),'classes':node.get('class',[]),'han':len(t),'sha256':d,'first_chapter_anchor':('福斯特小姐' in t[:300] and '莱昂' in t[:500]),**metrics})
+              rec['candidates']=sorted(candidates,key=lambda x:(x['reference_coverage'] or 0,x['sample_match_fraction'] or 0,x['first_chapter_anchor'],x['han']),reverse=True)[:10]
               print('PAGE',json.dumps(rec,ensure_ascii=False),flush=True)
           except Exception as e:
               result['error']=str(e)
