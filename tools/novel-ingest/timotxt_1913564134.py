@@ -61,7 +61,18 @@ def chapter(html, row):
     soup = BeautifulSoup(html, "html.parser")
     wanted = normalized(row["title"])
     headings = [normalized(h.get_text(" ", strip=True)) for h in soup.select("h1,h2,title")]
-    if not any(wanted in h for h in headings):
+    # Timotxt separates catalog display titles from reader headings. A bare
+    # ordinal is valid only if BOTH the unique H1 and HTML title independently
+    # agree with the ordinal already validated against the same-book URL.
+    ordinal = f"第{row['number']}章"
+    h1_nodes = soup.select("h1")
+    reader_ordinal_matches = (
+        len(h1_nodes) == 1
+        and normalized(h1_nodes[0].get_text(" ", strip=True)) == ordinal
+        and soup.title is not None
+        and normalized(soup.title.get_text(" ", strip=True)) == ordinal
+    )
+    if not (any(wanted in h for h in headings) or reader_ordinal_matches):
         # Diagnostic metadata only: never log chapter prose.
         print(json.dumps({"expected_title": row["title"],
                           "page_title": soup.title.get_text(" ", strip=True)[:200] if soup.title else None,
@@ -81,7 +92,9 @@ def chapter(html, row):
         u = urljoin(row["url"], a["href"])
         if re.fullmatch(re.escape(row["url"][:-5]) + r"[_-]\d+\.html", u):
             raise ValueError(f"Chapter {row['number']}: split URL detected")
-    for selector in SELECTORS:
+    # Diagnostic run verified the source-specific reader container. Do not
+    # fall back to larger generic containers that may include unrelated text.
+    for selector in (".chapter-content",):
         nodes = soup.select(selector)
         if len(nodes) != 1:
             continue
@@ -191,5 +204,20 @@ def main():
         (out / "status.json").write_text(json.dumps(status, ensure_ascii=False, indent=2), encoding="utf-8")
     return 0 if status["status"] == "PASS" else 1
 
+def selftest():
+    row = {"number": 1, "title": "第1 章 Example subtitle", "url": ROOT + "/1913564134/1.html"}
+    valid = "<title>第1章</title><h1>第1章</h1><div class='chapter-content'>" + "測試" * 300 + "</div>"
+    assert chapter(valid, row)[2] == 600
+    for bad in (valid.replace("第1章", "第2章"),
+                valid.replace("<title>第1章</title>", "<title>第2章</title>"),
+                valid.replace("class='chapter-content'", "id='content'"),
+                valid + "<a href='1_2.html'>下一頁</a>"):
+        try:
+            chapter(bad, row)
+        except ValueError:
+            continue
+        raise AssertionError("Invalid synthetic chapter accepted")
+
 if __name__ == "__main__":
+    selftest()
     raise SystemExit(main())
