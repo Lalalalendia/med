@@ -47,18 +47,18 @@ jobs:
                       if not title: continue
                       m=pattern.match(title)
                       if not m: continue
-                  n=int(m.group(1))
-                  evidence=' '.join(str(z.get('class',''))+' '+str(z.get('title',''))+' '+str(z.get('aria-label','')) for z in [a]+a.select('span,i,em,svg,use'))
-                  access='paid_label' if re.search(r'\bvip\b|付费|付費|订阅|訂閱|icon-vip',evidence,re.I) else 'free_label' if re.search(r'\bfree\b|免费|免費',evidence,re.I) else 'unknown'
-                  rows.append({'position':len(rows)+1,'number':n,'title':title,'access':access})
-                  numbers=[x['number'] for x in rows if x['number'] is not None]
+                      n=int(m.group(1))
+                      evidence=' '.join(str(z.get('class',''))+' '+str(z.get('title',''))+' '+str(z.get('aria-label','')) for z in [a]+a.select('span,i,em,svg,use'))
+                      access='paid_label' if re.search(r'\bvip\b|付费|付費|订阅|訂閱|icon-vip',evidence,re.I) else 'free_label' if re.search(r'\bfree\b|免费|免費',evidence,re.I) else 'unknown'
+                      rows.append({'position':len(rows)+1,'number':n,'title':title,'access':access})
+                  numbers=sorted({x['number'] for x in rows if x['number'] is not None})
                   if not numbers or len(numbers)<900: raise ValueError('catalog incomplete')
                   vols=[norm(h.get_text(' ',strip=True)) for h in node.select('h2,h3,h4')]
                   extra=[x for x in rows if x['number'] is None]
                   missing=sorted(set(range(1,max(numbers)+1))-set(numbers))
                   dup=sorted({n for n in numbers if numbers.count(n)>1})
-                  tail=[x for x in rows if x['number']>=726]
-                  info={'tail_access_counts':{s:sum(x['access']==s for x in tail) for s in ('paid_label','free_label','unknown')},'source':url,'entries':len(rows),'numbered':len(numbers),'max_number':max(numbers),'missing':missing,'duplicates':dup,'additional':extra,'volume_labels':vols,'first':rows[:10],'last':rows[-10:]}
+                  tail=[x for x in {x['number']:x for x in rows}.values() if x['number']>=726]
+                  info={'tail_access_counts':{s:sum(x['access']==s for x in tail) for s in ('paid_label','free_label','unknown')},'source':url,'entries':len(rows),'numbered':len(numbers),'max_number':max(numbers),'missing':missing,'duplicate_link_numbers':sorted({x['number'] for x in rows if sum(y['number']==x['number'] for y in rows)>1}),'additional':extra,'volume_labels':vols,'first':rows[:10],'last':rows[-10:]}
                   results[name]={'summary':info,'rows':rows}
                   print('CATALOG',name,json.dumps(info,ensure_ascii=False),flush=True)
                   (out/(name+'-catalog.json')).write_text(json.dumps(rows,ensure_ascii=False,indent=2),encoding='utf-8')
