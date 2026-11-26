@@ -1,0 +1,126 @@
+name: TWBook 1105578080 targeted recovery
+
+on:
+  push:
+    branches: [feat/twbook-1105578080-capture-20261126]
+    paths: [".github/workflows/twbook-1105578080-recovery.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Download original collection and audit
+        uses: actions/download-artifact@v4
+        with:
+          name: twbook-1105578080-corpus-45858991081
+          run-id: 45858991081
+          github-token: ${{ github.token }}
+          path: out/previous
+      - name: Targeted public-source recovery
+        run: |
+          python -u - <<'PY'
+          import hashlib, json, re, sys, time
+          from collections import defaultdict
+          from dataclasses import asdict
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import requests
+          sys.path.insert(0, "tools/twbook-public")
+          import fetch_twbook as tw
+
+          prior = Path("out/previous/full")
+          output = Path("out/recovery")
+          output.mkdir(parents=True, exist_ok=True)
+          audit = json.loads((prior / "audit.json").read_text(encoding="utf-8"))
+          rows = [json.loads(x) for x in (prior / "manifest.jsonl").read_text(encoding="utf-8").splitlines() if x]
+          catalog = {}
+          headings = {}
+          urls = set()
+          for line in (prior / "catalog.tsv").read_text(encoding="utf-8").splitlines():
+              ordinal, title, url = line.split("\t")
+              ordinal = int(ordinal)
+              catalog[ordinal] = (title, url)
+              urls.add(url)
+              m = re.match(r"\s*第\s*(\d+)\s*章", title)
+              if m:
+                  headings.setdefault(int(m.group(1)), []).append(url)
+
+          by_hash = defaultdict(list)
+          for ordinal, sha in audit["chapter_body_sha256"].items():
+              by_hash[sha].append(int(ordinal))
+          duplicates = {sha: sorted(nums) for sha, nums in by_hash.items() if len(nums) > 1}
+          targets = set()
+          for row in rows:
+              if row.get("status") != "ok":
+                  targets.add(row["ordinal"])
+          for nums in duplicates.values():
+              targets.update(nums[1:])
+          known_hashes = set(by_hash)
+          attempts = [(n, catalog[n][1], catalog[n][0], "catalog", n) for n in sorted(targets)]
+          # Only probe a normal absent public URL when the neighboring printed
+          # chapter numbers establish the URL convention. Never use alternate
+          # IPs, identities, or hosts to bypass a refusal.
+          base = "https://www.twbook.cc/1105578080/"
+          for n in audit["missing_printed_numbers"]:
+              candidate = f"{base}{n}.html"
+              adjacent = any(f"{base}{k}.html" in headings.get(k, []) for k in (n-1, n+1))
+              if adjacent and candidate not in urls:
+                  attempts.append((n, candidate, "", "numbered_public_url", 1000+n))
+
+          print("Duplicate groups:", json.dumps(duplicates))
+          print("Catalog recovery targets:", json.dumps([{"ordinal":n,"url":u,"catalog_title":t,"kind":k} for n,u,t,k,_ in attempts], ensure_ascii=False))
+          session = requests.Session()
+          session.headers.update({"User-Agent": tw.DEFAULT_USER_AGENT,
+                                  "Accept-Language": "zh-TW,zh;q=0.9"})
+          mapping = tw.load_mapping(tw.DEFAULT_MAPPING)
+          report = []
+          # Respect request limits: parser honors Retry-After and the run stops
+          # on persistent throttling or denial instead of switching identities.
+          for n, url, old_title, kind, file_no in attempts:
+              if urlparse(url).hostname != "www.twbook.cc" or not urlparse(url).path.startswith("/1105578080/"):
+                  raise RuntimeError("unexpected source")
+              result = tw.fetch_chapter(session, url, file_no, output, mapping, 20.0, False, 6)
+              row = asdict(result)
+              row.update({"catalog_ordinal": n if kind == "catalog" else None,
+                          "requested_printed_number": n if kind != "catalog" else None,
+                          "catalog_title": old_title, "kind": kind})
+              if result.status == "ok" and result.file:
+                  content = (output / result.file).read_text(encoding="utf-8")
+                  body = content.split("\n\n", 1)[1].strip()
+                  sha = hashlib.sha256(body.encode()).hexdigest()
+                  match = re.match(r"\s*第\s*(\d+)\s*章", result.title or "")
+                  row.update({"body_sha256": sha, "matches_previous_ordinals": by_hash.get(sha, []),
+                              "new_unique_body": sha not in known_hashes,
+                              "printed_number": int(match.group(1)) if match else None})
+              report.append(row)
+              print(json.dumps(row, ensure_ascii=False))
+              (output / "recovery.json").write_text(json.dumps({"duplicate_groups": duplicates,
+                  "missing_printed_numbers": audit["missing_printed_numbers"], "attempts": report,
+                  "planned_attempts": len(attempts), "complete_corpus_claimed": False}, ensure_ascii=False, indent=2), encoding="utf-8")
+              if result.http_status in {401, 403, 429}:
+                  print("Stopping after access refusal or persistent throttling.")
+                  break
+              time.sleep(5)
+          if not attempts:
+              (output / "recovery.json").write_text(json.dumps({"attempts": [], "complete_corpus_claimed": False}), encoding="utf-8")
+          PY
+      - name: Upload recovery candidates and diagnostic report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: twbook-1105578080-recovery-${{ github.run_id }}
+          path: out/recovery/
+          retention-days: 7
+          if-no-files-found: warn
