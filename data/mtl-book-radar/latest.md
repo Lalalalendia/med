@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-25T11:41:29+00:00
+Run: 2026-11-26T11:28:09+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-25T11:41:29+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `118822` [Soul Land Continent: Worship the Dead and Extract Divine Power!](https://wtr-lab.com/en/novel/118822/soul-land-continent-worship-the-dead-and-extract-divine-power) — catalog
-- **wtr-lab** `118093` [The Secret Realm Adventures of Mo Duoduo](https://wtr-lab.com/en/novel/118093/the-secret-realm-adventures-of-mo-duoduo) — catalog
-- **wtr-lab** `113625` [The Immortal World Descends: From the Start, a Fairy Takes Me to the Merciless Sect](https://wtr-lab.com/en/novel/113625/the-immortal-world-descends-from-the-start-a-fairy-takes-me-to-the-merciless-sect) — catalog
-- **wtr-lab** `118973` [Soul Land: Sister Qian Renxue, Brother Huo Yuhao!](https://wtr-lab.com/en/novel/118973/soul-land-sister-qian-renxue-brother-huo-yuhao) — catalog
-- **wtr-lab** `117821` [Transmigrated to the ’70s, I Became My Own Boss](https://wtr-lab.com/en/novel/117821/transmigrated-to-the-70-s-i-became-my-own-boss) — catalog
-- **wtr-lab** `118399` [Era Setting: I am the Only Male 'educated Youth' in the Entire Village](https://wtr-lab.com/en/novel/118399/era-setting-i-am-the-only-male-educated-youth-in-the-entire-village) — catalog
-- **wtr-lab** `118547` [Fake Prince of Liaozhai](https://wtr-lab.com/en/novel/118547/fake-prince-of-liaozhai) — catalog
-- **wtr-lab** `118591` [Let You Change the Red Flag H9, Not the Red Flag Commander](https://wtr-lab.com/en/novel/118591/let-you-change-the-red-flag-h-9-not-the-red-flag-commander) — catalog
-- **wtr-lab** `118625` [His Celebrity Has a Few Too Many Secret Identities](https://wtr-lab.com/en/novel/118625/his-celebrity-has-a-few-too-many-secret-identities) — catalog
-- **wtr-lab** `118629` [I Have a Gourmet Shop in the Countryside](https://wtr-lab.com/en/novel/118629/i-have-a-gourmet-shop-in-the-countryside) — catalog
-- **mtl-novel** `after-awakening-soul-stealing-everyone-i-see-is-a-skill-pack` [After Awakening Soul Stealing, Everyone I See is a Skill Pack](https://mtl-novel.com/novel/after-awakening-soul-stealing-everyone-i-see-is-a-skill-pack/) — catalog
-- **mtl-novel** `what-happened-to-being-a-straight-man-why-are-you-calling-me-husband` [What Happened to Being a Straight Man? Why are You Calling Me “husband”?!](https://mtl-novel.com/novel/what-happened-to-being-a-straight-man-why-are-you-calling-me-husband/) — catalog
-- **mtl-novel** `absolute-control-over-the-start-i-will-develop-my-own-immortality` [Absolute Control Over the Start, I Will Develop My Own Immortality](https://mtl-novel.com/novel/absolute-control-over-the-start-i-will-develop-my-own-immortality/) — catalog
-- **mtl-novel** `you-are-not-allowed-to-become-your-brothers-pets` [You are Not Allowed to Become Your Brother’s Pets!](https://mtl-novel.com/novel/you-are-not-allowed-to-become-your-brothers-pets/) — catalog
-- **mtl-novel** `reborn-its-my-turn-to-file-for-divorce-and-my-ceo-sisters-have-all-gone-crazy` [Reborn, It’s My Turn to File for Divorce, and My Ceo Sisters Have All Gone Crazy](https://mtl-novel.com/novel/reborn-its-my-turn-to-file-for-divorce-and-my-ceo-sisters-have-all-gone-crazy/) — catalog
-- **mtl-novel** `danmachi-starting-with-becoming-a-divine-apprentice` [Danmachi, Starting with Becoming a Divine Apprentice](https://mtl-novel.com/novel/danmachi-starting-with-becoming-a-divine-apprentice/) — catalog
-- **mtl-novel** `elf-rewriting-the-script-starting-with-black-stocking-hanako` [Elf: Rewriting the Script, Starting with Black Stocking Hanako](https://mtl-novel.com/novel/elf-rewriting-the-script-starting-with-black-stocking-hanako/) — catalog
-- **mtl-novel** `tang-wulin-you-already-have-a-way-to-die` [Tang Wulin, You Already Have a Way to Die!](https://mtl-novel.com/novel/tang-wulin-you-already-have-a-way-to-die/) — catalog
-- **mtl-novel** `simultaneous-transmigration-immortal-at-the-start` [Simultaneous Transmigration: Immortal at the Start](https://mtl-novel.com/novel/simultaneous-transmigration-immortal-at-the-start/) — catalog
-- **mtl-novel** `doomsday-carpenter-my-project-zomboid-system` [Doomsday Carpenter: My Project Zomboid System](https://mtl-novel.com/novel/doomsday-carpenter-my-project-zomboid-system/) — catalog
+- **wtr-lab** `119428` [The Gentle Wind Beyond the Courtyard of Gold](https://wtr-lab.com/en/novel/119428/the-gentle-wind-beyond-the-courtyard-of-gold) — catalog
+- **wtr-lab** `119158` [HP the Black Lady](https://wtr-lab.com/en/novel/119158/hp-the-black-lady) — catalog
+- **wtr-lab** `119410` [Star Train World: People's Alliance](https://wtr-lab.com/en/novel/119410/star-train-world-peoples-alliance) — catalog
+- **wtr-lab** `119171` [Su San, the Female Forensic Investigator](https://wtr-lab.com/en/novel/119171/su-san-the-female-forensic-investigator) — catalog
+- **wtr-lab** `119379` [A Crossover of Film and Television: Signing in and Gossiping in Various Worlds](https://wtr-lab.com/en/novel/119379/a-crossover-of-film-and-television-signing-in-and-gossiping-in-various-worlds) — catalog
+- **wtr-lab** `119449` [Joining a Dating Reality Show: Why is My Ex-girlfriend, the Diva, Holding Back?](https://wtr-lab.com/en/novel/119449/joining-a-dating-reality-show-why-is-my-ex-girlfriend-the-diva-holding-back) — catalog
+- **wtr-lab** `119462` [Echo Resonance World: I'm Actually Not a Resonator?](https://wtr-lab.com/en/novel/119462/echo-resonance-world-im-actually-not-a-resonator) — catalog
+- **wtr-lab** `119266` [I Flirted with the Villain's Mother](https://wtr-lab.com/en/novel/119266/i-flirted-with-the-villains-mother) — catalog
+- **wtr-lab** `119357` [In the Primordial Era, They Clung Tightly to Hongjun's Coattails from the Very Beginning](https://wtr-lab.com/en/novel/119357/in-the-primordial-era-they-clung-tightly-to-hongjuns-coattails-from-the-very-beginning) — catalog
+- **wtr-lab** `119315` [Check-in and Sign-in Starting from Soul Land Continent](https://wtr-lab.com/en/novel/119315/check-in-and-sign-in-starting-from-soul-land-continent) — catalog
+- **mtl-novel** `honkai-star-rails-reborn-as-a-baby-zetton-and-picked-up-by-kafka` [Honkai: Star Rails: Reborn As a Baby Zetton and Picked Up by Kafka](https://mtl-novel.com/novel/honkai-star-rails-reborn-as-a-baby-zetton-and-picked-up-by-kafka/) — catalog
+- **mtl-novel** `battle-through-the-heaven-choose-three-out-of-five-cheats-a-perfect-start` [Battle Through the Heaven: Choose Three Out of Five Cheats, a Perfect Start!](https://mtl-novel.com/novel/battle-through-the-heaven-choose-three-out-of-five-cheats-a-perfect-start/) — catalog
+- **mtl-novel** `qing-tian-what-should-i-do-if-my-brothers-love-me-too-much` [Qing Tian: What Should I Do If My Brothers Love Me Too Much?](https://mtl-novel.com/novel/qing-tian-what-should-i-do-if-my-brothers-love-me-too-much/) — catalog
+- **mtl-novel** `dark-souls-but-shinji-ikari` [Dark Souls, But Shinji Ikari](https://mtl-novel.com/novel/dark-souls-but-shinji-ikari/) — catalog
+- **mtl-novel** `accidentally-stumbled-into-a-demons-lair-at-the-start-i-promptly-deleted-my-account-and-respawned` [Accidentally Stumbled Into a Demon’s Lair at the Start? I Promptly Deleted My Account and Respawned](https://mtl-novel.com/novel/accidentally-stumbled-into-a-demons-lair-at-the-start-i-promptly-deleted-my-account-and-respawned/) — catalog
+- **mtl-novel** `its-better-to-use-your-mobile-phone-when-cultivating-immortals` [It’s Better to Use Your Mobile Phone When Cultivating Immortals](https://mtl-novel.com/novel/its-better-to-use-your-mobile-phone-when-cultivating-immortals/) — catalog
+- **mtl-novel** `can-we-extract-one-entry-per-year-even-if-its-a-simulation` [Can We Extract One Entry Per Year, Even If It’s a Simulation?](https://mtl-novel.com/novel/can-we-extract-one-entry-per-year-even-if-its-a-simulation/) — catalog
+- **mtl-novel** `livestream-antics-the-antics-i-pull-off-will-drive-the-entire-internet-crazy` [Livestream Antics: The Antics I Pull Off Will Drive the Entire Internet Crazy!](https://mtl-novel.com/novel/livestream-antics-the-antics-i-pull-off-will-drive-the-entire-internet-crazy/) — catalog
+- **mtl-novel** `infinite-opportunities-to-swallow-the-starry-sky` [Infinite Opportunities to Swallow the Starry Sky](https://mtl-novel.com/novel/infinite-opportunities-to-swallow-the-starry-sky/) — catalog
+- **mtl-novel** `crossover-taking-a-break-in-overlord` [Crossover: Taking a Break in Overlord](https://mtl-novel.com/novel/crossover-taking-a-break-in-overlord/) — catalog
