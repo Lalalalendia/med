@@ -1,0 +1,137 @@
+name: TWBook 1105578080 assemble verified partial corpus
+
+on:
+  push:
+    branches: [feat/twbook-1105578080-capture-20261126]
+    paths: [".github/workflows/twbook-1105578080-assemble.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: twbook-1105578080-corpus-45858991081
+          run-id: 45858991081
+          github-token: ${{ github.token }}
+          path: out/previous
+      - uses: actions/download-artifact@v4
+        with:
+          name: twbook-1105578080-recovery-45863779867
+          run-id: 45863779867
+          github-token: ${{ github.token }}
+          path: out/recovery
+      - name: Rehash original and recovered bodies; retain only unambiguous unique text
+        run: |
+          python - <<'PY'
+          import json, hashlib, re
+          from pathlib import Path
+          from collections import defaultdict
+
+          prior = Path("out/previous/full")
+          recovery = Path("out/recovery")
+          output = Path("out/verified-partial")
+          output.mkdir(parents=True, exist_ok=True)
+          (output / "chapters").mkdir(exist_ok=True)
+          expected = set(range(1, 208))
+          audit = json.loads((prior / "audit.json").read_text(encoding="utf-8"))
+          rec = json.loads((recovery / "recovery.json").read_text(encoding="utf-8"))
+          rows = {r["ordinal"]: r for r in map(json.loads, (prior / "manifest.jsonl").read_text(encoding="utf-8").splitlines())}
+          catalog = {}
+          for line in (prior / "catalog.tsv").read_text(encoding="utf-8").splitlines():
+              o, title, url = line.split("\t")
+              catalog[int(o)] = (title, url)
+          assert len(catalog) == len(rows) == 206
+          assert set(rows) == set(catalog)
+          recovered = {r["catalog_ordinal"]: r for r in rec["attempts"] if r.get("status") == "ok" and r.get("new_unique_body") and r.get("kind") == "catalog"}
+          candidates = defaultdict(list)
+          rejected = []
+          for ordinal, (heading, url) in sorted(catalog.items()):
+              row = rows[ordinal]
+              source = prior
+              sha = audit["chapter_body_sha256"].get(str(ordinal))
+              if row["status"] != "ok":
+                  if ordinal not in recovered:
+                      rejected.append({"ordinal": ordinal, "reason": "unrecovered"})
+                      continue
+                  row = recovered[ordinal]
+                  source = recovery
+                  sha = row["body_sha256"]
+              assert row["url"] == url, (ordinal, "provenance mismatch")
+              assert row["file"] == f"chapters/{ordinal:03d}.txt"
+              raw = (source / row["file"]).read_text(encoding="utf-8")
+              header, body = raw.split("\n\n", 1)
+              assert f"Source: {url}" in header.splitlines(), ordinal
+              body = body.strip()
+              digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+              assert digest == sha and len(body) == row["chars"], ordinal
+              assert row.get("unknown_total", 0) == 0
+              assert not re.search(r"[\uac00-\ud7a3]", body)
+              match = re.match(r"\s*第\s*(\d+)\s*章", heading)
+              if not match:
+                  rejected.append({"ordinal": ordinal, "reason": "no printed catalog number"})
+                  continue
+              number = int(match.group(1))
+              if number not in expected:
+                  rejected.append({"ordinal": ordinal, "reason": "out of expected range"})
+                  continue
+              candidates[number].append({"ordinal": ordinal, "title": heading,
+                  "url": url, "sha256": digest, "body": body, "recovered": source == recovery})
+          digest_numbers = defaultdict(set)
+          for n, group in candidates.items():
+              for r in group:
+                  digest_numbers[r["sha256"]].add(n)
+          records = []
+          bodies = {}
+          for number, group in sorted(candidates.items()):
+              hashes = {r["sha256"] for r in group}
+              if len(hashes) != 1 or len(digest_numbers[group[0]["sha256"]]) != 1:
+                  rejected.append({"printed_number": number, "reason": "ambiguous chapter assignment",
+                                   "ordinals": [r["ordinal"] for r in group]})
+                  continue
+              # Use catalog numbering, not the site's generic page ordinal;
+              # identical catalog-labelled duplicates are preserved as one text.
+              first = group[0]
+              body = first["body"]
+              filename = f"chapters/{number:03d}.txt"
+              content = f"{first['title']}\n\n{body}\n"
+              (output / filename).write_text(content, encoding="utf-8")
+              records.append({"printed_number": number, "title": first["title"],
+                 "source_urls": [r["url"] for r in group],
+                 "catalog_ordinals": [r["ordinal"] for r in group],
+                 "sha256": first["sha256"], "chars": len(body),
+                 "recovered": first["recovered"], "file": filename})
+              bodies[number] = content.rstrip()
+          missing = sorted(expected - set(bodies))
+          assert len({r["sha256"] for r in records}) == len(records)
+          # Never represent the partial corpus as complete; explicit gaps are
+          # inserted in the combined file and listed separately in the audit.
+          parts = [bodies.get(n, f"[MISSING CHAPTER {n:03d} - SOURCE NOT RECOVERED]") for n in sorted(expected)]
+          combined = output / "combined-PARTIAL.txt"
+          combined.write_text("\n\n".join(parts) + "\n", encoding="utf-8")
+          (output / "manifest.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in records), encoding="utf-8")
+          report = {"expected_chapters_provisional": 207, "unique_numbered_bodies": len(records),
+              "missing_printed_numbers": missing, "duplicate_catalog_files_excluded": sum(len(r["catalog_ordinals"])-1 for r in records),
+              "rejected": rejected, "total_body_characters": sum(r["chars"] for r in records),
+              "combined_sha256": hashlib.sha256(combined.read_bytes()).hexdigest(),
+              "complete": not missing and not rejected,
+              "numbering_basis": "printed TWBook catalog title; source ordinals are not original chapter numbers",
+              "qualification": "No independent original or mirror verified; hashes establish exact uniqueness, not literary completeness."}
+          (output / "audit.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          with open(__import__("os").environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write(f"## Partial corpus: {len(records)}/207 unique numbered texts\n\nMissing: {missing}\n")
+          PY
+      - name: Upload verified partial TXT and manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: twbook-1105578080-verified-PARTIAL
+          path: out/verified-partial/
+          retention-days: 7
+          if-no-files-found: error
