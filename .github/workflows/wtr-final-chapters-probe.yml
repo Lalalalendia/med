@@ -1,0 +1,136 @@
+name: WTR-LAB final chapter availability
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/wtr-final-chapters
+    paths:
+      - .github/workflows/wtr-final-chapters-probe.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/wtr-final-chapters-probe.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wtr-final-chapters-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Install browser for ordinary public page rendering
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: Inspect public reader pages without authentication
+        shell: bash
+        run: |
+          mkdir -p wtr-probe
+          python - <<'PY'
+          import json
+          import re
+          import time
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright, TimeoutError
+
+          base = "https://wtr-lab.com/en/novel/14962/witch-please-stick-to-the-script"
+          report = {"source": base, "pages": [], "access": "unknown"}
+          output = Path("wtr-probe/availability.json")
+
+          def save():
+              output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+          with sync_playwright() as pw:
+              browser = pw.chromium.launch()
+              context = browser.new_context(locale="en-US")
+              page = context.new_page()
+              errors = []
+              responses = []
+              page.on("pageerror", lambda e: errors.append(str(e)[:250]))
+              page.on("response", lambda r: responses.append({"status": r.status, "host": r.url.split("/")[2] if "://" in r.url else "", "type": r.request.resource_type}) if r.status >= 400 else None)
+              for number in [None, 481, 497, 504]:
+                  url = base if number is None else f"{base}/chapter-{number}"
+                  errors.clear()
+                  responses.clear()
+                  record = {"number": number, "url": url}
+                  report["pages"].append(record)
+                  try:
+                      response = page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                      record["status"] = response.status if response else None
+                      record["final_url"] = page.url
+                      if record["status"] in (401, 403, 429):
+                          report["access"] = "restricted_or_rate_limited"
+                          save()
+                          break
+                      try:
+                          page.wait_for_load_state("networkidle", timeout=12000)
+                      except TimeoutError:
+                          pass
+                      if number is None:
+                          toc = page.get_by_text("Table of Contents", exact=True)
+                          if toc.count() and toc.first.is_visible():
+                              toc.first.click(timeout=5000)
+                              page.wait_for_timeout(2500)
+                          record["toc_controls"] = page.locator("button, [role=tab]").all_inner_texts()[:40]
+                      else:
+                          page.wait_for_timeout(5000)
+                      record["title"] = page.title()
+                      record["headings"] = page.locator("h1, h2, h3").all_inner_texts()[:15]
+                      text = page.locator("body").inner_text(timeout=10000)
+                      lower = text.lower()
+                      record["reader_ui"] = {"buttons": page.locator("button, [role=button]").all_inner_texts()[:35], "alerts": page.locator("[role=alert], [role=status]").all_inner_texts()[:15]}
+                      if len(re.findall(r"\S+", text)) <= 250:
+                          record["short_page_ui"] = text[:1600]
+                      record["page_errors"] = errors[:15]
+                      record["http_errors"] = responses[:25]
+                      record["visible_words"] = len(re.findall(r"\S+", text))
+                      record["locked"] = bool(re.search(r"chapter locked|unlock this chapter|sign in to unlock", lower))
+                      record["challenge"] = bool(re.search(r"verify you are human|checking your browser|attention required|just a moment", lower))
+                      record["candidate_containers"] = page.evaluate("""() => {
+                          const selectors = [
+                            'article', 'main', '#chapter-content',
+                            '[class*="chapter-content"]', '[class*="reader-content"]',
+                            '[class*="chapterContent"]', '[class*="readerContent"]'
+                          ];
+                          return selectors.flatMap(selector =>
+                            [...document.querySelectorAll(selector)].slice(0, 5).map(el => ({
+                              selector,
+                              words: (el.innerText || '').trim().split(/\\s+/).filter(Boolean).length,
+                              paragraphs: el.querySelectorAll('p').length
+                            }))
+                          );
+                      }""")
+                      if number is None:
+                          record["chapter_links"] = page.evaluate("""() => [...new Set(
+                              [...document.querySelectorAll('a[href]')].map(a => a.href)
+                              .filter(href => href.includes('/novel/14962/') && /chapter-\\d+/.test(href))
+                          )].slice(-60)""")
+                      if record["locked"] or record["challenge"]:
+                          report["access"] = "restricted_or_challenge"
+                          save()
+                          break
+                      report["access"] = "pages_rendered"
+                  except Exception as exc:
+                      record["error"] = type(exc).__name__ + ": " + str(exc)[:500]
+                  save()
+                  print(json.dumps(record, ensure_ascii=False), flush=True)
+                  time.sleep(3)
+              context.close()
+              browser.close()
+          save()
+          PY
+      - name: Upload diagnostic report only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wtr-final-chapters-availability
+          path: wtr-probe/availability.json
+          if-no-files-found: error
+          retention-days: 7
