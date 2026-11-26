@@ -1,0 +1,105 @@
+name: TWBook 1105578080 locate original author catalog
+
+on:
+  push:
+    branches: [feat/twbook-1105578080-capture-20261126]
+    paths: [".github/workflows/twbook-1105578080-source-search.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Inspect public book metadata and author catalog
+        run: |
+          python -u - <<'PY'
+          import json, re, time
+          from pathlib import Path
+          from urllib.parse import urljoin, urlparse
+          import requests
+          from bs4 import BeautifulSoup
+          out = Path("out")
+          out.mkdir(exist_ok=True)
+          session = requests.Session()
+          session.headers.update({"User-Agent": "Mozilla/5.0", "Accept-Language": "zh-CN,zh;q=0.9"})
+          report = []
+          blocked = set()
+          author_ids = set()
+          author_names = {"与菲", "與菲"}
+          target = ("闭嘴吧祖宗", "閉嘴吧祖宗", "皇宫塌了", "皇宮塌了", "温小暖", "溫小暖", "至尊乌鸦嘴系统", "至尊烏鴉嘴系統")
+          def inspect(url, kind):
+              host = urlparse(url).hostname
+              if host in blocked:
+                  return
+              item = {"url": url, "kind": kind}
+              report.append(item)
+              try:
+                  r = session.get(url, timeout=15)
+                  item.update(status=r.status_code, final_url=r.url, bytes=len(r.content))
+                  if r.status_code in (401, 403, 429):
+                      blocked.add(host)
+                  if r.status_code != 200:
+                      print(json.dumps(item, ensure_ascii=False))
+                      return
+                  r.encoding = "utf-8"
+                  soup = BeautifulSoup(r.text, "html.parser")
+                  item["title"] = soup.title.get_text(strip=True) if soup.title else ""
+                  item["meta"] = [{"name": m.get("property") or m.get("name"), "value": m.get("content", "")[:300]}
+                                  for m in soup.select("meta[property],meta[name]")
+                                  if any(x in (m.get("property") or m.get("name") or "").lower() for x in ("author", "book", "title", "canonical"))]
+                  links = []
+                  for a in soup.select("a[href]"):
+                      href = urljoin(r.url, a["href"])
+                      label = a.get_text(" ", strip=True)
+                      if "/author-page/" in href or any(n == label for n in author_names) or (kind == "author" and "/page/" in href):
+                          links.append({"text": label[:200], "url": href})
+                  item["links"] = links[:100]
+                  item["target_terms_found"] = [x for x in target if x in soup.get_text(" ", strip=True) or x in r.text]
+                  if host == "fanqienovel.com" and kind == "book":
+                      for a in links:
+                          m = re.search(r"/author-page/(\d{6,22})(?:[/?#]|$)", a["url"])
+                          if m:
+                              author_ids.add(m.group(1))
+                      # Limit metadata search to author-identified fields, not arbitrary numbers.
+                      decoded = re.sub(r'\\u([0-9a-fA-F]{4})', lambda m: chr(int(m.group(1), 16)), r.text)
+                      decoded = decoded.replace(r'\"', '"')
+                      for m in re.finditer(r'"(?:author_?id|authorId|authorUserId|author_user_id)"\s*:\s*"?(\d{6,22})', decoded, re.I):
+                          author_ids.add(m.group(1))
+                      item["author_ids"] = sorted(author_ids)
+                      # Author metadata objects may instead use user_id or uid.
+                      contexts = []
+                      for m in re.finditer(r'["\x27](?:authorInfo|author_info|authorName|author_name|authorId|author_id)["\x27]', decoded):
+                          contexts.append(decoded[max(0,m.start()-30):m.start()+300])
+                      item["author_metadata_context"] = contexts[:12]
+                  if kind == "author":
+                      item["visible_catalog"] = [{"title": e.get_text(" ", strip=True)[:200]} for e in soup.select("h1,h2,h3")][:80]
+                  print(json.dumps(item, ensure_ascii=False))
+              except requests.RequestException as exc:
+                  item["error"] = str(exc)[:300]
+                  print(json.dumps(item, ensure_ascii=False))
+              finally:
+                  time.sleep(2)
+          inspect("https://fanqienovel.com/page/7518431372432641049", "book")
+          inspect("https://fanqienovel.com/page/7579663419255573566", "book")
+          inspect("https://www.twbook.cc/1105578080/", "twbook")
+          for author_id in sorted(author_ids)[:4]:
+              inspect("https://fanqienovel.com/author-page/" + author_id, "author")
+          if not author_ids:
+              inspect("https://fanqienovel.com/search?search_type=author&key=%E4%B8%8E%E8%8F%B2", "search")
+          (out / "source-search.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: twbook-1105578080-source-search
+          path: out/source-search.json
+          retention-days: 7
+          if-no-files-found: warn
