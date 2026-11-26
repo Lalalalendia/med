@@ -1,0 +1,114 @@
+name: TWBook 1512579299 targeted recovery probe
+
+on:
+  push:
+    branches:
+      - feat/twbook-1512579299-capture-20261116
+    paths:
+      - ".github/workflows/twbook-1512579299-recovery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe-missing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install existing TWBook parser dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+
+      - name: Examine alternate public TWBook chapter paths only
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import sys
+          import time
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import requests
+          sys.path.insert(0, "tools/twbook-public")
+          import fetch_twbook as tw
+
+          root = Path("out/twbook-recovery-1512579299")
+          root.mkdir(parents=True, exist_ok=True)
+          session = requests.Session()
+          session.headers.update({
+              "User-Agent": tw.DEFAULT_USER_AGENT,
+              "Accept-Language": "zh-TW,zh;q=0.9,en;q=0.5",
+          })
+          outcomes = []
+          for n in (69, 70):
+              candidates = [
+                  (f"https://www.twbook.cc/1512579299/{n}.html", "canonical"),
+                  (f"https://twbook.cc/1512579299/{n}.html", "apex"),
+                  (f"https://www.twbook.cc/1512579299/{n}.html?view=1", "public-query-variant"),
+                  (f"https://www.twbook.cc/1512579299/{n}_1.html", "possible-continuation"),
+                  (f"https://www.twbook.cc/1512579299/{n}_1_1.html", "possible-continuation"),
+              ]
+              for url, kind in candidates:
+                  row = {"chapter": n, "candidate_type": kind, "url": url}
+                  try:
+                      response, html = tw.fetch_html(session, url, 12, max_attempts=2)
+                      row["http_status"] = response.status_code
+                      row["final_url"] = response.url
+                      if response.status_code < 400:
+                          soup = tw.soup_from_html(html)
+                          row["title"] = tw.extract_title(soup)
+                          try:
+                              body = tw.extract_content(soup)
+                          except ValueError:
+                              body = ""
+                          row["chars"] = len(body)
+                          row["cjk"] = tw.cjk_count(body)
+                          row["hangul"] = tw.hangul_count(body)
+                          row["plausible"] = tw.body_is_plausible(body)
+                          row["body_sha256"] = hashlib.sha256(body.encode()).hexdigest()
+                          row["placeholder"] = ("章節錯誤" in body or "章节错误" in body)
+                          row["short_excerpt"] = body[:80] if len(body) < 120 else None
+                          if row["plausible"] and kind != "possible-continuation":
+                              # Only the exact chapter base URL can be a trusted full-chapter candidate.
+                              # Verify recovery via independent randomized renderings with fail-closed decoder.
+                              recovered = tw.fetch_twbook_chapter(
+                                  session, url, n, root / "recovered", {}, 12.0, False, 6
+                              )
+                              row["recovery_status"] = recovered.status
+                              row["recovery_title"] = recovered.title
+                              row["recovery_chars"] = recovered.chars
+                              row["recovery_note"] = recovered.note
+                          elif row["plausible"]:
+                              row["recovery_status"] = "diagnostic_only_continuation_not_full_chapter"
+                  except Exception as e:
+                      row["error"] = str(e)[:250]
+                  outcomes.append(row)
+                  print(json.dumps(row, ensure_ascii=False), flush=True)
+                  time.sleep(0.75)
+          report = {
+              "book_id": "1512579299",
+              "missing_source_chapters": [69, 70],
+              "results": outcomes,
+              "valid_full_base_candidates": [
+                  x["chapter"] for x in outcomes
+                  if x.get("recovery_status") == "ok" and x["candidate_type"] != "possible-continuation"
+              ],
+              "note": "A short 200-OK placeholder is not a chapter. A continuation path is diagnostics only; do not fill gaps from an unverified partial page.",
+          }
+          (root / "diagnostics.json").write_text(
+              json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+          )
+          PY
+
+      - name: Upload recovery diagnostics and any verified text
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: twbook-1512579299-recovery-${{ github.run_id }}
+          path: out/twbook-recovery-1512579299/**
+          retention-days: 7
+          if-no-files-found: warn

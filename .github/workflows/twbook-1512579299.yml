@@ -1,0 +1,283 @@
+name: TWBook 1512579299 full collection and audit
+
+on:
+  push:
+    branches:
+      - feat/twbook-1512579299-capture-20261116
+    paths:
+      - ".github/workflows/twbook-1512579299.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: twbook-1512579299-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    name: Probe then collect complete TWBook catalog
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pytest
+
+      - name: Verify existing TWBook parser
+        run: pytest -q tools/twbook-public/test_twbook.py
+
+      - name: Probe first 3 chapters (fail closed)
+        id: probe
+        continue-on-error: true
+        run: |
+          python tools/twbook-public/fetch_twbook.py \
+            --book-id 1512579299 \
+            --start 1 --end 3 \
+            --delay 0.8 --learn-attempts 6 \
+            --out-dir out/probe
+
+      - name: Verify sample bodies, numbering, and substitutions
+        id: probe_audit
+        if: steps.probe.outcome == 'success'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path("out/probe")
+          manifest = root / "manifest.jsonl"
+          catalog = root / "catalog.tsv"
+          if not manifest.exists() or not catalog.exists():
+              raise SystemExit("Probe manifest/catalog missing")
+          rows = [json.loads(x) for x in manifest.read_text(encoding="utf-8").splitlines() if x.strip()]
+          catalog_count = sum(bool(x.strip()) for x in catalog.read_text(encoding="utf-8").splitlines())
+          if catalog_count < 134:
+              raise SystemExit(f"Only {catalog_count} catalog chapters (expected at least 134)")
+          if [x.get("ordinal") for x in rows] != [1, 2, 3]:
+              raise SystemExit("Probe has missing/reordered chapters")
+          for row in rows:
+              n = row["ordinal"]
+              if row.get("status") != "ok" or row.get("unknown_total"):
+                  raise SystemExit(f"Probe chapter {n} invalid: {row.get('status')}")
+              path = root / f"chapters/{n:03d}.txt"
+              if not path.is_file():
+                  raise SystemExit(f"Probe chapter {n} file missing")
+              text = path.read_text(encoding="utf-8")
+              if f"Chapter: {n}\n" not in text or "\n\n" not in text:
+                  raise SystemExit(f"Probe chapter {n} has invalid header")
+              body = text.split("\n\n", 1)[1].strip()
+              hanzi = sum("\u3400" <= c <= "\u9fff" for c in body)
+              if len(body) < 300 or hanzi < 120:
+                  raise SystemExit(f"Probe chapter {n} body too short")
+              if any("\uac00" <= c <= "\ud7a3" for c in body):
+                  raise SystemExit(f"Probe chapter {n} contains unresolved Hangul")
+          print(f"Probe PASS: 3/3 clean chapters, catalog={catalog_count}")
+          PY
+
+      - name: Collect every chapter currently listed in catalog
+        id: harvest
+        if: steps.probe.outcome == 'success' && steps.probe_audit.outcome == 'success'
+        continue-on-error: true
+        run: |
+          python tools/twbook-public/fetch_twbook.py \
+            --book-id 1512579299 \
+            --start 1 \
+            --delay 0.8 --learn-attempts 6 \
+            --out-dir out/full \
+            --allow-incomplete
+
+      - name: Independent full-corpus integrity audit
+        id: audit
+        if: always()
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import re
+          from collections import Counter
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from urllib.parse import urlparse
+
+          root = Path("out/full")
+          root.mkdir(parents=True, exist_ok=True)
+          errors = []
+          hashes = {}
+          bodies = []
+          total_chars = 0
+          total_cjk = 0
+          catalog_path = root / "catalog.tsv"
+          manifest_path = root / "manifest.jsonl"
+          catalog = []
+          rows = []
+
+          if catalog_path.exists():
+              for line in catalog_path.read_text(encoding="utf-8").splitlines():
+                  if line.strip():
+                      fields = line.split("\t")
+                      if len(fields) < 3:
+                          errors.append(f"Malformed catalog line: {line[:80]}")
+                          continue
+                      catalog.append((fields[0], fields[-1]))
+          else:
+              errors.append("catalog.tsv not produced")
+
+          if manifest_path.exists():
+              for line in manifest_path.read_text(encoding="utf-8").splitlines():
+                  if line.strip():
+                      try:
+                          rows.append(json.loads(line))
+                      except json.JSONDecodeError:
+                          errors.append("Invalid manifest JSONL entry")
+          else:
+              errors.append("manifest.jsonl not produced")
+
+          count = len(catalog)
+          if count < 134:
+              errors.append(f"Catalog has {count} entries, expected at least 134")
+          expected = list(range(1, count + 1))
+          actual = [r.get("ordinal") for r in rows]
+          if actual != expected:
+              errors.append(f"Manifest ordinal sequence incorrect: {len(actual)} rows; expected {count}")
+          status_counts = dict(Counter(r.get("status", "unknown") for r in rows))
+
+          for n in expected:
+              if n > len(rows):
+                  errors.append(f"Chapter {n} absent in manifest")
+                  continue
+              row = rows[n - 1]
+              if row.get("ordinal") != n:
+                  continue
+              try:
+                  source_url = catalog[n - 1][1]
+                  parsed = urlparse(source_url)
+                  if (parsed.hostname not in {"twbook.cc", "www.twbook.cc"}
+                          or not parsed.path.startswith("/1512579299/")):
+                      errors.append(f"Chapter {n} catalog source differs from intended book")
+              except Exception:
+                  errors.append(f"Chapter {n} invalid catalog URL")
+                  continue
+              if row.get("url") != source_url:
+                  errors.append(f"Chapter {n} manifest/catalog provenance differs")
+              if row.get("status") != "ok" or row.get("unknown_total", 0):
+                  errors.append(f"Chapter {n} not clean: {row.get('status')} ({row.get('note')})")
+                  continue
+              expected_path = f"chapters/{n:03d}.txt"
+              if row.get("file") != expected_path:
+                  errors.append(f"Chapter {n} unexpected file path: {row.get('file')}")
+                  continue
+              p = root / expected_path
+              if not p.is_file():
+                  errors.append(f"Chapter {n} text file missing")
+                  continue
+              content = p.read_text(encoding="utf-8")
+              if "\n\n" not in content:
+                  errors.append(f"Chapter {n} missing header/body separator")
+                  continue
+              header, body = content.split("\n\n", 1)
+              body = body.strip()
+              if f"Chapter: {n}" not in header.splitlines():
+                  errors.append(f"Chapter {n} header ordinal mismatch")
+              if f"Source: {source_url}" not in header.splitlines():
+                  errors.append(f"Chapter {n} source header mismatch")
+              cjk = sum("\u3400" <= c <= "\u9fff" for c in body)
+              if len(body) < 300 or cjk < 120:
+                  errors.append(f"Chapter {n} too short: {len(body)} chars / {cjk} CJK")
+              if len(body) != row.get("chars") or cjk != row.get("cjk_chars"):
+                  errors.append(f"Chapter {n} length differs from manifest")
+              if any("\uac00" <= c <= "\ud7a3" for c in body):
+                  errors.append(f"Chapter {n} unresolved Hangul")
+              if re.search(r"<(?:html|script|body)\b", body, flags=re.IGNORECASE):
+                  errors.append(f"Chapter {n} HTML markup in extracted body")
+              title = row.get("title") or ""
+              title_number = re.match(r"\s*第\s*(\d+)\s*章", title)
+              if title_number and int(title_number.group(1)) != n:
+                  errors.append(f"Chapter {n} title is numbered {title_number.group(1)}")
+              digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+              if digest in hashes.values():
+                  errors.append(f"Chapter {n} duplicates another chapter body")
+              hashes[str(n)] = digest
+              bodies.append(content.rstrip())
+              total_chars += len(body)
+              total_cjk += cjk
+
+          combined = root / "combined.txt"
+          if not combined.is_file():
+              errors.append("combined.txt not produced")
+          elif len(bodies) == count and count >= 134:
+              expected_combined = ("\n\n" + "=" * 72 + "\n\n").join(bodies) + "\n"
+              if combined.read_text(encoding="utf-8") != expected_combined:
+                  errors.append("combined.txt differs from chapter files")
+          else:
+              errors.append("Cannot verify combined.txt because chapter files are incomplete")
+
+          report = {
+              "book_id": "1512579299",
+              "catalog_url": "https://www.twbook.cc/1512579299/dir",
+              "expected_minimum_chapters": 134,
+              "catalog_count": count,
+              "manifest_count": len(rows),
+              "status_counts": status_counts,
+              "validated_chapter_files": len(bodies),
+              "body_characters": total_chars,
+              "body_cjk_characters": total_cjk,
+              "combined_sha256": hashlib.sha256(combined.read_bytes()).hexdigest() if combined.is_file() else None,
+              "chapter_body_sha256": hashes,
+              "complete": not errors and count >= 134 and len(bodies) == count,
+              "checked_at_utc": datetime.now(timezone.utc).isoformat(),
+              "problems": errors,
+          }
+          (root / "audit.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps({k: v for k, v in report.items() if k != "chapter_body_sha256"}, ensure_ascii=False, indent=2))
+          if errors:
+              raise SystemExit(1)
+          PY
+
+      - name: Write concise GitHub job summary
+        if: always()
+        run: |
+          if [ -f out/full/summary.md ]; then
+            cat out/full/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f out/full/audit.json ]; then
+            python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          data = json.loads(Path("out/full/audit.json").read_text(encoding="utf-8"))
+          print(f"\n## Independent audit: {'PASS' if data['complete'] else 'FAIL'}")
+          print(f"- Catalog chapters: {data['catalog_count']}")
+          print(f"- Validated text files: {data['validated_chapter_files']}")
+          print(f"- Problems: {len(data['problems'])}")
+          PY
+          fi
+
+      - name: Upload full text and diagnostics as temporary artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: twbook-1512579299-corpus-${{ github.run_id }}
+          path: |
+            out/full/**
+            out/probe/summary.md
+            out/probe/manifest.jsonl
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Enforce probe, collection, and independent audit
+        if: always()
+        env:
+          PROBE: ${{ steps.probe.outcome }}
+          PROBE_AUDIT: ${{ steps.probe_audit.outcome }}
+          HARVEST: ${{ steps.harvest.outcome }}
+          AUDIT: ${{ steps.audit.outcome }}
+        run: |
+          test "$PROBE" = success
+          test "$PROBE_AUDIT" = success
+          test "$HARVEST" = success
+          test "$AUDIT" = success
