@@ -1,77 +1,82 @@
-name: Novel verified RAW batch from config
+name: Aura Farming archived RAW recovery
 
 on:
   pull_request:
     paths:
       - '.github/novel-batches/aura-farming.json'
       - '.github/workflows/novel-source-batch-from-config.yml'
-      - 'tools/novel-ingest/source_ingest.py'
-      - 'tools/novel-ingest/test_source_ingest.py'
-  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  acquire:
+  recover:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout previously verified archive 91-95 and 97
+        uses: actions/checkout@v4
         with:
-          python-version: '3.12'
-      - name: Install fetch dependencies
-        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Regression tests
-        run: python -m unittest discover -s tools/novel-ingest -p test_source_ingest.py -v
-      - name: Fetch public numbered story chapter batch
-        id: ingest
+          ref: dfa2873a8abd7e543969d170e6448f50d7fbda01
+          path: archive-a
+          persist-credentials: false
+      - name: Checkout previously verified archive 98-99
+        uses: actions/checkout@v4
+        with:
+          ref: 228f52ec92e91928d9533ae81981930f85e0d714
+          path: archive-b
+          persist-credentials: false
+      - name: Verify recovered source files byte for byte
         run: |
           python - <<'PY'
+          import hashlib
           import json
-          import subprocess
-          import sys
           from pathlib import Path
+          import shutil
 
-          config = json.loads(Path(".github/novel-batches/aura-farming.json").read_text(encoding="utf-8"))
-          start, end = int(config["start"]), int(config["end"])
-          if not 1 <= start <= end or end - start + 1 > 30:
-              raise SystemExit("Unsafe range")
-          cmd = [
-              sys.executable, "tools/novel-ingest/source_ingest.py",
-              "--source", config["source"], "--book-url", config["book_url"],
-              "--book-key", config["book_key"],
-              "--start", str(start), "--end", str(end),
-              "--delay", str(config.get("delay", 1.5)),
-              "--min-chars", str(config.get("min_chars", 400)),
-              "--rulate-url", config.get("rulate_url", ""),
-              "--notion-book-url", config.get("notion_book_url", ""),
-              "--out-dir", "out/novel-source",
+          target = Path("out/novel-source")
+          (target / "raw").mkdir(parents=True, exist_ok=True)
+          expected = set(range(91, 106))
+          sources = [
+              (Path("archive-a"), "manifest.json", {91, 92, 93, 94, 95, 97}),
+              (Path("archive-b"), "receipt.json", {98, 99}),
           ]
-          raise SystemExit(subprocess.call(cmd))
+          recovered = {}
+          for base, manifest_name, numbers in sources:
+              old = json.loads((base / manifest_name).read_text(encoding="utf-8"))
+              rows = {r["ordinal"]: r for r in old["chapters"] if r["ordinal"] in numbers}
+              if set(rows) != numbers:
+                  raise RuntimeError(f"Missing archived manifest rows: {numbers - set(rows)}")
+              for number, row in sorted(rows.items()):
+                  name = f"{number:04d}.txt"
+                  source = base / "raw" / name
+                  data = source.read_bytes()
+                  digest = hashlib.sha256(data).hexdigest()
+                  chars = sum(not c.isspace() for c in data.decode("utf-8"))
+                  if digest != row["sha256"] or chars != row["chars"]:
+                      raise RuntimeError(f"Integrity mismatch: {number}")
+                  shutil.copyfile(source, target / "raw" / name)
+                  recovered[number] = {
+                      "ordinal": number, "title": row["title"], "source_url": row["url"],
+                      "sha256": digest, "chars": chars, "bytes": len(data),
+                      "status": "verified_archived",
+                  }
+                  print(f"CHAPTER {number}: SHA256 OK {chars} characters {len(data)} bytes")
+          missing = sorted(expected - set(recovered))
+          assert set(recovered) == {91, 92, 93, 94, 95, 97, 98, 99}
+          report = {
+              "requested": sorted(expected), "recovered": sorted(recovered),
+              "missing": missing, "status": "PARTIAL" if missing else "PASS",
+              "chapters": list(recovered.values()),
+              "notion_sync": False, "live_fetch": False,
+          }
+          (target / "manifest.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(f"STATUS: {report['status']}; VERIFIED: {len(recovered)}/{len(expected)}; MISSING: {missing}")
           PY
-      - name: Read batch receipt
-        if: always()
-        run: |
-          if [ -f out/novel-source/summary.md ]; then
-            cat out/novel-source/summary.md >> "$GITHUB_STEP_SUMMARY"
-          fi
-          if [ -f out/novel-source/manifest.json ]; then
-            python - <<'PY'
-          import json
-          from pathlib import Path
-          data = json.loads(Path("out/novel-source/manifest.json").read_text(encoding="utf-8"))
-          print("STATUS:", data["status"], "CATALOG:", data["catalog_count"], "GAPS:", data["catalog_gaps"])
-          for row in data["chapters"]:
-              print("CHAPTER", row["ordinal"], row["status"], row.get("chars"), row.get("sha256"), row.get("error", ""))
-          PY
-          fi
-      - name: Archive verified RAW and failure receipts
-        if: always()
+      - name: Archive recovered originals and verification receipt
         uses: actions/upload-artifact@v4
         with:
-          name: novel-raw-source-batch
+          name: aura-farming-recovered-091-099
           path: out/novel-source/**
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 7
