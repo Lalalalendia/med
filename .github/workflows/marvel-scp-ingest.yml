@@ -1,0 +1,195 @@
+name: Marvel SCP - authorized source ingest
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/marvel-scp-ingest.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    if: github.head_ref == 'ingest/marvel-scp-199' || github.ref_name == 'ingest/marvel-scp-199'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Validate source and collect public chapters
+        id: collect
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import re
+          import time
+          from pathlib import Path
+          from urllib.parse import urljoin, urlsplit
+          from urllib.robotparser import RobotFileParser
+          import requests
+          from bs4 import BeautifulSoup
+
+          base = 'https://www.webnovel.com'
+          book = '35034122308326305'
+          book_url = base + '/book/reborn-in-a-mixed-marvel-universe-as-the-o5-council-the-scp-foundation_' + book
+          expected = 199
+          root = Path('out/marvel-scp-foundation')
+          root.mkdir(parents=True, exist_ok=True)
+          raw = root / 'raw'
+          raw.mkdir(exist_ok=True)
+          agent = 'NovelSourceIngest/1.0 (authorized public chapter collection)'
+          session = requests.Session()
+          session.headers.update({'User-Agent': agent, 'Accept-Language': 'en'})
+          report = {'book_id': book, 'book_url': book_url, 'expected': expected,
+                    'status': 'NOT_COMPLETE', 'catalog': [], 'chapters': [], 'error': None}
+          robot = RobotFileParser()
+          delay = 3.0
+          def write_report():
+              report['verified_count'] = sum(x['status'] == 'ok' for x in report['chapters'])
+              (root / 'manifest.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+              (root / 'summary.md').write_text(
+                  '# Marvel SCP source ingest\n\n'
+                  + f"- Status: {report['status']}\n"
+                  + f"- Catalog: {len(report['catalog'])}/{expected}\n"
+                  + f"- Verified: {report['verified_count']}/{expected}\n"
+                  + f"- Error: {report['error'] or 'none'}\n", encoding='utf-8')
+          def allowed(url):
+              u = urlsplit(url)
+              if u.scheme != 'https' or u.netloc != 'www.webnovel.com' or not robot.can_fetch(agent, url):
+                  raise RuntimeError('Source restrictions disallow request: ' + url)
+          def fetch(url):
+              allowed(url)
+              resp = session.get(url, timeout=30, allow_redirects=False)
+              if resp.status_code != 200:
+                  raise RuntimeError(f'Source returned HTTP {resp.status_code}; no redirect or retry')
+              if 'html' not in resp.headers.get('content-type', '').lower():
+                  raise RuntimeError('Unexpected response type')
+              if re.search(r'checking your browser|verify you are human|just a moment|access denied', resp.text[:12000], re.I):
+                  raise RuntimeError('Access challenge; stopping without bypass')
+              return BeautifulSoup(resp.text, 'html.parser')
+          def identity(url):
+              u = urlsplit(url)
+              if u.scheme != 'https' or u.netloc != 'www.webnovel.com':
+                  return None
+              m = re.fullmatch(r'/book/(?:[^/]*_)?'+book+r'/(?:[^/]*_)?(\d{8,})/?', u.path)
+              return m.group(1) if m else None
+          def parse_catalog(soup):
+              found = {}
+              for link in soup.select('a[href]'):
+                  url = urljoin(book_url, link['href'])
+                  cid = identity(url)
+                  if not cid:
+                      continue
+                  label = ' '.join(link.stripped_strings)
+                  # The first number is Webnovel's TOC position, not the author's title number.
+                  match = re.match(r'^(\d{1,4})\s+Chapter\s+\d+\s*[:.\-]?\s*(.*)', label, re.I)
+                  if not match:
+                      continue
+                  n = int(match.group(1))
+                  if not 1 <= n <= expected:
+                      continue
+                  title = re.sub(r'\s+\d+\s+(?:seconds?|minutes?|hours?|days?|months?|years?)\s+ago$', '', label, flags=re.I)
+                  title = re.sub(r'^\d+\s+', '', title)
+                  row = {'ordinal': n, 'source_id': cid, 'title': title,
+                         'url': base + '/book/' + book + '/' + cid}
+                  if n in found and found[n]['source_id'] != cid:
+                      raise RuntimeError(f'Conflicting chapter IDs for ordinal {n}')
+                  found[n] = row
+              rows = [found[n] for n in sorted(found)]
+              if len(rows) != expected or [r['ordinal'] for r in rows] != list(range(1, expected+1)):
+                  raise RuntimeError(f'Catalog not proven complete: {len(rows)}/{expected}')
+              if len({r['source_id'] for r in rows}) != expected:
+                  raise RuntimeError('Duplicate source IDs')
+              return rows
+          def parse_body(soup):
+              page = soup.get_text(' ', strip=True)
+              if re.search(r'(?:chapter is locked|unlock this chapter|purchase this chapter|log in to read|login to read)', page, re.I):
+                  raise RuntimeError('Locked or login-required chapter')
+              for css in ('#chapterContent', '.cha-words', '.cha-content', '.chapter-content'):
+                  node = soup.select_one(css)
+                  if not node:
+                      continue
+                  for junk in node.select('script,style,noscript,iframe,svg,nav,header,footer,form,button,.author-note,.chapter-nav,.advertisement,.comments,.chapter-comments'):
+                      junk.decompose()
+                  paras = [' '.join(p.stripped_strings) for p in node.select('p')]
+                  body = '\n\n'.join(p for p in paras if p).strip() if paras else node.get_text('\n', strip=True)
+                  if len(re.sub(r'\s+', '', body)) < 400:
+                      raise RuntimeError('Chapter too short to validate')
+                  return body + '\n'
+              raise RuntimeError('No recognized public chapter body')
+          try:
+              r = session.get(base + '/robots.txt', timeout=30, allow_redirects=False)
+              if r.status_code in (404, 410):
+                  robot.parse(['User-agent: *', 'Allow: /'])
+              elif r.status_code == 200 and '<html' not in r.text[:1000].lower():
+                  robot.parse(r.text.splitlines())
+              else:
+                  raise RuntimeError(f'robots.txt could not be verified (HTTP {r.status_code})')
+              delay = max(delay, float(robot.crawl_delay(agent) or 0))
+              time.sleep(delay)
+              report['catalog'] = parse_catalog(fetch(book_url))
+              # Check all URLs before starting content retrieval.
+              for item in report['catalog']:
+                  allowed(item['url'])
+              write_report()
+              hashes = set()
+              for item in report['catalog']:
+                  time.sleep(delay)
+                  try:
+                      body = parse_body(fetch(item['url']))
+                      data = body.encode('utf-8')
+                      sha = hashlib.sha256(data).hexdigest()
+                      if sha in hashes:
+                          raise RuntimeError('Duplicate chapter body')
+                      hashes.add(sha)
+                      name = f"raw/{item['ordinal']:04d}.txt"
+                      (root / name).write_bytes(data)
+                      report['chapters'].append({**item, 'status': 'ok', 'file': name, 'sha256': sha, 'chars': len(body)})
+                      print(f"Verified ordinal {item['ordinal']}/{expected}", flush=True)
+                      write_report()
+                  except Exception as exc:
+                      report['chapters'].append({**item, 'status': 'failed', 'error': str(exc)})
+                      raise
+              assert len(hashes) == expected
+              pieces = []
+              for item in report['chapters']:
+                  data = (root / item['file']).read_bytes()
+                  assert hashlib.sha256(data).hexdigest() == item['sha256']
+                  pieces.append(f"Chapter {item['ordinal']}: {item['title']}\n\n" + data.decode('utf-8').strip())
+              (root / 'combined.txt').write_text('\n\n'.join(pieces) + '\n', encoding='utf-8')
+              report['combined_sha256'] = hashlib.sha256((root / 'combined.txt').read_bytes()).hexdigest()
+              report['status'] = 'PASS'
+          except Exception as exc:
+              report['status'] = 'BLOCKED_OR_INCOMPLETE'
+              report['error'] = str(exc)
+          finally:
+              write_report()
+          print((root / 'summary.md').read_text(encoding='utf-8'))
+          if report['status'] != 'PASS':
+              raise SystemExit(1)
+          PY
+      - name: Summarize verified result
+        if: always()
+        run: |
+          if [ -f out/marvel-scp-foundation/summary.md ]; then
+            cat out/marvel-scp-foundation/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload manifest and summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marvel-scp-ingest-receipt
+          path: |
+            out/marvel-scp-foundation/manifest.json
+            out/marvel-scp-foundation/summary.md
+          retention-days: 7
+      - name: Upload complete verified corpus
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marvel-scp-foundation-001-199
+          path: out/marvel-scp-foundation/
+          retention-days: 7
