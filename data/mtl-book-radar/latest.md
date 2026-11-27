@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-26T11:28:09+00:00
+Run: 2026-11-27T11:23:15+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-26T11:28:09+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `119428` [The Gentle Wind Beyond the Courtyard of Gold](https://wtr-lab.com/en/novel/119428/the-gentle-wind-beyond-the-courtyard-of-gold) — catalog
-- **wtr-lab** `119158` [HP the Black Lady](https://wtr-lab.com/en/novel/119158/hp-the-black-lady) — catalog
-- **wtr-lab** `119410` [Star Train World: People's Alliance](https://wtr-lab.com/en/novel/119410/star-train-world-peoples-alliance) — catalog
-- **wtr-lab** `119171` [Su San, the Female Forensic Investigator](https://wtr-lab.com/en/novel/119171/su-san-the-female-forensic-investigator) — catalog
-- **wtr-lab** `119379` [A Crossover of Film and Television: Signing in and Gossiping in Various Worlds](https://wtr-lab.com/en/novel/119379/a-crossover-of-film-and-television-signing-in-and-gossiping-in-various-worlds) — catalog
-- **wtr-lab** `119449` [Joining a Dating Reality Show: Why is My Ex-girlfriend, the Diva, Holding Back?](https://wtr-lab.com/en/novel/119449/joining-a-dating-reality-show-why-is-my-ex-girlfriend-the-diva-holding-back) — catalog
-- **wtr-lab** `119462` [Echo Resonance World: I'm Actually Not a Resonator?](https://wtr-lab.com/en/novel/119462/echo-resonance-world-im-actually-not-a-resonator) — catalog
-- **wtr-lab** `119266` [I Flirted with the Villain's Mother](https://wtr-lab.com/en/novel/119266/i-flirted-with-the-villains-mother) — catalog
-- **wtr-lab** `119357` [In the Primordial Era, They Clung Tightly to Hongjun's Coattails from the Very Beginning](https://wtr-lab.com/en/novel/119357/in-the-primordial-era-they-clung-tightly-to-hongjuns-coattails-from-the-very-beginning) — catalog
-- **wtr-lab** `119315` [Check-in and Sign-in Starting from Soul Land Continent](https://wtr-lab.com/en/novel/119315/check-in-and-sign-in-starting-from-soul-land-continent) — catalog
-- **mtl-novel** `honkai-star-rails-reborn-as-a-baby-zetton-and-picked-up-by-kafka` [Honkai: Star Rails: Reborn As a Baby Zetton and Picked Up by Kafka](https://mtl-novel.com/novel/honkai-star-rails-reborn-as-a-baby-zetton-and-picked-up-by-kafka/) — catalog
-- **mtl-novel** `battle-through-the-heaven-choose-three-out-of-five-cheats-a-perfect-start` [Battle Through the Heaven: Choose Three Out of Five Cheats, a Perfect Start!](https://mtl-novel.com/novel/battle-through-the-heaven-choose-three-out-of-five-cheats-a-perfect-start/) — catalog
-- **mtl-novel** `qing-tian-what-should-i-do-if-my-brothers-love-me-too-much` [Qing Tian: What Should I Do If My Brothers Love Me Too Much?](https://mtl-novel.com/novel/qing-tian-what-should-i-do-if-my-brothers-love-me-too-much/) — catalog
-- **mtl-novel** `dark-souls-but-shinji-ikari` [Dark Souls, But Shinji Ikari](https://mtl-novel.com/novel/dark-souls-but-shinji-ikari/) — catalog
-- **mtl-novel** `accidentally-stumbled-into-a-demons-lair-at-the-start-i-promptly-deleted-my-account-and-respawned` [Accidentally Stumbled Into a Demon’s Lair at the Start? I Promptly Deleted My Account and Respawned](https://mtl-novel.com/novel/accidentally-stumbled-into-a-demons-lair-at-the-start-i-promptly-deleted-my-account-and-respawned/) — catalog
-- **mtl-novel** `its-better-to-use-your-mobile-phone-when-cultivating-immortals` [It’s Better to Use Your Mobile Phone When Cultivating Immortals](https://mtl-novel.com/novel/its-better-to-use-your-mobile-phone-when-cultivating-immortals/) — catalog
-- **mtl-novel** `can-we-extract-one-entry-per-year-even-if-its-a-simulation` [Can We Extract One Entry Per Year, Even If It’s a Simulation?](https://mtl-novel.com/novel/can-we-extract-one-entry-per-year-even-if-its-a-simulation/) — catalog
-- **mtl-novel** `livestream-antics-the-antics-i-pull-off-will-drive-the-entire-internet-crazy` [Livestream Antics: The Antics I Pull Off Will Drive the Entire Internet Crazy!](https://mtl-novel.com/novel/livestream-antics-the-antics-i-pull-off-will-drive-the-entire-internet-crazy/) — catalog
-- **mtl-novel** `infinite-opportunities-to-swallow-the-starry-sky` [Infinite Opportunities to Swallow the Starry Sky](https://mtl-novel.com/novel/infinite-opportunities-to-swallow-the-starry-sky/) — catalog
-- **mtl-novel** `crossover-taking-a-break-in-overlord` [Crossover: Taking a Break in Overlord](https://mtl-novel.com/novel/crossover-taking-a-break-in-overlord/) — catalog
+- **wtr-lab** `119705` [Soul Land V: Destined Villain, Capturing Zhu Zhuqing at the Start](https://wtr-lab.com/en/novel/119705/soul-land-v-destined-villain-capturing-zhu-zhuqing-at-the-start) — catalog
+- **wtr-lab** `120057` [Infinite Evolution of the Giant Serpent](https://wtr-lab.com/en/novel/120057/infinite-evolution-of-the-giant-serpent) — catalog
+- **wtr-lab** `119776` [Simultaneous Transmigration: Invincible Entirely Due to My Own Skills](https://wtr-lab.com/en/novel/119776/simultaneous-transmigration-invincible-entirely-due-to-my-own-skills) — catalog
+- **wtr-lab** `119827` [Having Been Abused and Reborn, Do My Loved Ones Recognize the Emperor's Banner?](https://wtr-lab.com/en/novel/119827/having-been-abused-and-reborn-do-my-loved-ones-recognize-the-emperors-banner) — catalog
+- **wtr-lab** `120007` [Disaster in the Six Palaces: Crazy Criticism of the Demon Concubine’s Daily Life](https://wtr-lab.com/en/novel/120007/disaster-in-the-six-palaces-crazy-criticism-of-the-demon-concubines-daily-life) — catalog
+- **wtr-lab** `119986` [I’m Already a Queen and I Still Play Palace Fight with You?](https://wtr-lab.com/en/novel/119986/im-already-a-queen-and-i-still-play-palace-fight-with-you) — catalog
+- **wtr-lab** `119987` [After the White Moonlight Entered the Palace, the Emperor Favored Her and Made Her the Queen](https://wtr-lab.com/en/novel/119987/after-the-white-moonlight-entered-the-palace-the-emperor-favored-her-and-made-her-the-queen) — catalog
+- **wtr-lab** `119989` [The Emperor is Spoiled, Not the Crown Princess But the Queen](https://wtr-lab.com/en/novel/119989/the-emperor-is-spoiled-not-the-crown-princess-but-the-queen) — catalog
+- **wtr-lab** `119978` [The Arrogant Noble Concubine Gave Birth to a Little Coward](https://wtr-lab.com/en/novel/119978/the-arrogant-noble-concubine-gave-birth-to-a-little-coward) — catalog
+- **wtr-lab** `120005` [The Poisonous Concubine’s Destiny: The Prince’s Favorite Till the End](https://wtr-lab.com/en/novel/120005/the-poisonous-concubines-destiny-the-princes-favorite-till-the-end) — catalog
+- **mtl-novel** `wuxia-a-world-of-martial-arts-a-review-of-the-sword-god-ranking` [Wuxia: A World of Martial Arts, a Review of the Sword God Ranking](https://mtl-novel.com/novel/wuxia-a-world-of-martial-arts-a-review-of-the-sword-god-ranking/) — catalog
+- **mtl-novel** `i-summon-the-fourth-calamity-in-a-world-of-horrors` [I Summon the “fourth Calamity” in a World of Horrors](https://mtl-novel.com/novel/i-summon-the-fourth-calamity-in-a-world-of-horrors/) — catalog
+- **mtl-novel** `class-survival-i-can-fuse-talents-and-evolve-infinitely` [Class Survival: I Can Fuse Talents and Evolve Infinitely](https://mtl-novel.com/novel/class-survival-i-can-fuse-talents-and-evolve-infinitely/) — catalog
+- **mtl-novel** `reborn-in-1978-i-was-jilted-by-a-female-educated-youth-at-the-start-of-my-marriage` [Reborn in 1978, I Was Jilted by a Female Educated Youth at the Start of My Marriage](https://mtl-novel.com/novel/reborn-in-1978-i-was-jilted-by-a-female-educated-youth-at-the-start-of-my-marriage/) — catalog
+- **mtl-novel** `transmigrated-into-the-sickly-little-reading-companion-of-a-grim-tyrant-emperor` [Transmigrated Into the Sickly Little Reading Companion of a Grim Tyrant Emperor](https://mtl-novel.com/novel/transmigrated-into-the-sickly-little-reading-companion-of-a-grim-tyrant-emperor/) — catalog
+- **mtl-novel** `reverend-insanity` [Reverend Insanity](https://mtl-novel.com/novel/reverend-insanity/) — catalog
+- **mtl-novel** `gao-wu-others-train-in-martial-arts-but-you-cultivate-immortality` [Gao Wu: Others Train in Martial Arts, But You Cultivate Immortality?](https://mtl-novel.com/novel/gao-wu-others-train-in-martial-arts-but-you-cultivate-immortality/) — catalog
+- **mtl-novel** `fake-slackers` [Fake Slackers](https://mtl-novel.com/novel/fake-slackers/) — catalog
+- **mtl-novel** `transmigrating-to-the-tsarist-era-starting-with-creating-torrent-of-steel` [Transmigrating to the Tsarist Era, Starting with Creating Torrent of Steel](https://mtl-novel.com/novel/transmigrating-to-the-tsarist-era-starting-with-creating-torrent-of-steel/) — catalog
+- **mtl-novel** `your-majesty-take-care-of-it-the-sixth-prince-is-crazy-again` [Your Majesty, Take Care of It. the Sixth Prince is Crazy Again!](https://mtl-novel.com/novel/your-majesty-take-care-of-it-the-sixth-prince-is-crazy-again/) — catalog
