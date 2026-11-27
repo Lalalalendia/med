@@ -1,0 +1,26 @@
+name: Slime - Traditional Chinese source metadata probe
+on:
+  push:
+    branches:
+      - feat/slime-true-immortal-220-545-20261119
+    paths:
+      - tools/novel-ingest/slime_tw_source_metadata.py
+      - tools/novel-ingest/test_slime_tw_source_metadata.py
+      - .github/workflows/slime-tw-metadata.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Offline source parser tests
+        run: python -m unittest tools/novel-ingest/test_slime_tw_source_metadata.py -v
+      - name: Public page metadata sample only
+        run: python -u tools/novel-ingest/slime_tw_source_metadata.py
