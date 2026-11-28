@@ -1,6 +1,6 @@
 # MTL book discovery
 
-Run: 2026-11-27T11:23:15+00:00
+Run: 2026-11-28T10:50:55+00:00
 
 **First seen** does not prove first publication or permission to translate.
 
@@ -15,23 +15,23 @@ Run: 2026-11-27T11:23:15+00:00
 
 ## Newly observed URLs
 
-- **wtr-lab** `119705` [Soul Land V: Destined Villain, Capturing Zhu Zhuqing at the Start](https://wtr-lab.com/en/novel/119705/soul-land-v-destined-villain-capturing-zhu-zhuqing-at-the-start) — catalog
-- **wtr-lab** `120057` [Infinite Evolution of the Giant Serpent](https://wtr-lab.com/en/novel/120057/infinite-evolution-of-the-giant-serpent) — catalog
-- **wtr-lab** `119776` [Simultaneous Transmigration: Invincible Entirely Due to My Own Skills](https://wtr-lab.com/en/novel/119776/simultaneous-transmigration-invincible-entirely-due-to-my-own-skills) — catalog
-- **wtr-lab** `119827` [Having Been Abused and Reborn, Do My Loved Ones Recognize the Emperor's Banner?](https://wtr-lab.com/en/novel/119827/having-been-abused-and-reborn-do-my-loved-ones-recognize-the-emperors-banner) — catalog
-- **wtr-lab** `120007` [Disaster in the Six Palaces: Crazy Criticism of the Demon Concubine’s Daily Life](https://wtr-lab.com/en/novel/120007/disaster-in-the-six-palaces-crazy-criticism-of-the-demon-concubines-daily-life) — catalog
-- **wtr-lab** `119986` [I’m Already a Queen and I Still Play Palace Fight with You?](https://wtr-lab.com/en/novel/119986/im-already-a-queen-and-i-still-play-palace-fight-with-you) — catalog
-- **wtr-lab** `119987` [After the White Moonlight Entered the Palace, the Emperor Favored Her and Made Her the Queen](https://wtr-lab.com/en/novel/119987/after-the-white-moonlight-entered-the-palace-the-emperor-favored-her-and-made-her-the-queen) — catalog
-- **wtr-lab** `119989` [The Emperor is Spoiled, Not the Crown Princess But the Queen](https://wtr-lab.com/en/novel/119989/the-emperor-is-spoiled-not-the-crown-princess-but-the-queen) — catalog
-- **wtr-lab** `119978` [The Arrogant Noble Concubine Gave Birth to a Little Coward](https://wtr-lab.com/en/novel/119978/the-arrogant-noble-concubine-gave-birth-to-a-little-coward) — catalog
-- **wtr-lab** `120005` [The Poisonous Concubine’s Destiny: The Prince’s Favorite Till the End](https://wtr-lab.com/en/novel/120005/the-poisonous-concubines-destiny-the-princes-favorite-till-the-end) — catalog
-- **mtl-novel** `wuxia-a-world-of-martial-arts-a-review-of-the-sword-god-ranking` [Wuxia: A World of Martial Arts, a Review of the Sword God Ranking](https://mtl-novel.com/novel/wuxia-a-world-of-martial-arts-a-review-of-the-sword-god-ranking/) — catalog
-- **mtl-novel** `i-summon-the-fourth-calamity-in-a-world-of-horrors` [I Summon the “fourth Calamity” in a World of Horrors](https://mtl-novel.com/novel/i-summon-the-fourth-calamity-in-a-world-of-horrors/) — catalog
-- **mtl-novel** `class-survival-i-can-fuse-talents-and-evolve-infinitely` [Class Survival: I Can Fuse Talents and Evolve Infinitely](https://mtl-novel.com/novel/class-survival-i-can-fuse-talents-and-evolve-infinitely/) — catalog
-- **mtl-novel** `reborn-in-1978-i-was-jilted-by-a-female-educated-youth-at-the-start-of-my-marriage` [Reborn in 1978, I Was Jilted by a Female Educated Youth at the Start of My Marriage](https://mtl-novel.com/novel/reborn-in-1978-i-was-jilted-by-a-female-educated-youth-at-the-start-of-my-marriage/) — catalog
-- **mtl-novel** `transmigrated-into-the-sickly-little-reading-companion-of-a-grim-tyrant-emperor` [Transmigrated Into the Sickly Little Reading Companion of a Grim Tyrant Emperor](https://mtl-novel.com/novel/transmigrated-into-the-sickly-little-reading-companion-of-a-grim-tyrant-emperor/) — catalog
-- **mtl-novel** `reverend-insanity` [Reverend Insanity](https://mtl-novel.com/novel/reverend-insanity/) — catalog
-- **mtl-novel** `gao-wu-others-train-in-martial-arts-but-you-cultivate-immortality` [Gao Wu: Others Train in Martial Arts, But You Cultivate Immortality?](https://mtl-novel.com/novel/gao-wu-others-train-in-martial-arts-but-you-cultivate-immortality/) — catalog
-- **mtl-novel** `fake-slackers` [Fake Slackers](https://mtl-novel.com/novel/fake-slackers/) — catalog
-- **mtl-novel** `transmigrating-to-the-tsarist-era-starting-with-creating-torrent-of-steel` [Transmigrating to the Tsarist Era, Starting with Creating Torrent of Steel](https://mtl-novel.com/novel/transmigrating-to-the-tsarist-era-starting-with-creating-torrent-of-steel/) — catalog
-- **mtl-novel** `your-majesty-take-care-of-it-the-sixth-prince-is-crazy-again` [Your Majesty, Take Care of It. the Sixth Prince is Crazy Again!](https://mtl-novel.com/novel/your-majesty-take-care-of-it-the-sixth-prince-is-crazy-again/) — catalog
+- **wtr-lab** `120232` [The Real Heiress is a Professional Fun-seeker](https://wtr-lab.com/en/novel/120232/the-real-heiress-is-a-professional-fun-seeker) — catalog
+- **wtr-lab** `118925` [I'm Dressed As a Man, and I'm Flirting Away!](https://wtr-lab.com/en/novel/118925/im-dressed-as-a-man-and-im-flirting-away) — catalog
+- **wtr-lab** `119273` [After Seeing Through My Crossdressing, My Senior Sister Treats Me Even Better](https://wtr-lab.com/en/novel/119273/after-seeing-through-my-crossdressing-my-senior-sister-treats-me-even-better) — catalog
+- **wtr-lab** `120330` [Comprehensive Comics: Collecting Treasures from the Type Moon](https://wtr-lab.com/en/novel/120330/comprehensive-comics-collecting-treasures-from-the-type-moon) — catalog
+- **wtr-lab** `120171` [Zongman: Everyone's a Loser and They've All Been Set on My Side After Their Rebirth!](https://wtr-lab.com/en/novel/120171/zongman-everyones-a-loser-and-theyve-all-been-set-on-my-side-after-their-rebirth) — catalog
+- **wtr-lab** `119329` [Master, Disciple Thinks of Deceiving You Every Night](https://wtr-lab.com/en/novel/119329/master-disciple-thinks-of-deceiving-you-every-night) — catalog
+- **wtr-lab** `120140` [A Commander of the Undying Witches](https://wtr-lab.com/en/novel/120140/a-commander-of-the-undying-witches) — catalog
+- **wtr-lab** `120211` [RE: Zero, Subaru Natsuki Returns from SAO](https://wtr-lab.com/en/novel/120211/re-zero-subaru-natsuki-returns-from-sao) — catalog
+- **wtr-lab** `119911` [I'm a Beast in All the Realms](https://wtr-lab.com/en/novel/119911/im-a-beast-in-all-the-realms) — catalog
+- **wtr-lab** `120224` [I, an American Ace Detective, am Good at Emptying the Magazine!](https://wtr-lab.com/en/novel/120224/i-an-american-ace-detective-am-good-at-emptying-the-magazine) — catalog
+- **mtl-novel** `beyond-the-celestial-canopy-lay-the-primordial-wilderness` [Beyond the Celestial Canopy Lay the Primordial Wilderness](https://mtl-novel.com/novel/beyond-the-celestial-canopy-lay-the-primordial-wilderness/) — catalog
+- **mtl-novel** `villain-invincible-starts-from-taking-the-protagonists-master-as-a-servant` [Villain: Invincible Starts from Taking the Protagonist’s Master As a Servant](https://mtl-novel.com/novel/villain-invincible-starts-from-taking-the-protagonists-master-as-a-servant/) — catalog
+- **mtl-novel** `american-tycoon-1998` [American Tycoon 1998](https://mtl-novel.com/novel/american-tycoon-1998/) — catalog
+- **mtl-novel** `back-to-the-70s-marrying-a-soldier-and-becoming-a-tycoon-with-a-hidden-space` [Back to the ’70s: Marrying a Soldier and Becoming a Tycoon with a Hidden Space](https://mtl-novel.com/novel/back-to-the-70s-marrying-a-soldier-and-becoming-a-tycoon-with-a-hidden-space/) — catalog
+- **mtl-novel** `douluo-dalu-martial-soul-with-double-pupils-devouring-mountains-and-rivers` [Douluo Dalu: Martial Soul with Double Pupils, Devouring Mountains and Rivers](https://mtl-novel.com/novel/douluo-dalu-martial-soul-with-double-pupils-devouring-mountains-and-rivers/) — catalog
+- **mtl-novel** `douluo-dalu-three-legendary-women-arrive-in-the-modern-world-their-every-move-is-livestreamed-to-douluos-three-eras` [Douluo Dalu: Three Legendary Women Arrive in the Modern World, Their Every Move is Livestreamed to Douluo’s Three Eras](https://mtl-novel.com/novel/douluo-dalu-three-legendary-women-arrive-in-the-modern-world-their-every-move-is-livestreamed-to-douluos-three-eras/) — catalog
+- **mtl-novel** `feng-hao-douluo-you-broke-off-the-engagement-i-chose-the-cat-why-are-you-crying` [Feng Hao Douluo, You Broke Off the Engagement, I Chose the Cat, Why are You Crying?](https://mtl-novel.com/novel/feng-hao-douluo-you-broke-off-the-engagement-i-chose-the-cat-why-are-you-crying/) — catalog
+- **mtl-novel** `douluo-peerless-i-awakened-superman-as-my-martial-soul-a-future-qian-renxue-exposes-tang-sans-secrets-to-the-world` [Douluo Peerless: I Awakened Superman As My Martial Soul, a Future Qian Renxue Exposes Tang San’s Secrets to the World](https://mtl-novel.com/novel/douluo-peerless-i-awakened-superman-as-my-martial-soul-a-future-qian-renxue-exposes-tang-sans-secrets-to-the-world/) — catalog
+- **mtl-novel** `douluo-blue-and-silver-twins-tang-san-respects-me-like-a-father` [Douluo: Blue and Silver Twins, Tang San Respects Me Like a Father](https://mtl-novel.com/novel/douluo-blue-and-silver-twins-tang-san-respects-me-like-a-father/) — catalog
+- **mtl-novel** `transmigrated-to-the-70s-sold-off-as-a-fool-she-struck-it-rich` [Transmigrated to the ’70s: Sold Off As a Fool, She Struck It Rich!](https://mtl-novel.com/novel/transmigrated-to-the-70s-sold-off-as-a-fool-she-struck-it-rich/) — catalog
